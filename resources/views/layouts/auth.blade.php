@@ -21,7 +21,6 @@
         </div>
     </div>
 </div>
-@livewireScripts
-@fluxScripts
+@include('partials.foot')
 </body>
 </html>
