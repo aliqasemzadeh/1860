@@ -4,6 +4,6 @@
 
 <title>{{ $title ?? config('app.name') }}</title>
 
-@fluxAppearance
-@livewireStyles
 @vite(['resources/css/app.css', 'resources/js/app.js'])
+@fluxAppearance
+
