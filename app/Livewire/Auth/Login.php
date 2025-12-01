@@ -10,6 +10,7 @@ use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Tzsk\Otp\Facades\Otp;
+use Flux\Flux;
 
 class Login extends Component
 {
@@ -39,6 +40,7 @@ class Login extends Component
         $this->code = '';
         $this->step = 2;
         $this->canResendAt = now()->addMinutes($expiry);
+        Flux::toast(variant: 'success', text: 'کد ارسال شد.');
     }
 
     public function verify(): void
@@ -53,7 +55,7 @@ class Login extends Component
             ->check($this->code, $this->mobile);
 
         if (! $valid) {
-            $this->addError('code', __('The provided code is invalid or expired.'));
+            Flux::toast(variant: 'danger', text: 'کد وارد شده اشتباه است.');
 
             return;
         }
@@ -73,11 +75,13 @@ class Login extends Component
         $expiry = (int) Config::get('otp.expiry', 2);
 
         if ($this->canResendAt && now()->lt($this->canResendAt)) {
-            // Too early to resend; simply return.
+            Flux::toast(variant: 'danger', text: 'برای ارسال مجدد باید دو دقیقه صبر کنید.');
             return;
         }
 
         if (! $this->mobile) {
+            $this->step = 1;
+            Flux::toast(variant: 'danger', text: 'شماره همراه را وارد کنید.');
             return;
         }
 
@@ -86,6 +90,8 @@ class Login extends Component
             ->generate($this->mobile);
 
         dispatch(new SendOtpJob($this->mobile, $otp));
+
+        Flux::toast(variant: 'success', text: 'کد مجدد ارسال شد.');
 
         $this->canResendAt = now()->addMinutes($expiry);
     }

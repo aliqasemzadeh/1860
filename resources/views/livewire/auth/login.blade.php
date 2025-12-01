@@ -20,7 +20,7 @@
                 <flux:text class="text-center">{{ $mobile }}</flux:text>
                 <flux:text class="text-center">{{ __('1860.mobile_confirm_question') }}</flux:text>
             </div>
-            <flux:otp wire:model="code" length="6" label="{{ __('1860.otp_code_label') }}" label:sr-only :error:icon="false" error:class="text-center" class="mx-auto" />
+            <flux:otp wire:model="code" dir="ltr" length="6" label="{{ __('1860.otp_code_label') }}" label:sr-only :error:icon="false" error:class="text-center" class="mx-auto" />
             <div class="space-y-4">
                 <flux:button variant="primary" type="submit" class="w-full">{{ __('1860.verify') }}</flux:button>
                 <flux:button type="button" wire:click="resend" class="w-full">{{ __('1860.resend_code') }}</flux:button>

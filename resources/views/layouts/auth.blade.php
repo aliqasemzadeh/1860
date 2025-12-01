@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" dir="rtl">
 <head>
     @include('partials.head')
 </head>
@@ -7,8 +7,8 @@
 <div class="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
     <div class="flex w-full max-w-md flex-col gap-6">
         <a href="{{ route('home') }}" class="flex flex-col items-center gap-2 font-medium" wire:navigate>
-                    <span class="flex h-9 w-9 items-center justify-center rounded-md">
-                        1860
+                    <span class="flex h-32 w-64 items-center justify-center rounded-md">
+                        <img src="{{ asset('images/logo.png') }}" alt="logo">
                     </span>
 
             <span class="sr-only">{{ config('app.name', 'Laravel') }}</span>
@@ -19,6 +19,12 @@
                 <div class="px-10 py-8">{{ $slot }}</div>
             </div>
         </div>
+
+        <flux:radio.group x-data variant="segmented" x-model="$flux.appearance">
+            <flux:radio value="light" icon="sun">Light</flux:radio>
+            <flux:radio value="dark" icon="moon">Dark</flux:radio>
+            <flux:radio value="system" icon="computer-desktop">System</flux:radio>
+        </flux:radio.group>
     </div>
 </div>
 @include('partials.foot')
