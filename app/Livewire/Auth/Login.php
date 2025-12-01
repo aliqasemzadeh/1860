@@ -10,6 +10,20 @@ class Login extends Component
     public $mobile = '';
     public $otp = '';
 
+    public function request()
+    {
+
+    }
+    public function verify()
+    {
+
+    }
+
+    public function resend()
+    {
+
+    }
+
     #[Layout('layouts.auth')]
     public function render()
     {
