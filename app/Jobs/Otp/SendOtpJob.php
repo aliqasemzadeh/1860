@@ -22,6 +22,9 @@ class SendOtpJob implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        // First Try Bale
+
+
+
     }
 }

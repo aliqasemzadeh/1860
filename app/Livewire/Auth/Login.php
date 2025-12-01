@@ -91,7 +91,7 @@ class Login extends Component
     }
 
     #[Layout('layouts.auth')]
-    public function render()
+    public function render(): View
     {
         return view('livewire.auth.login');
     }
