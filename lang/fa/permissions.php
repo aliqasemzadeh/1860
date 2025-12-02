@@ -89,6 +89,6 @@ return [
     ],
 
     'shop' => [
-        'service_center_access' => 'فروشگاه',
+        'shop_access' => 'فروشگاه',
     ],
 ];

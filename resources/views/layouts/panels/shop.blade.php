@@ -19,16 +19,10 @@
     <flux:sidebar.search placeholder="Search..." />
 
     <flux:sidebar.nav>
-        <flux:sidebar.item icon="home" href="#" current>Home</flux:sidebar.item>
-        <flux:sidebar.item icon="inbox" badge="12" href="#">Inbox</flux:sidebar.item>
-        <flux:sidebar.item icon="document-text" href="#">Documents</flux:sidebar.item>
-        <flux:sidebar.item icon="calendar" href="#">Calendar</flux:sidebar.item>
-
-        <flux:sidebar.group expandable heading="Favorites" class="grid">
-            <flux:sidebar.item href="#">Marketing site</flux:sidebar.item>
-            <flux:sidebar.item href="#">Android app</flux:sidebar.item>
-            <flux:sidebar.item href="#">Brand guidelines</flux:sidebar.item>
-        </flux:sidebar.group>
+        <flux:sidebar.item icon="gauge" href="#" current>{{ __('app.dashboard') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="boxes" href="#">{{ __('app.products') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="chart-bar-stacked" href="#">{{ __('app.categories') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="bring-to-front" href="#">{{ __('app.orders') }}</flux:sidebar.item>
     </flux:sidebar.nav>
 
     <flux:sidebar.spacer />
