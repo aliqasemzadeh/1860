@@ -7,12 +7,7 @@
 <flux:sidebar sticky collapsible="mobile" class="bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700">
     @include('partials.sidebar-header')
 
-    <flux:sidebar.nav>
-        <flux:sidebar.item icon="home" href="#" current>مانیتور</flux:sidebar.item>
-        <flux:sidebar.item icon="inbox" badge="12" href="#">Inbox</flux:sidebar.item>
-        <flux:sidebar.item icon="document-text" href="#">Documents</flux:sidebar.item>
-        <flux:sidebar.item icon="calendar" href="#">Calendar</flux:sidebar.item>
-    </flux:sidebar.nav>
+    <livewire:main.sidebar.categories />
 
     <flux:sidebar.spacer />
 

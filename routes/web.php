@@ -12,7 +12,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/service-center/assembly/index', \App\Livewire\ServiceCenter\Assembly\Index::class)->name('service-center.assembly.index');
     Route::get('/service-center/repair/index', \App\Livewire\ServiceCenter\Repair\Index::class)->name('service-center.repair.index');
 
-    Route::get('/shop/dashboard/index', \App\Livewire\Shop\Dashboard\Index::class)->name('shop.dashboard.index');
 
     Route::get('/crm/dashboard/index', \App\Livewire\Crm\Dashboard\Index::class)->name('crm.dashboard.index');
 
@@ -24,8 +23,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/administrator/setting-management/function/index', \App\Livewire\Administrator\SettingManagement\Function\Index::class)->name('administrator.setting-management.function.index');
     Route::get('/administrator/setting-management/option/index', \App\Livewire\Administrator\SettingManagement\Option\Index::class)->name('administrator.setting-management.option.index');
 
-    // Administrator - Shop - Category
-    Route::get('/administrator/shop/category/index', \App\Livewire\Administrator\Shop\Category\Index::class)->name('administrator.shop.category.index');
+    Route::get('/shop/dashboard/index', \App\Livewire\Shop\Dashboard\Index::class)->name('shop.dashboard.index');
+    Route::get('/shop/category/index', \App\Livewire\Shop\Category\Index::class)->name('shop.category.index');
+    Route::get('/shop/product/index', \App\Livewire\Shop\Product\Index::class)->name('shop.product.index');
+    Route::get('/shop/order/index', \App\Livewire\Shop\Order\Index::class)->name('shop.order.index');
 
 });
 

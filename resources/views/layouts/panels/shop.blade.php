@@ -10,10 +10,10 @@
     <flux:sidebar.search placeholder="Search..." />
 
     <flux:sidebar.nav>
-        <flux:sidebar.item icon="gauge" href="#" current>{{ __('app.dashboard') }}</flux:sidebar.item>
-        <flux:sidebar.item icon="boxes" href="#">{{ __('app.products') }}</flux:sidebar.item>
-        <flux:sidebar.item icon="chart-bar-stacked" href="#">{{ __('app.categories') }}</flux:sidebar.item>
-        <flux:sidebar.item icon="bring-to-front" href="#">{{ __('app.orders') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="gauge" href="{{ route('shop.dashboard.index') }}" current>{{ __('app.dashboard') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="boxes" href="{{ route('shop.product.index') }}">{{ __('app.products') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="chart-bar-stacked" href="{{ route('shop.category.index') }}">{{ __('app.categories') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="bring-to-front" href="{{ route('shop.order.index') }}">{{ __('app.orders') }}</flux:sidebar.item>
     </flux:sidebar.nav>
 
     <flux:sidebar.spacer />
