@@ -79,4 +79,16 @@ return [
         'administrator_api_faq_show' => 'نمایش پرسش متداول (API)',
         'administrator_api_faq_search' => 'جستجوی پرسش‌های متداول (API)',
     ],
+
+    'crm' => [
+        'crm_access' => 'دسترسی CRM',
+    ],
+
+    'service_center' => [
+        'service_center_access' => 'مرکز خدمات',
+    ],
+
+    'shop' => [
+        'service_center_access' => 'فروشگاه',
+    ],
 ];

@@ -4,13 +4,16 @@ namespace App\Livewire\Administrator\UserManagement\Permission;
 
 use Flux\Flux;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Spatie\Permission\Models\Permission;
 
 class Edit extends Component
 {
     public Permission $permission;
+
     public string $name = '';
+
     public string $guard_name = 'web';
 
     public function mount($id = 1)
@@ -18,6 +21,15 @@ class Edit extends Component
         $this->permission = Permission::findById($id);
         $this->name = $this->permission->name;
         $this->guard_name = $this->permission->guard_name;
+    }
+
+    #[On('administrator.user-management.permission.edit.assign-data')]
+    public function assignData(int $id): void
+    {
+        $this->permission = Permission::findById($id);
+        $this->name = $this->permission->name;
+        $this->guard_name = $this->permission->guard_name;
+        Flux::modal('administrator.user-management.permission.edit.modal')->show();
     }
 
     public function edit()
@@ -36,6 +48,7 @@ class Edit extends Component
     public function render()
     {
         $this->authorize('administrator_user_permission_edit');
+
         return view('livewire.administrator.user-management.permission.edit');
     }
 }

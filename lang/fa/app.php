@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'name' => '1860',
+    'name' => 'نام',
 
     // Auth / Login
     'login_with_mobile' => 'ورود با موبایل',
@@ -24,6 +24,8 @@ return [
     'permissions' => 'مجوزها',
     'search' => 'جستجو',
     'create' => 'ایجاد',
+    'create_role' => 'ایجاد نقش',
+    'create_permission' => 'ایجاد مجوز',
     'update' => 'به‌روزرسانی',
     'edit' => 'ویرایش',
     'delete' => 'حذف',
@@ -45,7 +47,7 @@ return [
     'edit_user_description' => 'اطلاعات کاربر را ویرایش و به‌روزرسانی کنید.',
     'first_name' => 'نام',
     'last_name' => 'نام خانوادگی',
-    'name' => 'نام',
+    'guard_name' => 'گارد',
     'email' => 'ایمیل',
     'password' => 'رمز عبور',
     'password_confirmation' => 'تکرار رمز عبور',
@@ -54,6 +56,11 @@ return [
     'roles_description' => 'نقش‌ها را جستجو و به کاربر اختصاص دهید یا حذف کنید.',
     'permissions_description' => 'مجوزها را جستجو و به کاربر اختصاص دهید یا حذف کنید.',
     'are_you_sure' => 'آیا مطمئن هستید؟',
+
+    // Permissions Create/Edit
+    'create_permission_description' => 'برای ایجاد مجوز جدید، اطلاعات زیر را تکمیل کنید.',
+    'edit_permission' => 'ویرایش مجوز',
+    'edit_permission_description' => 'اطلاعات مجوز را ویرایش و به‌روزرسانی کنید.',
 
     // Create User
     'create_user' => 'ایجاد کاربر',
@@ -68,6 +75,6 @@ return [
         'confirm' => 'خروج',
         'success' => 'با موفقیت از حساب کاربری خارج شدید.',
     ],
-    'add_user' => 'ایجاد کاربر'
+    'add_user' => 'ایجاد کاربر',
 
 ];

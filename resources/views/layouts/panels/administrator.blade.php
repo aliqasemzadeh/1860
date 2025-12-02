@@ -27,7 +27,7 @@
         </flux:sidebar.group>
         <flux:sidebar.group expandable heading="{{ __('app.setting_management') }}" class="grid" :expanded="request()->routeIs('administrator.setting-management.*')">
             <flux:sidebar.item href="{{ route('administrator.setting-management.function.index') }}">{{ __('app.functions') }}</flux:sidebar.item>
-            <flux:sidebar.item href="{{ route('administrator.setting-management.function.index') }}">{{ __('app.options') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('administrator.setting-management.option.index') }}">{{ __('app.options') }}</flux:sidebar.item>
         </flux:sidebar.group>
     </flux:sidebar.nav>
 

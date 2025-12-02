@@ -33,6 +33,9 @@ class CreateAdministratorCommand extends Command
             ]);
             $user->assignRole('user');
             $user->assignRole('administrator');
+            $user->assignRole('shop');
+            $user->assignRole('crm');
+            $user->assignRole('service_center');
             $this->info('User Created Successfully');
         } catch (\Exception $e) {
             $this->error($e->getMessage());

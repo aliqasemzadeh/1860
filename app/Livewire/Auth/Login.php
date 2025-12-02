@@ -6,6 +6,7 @@ use App\Jobs\Otp\SendOtpJob;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -33,6 +34,8 @@ class Login extends Component
         $expiry = (int) Config::get('otp.expiry', 2);
 
         $otp = Otp::digits($digits)->expiry($expiry)->generate($this->mobile);
+
+        Log::info('OTP generated', ['otp' => $otp]);
 
         // Queue the job to send the OTP via preferred channel
         dispatch(new SendOtpJob($this->mobile, $otp));

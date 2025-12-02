@@ -53,5 +53,45 @@ class CreatePermissionsCommand extends Command
             $administrator->givePermissionTo($permission);
         }
 
+        $crm = Role::findByName('crm');
+        $permissions_crm = __('permissions.crm');
+
+        foreach ($permissions_crm as $permission => $translate) {
+            Permission::firstOrCreate(
+                ['name' => $permission]
+            );
+        }
+
+        foreach ($permissions_crm as $permission => $translate) {
+            $crm->givePermissionTo($permission);
+        }
+
+        $shop = Role::findByName('shop');
+        $permissions_shop = __('permissions.shop');
+
+        foreach ($permissions_shop as $permission => $translate) {
+            Permission::firstOrCreate(
+                ['name' => $permission]
+            );
+        }
+
+        foreach ($permissions_shop as $permission => $translate) {
+            $shop->givePermissionTo($permission);
+        }
+
+        $service_center = Role::findByName('service_center');
+        $permissions_service_center = __('permissions.service_center');
+
+        foreach ($permissions_service_center as $permission => $translate) {
+            Permission::firstOrCreate(
+                ['name' => $permission]
+            );
+        }
+
+        foreach ($permissions_service_center as $permission => $translate) {
+            $service_center->givePermissionTo($permission);
+        }
+
+
     }
 }

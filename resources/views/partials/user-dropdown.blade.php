@@ -9,6 +9,6 @@
 
         <flux:menu.separator />
 
-        <flux:menu.item icon="arrow-right-start-on-rectangle" href="{{ route('logout') }}">Logout</flux:menu.item>
+        <flux:menu.item icon="arrow-right-start-on-rectangle" href="{{ route('logout') }}">{{ __('app.logout.title') }}</flux:menu.item>
     </flux:menu>
 </flux:dropdown>
