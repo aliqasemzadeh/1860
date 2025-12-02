@@ -88,5 +88,7 @@ return [
     'assemblies' => 'اسمبل ها',
     'repairs' => 'تعمیرات',
     'setting_management' => 'مدیریت تنظیمات',
+    'products' => 'محصولات',
+    'categories' => 'دسته ها',
 
 ];

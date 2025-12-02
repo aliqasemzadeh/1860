@@ -5,16 +5,7 @@
 </head>
 <body class="min-h-screen bg-white dark:bg-zinc-800 antialiased">
 <flux:sidebar sticky collapsible="mobile" class="bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700">
-    <flux:sidebar.header>
-        <flux:sidebar.brand
-            href="#"
-            logo="https://fluxui.dev/img/demo/logo.png"
-            logo:dark="https://fluxui.dev/img/demo/dark-mode-logo.png"
-            name="{{ config('app.name') }}"
-        />
-
-        <flux:sidebar.collapse class="lg:hidden" />
-    </flux:sidebar.header>
+    @include('partials.sidebar-header')
 
     <flux:sidebar.search placeholder="Search..." />
 
