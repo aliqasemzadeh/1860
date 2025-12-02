@@ -90,5 +90,8 @@ return [
     'setting_management' => 'مدیریت تنظیمات',
     'products' => 'محصولات',
     'categories' => 'دسته ها',
+    'login' => [
+        'title' => 'ثبت نام / ورود',
+    ],
 
 ];

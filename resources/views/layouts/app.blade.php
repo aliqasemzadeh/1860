@@ -8,16 +8,10 @@
     @include('partials.sidebar-header')
 
     <flux:sidebar.nav>
-        <flux:sidebar.item icon="home" href="#" current>Home</flux:sidebar.item>
+        <flux:sidebar.item icon="home" href="#" current>مانیتور</flux:sidebar.item>
         <flux:sidebar.item icon="inbox" badge="12" href="#">Inbox</flux:sidebar.item>
         <flux:sidebar.item icon="document-text" href="#">Documents</flux:sidebar.item>
         <flux:sidebar.item icon="calendar" href="#">Calendar</flux:sidebar.item>
-
-        <flux:sidebar.group expandable heading="Favorites" class="grid">
-            <flux:sidebar.item href="#">Marketing site</flux:sidebar.item>
-            <flux:sidebar.item href="#">Android app</flux:sidebar.item>
-            <flux:sidebar.item href="#">Brand guidelines</flux:sidebar.item>
-        </flux:sidebar.group>
     </flux:sidebar.nav>
 
     <flux:sidebar.spacer />
@@ -25,6 +19,11 @@
     @include('partials.panels')
 
     @include('partials.user-dropdown')
+    <flux:radio.group x-data variant="segmented" x-model="$flux.appearance">
+        <flux:radio value="light" icon="sun"></flux:radio>
+        <flux:radio value="dark" icon="moon"></flux:radio>
+        <flux:radio value="system" icon="computer-desktop"></flux:radio>
+    </flux:radio.group>
 </flux:sidebar>
 
 <flux:header class="bg-white lg:bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
@@ -35,14 +34,13 @@
             <flux:profile avatar="https://fluxui.dev/img/demo/user.png" />
 
             <flux:menu>
-                <flux:menu.radio.group>
-                    <flux:menu.radio checked>Olivia Martin</flux:menu.radio>
-                    <flux:menu.radio>Truly Delta</flux:menu.radio>
-                </flux:menu.radio.group>
-
-                <flux:menu.separator />
-
+                @auth
                 <flux:menu.item icon="arrow-right-start-on-rectangle" href="{{ route('logout') }}">{{ __('app.logout.title') }}</flux:menu.item>
+                @endauth
+
+                @guest
+                        <flux:menu.item icon="arrow-right-start-on-rectangle" href="{{ route('login') }}">{{ __('app.login.title') }}</flux:menu.item>
+                @endguest
             </flux:menu>
         </flux:dropdown>
     </flux:navbar>
