@@ -3,6 +3,12 @@
 return [
     'name' => 'نام',
 
+    // Settings / Functions
+    'function' => 'توابع سیستم',
+    'function_description' => 'از این بخش می‌توانید عملیات مدیریتی سیستم را انجام دهید.',
+    'update_permissions' => 'به‌روزرسانی مجوزها',
+    'permissions_updated' => 'مجوزها با موفقیت به‌روزرسانی شد.',
+
     // Auth / Login
     'login_with_mobile' => 'ورود با موبایل',
     'enter_mobile_prompt' => 'شماره موبایل خود را وارد کنید تا کد تایید برای شما ارسال شود.',
@@ -76,5 +82,11 @@ return [
         'success' => 'با موفقیت از حساب کاربری خارج شدید.',
     ],
     'add_user' => 'ایجاد کاربر',
+    'options' => 'گزینه ها',
+    'functions' => 'توابع',
+    'assembly' => 'اسمبل',
+    'assemblies' => 'اسمبل ها',
+    'repairs' => 'تعمیرات',
+    'setting_management' => 'مدیریت تنظیمات',
 
 ];

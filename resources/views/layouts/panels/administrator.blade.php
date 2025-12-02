@@ -38,17 +38,6 @@
     @include('partials.user-dropdown')
 </flux:sidebar>
 
-<flux:header class="block! bg-white lg:bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
-    @include('partials.user-navbar')
-
-    <flux:navbar scrollable>
-        <flux:navbar.item href="#" current>{{ __('app.dashboard') }}</flux:navbar.item>
-        <flux:navbar.item badge="32" href="#">{{ __('app.orders') }}</flux:navbar.item>
-        <flux:navbar.item href="#">{{ __('app.catalog') }}</flux:navbar.item>
-        <flux:navbar.item href="#">{{ __('app.configuration') }}</flux:navbar.item>
-    </flux:navbar>
-</flux:header>
-
 <flux:main>
     {{ $slot }}
 </flux:main>
