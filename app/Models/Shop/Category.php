@@ -9,5 +9,5 @@ class Category extends Model
 {
     use SoftDeletes;
 
-    public $fillable = ['name', 'slug', 'slug_fa'];
+    public $fillable = ['name', 'slug', 'slug_fa', 'icon', 'sort_order'];
 }

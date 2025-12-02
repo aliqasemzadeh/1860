@@ -30,19 +30,14 @@
     <flux:navbar class="w-full flex flex-row">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
         <flux:sidebar.search placeholder="Search..." />
-        <flux:dropdown position="top" align="start">
-            <flux:profile avatar="https://fluxui.dev/img/demo/user.png" />
+        @auth
+        <flux:button icon="user" href="{{ route('logout') }}" />
+        @endauth
 
-            <flux:menu>
-                @auth
-                <flux:menu.item icon="arrow-right-start-on-rectangle" href="{{ route('logout') }}">{{ __('app.logout.title') }}</flux:menu.item>
-                @endauth
+        @guest
+        <flux:button icon="user" href="{{ route('login') }}" />
+        @endguest
 
-                @guest
-                        <flux:menu.item icon="arrow-right-start-on-rectangle" href="{{ route('login') }}">{{ __('app.login.title') }}</flux:menu.item>
-                @endguest
-            </flux:menu>
-        </flux:dropdown>
     </flux:navbar>
 </flux:header>
 

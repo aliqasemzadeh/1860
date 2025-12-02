@@ -24,6 +24,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/administrator/setting-management/function/index', \App\Livewire\Administrator\SettingManagement\Function\Index::class)->name('administrator.setting-management.function.index');
     Route::get('/administrator/setting-management/option/index', \App\Livewire\Administrator\SettingManagement\Option\Index::class)->name('administrator.setting-management.option.index');
 
+    // Administrator - Shop - Category
+    Route::get('/administrator/shop/category/index', \App\Livewire\Administrator\Shop\Category\Index::class)->name('administrator.shop.category.index');
+
 });
 
 Route::get('/login', \App\Livewire\Auth\Login::class)->name('login')->middleware('guest');
