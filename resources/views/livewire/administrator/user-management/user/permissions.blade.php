@@ -1,7 +1,7 @@
 <flux:modal name="administrator.user-management.user.permissions.modal" class="min-w-full min-h-full">
     <div class="space-y-6">
     <div>
-        <flux:heading size="lg">{{ __('app.permissions') }}: {{ isset($user) ? $user->name : '' }}</flux:heading>
+        <flux:heading size="lg">{{ __('app.permissions') }}: {{ isset($user) ? $user->mobile : '' }}</flux:heading>
         <flux:text class="mt-2">{{ __('app.permissions_description') }}</flux:text>
     </div>
 

@@ -1,4 +1,5 @@
 <?php
+
 return [
     'name' => '1860',
 
@@ -14,6 +15,50 @@ return [
     'resend_code' => 'ارسال مجدد کد',
     'code' => 'کد',
 
+    // General / Navigation
+    'dashboard' => 'داشبورد',
+    'user_management' => 'مدیریت کاربران',
+    'users' => 'کاربران',
+    'users_description' => 'مدیریت و مشاهده کاربران سیستم.',
+    'roles' => 'نقش‌ها',
+    'permissions' => 'مجوزها',
+    'search' => 'جستجو',
+    'create' => 'ایجاد',
+    'update' => 'به‌روزرسانی',
+    'edit' => 'ویرایش',
+    'delete' => 'حذف',
+    'service_center' => 'مرکز خدمات',
+    'shop' => 'فروشگاه',
+    'crm' => 'CRM',
+    'administrator' => 'مدیریت',
+    'search_placeholder' => 'جستجو...',
+    'orders' => 'سفارش‌ها',
+    'catalog' => 'کاتالوگ',
+    'configuration' => 'پیکربندی',
+
+    // Tables / Common labels
+    'customer' => 'مشتری',
+    'date' => 'تاریخ',
+
+    // Users
+    'edit_user' => 'ویرایش کاربر',
+    'edit_user_description' => 'اطلاعات کاربر را ویرایش و به‌روزرسانی کنید.',
+    'first_name' => 'نام',
+    'last_name' => 'نام خانوادگی',
+    'name' => 'نام',
+    'email' => 'ایمیل',
+    'password' => 'رمز عبور',
+    'password_confirmation' => 'تکرار رمز عبور',
+
+    // Roles & Permissions
+    'roles_description' => 'نقش‌ها را جستجو و به کاربر اختصاص دهید یا حذف کنید.',
+    'permissions_description' => 'مجوزها را جستجو و به کاربر اختصاص دهید یا حذف کنید.',
+    'are_you_sure' => 'آیا مطمئن هستید؟',
+
+    // Create User
+    'create_user' => 'ایجاد کاربر',
+    'create_user_description' => 'برای ایجاد کاربر جدید، اطلاعات زیر را تکمیل کنید.',
+
     // Auth / Logout
     'logout' => [
         'title' => 'خروج از حساب کاربری',
@@ -23,5 +68,6 @@ return [
         'confirm' => 'خروج',
         'success' => 'با موفقیت از حساب کاربری خارج شدید.',
     ],
+    'add_user' => 'ایجاد کاربر'
 
 ];

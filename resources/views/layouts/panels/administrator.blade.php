@@ -16,14 +16,18 @@
         <flux:sidebar.collapse class="lg:hidden" />
     </flux:sidebar.header>
 
-    <flux:sidebar.search placeholder="Search..." />
+    <flux:sidebar.search placeholder="{{ __('app.search_placeholder') }}" />
 
     <flux:sidebar.nav>
         <flux:sidebar.item icon="home" href="{{ route('administrator.dashboard.index') }}">{{ __('app.dashboard') }}</flux:sidebar.item>
         <flux:sidebar.group expandable heading="{{ __('app.user_management') }}" class="grid" :expanded="request()->routeIs('administrator.user-management.*')">
             <flux:sidebar.item href="{{ route('administrator.user-management.user.index') }}">{{ __('app.users') }}</flux:sidebar.item>
-            <flux:sidebar.item href="#">{{ __('app.roles') }}</flux:sidebar.item>
-            <flux:sidebar.item href="#">{{ __('app.permissions') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('administrator.user-management.role.index') }}">{{ __('app.roles') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('administrator.user-management.permission.index') }}">{{ __('app.permissions') }}</flux:sidebar.item>
+        </flux:sidebar.group>
+        <flux:sidebar.group expandable heading="{{ __('app.setting_management') }}" class="grid" :expanded="request()->routeIs('administrator.setting-management.*')">
+            <flux:sidebar.item href="{{ route('administrator.setting-management.function.index') }}">{{ __('app.functions') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('administrator.setting-management.function.index') }}">{{ __('app.options') }}</flux:sidebar.item>
         </flux:sidebar.group>
     </flux:sidebar.nav>
 
@@ -38,10 +42,10 @@
     @include('partials.user-navbar')
 
     <flux:navbar scrollable>
-        <flux:navbar.item href="#" current>Dashboard</flux:navbar.item>
-        <flux:navbar.item badge="32" href="#">Orders</flux:navbar.item>
-        <flux:navbar.item href="#">Catalog</flux:navbar.item>
-        <flux:navbar.item href="#">Configuration</flux:navbar.item>
+        <flux:navbar.item href="#" current>{{ __('app.dashboard') }}</flux:navbar.item>
+        <flux:navbar.item badge="32" href="#">{{ __('app.orders') }}</flux:navbar.item>
+        <flux:navbar.item href="#">{{ __('app.catalog') }}</flux:navbar.item>
+        <flux:navbar.item href="#">{{ __('app.configuration') }}</flux:navbar.item>
     </flux:navbar>
 </flux:header>
 
