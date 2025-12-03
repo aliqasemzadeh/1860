@@ -33,12 +33,23 @@
 
                 <flux:field>
                     <flux:label>{{ __('app.parent_category') }}</flux:label>
-                    <select class="w-full rounded-md border px-3 py-2 text-sm" wire:model="main_category_id">
-                        <option value="0">{{ __('app.root_category') }}</option>
+                    <flux:select variant="listbox" placeholder="{{ __('app.root_category') }}" wire:model="main_category_id">
+                        <flux:select.option value="0">
+                            <div class="flex items-center gap-2">
+                                <flux:icon.shield-check variant="mini" class="text-zinc-400" />
+                                {{ __('app.root_category') }}
+                            </div>
+                        </flux:select.option>
+
                         @foreach($roots as $root)
-                            <option value="{{ $root->id }}">{{ $root->name }}</option>
+                            <flux:select.option value="{{ $root->id }}" wire:key="root-{{ $root->id }}">
+                                <div class="flex items-center gap-2">
+                                    <flux:icon.user variant="mini" class="text-zinc-400" />
+                                    {{ $root->name }}
+                                </div>
+                            </flux:select.option>
                         @endforeach
-                    </select>
+                    </flux:select>
                     <flux:text class="mt-1 text-xs text-gray-500">{{ __('app.parent_help_one_level') }}</flux:text>
                     <flux:error name="main_category_id" />
                 </flux:field>
