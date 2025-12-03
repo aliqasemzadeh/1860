@@ -8,13 +8,17 @@ use Livewire\Component;
 
 class Categories extends Component
 {
-    #[Computed(cache: true)]
+    #[Computed(cache: true, key: 'categories')]
     public function categories()
     {
         return Category::query()
+            ->with(['children' => function ($query) {
+                $query->orderBy('sort_order', 'asc')->orderBy('name', 'asc');
+            }])
             ->where('main_category_id', 0)
             ->get();
     }
+
     public function render()
     {
         return view('livewire.main.sidebar.categories');
