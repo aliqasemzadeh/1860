@@ -12,6 +12,7 @@ class Categories extends Component
     public function categories()
     {
         return Category::query()
+            ->where('main_category_id', 0)
             ->get();
     }
     public function render()

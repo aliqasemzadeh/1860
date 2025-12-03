@@ -43,7 +43,6 @@
                         @foreach($roots as $root)
                             <flux:select.option value="{{ $root->id }}" wire:key="root-{{ $root->id }}">
                                 <div class="flex items-center gap-2">
-                                    <flux:icon :name="$root->icon" variant="mini" class="text-zinc-400" />
                                     {{ $root->name }}
                                 </div>
                             </flux:select.option>
