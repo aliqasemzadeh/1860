@@ -25,6 +25,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/shop/dashboard/index', \App\Livewire\Shop\Dashboard\Index::class)->name('shop.dashboard.index');
     Route::get('/shop/category/index', \App\Livewire\Shop\Category\Index::class)->name('shop.category.index');
+    Route::get('/shop/brand/index', \App\Livewire\Shop\Brand\Index::class)->name('shop.brand.index');
+    Route::get('/shop/color/index', \App\Livewire\Shop\Brand\Index::class)->name('shop.color.index');
+    Route::get('/shop/warranty/index', \App\Livewire\Shop\Warranty\Index::class)->name('shop.warranty.index');
     Route::get('/shop/product/index', \App\Livewire\Shop\Product\Index::class)->name('shop.product.index');
     Route::get('/shop/order/index', \App\Livewire\Shop\Order\Index::class)->name('shop.order.index');
 

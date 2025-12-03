@@ -45,6 +45,7 @@ class Create extends Component
         Category::create($validated);
 
         Flux::modal('shop.category.create.modal')->close();
+        $this->dispatch('shop.category.index.render');
         $this->reset(['name', 'slug', 'slug_fa', 'icon', 'sort_order', 'main_category_id']);
     }
 

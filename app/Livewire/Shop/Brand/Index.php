@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Livewire\Shop\Category;
+namespace App\Livewire\Shop\Brand;
 
-use App\Models\Shop\Category;
+use App\Models\Shop\Brand;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -28,13 +28,9 @@ class Index extends Component
     }
 
     #[Computed]
-    public function categories(): LengthAwarePaginator
+    public function brands(): LengthAwarePaginator
     {
-        return Category::query()
-            ->where('main_category_id', 0)
-            ->with(['children' => function ($query) {
-                $query->orderBy('sort_order', 'asc')->orderBy('name', 'asc');
-            }])
+        return Brand::query()
             ->tap(function ($query) {
                 if ($this->sortBy) {
                     $query->orderBy($this->sortBy, $this->sortDirection);
@@ -44,9 +40,9 @@ class Index extends Component
     }
 
     #[Layout('layouts.panels.shop')]
-    #[On('shop.category.index.render')]
+    #[On('shop.brand.index.render')]
     public function render()
     {
-        return view('livewire.shop.category.index');
+        return view('livewire.shop.brand.index');
     }
 }

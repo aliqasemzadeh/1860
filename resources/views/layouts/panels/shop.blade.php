@@ -14,6 +14,10 @@
         <flux:sidebar.item icon="boxes" href="{{ route('shop.product.index') }}" wire:navigate>{{ __('app.products') }}</flux:sidebar.item>
         <flux:sidebar.item icon="chart-bar-stacked" href="{{ route('shop.category.index') }}" wire:navigate>{{ __('app.categories') }}</flux:sidebar.item>
         <flux:sidebar.item icon="bring-to-front" href="{{ route('shop.order.index') }}" wire:navigate>{{ __('app.orders') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="trello" href="{{ route('shop.brand.index') }}" wire:navigate>{{ __('app.brands') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="heart-plus" href="{{ route('shop.warranty.index') }}" wire:navigate>{{ __('app.warranties') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="palette" href="{{ route('shop.color.index') }}" wire:navigate>{{ __('app.colors') }}</flux:sidebar.item>
+
     </flux:sidebar.nav>
 
     <flux:sidebar.spacer />

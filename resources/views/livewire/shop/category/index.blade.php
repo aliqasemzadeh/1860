@@ -27,7 +27,7 @@
         @foreach ($this->categories as $category)
             <flux:table.row :key="$category->id">
                 <flux:table.cell class="flex items-center gap-3">
-                    {{ $category->name }}
+                    <flux:icon name="{{ $category->icon }}" /> {{ $category->name }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     {{ $category->slug }}
@@ -40,6 +40,24 @@
                     <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>
                 </flux:table.cell>
             </flux:table.row>
+
+            @foreach ($category->children as $child)
+                <flux:table.row :key="'child-'.$child->id">
+                    <flux:table.cell class="flex items-center gap-3 pl-8 ms-5">
+                       <flux:icon.corner-down-left /> {{ $child->name }}
+                    </flux:table.cell>
+                    <flux:table.cell class="whitespace-nowrap">
+                        {{ $child->slug }}
+                    </flux:table.cell>
+                    <flux:table.cell class="whitespace-nowrap">
+                        {{ $child->slug_fa }}
+                    </flux:table.cell>
+                    <flux:table.cell class="whitespace-nowrap">
+                        <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.category.edit.assign-data', { id: '{{ $child->id }}' })">{{ __('app.edit') }}</flux:button>
+                        <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>
+                    </flux:table.cell>
+                </flux:table.row>
+            @endforeach
         @endforeach
     </flux:table>
 </div>
