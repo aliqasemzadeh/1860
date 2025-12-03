@@ -19,6 +19,8 @@ class Create extends Component
 
     public int $sort_order = 1;
 
+    public int $main_category_id = 0;
+
     public function create(): void
     {
         $validated = $this->validate([
@@ -27,16 +29,29 @@ class Create extends Component
             'slug_fa' => ['required', 'string', 'max:255', 'unique:categories,slug_fa'],
             'icon' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['required', 'integer', 'min:1'],
+            'main_category_id' => ['required', 'integer', 'min:0'],
         ]);
+
+        // Enforce one-level hierarchy: if a parent is selected, it must be a root (main_category_id = 0)
+        if ((int) $validated['main_category_id'] !== 0) {
+            $parent = Category::query()->find($validated['main_category_id']);
+            if ($parent === null || (int) $parent->main_category_id !== 0) {
+                $this->addError('main_category_id', __('app.parent_must_be_root'));
+
+                return;
+            }
+        }
 
         Category::create($validated);
 
         Flux::modal('shop.category.create.modal')->close();
-        $this->reset(['name', 'slug', 'slug_fa', 'icon', 'sort_order']);
+        $this->reset(['name', 'slug', 'slug_fa', 'icon', 'sort_order', 'main_category_id']);
     }
 
     public function render(): View
     {
-        return view('livewire.shop.category.create');
+        $roots = Category::query()->where('main_category_id', 0)->orderBy('name')->get(['id', 'name']);
+
+        return view('livewire.shop.category.create', compact('roots'));
     }
 }

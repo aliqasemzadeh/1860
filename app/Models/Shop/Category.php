@@ -3,6 +3,8 @@
 namespace App\Models\Shop;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
@@ -11,8 +13,24 @@ class Category extends Model
 
     public $fillable = ['name', 'slug', 'slug_fa', 'icon', 'sort_order', 'main_category_id'];
 
-    public function main_category()
+    public function main_category(): BelongsTo
     {
-        $this->belongsTo(Category::class, 'main_category_id')->withTrashed();
+        return $this->belongsTo(Category::class, 'main_category_id')->withTrashed();
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Category::class, 'main_category_id');
+    }
+
+    /**
+     * Model casts.
+     */
+    public function casts(): array
+    {
+        return [
+            'main_category_id' => 'integer',
+            'sort_order' => 'integer',
+        ];
     }
 }

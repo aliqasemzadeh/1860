@@ -32,6 +32,18 @@
                 </flux:field>
 
                 <flux:field>
+                    <flux:label>{{ __('app.parent_category') }}</flux:label>
+                    <select class="w-full rounded-md border px-3 py-2 text-sm" wire:model="main_category_id">
+                        <option value="0">{{ __('app.root_category') }}</option>
+                        @foreach($roots as $root)
+                            <option value="{{ $root->id }}">{{ $root->name }}</option>
+                        @endforeach
+                    </select>
+                    <flux:text class="mt-1 text-xs text-gray-500">{{ __('app.parent_help_one_level') }}</flux:text>
+                    <flux:error name="main_category_id" />
+                </flux:field>
+
+                <flux:field>
                     <flux:label>{{ __('app.sort_order') }}</flux:label>
                     <flux:input wire:model="sort_order" type="number" min="1" />
                     <flux:error name="sort_order" />

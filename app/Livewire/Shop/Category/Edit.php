@@ -25,6 +25,8 @@ class Edit extends Component
 
     public int $sort_order = 1;
 
+    public int $main_category_id = 0;
+
     #[On('administrator.shop.category.edit.assign-data')]
     public function assignData($id): void
     {
@@ -35,6 +37,7 @@ class Edit extends Component
         $this->slug_fa = (string) $this->category->slug_fa;
         $this->icon = $this->category->icon;
         $this->sort_order = (int) $this->category->sort_order;
+        $this->main_category_id = (int) $this->category->main_category_id;
         Flux::modal('shop.category.edit.modal')->show();
     }
 
@@ -50,7 +53,25 @@ class Edit extends Component
             'slug_fa' => ['required', 'string', 'max:255', Rule::unique('categories', 'slug_fa')->ignore($this->category)],
             'icon' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['required', 'integer', 'min:1'],
+            'main_category_id' => ['required', 'integer', 'min:0'],
         ]);
+
+        // Prevent assigning itself as parent
+        if ((int) $validated['main_category_id'] === (int) $this->category->id) {
+            $this->addError('main_category_id', __('app.parent_cannot_be_self'));
+
+            return;
+        }
+
+        // Enforce one-level hierarchy: chosen parent must be a root (main_category_id = 0)
+        if ((int) $validated['main_category_id'] !== 0) {
+            $parent = Category::query()->find($validated['main_category_id']);
+            if ($parent === null || (int) $parent->main_category_id !== 0) {
+                $this->addError('main_category_id', __('app.parent_must_be_root'));
+
+                return;
+            }
+        }
 
         $this->category->fill($validated)->save();
 
@@ -59,6 +80,12 @@ class Edit extends Component
 
     public function render(): View
     {
-        return view('livewire.shop.category.edit');
+        $roots = Category::query()
+            ->where('main_category_id', 0)
+            ->where('id', '!=', $this->id ?? 0)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return view('livewire.shop.category.edit', compact('roots'));
     }
 }
