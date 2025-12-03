@@ -1,4 +1,4 @@
-<flux:modal name="administrator.shop.category.create.modal" class="md:w-96" flyout position="right">
+<flux:modal name="shop.category.create.modal" class="md:w-96" flyout position="right">
     <div class="space-y-6">
         <div>
             <flux:heading size="lg">{{ __('app.create_category') }}</flux:heading>
@@ -44,7 +44,7 @@
                         @foreach($roots as $root)
                             <flux:select.option value="{{ $root->id }}" wire:key="root-{{ $root->id }}">
                                 <div class="flex items-center gap-2">
-                                    <flux:icon.user variant="mini" class="text-zinc-400" />
+                                    <flux:icon :name="$root->icon" variant="mini" class="text-zinc-400" />
                                     {{ $root->name }}
                                 </div>
                             </flux:select.option>

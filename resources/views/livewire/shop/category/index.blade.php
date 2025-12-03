@@ -5,7 +5,7 @@
                 <flux:heading size="xl" level="1">{{ __('app.categories') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.categories_description') }}</flux:subheading>
             </div>
-            <flux:modal.trigger name="administrator.shop.category.create.modal">
+            <flux:modal.trigger name="shop.category.create.modal">
                 <flux:button variant="primary">{{ __('app.create_category') }}</flux:button>
             </flux:modal.trigger>
         </div>
@@ -13,8 +13,8 @@
         <flux:separator variant="subtle" />
     </div>
 
-    <livewire:administrator.shop.category.create />
-    <livewire:administrator.shop.category.edit />
+    <livewire:shop.category.create />
+    <livewire:shop.category.edit />
 
     <flux:table>
         <flux:table.columns>
@@ -36,7 +36,7 @@
                     {{ $category->slug_fa }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
-                    <flux:button size="xs" variant="primary" wire:click="$dispatch('administrator.shop.category.edit.assign-data', { id: '{{ $category->id }}' })">{{ __('app.edit') }}</flux:button>
+                    <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.category.edit.assign-data', { id: '{{ $category->id }}' })">{{ __('app.edit') }}</flux:button>
                     <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>
                 </flux:table.cell>
             </flux:table.row>

@@ -27,7 +27,7 @@ class Edit extends Component
 
     public int $main_category_id = 0;
 
-    #[On('administrator.shop.category.edit.assign-data')]
+    #[On('shop.category.edit.assign-data')]
     public function assignData($id): void
     {
         $this->category = Category::findOrFail($id);
