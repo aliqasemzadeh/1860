@@ -12,7 +12,13 @@ class Index extends Component
     public function updatePermissions()
     {
         Artisan::call('system:administrator:create-permissions-command');
-        Flux::toast('success', __('app.permissions_updated'));
+        Flux::toast(__('app.permissions_updated'));
+    }
+
+    public function clearCache()
+    {
+        Artisan::call('cache:clear');
+        Flux::toast(__('app.cache_cleared'));
     }
 
     #[Layout('layouts.panels.administrator')]

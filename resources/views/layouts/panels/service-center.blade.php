@@ -10,9 +10,9 @@
     <flux:sidebar.search placeholder="Search..." />
 
     <flux:sidebar.nav>
-        <flux:sidebar.item icon="gauge" href="{{ route('service-center.dashboard.index') }}">{{ __('app.dashboard') }}</flux:sidebar.item>
-        <flux:sidebar.item icon="pc-case" badge="12" href="{{ route('service-center.assembly.index') }}">{{ __('app.assemblies') }}</flux:sidebar.item>
-        <flux:sidebar.item icon="repairs" href="{{ route('service-center.repair.index') }}">{{ __('app.repairs') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="gauge" href="{{ route('service-center.dashboard.index') }}" wire:navigate>{{ __('app.dashboard') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="pc-case" badge="12" href="{{ route('service-center.assembly.index') }}" wire:navigate>{{ __('app.assemblies') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="repairs" href="{{ route('service-center.repair.index') }}" wire:navigate>{{ __('app.repairs') }}</flux:sidebar.item>
     </flux:sidebar.nav>
 
     <flux:sidebar.spacer />

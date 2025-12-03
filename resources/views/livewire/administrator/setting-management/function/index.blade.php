@@ -6,6 +6,7 @@
 
         <div class="space-y-4">
             <flux:button wire:click="updatePermissions" class="w-full">{{ __('app.update_permissions') }}</flux:button>
+            <flux:button wire:click="clearCache" class="w-full">{{ __('app.clear_cache') }}</flux:button>
         </div>
     </div>
 </div>

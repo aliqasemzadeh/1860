@@ -102,5 +102,7 @@ return [
     'login' => [
         'title' => 'ثبت نام / ورود',
     ],
+    'cache_cleared' => 'کش تخلیه شد.',
+    'clear_cache' => 'کش تخلیه',
 
 ];
