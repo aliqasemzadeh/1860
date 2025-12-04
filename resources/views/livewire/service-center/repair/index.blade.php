@@ -5,10 +5,15 @@
                 <flux:heading size="xl" level="1">{{ __('app.repairs') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.repairs_description') }}</flux:subheading>
             </div>
+            <flux:modal.trigger name="service-center.repair.admission.modal">
+                <flux:button variant="primary">{{ __('app.admission') }}</flux:button>
+            </flux:modal.trigger>
         </div>
 
         <flux:separator variant="subtle" />
     </div>
+
+    <livewire:service-center.repair.create />
 
     <flux:table :paginate="$this->repairs">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">

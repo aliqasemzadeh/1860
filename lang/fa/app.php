@@ -140,5 +140,6 @@ return [
     'logs' => 'تغییرات (Logs)',
     'cache_cleared' => 'کش تخلیه شد.',
     'clear_cache' => 'کش تخلیه',
+    'admission' => 'پذیرش',
 
 ];
