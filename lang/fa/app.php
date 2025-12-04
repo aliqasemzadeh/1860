@@ -87,6 +87,7 @@ return [
     'assembly' => 'اسمبل',
     'assemblies' => 'اسمبل ها',
     'repairs' => 'تعمیرات',
+    'repairs_description' => 'مدیریت و مشاهده تعمیرات ثبت‌شده در مرکز خدمات.',
     'setting_management' => 'مدیریت تنظیمات',
     'products' => 'محصولات',
     'categories' => 'دسته ها',
@@ -128,6 +129,15 @@ return [
     'login' => [
         'title' => 'ثبت نام / ورود',
     ],
+    'id' => 'شناسه',
+    'owner_name' => 'نام مالک',
+    'owner_mobile' => 'موبایل مالک',
+    'status' => 'وضعیت',
+    'device_type' => 'نوع دستگاه',
+    'device_serial_number' => 'سریال دستگاه',
+    'view' => 'مشاهده',
+    'services' => 'خدمات (هزینه‌ها)',
+    'logs' => 'تغییرات (Logs)',
     'cache_cleared' => 'کش تخلیه شد.',
     'clear_cache' => 'کش تخلیه',
 
