@@ -43,7 +43,8 @@
             </flux:command>
         </flux:modal>
 
-        <flux:button icon="shopping-cart" href="{{ route('login') }}" />
+        <livewire:main.sidebar.basket />
+
         @auth
         <flux:button icon="user" href="{{ route('logout') }}" />
         @endauth
