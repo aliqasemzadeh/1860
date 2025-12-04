@@ -54,7 +54,7 @@ class Create extends Component
 
         Repair::create([
             // System-filled fields
-            'admission_user_id' => Auth::user()?->name ?? 'system',
+            'admission_user_id' => Auth::user()->id,
             'admission_description' => $this->admission_description,
             'status' => __('app.repair_status_new'),
             'status_description' => __('app.repair_status_new_description'),

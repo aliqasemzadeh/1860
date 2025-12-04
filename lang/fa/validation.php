@@ -282,5 +282,22 @@ return [
         'work'                     => 'کار',
         'year'                     => 'سال',
         'code '                    => 'کد',
+
+        // Service center - repairs (Create component)
+        'owner_name'               => 'نام مالک',
+        'owner_mobile'             => 'شماره همراه مالک',
+        'owner_email'              => 'ایمیل مالک',
+        'owner_national_code'      => 'کد ملی مالک',
+        'owner_address'            => 'آدرس مالک',
+        'warranty_type'            => 'نوع گارانتی',
+        'warranty_date'            => 'تاریخ گارانتی',
+        'device_type'              => 'نوع دستگاه',
+        'device_brand'             => 'برند دستگاه',
+        'device_model'             => 'مدل دستگاه',
+        'device_serial_number'     => 'سریال دستگاه',
+        'device_problem'           => 'عیب / مشکل دستگاه',
+        'device_accessories'       => 'لوازم همراه دستگاه',
+        'device_description'       => 'توضیحات دستگاه',
+        'admission_description'    => 'توضیحات پذیرش',
     ],
 ];
