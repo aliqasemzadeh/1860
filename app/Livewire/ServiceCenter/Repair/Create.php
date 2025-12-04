@@ -3,6 +3,7 @@
 namespace App\Livewire\ServiceCenter\Repair;
 
 use App\Models\ServiceCenter\Repair;
+use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -29,9 +30,9 @@ class Create extends Component
 
     protected $rules = [
         'owner_name' => ['required', 'string', 'max:255'],
-        'owner_mobile' => ['required', 'string', 'max:50'],
+        'owner_mobile' => ['required', 'string', 'max:50', 'ir_mobile'],
         'owner_email' => ['nullable', 'email', 'max:255'],
-        'owner_national_code' => ['nullable', 'string', 'max:50'],
+        'owner_national_code' => ['nullable', 'string', 'max:50', 'ir_national_code'],
         'owner_address' => ['nullable', 'string'],
 
         'warranty_type' => ['nullable', 'string', 'max:255'],
@@ -85,6 +86,8 @@ class Create extends Component
 
         // Reset form after save
         $this->reset();
+
+        Flux::toast(__('app.repair_created_message'));
 
         // Ask parent/index to refresh list if needed
         $this->dispatch('service-center.repair.index.render');
