@@ -9,7 +9,7 @@ class Index extends Component
 {
     public function mount(): void
     {
-        $this->authorize('service_dashboard_index');
+        $this->authorize('service_center_dashboard_index');
     }
 
     #[Layout('layouts.panels.service-center')]

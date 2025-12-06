@@ -21,7 +21,7 @@ class Index extends Component
 
     public function mount(): void
     {
-        $this->authorize('service_repair_index');
+        $this->authorize('service_center_repair_index');
     }
 
     #[\Livewire\Attributes\Computed]

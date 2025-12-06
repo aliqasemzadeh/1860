@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -33,6 +34,15 @@ class User extends Authenticatable
     ];
 
     /**
+     * The attributes that should be appended to the model's array / JSON form.
+     *
+     * @var list<string>
+     */
+    protected $appends = [
+        'name',
+    ];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -43,5 +53,20 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Accessor: Concatenated first and last name.
+     */
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: function (): string {
+                $first = (string) ($this->first_name ?? '');
+                $last = (string) ($this->last_name ?? '');
+
+                return trim($first . ' ' . $last);
+            },
+        );
     }
 }

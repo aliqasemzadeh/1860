@@ -23,8 +23,8 @@ class Logs extends Component
     #[On('service-center.repair.logs.assign-data')]
     public function assignData(int $id): void
     {
-        $this->authorize('service_repair_logs');
-        
+        $this->authorize('service_center_repair_logs');
+
         $this->repair = Repair::findOrFail($id);
         $this->id = $this->repair->id;
 
