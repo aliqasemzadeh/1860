@@ -4,26 +4,28 @@ namespace App\Livewire\ServiceCenter\Repair;
 
 use App\Models\ServiceCenter\Repair;
 use Flux\Flux;
+use Illuminate\Contracts\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class View extends Component
+class Problem extends Component
 {
     public Repair $repair;
 
     public int $id;
 
-    #[On('service-center.repair.view.assign-data')]
+    #[On('service-center.repair.problem.assign-data')]
     public function assignData(int $id): void
     {
         $this->repair = Repair::findOrFail($id);
         $this->id = $this->repair->id;
 
-        Flux::modal('service-center.repair.view.modal')->show();
-        Flux::toast(__('app.repair_view_loaded'));
+        Flux::modal('service-center.repair.problem.modal')->show();
+        Flux::toast(__('app.problem_loaded'));
     }
-    public function render()
+
+    public function render(): View
     {
-        return view('livewire.service-center.repair.view');
+        return view('livewire.service-center.repair.problem');
     }
 }

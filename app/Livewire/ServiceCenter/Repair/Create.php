@@ -26,6 +26,8 @@ class Create extends Component
     public ?string $device_accessories = null;
     public ?string $device_description = null;
 
+    public ?string $device_problem_file = null;
+
     public ?string $admission_description = null;
 
     protected $rules = [
@@ -42,7 +44,8 @@ class Create extends Component
         'device_model' => ['nullable', 'string', 'max:255'],
         'device_serial_number' => ['nullable', 'string', 'max:255'],
 
-        'device_problem' => ['required', 'string'],
+        'device_problem' => ['nullable', 'string'],
+        'device_problem_file' => ['nullable', 'string'],
         'device_accessories' => ['nullable', 'string'],
         'device_description' => ['nullable', 'string'],
 
@@ -52,6 +55,22 @@ class Create extends Component
     public function admission(): void
     {
         $this->validate();
+
+        // Ensure at least one of problem text or whiteboard file is provided
+        if ((empty($this->device_problem) || trim((string) $this->device_problem) === '')
+            && (empty($this->device_problem_file) || trim((string) $this->device_problem_file) === '')) {
+            $this->addError('device_problem', __('validation.required', ['attribute' => __('app.device_problem')]));
+
+            return;
+        }
+
+        // Normalize: if only a whiteboard image is provided, persist a sentinel in device_problem
+        // to satisfy NOT NULL constraint and help the UI show that there is an attached drawing.
+        $normalizedDeviceProblem = $this->device_problem;
+        if ((empty($normalizedDeviceProblem) || trim((string) $normalizedDeviceProblem) === '')
+            && !empty($this->device_problem_file) && trim((string) $this->device_problem_file) !== '') {
+            $normalizedDeviceProblem = 'file';
+        }
 
         Repair::create([
             // System-filled fields
@@ -78,10 +97,10 @@ class Create extends Component
             'device_serial_number' => $this->device_serial_number,
 
             // Problem
-            'device_problem' => $this->device_problem,
+            'device_problem' => $normalizedDeviceProblem,
             'device_accessories' => $this->device_accessories,
             'device_description' => $this->device_description,
-            // device_problem_file intentionally not required/handled for now
+            'device_problem_file' => $this->device_problem_file,
         ]);
 
         // Reset form after save
