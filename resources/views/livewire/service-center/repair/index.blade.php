@@ -19,15 +19,19 @@
 
     <flux:table :paginate="$this->repairs">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
-            <flux:table.column class="bg-white dark:bg-zinc-900">
-                <div class="flex flex-col gap-1">
-                    <span>{{ __('app.id') }}</span>
+            <flux:table.column colspan="7" class="bg-white dark:bg-zinc-900">
+                <div class="flex flex-col gap-1 pe-2 items-end">
                     <flux:input
-                        size="xs"
+                        size="sm"
                         placeholder="{{ __('app.search_placeholder') }}"
                         wire:model.live="search"
                     />
                 </div>
+            </flux:table.column>
+        </flux:table.columns>
+        <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
+            <flux:table.column class="bg-white dark:bg-zinc-900">
+                    <span>{{ __('app.id') }}</span>
             </flux:table.column>
             <flux:table.column class="bg-white dark:bg-zinc-900">
                 <span>{{ __('app.owner_name') }}</span>

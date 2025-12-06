@@ -22,6 +22,8 @@ class Services extends Component
         Flux::modal('service-center.repair.services.modal')->show();
     }
 
+
+
     public function render()
     {
         return view('livewire.service-center.repair.services');
