@@ -50,7 +50,7 @@ class Edit extends Component
 
         $this->color->fill($validated)->save();
 
-        $this->dispatch('shop.color.index.render');
+        $this->dispatch('shop.setting-management.color.index.render');
         Flux::modal('shop.setting-management.color.edit.modal')->close();
     }
 

@@ -27,7 +27,7 @@ class Edit extends Component
 
     public int $main_category_id = 0;
 
-    #[On('shop.category.edit.assign-data')]
+    #[On('shop.setting-management.category.edit.assign-data')]
     public function assignData($id): void
     {
         $this->category = Category::findOrFail($id);
@@ -87,6 +87,6 @@ class Edit extends Component
             ->orderBy('name')
             ->get(['id', 'name']);
 
-        return view('livewire.setting-management.shop.category.edit', compact('roots'));
+        return view('livewire.shop.setting-management.category.edit', compact('roots'));
     }
 }
