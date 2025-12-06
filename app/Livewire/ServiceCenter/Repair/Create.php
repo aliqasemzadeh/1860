@@ -54,6 +54,8 @@ class Create extends Component
 
     public function admission(): void
     {
+        $this->authorize('service_repair_create');
+        
         $this->validate();
 
         // Ensure at least one of problem text or whiteboard file is provided

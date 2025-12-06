@@ -19,6 +19,11 @@ class Index extends Component
         'page' => ['except' => 1],
     ];
 
+    public function mount(): void
+    {
+        $this->authorize('service_repair_index');
+    }
+
     #[\Livewire\Attributes\Computed]
     public function repairs()
     {

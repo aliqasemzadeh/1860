@@ -93,7 +93,8 @@ return [
         'service_repair_create' => 'پذیرش تعمیرات',
         'service_repair_services' => 'خدمات (هزینه ها) تعمیرات',
         'service_repair_logs' => 'تغییرات تعمیرات (Logs)',
-        'service_repair_edit' => 'ویرایش پذیرش',
+        'service_repair_edit' => 'ویرایش پذیرش خدمات',
+        'service_repair_view' => 'مشاهده پذیرش خدمات',
     ],
 
     'shop' => [

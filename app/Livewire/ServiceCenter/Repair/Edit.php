@@ -16,6 +16,8 @@ class Edit extends Component
     #[On('service-center.repair.edit.assign-data')]
     public function assignData(int $id): void
     {
+        $this->authorize('service_repair_edit');
+        
         $this->repair = Repair::findOrFail($id);
         $this->id = $this->repair->id;
 

@@ -7,6 +7,11 @@ use Livewire\Component;
 
 class Index extends Component
 {
+    public function mount(): void
+    {
+        $this->authorize('service_dashboard_index');
+    }
+
     #[Layout('layouts.panels.service-center')]
     public function render()
     {

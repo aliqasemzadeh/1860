@@ -22,6 +22,8 @@ class Services extends Component
     #[On('service-center.repair.services.assign-data')]
     public function assignData(int $id): void
     {
+        $this->authorize('service_repair_services');
+        
         $this->repair = Repair::findOrFail($id);
         $this->id = $this->repair->id;
 

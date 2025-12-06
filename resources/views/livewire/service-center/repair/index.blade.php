@@ -5,19 +5,29 @@
                 <flux:heading size="xl" level="1">{{ __('app.repairs') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.repairs_description') }}</flux:subheading>
             </div>
+            @can('service_repair_create')
             <flux:modal.trigger name="service-center.repair.admission.modal">
                 <flux:button variant="primary">{{ __('app.admission') }}</flux:button>
             </flux:modal.trigger>
+            @endcan
         </div>
 
         <flux:separator variant="subtle" />
     </div>
 
+    @can('service_repair_create')
     <livewire:service-center.repair.create />
+    @endcan
+    @can('service_repair_view')
     <livewire:service-center.repair.problem />
     <livewire:service-center.repair.view />
+    @endcan
+    @can('service_repair_services')
     <livewire:service-center.repair.services />
+    @endcan
+    @can('service_repair_logs')
     <livewire:service-center.repair.logs />
+    @endcan
 
     <flux:table :paginate="$this->repairs">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
@@ -82,14 +92,7 @@
                         {{ $repair->device_serial_number }}
                     </flux:table.cell>
                     <flux:table.cell>
-
-                        <flux:button
-                            size="xs"
-                            variant="danger"
-                            wire:click="$dispatch('service-center.repair.problem.assign-data', { id: {{ $repair->id }} })"
-                        >
-                            {{ __('app.problem') }}
-                        </flux:button>
+                        @can('service_repair_view')
                         <flux:button
                             size="xs"
                             variant="primary"
@@ -97,16 +100,28 @@
                         >
                             {{ __('app.view') }}
                         </flux:button>
+                        <flux:button
+                            size="xs"
+                            variant="danger"
+                            wire:click="$dispatch('service-center.repair.problem.assign-data', { id: {{ $repair->id }} })"
+                        >
+                            {{ __('app.problem') }}
+                        </flux:button>
+                        @endcan
+                        @can('service_repair_services')
                         <flux:button size="xs" variant="primary" color="orange"
                                      wire:click="$dispatch('service-center.repair.services.assign-data', { id: {{ $repair->id }} })"
                         >
                             {{ __('app.services') }}
                         </flux:button>
+                        @endcan
+                        @can('service_repair_logs')
                         <flux:button size="xs" variant="primary" color="lime"
                                      wire:click="$dispatch('service-center.repair.logs.assign-data', { id: {{ $repair->id }} })"
                         >
                             {{ __('app.logs') }}
                         </flux:button>
+                        @endcan
                     </flux:table.cell>
                 </flux:table.row>
             @endforeach
