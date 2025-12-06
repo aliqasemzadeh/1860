@@ -16,7 +16,11 @@
 
                     <flux:field>
                         <flux:label>{{ __('app.owner_mobile') }}</flux:label>
-                        <flux:input wire:model="owner_mobile" type="text" size="sm" />
+                        <flux:autocomplete wire:model="owner_mobile" size="sm">
+                            @foreach($this->owners as $ownerMobile)
+                                <flux:autocomplete.item @click="$wire.fillOwnerByMobile('{{ $ownerMobile }}')">{{ $ownerMobile }}</flux:autocomplete.item>
+                            @endforeach
+                        </flux:autocomplete>
                         <flux:error name="owner_mobile" />
                     </flux:field>
 
@@ -51,19 +55,31 @@
 
                     <flux:field>
                         <flux:label>{{ __('app.device_type') }}</flux:label>
-                        <flux:input wire:model="device_type" type="text" size="sm" />
+                        <flux:autocomplete wire:model="device_type" size="sm">
+                            @foreach($this->types as $type)
+                                <flux:autocomplete.item>{{ $type }}</flux:autocomplete.item>
+                            @endforeach
+                        </flux:autocomplete>
                         <flux:error name="device_type" />
                     </flux:field>
 
                     <flux:field>
                         <flux:label>{{ __('app.device_brand') }}</flux:label>
-                        <flux:input wire:model="device_brand" type="text" size="sm" />
+                        <flux:autocomplete wire:model="device_brand" size="sm">
+                            @foreach($this->brands as $brand)
+                                <flux:autocomplete.item>{{ $brand }}</flux:autocomplete.item>
+                            @endforeach
+                        </flux:autocomplete>
                         <flux:error name="device_brand" />
                     </flux:field>
 
                     <flux:field>
                         <flux:label>{{ __('app.device_model') }}</flux:label>
-                        <flux:input wire:model="device_model" type="text" size="sm" />
+                        <flux:autocomplete wire:model="device_model" size="sm">
+                            @foreach($this->models as $model)
+                                <flux:autocomplete.item>{{ $model }}</flux:autocomplete.item>
+                            @endforeach
+                        </flux:autocomplete>
                         <flux:error name="device_model" />
                     </flux:field>
 
@@ -173,9 +189,9 @@
                             <div class="w-full max-w-3xl rounded-lg bg-white p-3 shadow-xl dark:bg-neutral-900">
                                 <div class="mb-2 flex items-center justify-between gap-3">
                                     <div class="flex items-center gap-2">
-                                        <flux:label class="!mb-0">رنگ</flux:label>
+                                        <flux:label class="!mb-0">{{ __('app.color') }}</flux:label>
                                         <input type="color" x-model="color" class="h-6 w-10 cursor-pointer appearance-none border-0 bg-transparent p-0" />
-                                        <flux:label class="!mb-0">ضخامت</flux:label>
+                                        <flux:label class="!mb-0">{{ __('app.thickness') }}</flux:label>
                                         <input type="range" min="1" max="20" x-model.number="size" class="w-32" />
                                     </div>
                                     <div class="flex items-center gap-2">

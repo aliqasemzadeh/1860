@@ -215,4 +215,7 @@ return [
     'delete_log' => 'حذف تغییرات',
     'invalid_status' => 'وضعیت نامعتبر است!',
     'description' => 'توضیحات',
+    'color' => 'رنگ',
+    'thickness' => 'ضخامت',
+    'owner_filled' => 'اطلاعات مالک با موفقیت پر شد.',
 ];

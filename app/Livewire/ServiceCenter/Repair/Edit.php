@@ -4,6 +4,8 @@ namespace App\Livewire\ServiceCenter\Repair;
 
 use App\Models\ServiceCenter\Repair;
 use Flux\Flux;
+use Illuminate\Support\Facades\Cache;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -55,6 +57,93 @@ class Edit extends Component
 
         'admission_description' => ['nullable', 'string'],
     ];
+
+    #[Computed]
+    public function types(): array
+    {
+        return Cache::remember('repair_device_types', 3600, function () {
+            return Repair::query()
+                ->whereNotNull('device_type')
+                ->where('device_type', '!=', '')
+                ->distinct()
+                ->orderBy('device_type')
+                ->pluck('device_type')
+                ->filter()
+                ->values()
+                ->toArray();
+        });
+    }
+
+    #[Computed]
+    public function brands(): array
+    {
+        return Cache::remember('repair_device_brands', 3600, function () {
+            return Repair::query()
+                ->whereNotNull('device_brand')
+                ->where('device_brand', '!=', '')
+                ->distinct()
+                ->orderBy('device_brand')
+                ->pluck('device_brand')
+                ->filter()
+                ->values()
+                ->toArray();
+        });
+    }
+
+    #[Computed]
+    public function models(): array
+    {
+        return Cache::remember('repair_device_models', 3600, function () {
+            return Repair::query()
+                ->whereNotNull('device_model')
+                ->where('device_model', '!=', '')
+                ->distinct()
+                ->orderBy('device_model')
+                ->pluck('device_model')
+                ->filter()
+                ->values()
+                ->toArray();
+        });
+    }
+
+    #[Computed]
+    public function owners(): array
+    {
+        return Cache::remember('repair_owners', 3600, function () {
+            return Repair::query()
+                ->whereNotNull('owner_mobile')
+                ->where('owner_mobile', '!=', '')
+                ->distinct()
+                ->orderBy('owner_mobile')
+                ->pluck('owner_mobile')
+                ->filter()
+                ->values()
+                ->toArray();
+        });
+    }
+
+    public function fillOwner(int $repairId)
+    {
+        $repair = Repair::findOrFail($repairId);
+        $this->owner_name = $repair->owner_name;
+        $this->owner_mobile = $repair->owner_mobile;
+        $this->owner_email = $repair->owner_email;
+        $this->owner_national_code = $repair->owner_national_code;
+        $this->owner_address = $repair->owner_address;
+
+        Flux::toast(__('app.owner_filled'));
+    }
+
+    public function fillOwnerByMobile(string $mobile)
+    {
+        $repair = Repair::where('owner_mobile', $mobile)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($repair) {
+            $this->fillOwner($repair->id);
+        }
+    }
 
     #[On('service-center.repair.edit.assign-data')]
     public function assignData(int $id): void
