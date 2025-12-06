@@ -74,4 +74,19 @@ enum StatusEnum: string
             self::cases()
         );
     }
+
+    /**
+     * Safely get a status enum from a value, returning New as default if not found.
+     *
+     * @param string|null $value
+     * @return self
+     */
+    public static function tryFromSafe(?string $value): self
+    {
+        if ($value === null) {
+            return self::New;
+        }
+
+        return self::tryFrom($value) ?? self::New;
+    }
 }

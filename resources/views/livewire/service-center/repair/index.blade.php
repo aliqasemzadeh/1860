@@ -68,7 +68,12 @@
                         {{ $repair->owner_mobile }}
                     </flux:table.cell>
                     <flux:table.cell>
-                        {{ $repair->status }}
+                        @php
+                            $statusEnum = \App\Enums\StatusEnum::tryFromSafe($repair->status);
+                        @endphp
+                        <flux:badge variant="solid" color="{{ $statusEnum->color() }}">
+                            {{ $statusEnum->label() }}
+                        </flux:badge>
                     </flux:table.cell>
                     <flux:table.cell>
                         {{ $repair->device_type }}

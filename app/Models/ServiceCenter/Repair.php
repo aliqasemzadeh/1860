@@ -56,4 +56,9 @@ class Repair extends Model
     {
         return $this->hasMany(RepairService::class);
     }
+
+    public function logs(): HasMany
+    {
+        return $this->hasMany(RepairLog::class);
+    }
 }
