@@ -14,11 +14,8 @@
     @include('partials.panels')
 
     @include('partials.user-dropdown')
-    <flux:radio.group x-data variant="segmented" x-model="$flux.appearance">
-        <flux:radio value="light" icon="sun"></flux:radio>
-        <flux:radio value="dark" icon="moon"></flux:radio>
-        <flux:radio value="system" icon="computer-desktop"></flux:radio>
-    </flux:radio.group>
+    @include('partials.theme-icon')
+
 </flux:sidebar>
 
 <flux:header class="bg-white lg:bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">

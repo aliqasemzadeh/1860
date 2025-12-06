@@ -25,7 +25,7 @@
                     <flux:input
                         size="xs"
                         placeholder="{{ __('app.search_placeholder') }}"
-                        wire:model.debounce.500ms="search"
+                        wire:model.live="search"
                     />
                 </div>
             </flux:table.column>
@@ -74,7 +74,7 @@
 
                         <flux:button
                             size="xs"
-                            variant="primary"
+                            variant="danger"
                             wire:click="$dispatch('service-center.repair.problem.assign-data', { id: {{ $repair->id }} })"
                         >
                             {{ __('app.problem') }}

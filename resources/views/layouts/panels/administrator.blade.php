@@ -27,6 +27,7 @@
     @include('partials.panels')
 
     @include('partials.user-dropdown')
+    @include('partials.theme-icon')
 </flux:sidebar>
 
 <flux:main>
