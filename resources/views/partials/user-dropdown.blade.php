@@ -1,5 +1,9 @@
 <flux:dropdown position="top" align="start" class="max-lg:hidden">
+    @auth
     <flux:sidebar.profile name="{{ \Illuminate\Support\Facades\Auth::user()->name ?? \Illuminate\Support\Facades\Auth::mobile() }}" />
+    @endauth
+
+
 
     <flux:menu>
         @if(0)

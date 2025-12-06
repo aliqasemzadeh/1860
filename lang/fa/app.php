@@ -178,6 +178,9 @@ return [
     'repair_status_rejected' => 'رد شده',
     'repair_status_under_repair' => 'در حال تعمیر',
     'repair_created_message' => 'پذیرش با موفقیت ثبت شد.',
+    'repair_updated_message' => 'پذیرش با موفقیت به‌روزرسانی شد.',
+    'edit_repair' => 'ویرایش پذیرش',
+    'edit_repair_description' => 'اطلاعات پذیرش و دستگاه را ویرایش و به‌روزرسانی کنید.',
     'print' => 'چاپ',
     'empty_description' => 'توضیحاتی ثبت نشده است.',
     'repair_view_description' => 'جزئیات کامل پذیرش و دستگاه را در این بخش مشاهده می‌کنید.',
@@ -208,4 +211,5 @@ return [
     'no_logs' => 'هیچ تغییری ثبت نشده است.',
     'delete_log' => 'حذف تغییرات',
     'invalid_status' => 'وضعیت نامعتبر است!',
+    'description' => 'توضیحات',
 ];

@@ -13,16 +13,17 @@
                 <div class="space-y-4">
                     <flux:heading size="sm">{{ __('app.owner_information') }}</flux:heading>
 
-                    <flux:field>
-                        <flux:label>{{ __('app.owner_name') }}</flux:label>
-                        <flux:input wire:model="owner_name" type="text" size="sm" />
-                        <flux:error name="owner_name" />
-                    </flux:field>
 
                     <flux:field>
                         <flux:label>{{ __('app.owner_mobile') }}</flux:label>
                         <flux:input wire:model="owner_mobile" type="text" size="sm" />
                         <flux:error name="owner_mobile" />
+                    </flux:field>
+
+                    <flux:field>
+                        <flux:label>{{ __('app.owner_name') }}</flux:label>
+                        <flux:input wire:model="owner_name" type="text" size="sm" />
+                        <flux:error name="owner_name" />
                     </flux:field>
 
                     <flux:field>
