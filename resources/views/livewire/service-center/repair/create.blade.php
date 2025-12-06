@@ -26,7 +26,11 @@
 
                     <flux:field>
                         <flux:label>{{ __('app.owner_name') }}</flux:label>
-                        <flux:input wire:model="owner_name" type="text" size="sm" />
+                        <flux:autocomplete wire:model="owner_name" size="sm">
+                            @foreach($this->ownerNames as $ownerName)
+                                <flux:autocomplete.item @click="$wire.fillOwnerByName('{{ $ownerName }}')">{{ $ownerName }}</flux:autocomplete.item>
+                            @endforeach
+                        </flux:autocomplete>
                         <flux:error name="owner_name" />
                     </flux:field>
 

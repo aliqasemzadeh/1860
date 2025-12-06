@@ -110,6 +110,34 @@ class Create extends Component
     }
 
     #[Computed]
+    public function ownerNames(): array
+    {
+        return Cache::remember('repair_owner_names', 3600, function () {
+            return Repair::query()
+                ->whereNotNull('owner_name')
+                ->where('owner_name', '!=', '')
+                ->distinct()
+                ->orderBy('owner_name')
+                ->pluck('owner_name')
+                ->filter()
+                ->values()
+                ->toArray();
+        });
+    }
+
+    public function fillOwnerByName(string $name)
+    {
+        $repair = Repair::where('owner_name', $name)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($repair) {
+            $this->fillOwner($repair->id);
+            Flux::toast(__('app.owner_filled_by_name'));
+        }
+    }
+
+    #[Computed]
     public function brands(): array
     {
         return Cache::remember('repair_device_brands', 3600, function () {
