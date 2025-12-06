@@ -86,6 +86,14 @@ return [
 
     'service_center' => [
         'service_center_access' => 'مرکز خدمات',
+
+        'service_dashboard_index' => 'داشبرد مرکز خدمات',
+        'service_assembly_index' => 'اسمبل ها',
+        'service_repair_index' => 'تعمیرات',
+        'service_repair_create' => 'پذیرش تعمیرات',
+        'service_repair_services' => 'خدمات (هزینه ها) تعمیرات',
+        'service_repair_logs' => 'تغییرات تعمیرات (Logs)',
+        'service_repair_edit' => 'ویرایش پذیرش',
     ],
 
     'shop' => [
