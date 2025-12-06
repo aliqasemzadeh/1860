@@ -11,7 +11,7 @@ class RepairService extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['repair_id', 'technician_user_id', 'description', 'status'];
+    protected $fillable = ['repair_id', 'technician_user_id', 'description', 'price'];
 
     public function repair(): BelongsTo
     {
