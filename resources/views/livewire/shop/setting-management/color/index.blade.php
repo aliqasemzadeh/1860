@@ -5,7 +5,7 @@
                 <flux:heading size="xl" level="1">{{ __('app.colors') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.colors_description') }}</flux:subheading>
             </div>
-            <flux:modal.trigger name="shop.color.create.modal">
+            <flux:modal.trigger name="shop.setting-management.color.create.modal">
                 <flux:button variant="primary">{{ __('app.create_color') }}</flux:button>
             </flux:modal.trigger>
         </div>
@@ -39,7 +39,7 @@
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex items-center gap-2">
                         <span class="font-mono text-xs">{{ $color->hex }}</span>
-                        <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.color.edit.assign-data', { id: '{{ $color->id }}' })">{{ __('app.edit') }}</flux:button>
+                        <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.setting-management.color.edit.assign-data', { id: '{{ $color->id }}' })">{{ __('app.edit') }}</flux:button>
                         <flux:button size="xs" variant="danger" wire:click="delete({{ $color->id }})">{{ __('app.delete') }}</flux:button>
                     </div>
                 </flux:table.cell>

@@ -25,13 +25,13 @@ class Create extends Component
 
         Warranty::create($validated);
 
-        Flux::modal('shop.warranty.create.modal')->close();
-        $this->dispatch('shop.warranty.index.render');
+        Flux::modal('shop.setting-management.warranty.create.modal')->close();
+        $this->dispatch('shop.setting-management.warranty.index.render');
         $this->reset(['name', 'slug', 'slug_fa']);
     }
 
     public function render(): View
     {
-        return view('livewire.shop.warranty.create');
+        return view('livewire.shop.setting-management.warranty.create');
     }
 }

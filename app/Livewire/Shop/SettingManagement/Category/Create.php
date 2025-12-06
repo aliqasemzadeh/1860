@@ -53,6 +53,6 @@ class Create extends Component
     {
         $roots = Category::query()->where('main_category_id', 0)->orderBy('name')->get(['id', 'name']);
 
-        return view('livewire.shop.category.create', compact('roots'));
+        return view('livewire.shop.setting-management.category.create', compact('roots'));
     }
 }

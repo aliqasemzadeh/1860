@@ -48,9 +48,9 @@ class Index extends Component
     }
 
     #[Layout('layouts.panels.shop')]
-    #[On('shop.warranty.index.render')]
+    #[On('shop.setting-management.warranty.index.render')]
     public function render()
     {
-        return view('livewire.shop.warranty.index');
+        return view('livewire.shop.setting-management.warranty.index');
     }
 }

@@ -21,7 +21,7 @@ class Edit extends Component
 
     public string $slug_fa = '';
 
-    #[On('shop.warranty.edit.assign-data')]
+    #[On('shop.setting-management.warranty.edit.assign-data')]
     public function assignData($id): void
     {
         $this->warranty = Warranty::findOrFail($id);
@@ -29,7 +29,7 @@ class Edit extends Component
         $this->name = (string) $this->warranty->name;
         $this->slug = (string) $this->warranty->slug;
         $this->slug_fa = (string) $this->warranty->slug_fa;
-        Flux::modal('shop.warranty.edit.modal')->show();
+        Flux::modal('shop.setting-management.warranty.edit.modal')->show();
     }
 
     public function edit(): void
@@ -46,12 +46,12 @@ class Edit extends Component
 
         $this->warranty->fill($validated)->save();
 
-        $this->dispatch('shop.warranty.index.render');
-        Flux::modal('shop.warranty.edit.modal')->close();
+        $this->dispatch('shop.setting-management.warranty.index.render');
+        Flux::modal('shop.setting-management.warranty.edit.modal')->close();
     }
 
     public function render(): View
     {
-        return view('livewire.shop.warranty.edit');
+        return view('livewire.shop.setting-management.warranty.edit');
     }
 }

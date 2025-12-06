@@ -21,7 +21,7 @@ class Edit extends Component
 
     public string $slug_fa = '';
 
-    #[On('shop.brand.edit.assign-data')]
+    #[On('shop.setting-management.brand.edit.assign-data')]
     public function assignData($id): void
     {
         $this->brand = BrandModel::findOrFail($id);
@@ -29,7 +29,7 @@ class Edit extends Component
         $this->name = (string) $this->brand->name;
         $this->slug = (string) $this->brand->slug;
         $this->slug_fa = (string) $this->brand->slug_fa;
-        Flux::modal('shop.brand.edit.modal')->show();
+        Flux::modal('shop.setting-management.brand.edit.modal')->show();
     }
 
     public function edit(): void
@@ -46,12 +46,12 @@ class Edit extends Component
 
         $this->brand->fill($validated)->save();
 
-        $this->dispatch('shop.brand.index.render');
-        Flux::modal('shop.brand.edit.modal')->close();
+        $this->dispatch('shop.setting-management.brand.index.render');
+        Flux::modal('shop.setting-management.brand.edit.modal')->close();
     }
 
     public function render(): View
     {
-        return view('livewire.shop.brand.edit');
+        return view('livewire.shop.setting-management.brand.edit');
     }
 }

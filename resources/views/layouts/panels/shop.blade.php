@@ -12,12 +12,15 @@
     <flux:sidebar.nav>
         <flux:sidebar.item icon="gauge" href="{{ route('shop.dashboard.index') }}" wire:navigate>{{ __('app.dashboard') }}</flux:sidebar.item>
         <flux:sidebar.item icon="boxes" href="{{ route('shop.product.index') }}" wire:navigate>{{ __('app.products') }}</flux:sidebar.item>
-        <flux:sidebar.item icon="chart-bar-stacked" href="{{ route('shop.category.index') }}" wire:navigate>{{ __('app.categories') }}</flux:sidebar.item>
         <flux:sidebar.item icon="bring-to-front" href="{{ route('shop.order.index') }}" wire:navigate>{{ __('app.orders') }}</flux:sidebar.item>
-        <flux:sidebar.item icon="trello" href="{{ route('shop.brand.index') }}" wire:navigate>{{ __('app.brands') }}</flux:sidebar.item>
-        <flux:sidebar.item icon="heart-plus" href="{{ route('shop.warranty.index') }}" wire:navigate>{{ __('app.warranties') }}</flux:sidebar.item>
-        <flux:sidebar.item icon="palette" href="{{ route('shop.color.index') }}" wire:navigate>{{ __('app.colors') }}</flux:sidebar.item>
 
+        <flux:sidebar.group expandable heading="{{ __('app.setting_management') }}" class="grid" :expanded="request()->routeIs('shop.setting-management.*')">
+            <flux:sidebar.item href="{{ route('shop.setting-management.category.index') }}" wire:navigate>{{ __('app.categories') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('shop.setting-management.brand.index') }}" wire:navigate>{{ __('app.brands') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('shop.setting-management.warranty.index') }}" wire:navigate>{{ __('app.warranties') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('shop.setting-management.color.index') }}" wire:navigate>{{ __('app.colors') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('shop.setting-management.unit.index') }}" wire:navigate>{{ __('app.units') }}</flux:sidebar.item>
+        </flux:sidebar.group>
     </flux:sidebar.nav>
 
     <flux:sidebar.spacer />

@@ -29,13 +29,13 @@ class Create extends Component
 
         Color::create($validated);
 
-        Flux::modal('shop.color.create.modal')->close();
-        $this->dispatch('shop.color.index.render');
+        Flux::modal('shop.setting-management.color.create.modal')->close();
+        $this->dispatch('shop.setting-management.color.index.render');
         $this->reset(['name', 'slug', 'slug_fa', 'hex']);
     }
 
     public function render(): View
     {
-        return view('livewire.shop.color.create');
+        return view('livewire.shop.setting-management.color.create');
     }
 }

@@ -38,7 +38,7 @@ class Edit extends Component
         $this->icon = $this->category->icon;
         $this->sort_order = (int) $this->category->sort_order;
         $this->main_category_id = (int) $this->category->main_category_id;
-        Flux::modal('shop.category.edit.modal')->show();
+        Flux::modal('shop.setting-management.category.edit.modal')->show();
     }
 
     public function edit(): void
@@ -75,8 +75,8 @@ class Edit extends Component
 
         $this->category->fill($validated)->save();
 
-        $this->dispatch('shop.category.index.render');
-        Flux::modal('shop.category.edit.modal')->close();
+        $this->dispatch('shop.setting-management.category.index.render');
+        Flux::modal('shop.setting-management.category.edit.modal')->close();
     }
 
     public function render(): View
@@ -87,6 +87,6 @@ class Edit extends Component
             ->orderBy('name')
             ->get(['id', 'name']);
 
-        return view('livewire.shop.category.edit', compact('roots'));
+        return view('livewire.setting-management.shop.category.edit', compact('roots'));
     }
 }

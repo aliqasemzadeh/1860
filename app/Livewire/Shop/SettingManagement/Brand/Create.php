@@ -32,6 +32,6 @@ class Create extends Component
 
     public function render(): View
     {
-        return view('livewire.shop.brand.create');
+        return view('livewire.shop.setting-management.brand.create');
     }
 }

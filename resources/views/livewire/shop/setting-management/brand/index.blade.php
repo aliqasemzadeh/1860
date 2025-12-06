@@ -5,7 +5,7 @@
                 <flux:heading size="xl" level="1">{{ __('app.brands') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.brands_description') }}</flux:subheading>
             </div>
-            <flux:modal.trigger name="shop.brand.create.modal">
+            <flux:modal.trigger name="shop.setting-management.brand.create.modal">
                 <flux:button variant="primary">{{ __('app.create_brand') }}</flux:button>
             </flux:modal.trigger>
         </div>
@@ -13,8 +13,8 @@
         <flux:separator variant="subtle" />
     </div>
 
-    <livewire:shop.brand.create />
-    <livewire:shop.brand.edit />
+    <livewire:shop.setting-management.brand.create />
+    <livewire:shop.setting-management.brand.edit />
 
     <flux:table>
         <flux:table.columns>
@@ -36,7 +36,7 @@
                     {{ $brand->slug_fa }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
-                    <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.brand.edit.assign-data', { id: '{{ $brand->id }}' })">{{ __('app.edit') }}</flux:button>
+                    <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.setting-management.brand.edit.assign-data', { id: '{{ $brand->id }}' })">{{ __('app.edit') }}</flux:button>
                     <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>
                 </flux:table.cell>
             </flux:table.row>

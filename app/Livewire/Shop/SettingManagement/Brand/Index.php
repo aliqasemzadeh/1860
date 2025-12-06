@@ -40,9 +40,9 @@ class Index extends Component
     }
 
     #[Layout('layouts.panels.shop')]
-    #[On('shop.brand.index.render')]
+    #[On('shop.setting-management.brand.index.render')]
     public function render()
     {
-        return view('livewire.shop.brand.index');
+        return view('livewire.shop.setting-management.brand.index');
     }
 }
