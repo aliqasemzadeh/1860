@@ -75,7 +75,10 @@
 
                     <flux:field>
                         <flux:label>{{ __('app.warranty_type') }}</flux:label>
-                        <flux:input wire:model="warranty_type" type="text" size="sm" />
+                        <flux:select wire:model="warranty_type" placeholder="{{ __('app.select_warranty_status') }}" size="sm">
+                            <flux:select.option value="no">{{ __('app.warranty_no') }}</flux:select.option>
+                            <flux:select.option value="yes">{{ __('app.warranty_yes') }}</flux:select.option>
+                        </flux:select>
                         <flux:error name="warranty_type" />
                     </flux:field>
 

@@ -31,13 +31,6 @@
 
 <flux:header class="block! bg-white lg:bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
     @include('partials.user-navbar')
-
-    <flux:navbar scrollable>
-        <flux:navbar.item href="#" current>Dashboard</flux:navbar.item>
-        <flux:navbar.item badge="32" href="#">Orders</flux:navbar.item>
-        <flux:navbar.item href="#">Catalog</flux:navbar.item>
-        <flux:navbar.item href="#">Configuration</flux:navbar.item>
-    </flux:navbar>
 </flux:header>
 
 <flux:main>

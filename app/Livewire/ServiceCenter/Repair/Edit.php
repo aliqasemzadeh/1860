@@ -41,7 +41,7 @@ class Edit extends Component
         'owner_national_code' => ['nullable', 'string', 'max:50', 'ir_national_code'],
         'owner_address' => ['nullable', 'string'],
 
-        'warranty_type' => ['nullable', 'string', 'max:255'],
+        'warranty_type' => ['required', 'string', 'in:yes,no'],
         'warranty_date' => ['nullable', 'date'],
         'device_type' => ['required', 'string', 'max:255'],
         'device_brand' => ['nullable', 'string', 'max:255'],

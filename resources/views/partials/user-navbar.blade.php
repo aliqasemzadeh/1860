@@ -4,12 +4,18 @@
     <flux:spacer />
 
     <flux:dropdown position="top" align="start">
-        <flux:profile avatar="https://fluxui.dev/img/demo/user.png" />
+        @auth
+            <flux:sidebar.profile name="{{ \Illuminate\Support\Facades\Auth::user()->name ?? \Illuminate\Support\Facades\Auth::mobile() }}" />
+        @endauth
+
+        @guest
+                <flux:profile avatar="https://fluxui.dev/img/demo/user.png" />
+        @endguest
+
 
         <flux:menu>
             <flux:menu.radio.group>
-                <flux:menu.radio checked>Olivia Martin</flux:menu.radio>
-                <flux:menu.radio>Truly Delta</flux:menu.radio>
+
             </flux:menu.radio.group>
 
             <flux:menu.separator />
