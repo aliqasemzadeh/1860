@@ -21,7 +21,6 @@ class Problem extends Component
         $this->id = $this->repair->id;
 
         Flux::modal('service-center.repair.problem.modal')->show();
-        Flux::toast(__('app.problem_loaded'));
     }
 
     public function render(): View

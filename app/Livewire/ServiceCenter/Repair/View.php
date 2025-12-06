@@ -20,7 +20,6 @@ class View extends Component
         $this->id = $this->repair->id;
 
         Flux::modal('service-center.repair.view.modal')->show();
-        Flux::toast(__('app.repair_view_loaded'));
     }
     public function render()
     {
