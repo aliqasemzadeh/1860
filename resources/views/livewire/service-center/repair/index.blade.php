@@ -16,6 +16,8 @@
     <livewire:service-center.repair.create />
     <livewire:service-center.repair.problem />
     <livewire:service-center.repair.view />
+    <livewire:service-center.repair.services />
+    <livewire:service-center.repair.logs />
 
     <flux:table :paginate="$this->repairs">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
@@ -90,10 +92,14 @@
                         >
                             {{ __('app.view') }}
                         </flux:button>
-                        <flux:button size="xs" variant="primary" color="orange">
+                        <flux:button size="xs" variant="primary" color="orange"
+                                     wire:click="$dispatch('service-center.repair.services.assign-data', { id: {{ $repair->id }} })"
+                        >
                             {{ __('app.services') }}
                         </flux:button>
-                        <flux:button size="xs" variant="primary" color="lime">
+                        <flux:button size="xs" variant="primary" color="lime"
+                                     wire:click="$dispatch('service-center.repair.logs.assign-data', { id: {{ $repair->id }} })"
+                        >
                             {{ __('app.logs') }}
                         </flux:button>
                     </flux:table.cell>
