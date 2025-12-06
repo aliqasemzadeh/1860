@@ -45,7 +45,7 @@ class Edit extends Component
     public function edit(): void
     {
         $this->authorize('administrator_user_management_edit');
-        
+
         if (! isset($this->user)) {
             return;
         }
@@ -59,10 +59,15 @@ class Edit extends Component
             'password_confirmation' => ['nullable', 'string'],
         ]);
 
-        $this->user->first_name = $validated['first_name'] ?? null;
-        $this->user->last_name = $validated['last_name'] ?? null;
+        // Normalize empty strings to null to respect nullable columns and avoid unique('email') collisions on ''
+        $firstName = trim((string) ($validated['first_name'] ?? ''));
+        $lastName = trim((string) ($validated['last_name'] ?? ''));
+        $email = trim((string) ($validated['email'] ?? ''));
+
+        $this->user->first_name = $firstName === '' ? null : $firstName;
+        $this->user->last_name = $lastName === '' ? null : $lastName;
         $this->user->mobile = $validated['mobile'];
-        $this->user->email = $validated['email'] ?? null;
+        $this->user->email = $email === '' ? null : $email;
 
         if (! empty($validated['password'] ?? '')) {
             // Will be hashed automatically via the model cast
@@ -71,7 +76,7 @@ class Edit extends Component
 
         $this->user->save();
 
-        $this->dispatch('pg:eventRefresh-administrator.user-management.user.table');
+        $this->dispatch('administrator.user-management.user.index.render');
         Flux::modal('administrator.user-management.user.edit.modal')->close();
     }
 

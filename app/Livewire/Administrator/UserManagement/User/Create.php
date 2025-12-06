@@ -13,14 +13,14 @@ class Create extends Component
     public function create()
     {
         $this->authorize('administrator_user_management_create');
-        
+
         $validated = $this->validate([
             'mobile' => ['required', 'string', 'lowercase', 'ir_mobile', 'max:255', 'unique:'.User::class],
         ]);
 
         User::firstOrCreate($validated);
 
-        $this->dispatch('pg:eventRefresh-administrator.user-management.user.table');
+        $this->dispatch('administrator.user-management.user.index.render');
         Flux::modal('administrator.user-management.user.create.modal')->close();
     }
 
