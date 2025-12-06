@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Livewire\Shop\Brand;
+namespace App\Livewire\Shop\SettingManagement\Brand;
 
 use App\Models\Shop\Brand as BrandModel;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Validation\Rule;
-use Livewire\Component;
 use Livewire\Attributes\On;
+use Livewire\Component;
 
 class Edit extends Component
 {

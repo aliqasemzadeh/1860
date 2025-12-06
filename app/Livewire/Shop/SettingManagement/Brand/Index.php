@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Shop\Brand;
+namespace App\Livewire\Shop\SettingManagement\Brand;
 
 use App\Models\Shop\Brand;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;

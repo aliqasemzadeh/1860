@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Shop\Category;
+namespace App\Livewire\Shop\SettingManagement\Category;
 
 use App\Models\Shop\Category;
 use Flux\Flux;

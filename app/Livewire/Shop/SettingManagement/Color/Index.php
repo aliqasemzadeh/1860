@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Shop\Color;
+namespace App\Livewire\Shop\SettingManagement\Color;
 
 use App\Models\Shop\Color;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;

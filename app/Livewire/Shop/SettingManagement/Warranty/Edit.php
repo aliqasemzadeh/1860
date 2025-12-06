@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Shop\Warranty;
+namespace App\Livewire\Shop\SettingManagement\Warranty;
 
 use App\Models\Shop\Warranty;
 use Flux\Flux;

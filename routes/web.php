@@ -23,12 +23,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/administrator/setting-management/option/index', \App\Livewire\Administrator\SettingManagement\Option\Index::class)->name('administrator.setting-management.option.index');
 
     Route::get('/shop/dashboard/index', \App\Livewire\Shop\Dashboard\Index::class)->name('shop.dashboard.index');
-    Route::get('/shop/category/index', \App\Livewire\Shop\Category\Index::class)->name('shop.category.index');
-    Route::get('/shop/brand/index', \App\Livewire\Shop\Brand\Index::class)->name('shop.brand.index');
-    Route::get('/shop/color/index', \App\Livewire\Shop\Color\Index::class)->name('shop.color.index');
-    Route::get('/shop/warranty/index', \App\Livewire\Shop\Warranty\Index::class)->name('shop.warranty.index');
+
     Route::get('/shop/product/index', \App\Livewire\Shop\Product\Index::class)->name('shop.product.index');
     Route::get('/shop/order/index', \App\Livewire\Shop\Order\Index::class)->name('shop.order.index');
+
+
+    Route::get('/shop/setting-management/category/index', \App\Livewire\Shop\SettingManagement\Category\Index::class)->name('shop.setting-management.category.index');
+    Route::get('/shop/setting-management/brand/index', \App\Livewire\Shop\SettingManagement\Brand\Index::class)->name('shop.setting-management.brand.index');
+    Route::get('/shop/setting-management/color/index', \App\Livewire\Shop\SettingManagement\Color\Index::class)->name('shop.setting-management.color.index');
+    Route::get('/shop/setting-management/warranty/index', \App\Livewire\Shop\SettingManagement\Warranty\Index::class)->name('shop.setting-management.warranty.index');
+    Route::get('/shop/setting-management/unit/index', \App\Livewire\Shop\SettingManagement\Unit\Index::class)->name('shop.setting-management.unit.index');
 
 });
 

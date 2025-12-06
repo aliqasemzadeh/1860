@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Livewire\Shop\Warranty;
+namespace App\Livewire\Shop\SettingManagement\Category;
 
-use App\Models\Shop\Warranty;
+use App\Models\Shop\Category;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -27,18 +27,14 @@ class Index extends Component
         }
     }
 
-    public function delete(int $id): void
-    {
-        $warranty = Warranty::query()->find($id);
-        if ($warranty !== null) {
-            $warranty->delete();
-        }
-    }
-
     #[Computed]
-    public function warranties(): LengthAwarePaginator
+    public function categories(): LengthAwarePaginator
     {
-        return Warranty::query()
+        return Category::query()
+            ->where('main_category_id', 0)
+            ->with(['children' => function ($query) {
+                $query->orderBy('sort_order', 'asc')->orderBy('name', 'asc');
+            }])
             ->tap(function ($query) {
                 if ($this->sortBy) {
                     $query->orderBy($this->sortBy, $this->sortDirection);
@@ -48,9 +44,9 @@ class Index extends Component
     }
 
     #[Layout('layouts.panels.shop')]
-    #[On('shop.warranty.index.render')]
+    #[On('shop.category.index.render')]
     public function render()
     {
-        return view('livewire.shop.warranty.index');
+        return view('livewire.shop.category.index');
     }
 }
