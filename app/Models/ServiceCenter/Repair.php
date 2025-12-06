@@ -3,6 +3,7 @@
 namespace App\Models\ServiceCenter;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Repair extends Model
@@ -50,4 +51,9 @@ class Repair extends Model
         'estimate_date' => 'datetime',
         'warranty_date' => 'datetime',
     ];
+
+    public function services(): HasMany
+    {
+        return $this->hasMany(RepairService::class);
+    }
 }
