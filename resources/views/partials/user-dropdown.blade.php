@@ -1,5 +1,5 @@
 <flux:dropdown position="top" align="start" class="max-lg:hidden">
-    <flux:sidebar.profile avatar="https://fluxui.dev/img/demo/user.png" name="{{ \Illuminate\Support\Facades\Auth::user()->name ?? \Illuminate\Support\Facades\Auth::mobile() }}" />
+    <flux:sidebar.profile name="{{ \Illuminate\Support\Facades\Auth::user()->name ?? \Illuminate\Support\Facades\Auth::mobile() }}" />
 
     <flux:menu>
         @if(0)
