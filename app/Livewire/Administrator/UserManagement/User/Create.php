@@ -12,6 +12,8 @@ class Create extends Component
 
     public function create()
     {
+        $this->authorize('administrator_user_management_create');
+        
         $validated = $this->validate([
             'mobile' => ['required', 'string', 'lowercase', 'ir_mobile', 'max:255', 'unique:'.User::class],
         ]);
@@ -24,8 +26,6 @@ class Create extends Component
 
     public function render()
     {
-        //$this->authorize('administrator_user_create');
-
         return view('livewire.administrator.user-management.user.create');
     }
 }

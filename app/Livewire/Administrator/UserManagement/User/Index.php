@@ -29,6 +29,7 @@ class Index extends Component
     #[Layout('layouts.panels.administrator')]
     public function render()
     {
+        $this->authorize('administrator_user_management_index');
         return view('livewire.administrator.user-management.user.index');
     }
 }

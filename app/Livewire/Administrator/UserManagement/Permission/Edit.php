@@ -34,6 +34,8 @@ class Edit extends Component
 
     public function edit()
     {
+        $this->authorize('administrator_user_management_permission_edit');
+        
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255', Rule::unique('permissions', 'name')->ignore($this->permission->id)],
             'guard_name' => ['required', 'string', 'max:255', 'in:web'],
@@ -47,8 +49,6 @@ class Edit extends Component
 
     public function render()
     {
-        $this->authorize('administrator_user_permission_edit');
-
         return view('livewire.administrator.user-management.permission.edit');
     }
 }

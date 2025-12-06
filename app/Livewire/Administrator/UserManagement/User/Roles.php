@@ -26,6 +26,8 @@ class Roles extends Component
 
     public function assign(Role $role)
     {
+        $this->authorize('administrator_user_management_roles');
+        
         if (! isset($this->user)) {
             return;
         }
@@ -35,6 +37,8 @@ class Roles extends Component
 
     public function delete(Role $role): void
     {
+        $this->authorize('administrator_user_management_roles');
+        
         if (! isset($this->user)) {
             return;
         }
@@ -45,7 +49,7 @@ class Roles extends Component
     #[On('administrator.user-management.user.roles.render')]
     public function render()
     {
-        //$this->authorize('administrator_user_roles');
+        $this->authorize('administrator_user_management_roles');
         if ($this->search != '') {
             $roles = Role::where('name', 'like', '%'.$this->search.'%')->paginate();
         } else {

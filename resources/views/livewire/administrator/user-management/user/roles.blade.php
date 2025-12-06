@@ -28,7 +28,9 @@
                                     </p>
                                 </div>
                                 <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                    <flux:button wire:click="assign({{ $role->id }})" wire:confirm="{{ __('app.are_you_sure') }}"><flux:icon.plus-circle /></flux:button>
+                                    @can('administrator_user_management_roles')
+                                        <flux:button wire:click="assign({{ $role->id }})" wire:confirm="{{ __('app.are_you_sure') }}"><flux:icon.plus-circle /></flux:button>
+                                    @endcan
                                 </div>
                             </div>
                         </li>
@@ -52,7 +54,9 @@
                                     </p>
                                 </div>
                                 <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                    <flux:button wire:click="delete({{ $role->id }})" wire:confirm="{{ __('app.are_you_sure') }}"><flux:icon.trash /></flux:button>
+                                    @can('administrator_user_management_roles')
+                                        <flux:button wire:click="delete({{ $role->id }})" wire:confirm="{{ __('app.are_you_sure') }}"><flux:icon.trash /></flux:button>
+                                    @endcan
                                 </div>
                             </div>
                         </li>

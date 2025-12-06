@@ -44,6 +44,8 @@ class Edit extends Component
 
     public function edit(): void
     {
+        $this->authorize('administrator_user_management_edit');
+        
         if (! isset($this->user)) {
             return;
         }
@@ -75,8 +77,6 @@ class Edit extends Component
 
     public function render(): View
     {
-        //$this->authorize('administrator_user_edit');
-
         return view('livewire.administrator.user-management.user.edit');
     }
 }

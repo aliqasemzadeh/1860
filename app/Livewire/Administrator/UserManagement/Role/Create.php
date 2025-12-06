@@ -13,6 +13,8 @@ class Create extends Component
 
     public function create()
     {
+        $this->authorize('administrator_user_management_role_create');
+        
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255', 'unique:' . Role::class],
             'guard_name' => ['required', 'string', 'max:255', 'in:web'],
@@ -27,7 +29,6 @@ class Create extends Component
 
     public function render()
     {
-        $this->authorize('administrator_user_role_create');
         return view('livewire.administrator.user-management.role.create');
     }
 }

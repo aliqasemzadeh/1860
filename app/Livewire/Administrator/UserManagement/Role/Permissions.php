@@ -31,12 +31,16 @@ class Permissions extends Component
 
     public function assign(Permission $permission)
     {
+        $this->authorize('administrator_user_management_role_permissions');
+        
         $this->role->givePermissionTo($permission->name);
         $this->dispatch('administrator.user-management.role.permissions');
     }
 
     public function delete(Permission $permission): void
     {
+        $this->authorize('administrator_user_management_role_permissions');
+        
         $this->role->revokePermissionTo($permission->name);
         $this->dispatch('administrator.user-management.role.permissions');
     }
@@ -44,7 +48,7 @@ class Permissions extends Component
     #[On('administrator.user-management.role.permissions.render')]
     public function render()
     {
-        $this->authorize('administrator_user_role_permissions');
+        $this->authorize('administrator_user_management_role_permissions');
         if ($this->search != '') {
             $permissions = Permission::where('name', 'like', '%'.$this->search.'%')->paginate();
         } else {

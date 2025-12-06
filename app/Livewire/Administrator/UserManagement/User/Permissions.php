@@ -26,6 +26,8 @@ class Permissions extends Component
 
     public function assign(Permission $permission)
     {
+        $this->authorize('administrator_user_management_permissions');
+        
         if (! isset($this->user)) {
             return;
         }
@@ -35,6 +37,8 @@ class Permissions extends Component
 
     public function delete(Permission $permission): void
     {
+        $this->authorize('administrator_user_management_permissions');
+        
         if (! isset($this->user)) {
             return;
         }
@@ -45,7 +49,7 @@ class Permissions extends Component
     #[On('administrator.user-management.user.permissions.render')]
     public function render()
     {
-        //$this->authorize('administrator_user_permissions');
+        $this->authorize('administrator_user_management_permissions');
         if ($this->search != '') {
             $permissions = Permission::where('name', 'like', '%'.$this->search.'%')->paginate();
         } else {
