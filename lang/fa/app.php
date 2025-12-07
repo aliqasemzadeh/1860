@@ -137,6 +137,7 @@ return [
     ],
     'id' => 'شناسه',
     'owner_name' => 'نام مالک',
+    'owner_organization' => 'سازمان/شرکت مالک',
     'owner_mobile' => 'موبایل مالک',
     'status' => 'وضعیت',
     'device_type' => 'نوع دستگاه',

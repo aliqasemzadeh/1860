@@ -13,8 +13,8 @@
         <flux:separator variant="subtle" />
     </div>
 
-    <livewire:shop.color.create />
-    <livewire:shop.color.edit />
+    <livewire:shop.setting-management.color.create />
+    <livewire:shop.setting-management.color.edit />
 
     <flux:table>
         <flux:table.columns>

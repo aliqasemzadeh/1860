@@ -2,11 +2,11 @@
 
 namespace App\Livewire\ServiceCenter\Repair;
 
+use App\Models\ServiceCenter\Repair;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\ServiceCenter\Repair;
 
 class Index extends Component
 {
@@ -29,13 +29,14 @@ class Index extends Component
     {
         return Repair::query()
             ->when($this->search, function ($query) {
-                $search = '%' . $this->search . '%';
+                $search = '%'.$this->search.'%';
                 $query->where(function ($q) use ($search) {
                     $q->where('id', 'like', $search)
                         ->orWhere('owner_name', 'like', $search)
                         ->orWhere('owner_mobile', 'like', $search)
                         ->orWhere('status', 'like', $search)
                         ->orWhere('device_type', 'like', $search)
+                        ->orWhere('owner_organization', 'like', $search)
                         ->orWhere('device_serial_number', 'like', $search);
                 });
             })

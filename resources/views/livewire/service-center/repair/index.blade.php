@@ -78,7 +78,12 @@
                         {{ $repair->id }}
                     </flux:table.cell>
                     <flux:table.cell>
-                        {{ $repair->owner_name }}
+                        <div class="flex flex-col">
+                            <span>{{ $repair->owner_name }}</span>
+                            @if($repair->owner_organization)
+                                <span class="text-sm text-zinc-500 dark:text-zinc-400">{{ $repair->owner_organization }}</span>
+                            @endif
+                        </div>
                     </flux:table.cell>
                     <flux:table.cell>
                         {{ $repair->owner_mobile }}
