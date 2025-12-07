@@ -23,6 +23,7 @@ class Repair extends Model
         'status_date',
         'estimate_date',
         'owner_name',
+        'owner_organization',
         'owner_mobile',
         'owner_email',
         'owner_national_code',

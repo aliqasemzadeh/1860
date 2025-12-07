@@ -33,6 +33,11 @@
                         <flux:error name="owner_name" />
                     </flux:field>
 
+                    <flux:field>
+                        <flux:label>{{ __('app.owner_organization') }}</flux:label>
+                        <flux:input wire:model="owner_organization" type="text" size="sm" />
+                        <flux:error name="owner_organization" />
+                    </flux:field>
 
                     <flux:field>
                         <flux:label>{{ __('app.owner_email') }}</flux:label>
