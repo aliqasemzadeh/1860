@@ -46,13 +46,26 @@ class Warranties extends Component
             return;
         }
 
-        // Check if warranty already exists
-        if ($this->product->warranties()->where('warranty_id', $this->selectedWarrantyId)->exists()) {
+        // Check if warranty already exists (not soft-deleted)
+        $existingProductWarranty = ProductWarranty::where('product_id', $this->product->id)
+            ->where('warranty_id', $this->selectedWarrantyId)
+            ->first();
+
+        if ($existingProductWarranty && ! $existingProductWarranty->trashed()) {
             Flux::toast(variant: 'error', text: __('app.warranty_already_exists'));
             return;
         }
 
-        $this->product->warranties()->attach($this->selectedWarrantyId);
+        // If exists but soft-deleted, restore it
+        if ($existingProductWarranty && $existingProductWarranty->trashed()) {
+            $existingProductWarranty->restore();
+        } else {
+            // Create new record
+            ProductWarranty::firstOrCreate([
+                'product_id' => $this->product->id,
+                'warranty_id' => $this->selectedWarrantyId,
+            ]);
+        }
 
         $this->product->refresh();
         $this->selectedWarrantyId = null;
@@ -66,7 +79,10 @@ class Warranties extends Component
             return;
         }
 
-        $this->product->warranties()->detach($warrantyId);
+        ProductWarranty::where('product_id', $this->product->id)
+            ->where('warranty_id', $warrantyId)
+            ->delete();
+
         $this->product->refresh();
         Flux::toast(variant: 'success', text: __('app.warranty_removed'));
     }
@@ -74,7 +90,13 @@ class Warranties extends Component
     #[Computed]
     public function availableWarranties()
     {
-        $existingWarrantyIds = $this->product?->warranties->pluck('id')->toArray() ?? [];
+        // Get existing warranty IDs that are not soft-deleted
+        $existingWarrantyIds = $this->product
+            ? ProductWarranty::where('product_id', $this->product->id)
+                ->whereNull('deleted_at')
+                ->pluck('warranty_id')
+                ->toArray()
+            : [];
 
         return Warranty::query()
             ->when($this->warrantySearch, fn($query) => $query->where('name', 'like', '%' . $this->warrantySearch . '%'))

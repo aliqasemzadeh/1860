@@ -11,24 +11,24 @@
                 <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4">
                     <flux:field>
                         <flux:label>{{ __('app.add_warranty') }}</flux:label>
-                        <flux:input.group>
-                            <flux:select wire:model="selectedWarrantyId" variant="combobox" :filter="false" placeholder="{{ __('app.select_warranty') }}">
-                                <x-slot name="input">
-                                    <flux:select.input wire:model.live="warrantySearch" placeholder="{{ __('app.search') }}..." />
-                                </x-slot>
-                                @foreach ($this->availableWarranties as $warranty)
-                                    <flux:select.option value="{{ $warranty->id }}" wire:key="warranty-{{ $warranty->id }}">
-                                        {{ $warranty->name }}
-                                    </flux:select.option>
-                                @endforeach
-                            </flux:select>
+                        <flux:select wire:model="selectedWarrantyId" variant="combobox" :filter="false" placeholder="{{ __('app.select_warranty') }}">
+                            <x-slot name="input">
+                                <flux:select.input wire:model.live="warrantySearch" placeholder="{{ __('app.search') }}..." />
+                            </x-slot>
+                            @foreach ($this->availableWarranties as $warranty)
+                                <flux:select.option value="{{ $warranty->id }}" wire:key="warranty-{{ $warranty->id }}">
+                                    {{ $warranty->name }}
+                                </flux:select.option>
+                            @endforeach
+                        </flux:select>
+                        <div class="mt-3 flex items-center gap-2">
                             <flux:button wire:click="addWarranty" variant="primary" color="red" :disabled="!$selectedWarrantyId">
                                 {{ __('app.add') }}
                             </flux:button>
                             <flux:modal.trigger name="shop.setting-management.warranty.create.modal">
                                 <flux:button variant="ghost" color="red" icon="plus" />
                             </flux:modal.trigger>
-                        </flux:input.group>
+                        </div>
                     </flux:field>
                 </div>
 

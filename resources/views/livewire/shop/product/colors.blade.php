@@ -11,29 +11,29 @@
                 <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4">
                     <flux:field>
                         <flux:label>{{ __('app.add_color') }}</flux:label>
-                        <flux:input.group>
-                            <flux:select wire:model="selectedColorId" variant="combobox" :filter="false" placeholder="{{ __('app.select_color') }}">
-                                <x-slot name="input">
-                                    <flux:select.input wire:model.live="colorSearch" placeholder="{{ __('app.search') }}..." />
-                                </x-slot>
-                                @foreach ($this->availableColors as $color)
-                                    <flux:select.option value="{{ $color->id }}" wire:key="color-{{ $color->id }}">
-                                        <div class="flex items-center gap-2">
-                                            @if ($color->hex)
-                                                <div class="h-4 w-4 rounded border border-gray-300 dark:border-gray-600" style="background-color: {{ $color->hex }}"></div>
-                                            @endif
-                                            <span>{{ $color->name }}</span>
-                                        </div>
-                                    </flux:select.option>
-                                @endforeach
-                            </flux:select>
+                        <flux:select wire:model="selectedColorId" variant="combobox" :filter="false" placeholder="{{ __('app.select_color') }}">
+                            <x-slot name="input">
+                                <flux:select.input wire:model.live="colorSearch" placeholder="{{ __('app.search') }}..." />
+                            </x-slot>
+                            @foreach ($this->availableColors as $color)
+                                <flux:select.option value="{{ $color->id }}" wire:key="color-{{ $color->id }}">
+                                    <div class="flex items-center gap-2">
+                                        @if ($color->hex)
+                                            <div class="h-4 w-4 rounded border border-gray-300 dark:border-gray-600" style="background-color: {{ $color->hex }}"></div>
+                                        @endif
+                                        <span>{{ $color->name }}</span>
+                                    </div>
+                                </flux:select.option>
+                            @endforeach
+                        </flux:select>
+                        <div class="mt-3 flex items-center gap-2">
                             <flux:button wire:click="addColor" variant="primary" color="zinc" :disabled="!$selectedColorId">
                                 {{ __('app.add') }}
                             </flux:button>
                             <flux:modal.trigger name="shop.setting-management.color.create.modal">
                                 <flux:button variant="ghost" color="zinc" icon="plus" />
                             </flux:modal.trigger>
-                        </flux:input.group>
+                        </div>
                     </flux:field>
                 </div>
 
