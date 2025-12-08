@@ -17,10 +17,12 @@ class Create extends Component
             'name' => ['required', 'string', 'max:255', 'unique:units,name'],
         ]);
 
-        Unit::create($validated);
+        $unit = Unit::create($validated);
 
         Flux::modal('shop.setting-management.unit.create.modal')->close();
         $this->dispatch('shop.setting-management.unit.index.render');
+        $this->dispatch('shop.product.unit.refresh', ['id' => $unit->id]);
+        Flux::toast(variant: 'success', text: __('app.unit_created', ['name' => $validated['name']]));
         $this->reset(['name']);
     }
 

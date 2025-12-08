@@ -249,4 +249,8 @@ return [
     'select_unit' => 'انتخاب واحد',
     'file_removed' => 'فایل با موفقیت حذف شد.',
     'current_file' => 'فایل فعلی',
+    'gram' => 'گرم',
+    'category_created' => 'دسته ":name" با موفقیت ایجاد شد.',
+    'brand_created' => 'برند ":name" با موفقیت ایجاد شد.',
+    'unit_created' => 'واحد ":name" با موفقیت ایجاد شد.',
 ];

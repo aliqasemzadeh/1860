@@ -10,6 +10,7 @@ use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -25,9 +26,17 @@ class Edit extends Component
 
     public string $name = '';
 
+    public ?string $description = null;
+
     public string $slug = '';
 
     public string $slug_fa = '';
+
+    public string $category_search = '';
+
+    public string $brand_search = '';
+
+    public string $unit_search = '';
 
     #[Validate('nullable|file|max:10240')] // 10MB Max
     public $file = null;
@@ -52,6 +61,7 @@ class Edit extends Component
         $this->product = ProductModel::findOrFail($id);
         $this->id = $this->product->id;
         $this->name = (string) $this->product->name;
+        $this->description = $this->product->description;
         $this->slug = (string) $this->product->slug;
         $this->slug_fa = (string) $this->product->slug_fa;
         $this->weight = (float) $this->product->weight;
@@ -62,6 +72,9 @@ class Edit extends Component
         $this->brand_id = $this->product->brand_id;
         $this->unit_id = $this->product->unit_id;
         $this->file = null;
+        $this->category_search = '';
+        $this->brand_search = '';
+        $this->unit_search = '';
         Flux::modal('shop.product.edit.modal')->show();
     }
 
@@ -73,6 +86,7 @@ class Edit extends Component
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
             'slug' => ['required', 'string', 'max:255', 'alpha_dash', Rule::unique('products', 'slug')->ignore($this->product)],
             'slug_fa' => ['required', 'string', 'max:255', Rule::unique('products', 'slug_fa')->ignore($this->product)],
             'file' => ['nullable', 'file', 'max:10240'],
@@ -87,6 +101,7 @@ class Edit extends Component
 
         $updateData = [
             'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
             'slug' => $validated['slug'],
             'slug_fa' => $validated['slug_fa'],
             'weight' => $validated['weight'],
@@ -129,12 +144,61 @@ class Edit extends Component
         }
     }
 
+    #[On('shop.product.category.refresh')]
+    public function refreshCategory(): void
+    {
+        $this->category_search = '';
+    }
+
+    #[On('shop.product.brand.refresh')]
+    public function refreshBrand($id): void
+    {
+        $this->brand_id = $id;
+        $this->brand_search = '';
+    }
+
+    #[On('shop.product.unit.refresh')]
+    public function refreshUnit($id): void
+    {
+        $this->unit_id = $id;
+        $this->unit_search = '';
+    }
+
+    #[Computed]
+    public function categories()
+    {
+        // Only get subcategories (children), not root categories
+        return Category::query()
+            ->where('main_category_id', '!=', 0)
+            ->when($this->category_search, fn($query) => $query->where('name', 'like', '%' . $this->category_search . '%'))
+            ->with('main_category')
+            ->orderBy('name')
+            ->limit(20)
+            ->get(['id', 'name', 'main_category_id']);
+    }
+
+    #[Computed]
+    public function brands()
+    {
+        return Brand::query()
+            ->when($this->brand_search, fn($query) => $query->where('name', 'like', '%' . $this->brand_search . '%'))
+            ->orderBy('name')
+            ->limit(20)
+            ->get(['id', 'name']);
+    }
+
+    #[Computed]
+    public function units()
+    {
+        return Unit::query()
+            ->when($this->unit_search, fn($query) => $query->where('name', 'like', '%' . $this->unit_search . '%'))
+            ->orderBy('name')
+            ->limit(20)
+            ->get(['id', 'name']);
+    }
+
     public function render(): View
     {
-        $categories = Category::query()->orderBy('name')->get(['id', 'name']);
-        $brands = Brand::query()->orderBy('name')->get(['id', 'name']);
-        $units = Unit::query()->orderBy('name')->get(['id', 'name']);
-
-        return view('livewire.shop.product.edit', compact('categories', 'brands', 'units'));
+        return view('livewire.shop.product.edit');
     }
 }

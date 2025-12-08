@@ -23,10 +23,12 @@ class Create extends Component
             'slug_fa' => ['required', 'string', 'max:255', 'unique:brands,slug_fa'],
         ]);
 
-        Brand::create($validated);
+        $brand = Brand::create($validated);
 
-        Flux::modal('shop.brand.create.modal')->close();
-        $this->dispatch('shop.brand.index.render');
+        Flux::modal('shop.setting-management.brand.create.modal')->close();
+        $this->dispatch('shop.setting-management.brand.index.render');
+        $this->dispatch('shop.product.brand.refresh', ['id' => $brand->id]);
+        Flux::toast(variant: 'success', text: __('app.brand_created', ['name' => $validated['name']]));
         $this->reset(['name', 'slug', 'slug_fa']);
     }
 
