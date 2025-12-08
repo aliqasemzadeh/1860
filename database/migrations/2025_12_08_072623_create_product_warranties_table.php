@@ -16,7 +16,6 @@ return new class extends Migration
             $table->bigInteger('product_id');
             $table->bigInteger('warranty_id');
             $table->timestamps();
-            $table->softDeletes();
 
             $table->unique(['warranty_id', 'product_id']);
         });

@@ -46,26 +46,11 @@ class Colors extends Component
             return;
         }
 
-        // Check if color already exists (not soft-deleted)
-        $existingProductColor = ProductColor::where('product_id', $this->product->id)
-            ->where('color_id', $this->selectedColorId)
-            ->first();
-
-        if ($existingProductColor && ! $existingProductColor->trashed()) {
-            Flux::toast(variant: 'error', text: __('app.color_already_exists'));
-            return;
-        }
-
-        // If exists but soft-deleted, restore it
-        if ($existingProductColor && $existingProductColor->trashed()) {
-            $existingProductColor->restore();
-        } else {
-            // Create new record
-            ProductColor::firstOrCreate([
-                'product_id' => $this->product->id,
-                'color_id' => $this->selectedColorId,
-            ]);
-        }
+        // Create new record
+        ProductColor::create([
+            'product_id' => $this->product->id,
+            'color_id' => $this->selectedColorId,
+        ]);
 
         $this->product->refresh();
         $this->selectedColorId = null;
@@ -93,7 +78,6 @@ class Colors extends Component
         // Get existing color IDs that are not soft-deleted
         $existingColorIds = $this->product
             ? ProductColor::where('product_id', $this->product->id)
-                ->whereNull('deleted_at')
                 ->pluck('color_id')
                 ->toArray()
             : [];

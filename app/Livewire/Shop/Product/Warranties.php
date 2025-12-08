@@ -46,26 +46,11 @@ class Warranties extends Component
             return;
         }
 
-        // Check if warranty already exists (not soft-deleted)
-        $existingProductWarranty = ProductWarranty::where('product_id', $this->product->id)
-            ->where('warranty_id', $this->selectedWarrantyId)
-            ->first();
-
-        if ($existingProductWarranty && ! $existingProductWarranty->trashed()) {
-            Flux::toast(variant: 'error', text: __('app.warranty_already_exists'));
-            return;
-        }
-
-        // If exists but soft-deleted, restore it
-        if ($existingProductWarranty && $existingProductWarranty->trashed()) {
-            $existingProductWarranty->restore();
-        } else {
             // Create new record
-            ProductWarranty::firstOrCreate([
-                'product_id' => $this->product->id,
-                'warranty_id' => $this->selectedWarrantyId,
-            ]);
-        }
+        ProductWarranty::create([
+            'product_id' => $this->product->id,
+            'warranty_id' => $this->selectedWarrantyId,
+        ]);
 
         $this->product->refresh();
         $this->selectedWarrantyId = null;
@@ -93,7 +78,6 @@ class Warranties extends Component
         // Get existing warranty IDs that are not soft-deleted
         $existingWarrantyIds = $this->product
             ? ProductWarranty::where('product_id', $this->product->id)
-                ->whereNull('deleted_at')
                 ->pluck('warranty_id')
                 ->toArray()
             : [];

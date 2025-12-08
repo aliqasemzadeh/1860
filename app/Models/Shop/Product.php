@@ -63,7 +63,6 @@ class Product extends Model
     {
         return $this->belongsToMany(Color::class, 'product_colors')
             ->using(ProductColor::class)
-            ->wherePivotNull('deleted_at')
             ->withTimestamps();
     }
 
@@ -74,7 +73,6 @@ class Product extends Model
     {
         return $this->belongsToMany(Warranty::class, 'product_warranties')
             ->using(ProductWarranty::class)
-            ->wherePivotNull('deleted_at')
             ->withTimestamps();
     }
 }

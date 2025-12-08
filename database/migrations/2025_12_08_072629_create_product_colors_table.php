@@ -16,7 +16,6 @@ return new class extends Migration
             $table->bigInteger('product_id');
             $table->bigInteger('color_id');
             $table->timestamps();
-            $table->softDeletes();
 
             $table->unique(['product_id', 'color_id']);
         });

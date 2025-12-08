@@ -4,11 +4,19 @@ namespace App\Models\Shop;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ProductColor extends Model
+class ProductColor extends Pivot
 {
-    use SoftDeletes;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'product_colors';
+
     /**
      * The attributes that are mass assignable.
      *
