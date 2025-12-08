@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['warranty_id', 'color_id']);
+            $table->unique(['warranty_id', 'product_id']);
         });
     }
 
