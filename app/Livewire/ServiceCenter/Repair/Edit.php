@@ -16,7 +16,6 @@ class Edit extends Component
     public int $id;
 
     public string $owner_name = '';
-    public ?string $owner_organization = null;
     public string $owner_mobile = '';
     public ?string $owner_email = null;
     public ?string $owner_national_code = null;
@@ -39,7 +38,6 @@ class Edit extends Component
 
     protected $rules = [
         'owner_name' => ['required', 'string', 'max:255'],
-        'owner_organization' => ['nullable', 'string', 'max:255'],
         'owner_mobile' => ['required', 'string', 'max:50', 'ir_mobile'],
         'owner_email' => ['nullable', 'email', 'max:255'],
         'owner_national_code' => ['nullable', 'string', 'max:50', 'ir_national_code'],
@@ -156,7 +154,6 @@ class Edit extends Component
     {
         $repair = Repair::findOrFail($repairId);
         $this->owner_name = $repair->owner_name;
-        $this->owner_organization = $repair->owner_organization;
         $this->owner_mobile = $repair->owner_mobile;
         $this->owner_email = $repair->owner_email;
         $this->owner_national_code = $repair->owner_national_code;
@@ -186,7 +183,6 @@ class Edit extends Component
 
         // Load repair data into form fields
         $this->owner_name = $this->repair->owner_name ?? '';
-        $this->owner_organization = $this->repair->owner_organization;
         $this->owner_mobile = $this->repair->owner_mobile ?? '';
         $this->owner_email = $this->repair->owner_email;
         $this->owner_national_code = $this->repair->owner_national_code;
@@ -240,7 +236,6 @@ class Edit extends Component
 
             // Owner
             'owner_name' => $this->owner_name,
-            'owner_organization' => $this->owner_organization,
             'owner_mobile' => $this->owner_mobile,
             'owner_email' => $this->owner_email,
             'owner_national_code' => $this->owner_national_code,
