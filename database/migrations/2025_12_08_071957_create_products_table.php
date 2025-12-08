@@ -28,7 +28,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['category_id', 'brand_id', 'unit_id', 'slug', 'slug_fa']);
+            $table->index(['category_id', 'brand_id', 'unit_id', 'slug', 'slug_fa']);
         });
     }
 

@@ -25,6 +25,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/shop/dashboard/index', \App\Livewire\Shop\Dashboard\Index::class)->name('shop.dashboard.index');
 
     Route::get('/shop/product/index', \App\Livewire\Shop\Product\Index::class)->name('shop.product.index');
+    Route::get('/shop/product/pricing/{productId}', \App\Livewire\Shop\Product\Pricing\Index::class)->name('shop.product.pricing.index');
     Route::get('/shop/order/index', \App\Livewire\Shop\Order\Index::class)->name('shop.order.index');
 
 

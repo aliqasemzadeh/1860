@@ -64,6 +64,7 @@
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.product.edit.assign-data', { id: '{{ $product->id }}' })">{{ __('app.edit') }}</flux:button>
                         <flux:button size="xs" variant="primary" color="sky" wire:click="$dispatch('shop.product.colors.assign-data', { id: '{{ $product->id }}' })">{{ __('app.colors') }}</flux:button>
                         <flux:button size="xs" variant="primary" color="green" wire:click="$dispatch('shop.product.warranties.assign-data', { id: '{{ $product->id }}' })">{{ __('app.warranties') }}</flux:button>
+                        <flux:button size="xs" variant="primary" color="teal" href="{{ route('shop.product.pricing.index', ['productId' => $product->id]) }}">{{ __('app.pricing') }}</flux:button>
                         <flux:button size="xs" variant="danger" wire:click="delete({{ $product->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
                     </div>
                 </flux:table.cell>

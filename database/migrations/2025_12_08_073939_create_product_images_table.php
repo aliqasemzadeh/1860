@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['product_id']);
+            $table->index(['product_id']);
         });
     }
 

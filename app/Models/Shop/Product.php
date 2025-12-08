@@ -5,6 +5,7 @@ namespace App\Models\Shop;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
@@ -74,5 +75,20 @@ class Product extends Model
         return $this->belongsToMany(Warranty::class, 'product_warranties')
             ->using(ProductWarranty::class)
             ->withTimestamps();
+    }
+
+    public function prices(): HasMany
+    {
+        return $this->hasMany(ProductPrice::class);
+    }
+
+    public function getPriceAttribute()
+    {
+
+    }
+
+    public function getSalePriceAttribute()
+    {
+
     }
 }
