@@ -16,6 +16,10 @@
     <livewire:shop.product.create />
     <livewire:shop.product.edit />
 
+    <livewire:shop.setting-management.category.create />
+    <livewire:shop.setting-management.brand.create />
+    <livewire:shop.setting-management.unit.create />
+
     <flux:table>
         <flux:table.columns>
             <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('app.name') }}</flux:table.column>

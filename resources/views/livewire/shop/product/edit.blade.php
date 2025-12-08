@@ -170,7 +170,3 @@
         </form>
     </div>
 </flux:modal>
-
-<livewire:shop.setting-management.category.create />
-<livewire:shop.setting-management.brand.create />
-<livewire:shop.setting-management.unit.create />
