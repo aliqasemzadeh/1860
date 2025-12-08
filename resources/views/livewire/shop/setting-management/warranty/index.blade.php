@@ -16,7 +16,7 @@
     <livewire:shop.setting-management.warranty.create />
     <livewire:shop.setting-management.warranty.edit />
 
-    <flux:table>
+    <flux:table :paginate="$this->warranties">
         <flux:table.columns>
             <flux:table.column sortable wire:click="sort('name')">{{ __('app.name') }}</flux:table.column>
             <flux:table.column sortable wire:click="sort('slug')">{{ __('app.slug') }}</flux:table.column>
@@ -38,7 +38,7 @@
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex items-center gap-2">
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.setting-management.warranty.edit.assign-data', { id: '{{ $warranty->id }}' })">{{ __('app.edit') }}</flux:button>
-                        <flux:button size="xs" variant="danger" wire:click="delete({{ $warranty->id }})">{{ __('app.delete') }}</flux:button>
+                        <flux:button size="xs" variant="danger" wire:click="delete({{ $warranty->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
                     </div>
                 </flux:table.cell>
             </flux:table.row>

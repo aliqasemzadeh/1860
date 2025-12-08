@@ -16,7 +16,7 @@
     <livewire:shop.setting-management.unit.create />
     <livewire:shop.setting-management.unit.edit />
 
-    <flux:table>
+    <flux:table :paginate="$this->units">
         <flux:table.columns>
             <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('app.name') }}</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')">{{ __('app.date') }}</flux:table.column>
@@ -34,14 +34,10 @@
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex items-center gap-2">
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.setting-management.unit.edit.assign-data', { id: '{{ $unit->id }}' })">{{ __('app.edit') }}</flux:button>
-                        <flux:button size="xs" variant="danger" wire:click="delete({{ $unit->id }})">{{ __('app.delete') }}</flux:button>
+                        <flux:button size="xs" variant="danger" wire:click="delete({{ $unit->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
                     </div>
                 </flux:table.cell>
             </flux:table.row>
         @endforeach
     </flux:table>
-
-    <div class="mt-4">
-        {{ $this->units->links() }}
-    </div>
 </div>

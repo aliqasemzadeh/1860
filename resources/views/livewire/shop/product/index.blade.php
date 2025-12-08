@@ -20,7 +20,7 @@
     <livewire:shop.setting-management.brand.create />
     <livewire:shop.setting-management.unit.create />
 
-    <flux:table>
+    <flux:table :paginate="$this->products">
         <flux:table.columns>
             <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('app.name') }}</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'slug'" :direction="$sortDirection" wire:click="sort('slug')">{{ __('app.slug') }}</flux:table.column>
@@ -64,8 +64,4 @@
             </flux:table.row>
         @endforeach
     </flux:table>
-
-    <div class="mt-4">
-        {{ $this->products->links() }}
-    </div>
 </div>

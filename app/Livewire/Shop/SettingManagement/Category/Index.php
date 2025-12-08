@@ -27,6 +27,14 @@ class Index extends Component
         }
     }
 
+    public function delete(int $id): void
+    {
+        $category = Category::query()->find($id);
+        if ($category !== null) {
+            $category->delete();
+        }
+    }
+
     #[Computed]
     public function categories(): LengthAwarePaginator
     {

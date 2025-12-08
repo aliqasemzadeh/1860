@@ -27,6 +27,14 @@ class Index extends Component
         }
     }
 
+    public function delete(int $id): void
+    {
+        $brand = Brand::query()->find($id);
+        if ($brand !== null) {
+            $brand->delete();
+        }
+    }
+
     #[Computed]
     public function brands(): LengthAwarePaginator
     {

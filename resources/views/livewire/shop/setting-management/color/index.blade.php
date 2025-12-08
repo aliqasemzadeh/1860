@@ -16,7 +16,7 @@
     <livewire:shop.setting-management.color.create />
     <livewire:shop.setting-management.color.edit />
 
-    <flux:table>
+    <flux:table :paginate="$this->colors">
         <flux:table.columns>
             <flux:table.column sortable>{{ __('app.name') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.slug') }}</flux:table.column>
@@ -40,7 +40,7 @@
                     <div class="flex items-center gap-2">
                         <span class="font-mono text-xs">{{ $color->hex }}</span>
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.setting-management.color.edit.assign-data', { id: '{{ $color->id }}' })">{{ __('app.edit') }}</flux:button>
-                        <flux:button size="xs" variant="danger" wire:click="delete({{ $color->id }})">{{ __('app.delete') }}</flux:button>
+                        <flux:button size="xs" variant="danger" wire:click="delete({{ $color->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
                     </div>
                 </flux:table.cell>
             </flux:table.row>

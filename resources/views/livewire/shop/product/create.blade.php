@@ -96,7 +96,6 @@
                         </flux:field>
 
                         <flux:field>
-                            <flux:label>{{ __('app.file_upload') }}</flux:label>
                             <flux:file-upload wire:model="file" label="{{ __('app.file_upload') }}">
                                 <flux:file-upload.dropzone
                                     heading="{{ __('app.file_upload_description') }}"
@@ -131,38 +130,39 @@
                             <flux:input wire:model="slug_fa" type="text" />
                             <flux:error name="slug_fa" />
                         </flux:field>
+
+                        <div class="grid grid-cols-3 gap-6">
+                            <flux:field>
+                                <flux:label>{{ __('app.x_dimension') }}</flux:label>
+                                <flux:input.group>
+                                    <flux:input.group.prefix>mm</flux:input.group.prefix>
+                                    <flux:input wire:model="x_dimension" type="number" step="0.01" min="0" />
+                                </flux:input.group>
+                                <flux:error name="x_dimension" />
+                            </flux:field>
+
+                            <flux:field>
+                                <flux:label>{{ __('app.y_dimension') }}</flux:label>
+                                <flux:input.group>
+                                    <flux:input.group.prefix>mm</flux:input.group.prefix>
+                                    <flux:input wire:model="y_dimension" type="number" step="0.01" min="0" />
+                                </flux:input.group>
+                                <flux:error name="y_dimension" />
+                            </flux:field>
+
+                            <flux:field>
+                                <flux:label>{{ __('app.z_dimension') }}</flux:label>
+                                <flux:input.group>
+                                    <flux:input.group.prefix>mm</flux:input.group.prefix>
+                                    <flux:input wire:model="z_dimension" type="number" step="0.01" min="0" />
+                                </flux:input.group>
+                                <flux:error name="z_dimension" />
+                            </flux:field>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Second Row: 3 columns for dimensions -->
-                <div class="grid grid-cols-3 gap-6">
-                    <flux:field>
-                        <flux:label>{{ __('app.x_dimension') }}</flux:label>
-                        <flux:input.group>
-                            <flux:input.group.prefix>mm</flux:input.group.prefix>
-                            <flux:input wire:model="x_dimension" type="number" step="0.01" min="0" />
-                        </flux:input.group>
-                        <flux:error name="x_dimension" />
-                    </flux:field>
 
-                    <flux:field>
-                        <flux:label>{{ __('app.y_dimension') }}</flux:label>
-                        <flux:input.group>
-                            <flux:input.group.prefix>mm</flux:input.group.prefix>
-                            <flux:input wire:model="y_dimension" type="number" step="0.01" min="0" />
-                        </flux:input.group>
-                        <flux:error name="y_dimension" />
-                    </flux:field>
-
-                    <flux:field>
-                        <flux:label>{{ __('app.z_dimension') }}</flux:label>
-                        <flux:input.group>
-                            <flux:input.group.prefix>mm</flux:input.group.prefix>
-                            <flux:input wire:model="z_dimension" type="number" step="0.01" min="0" />
-                        </flux:input.group>
-                        <flux:error name="z_dimension" />
-                    </flux:field>
-                </div>
             </div>
 
             <flux:button type="submit" class="w-full mt-6" variant="primary">
