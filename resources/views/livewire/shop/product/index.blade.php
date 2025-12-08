@@ -15,10 +15,14 @@
 
     <livewire:shop.product.create />
     <livewire:shop.product.edit />
+    <livewire:shop.product.colors />
+    <livewire:shop.product.warranties />
 
     <livewire:shop.setting-management.category.create />
     <livewire:shop.setting-management.brand.create />
     <livewire:shop.setting-management.unit.create />
+    <livewire:shop.setting-management.color.create />
+    <livewire:shop.setting-management.warranty.create />
 
     <flux:table :paginate="$this->products">
         <flux:table.columns>
@@ -58,6 +62,8 @@
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex items-center gap-2">
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.product.edit.assign-data', { id: '{{ $product->id }}' })">{{ __('app.edit') }}</flux:button>
+                        <flux:button size="xs" variant="primary" color="zinc" wire:click="$dispatch('shop.product.colors.assign-data', { id: '{{ $product->id }}' })">{{ __('app.colors') }}</flux:button>
+                        <flux:button size="xs" variant="primary" color="red" wire:click="$dispatch('shop.product.warranties.assign-data', { id: '{{ $product->id }}' })">{{ __('app.warranties') }}</flux:button>
                         <flux:button size="xs" variant="danger" wire:click="delete({{ $product->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
                     </div>
                 </flux:table.cell>

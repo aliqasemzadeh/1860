@@ -2,9 +2,36 @@
 
 namespace App\Models\Shop;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ProductWarranty extends Model
+class ProductWarranty extends Pivot
 {
-    //
+    use SoftDeletes;
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'product_id',
+        'warranty_id',
+    ];
+
+    /**
+     * Get the product that owns the product warranty.
+     */
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    /**
+     * Get the warranty that owns the product warranty.
+     */
+    public function warranty(): BelongsTo
+    {
+        return $this->belongsTo(Warranty::class);
+    }
 }

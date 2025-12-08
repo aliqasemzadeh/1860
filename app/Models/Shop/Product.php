@@ -4,6 +4,7 @@ namespace App\Models\Shop;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
@@ -53,5 +54,26 @@ class Product extends Model
     public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class)->withTrashed();
+    }
+
+    /**
+     * Get the colors that belong to the product.
+     */
+    public function colors(): BelongsToMany
+    {
+        return $this->belongsToMany(Color::class, 'product_colors')
+            ->using(ProductColor::class)
+            ->withTimestamps()
+            ->withTrashed();
+    }
+
+    /**
+     * Get the warranties that belong to the product.
+     */
+    public function warranties(): BelongsToMany
+    {
+        return $this->belongsToMany(Warranty::class, 'product_warranties')
+            ->using(ProductWarranty::class)
+            ->withTimestamps();
     }
 }
