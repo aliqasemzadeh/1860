@@ -145,22 +145,23 @@ class Edit extends Component
     }
 
     #[On('shop.product.category.refresh')]
-    public function refreshCategory(): void
+    public function refreshCategory($id): void
     {
+        $this->category_id = $id['id'];
         $this->category_search = '';
     }
 
     #[On('shop.product.brand.refresh')]
     public function refreshBrand($id): void
     {
-        $this->brand_id = $id;
+        $this->brand_id = $id['id'];
         $this->brand_search = '';
     }
 
     #[On('shop.product.unit.refresh')]
     public function refreshUnit($id): void
     {
-        $this->unit_id = $id;
+        $this->unit_id = $id['id'];
         $this->unit_search = '';
     }
 

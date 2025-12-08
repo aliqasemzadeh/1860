@@ -42,11 +42,11 @@ class Create extends Component
             }
         }
 
-        Category::create($validated);
+        $category = Category::create($validated);
 
         Flux::modal('shop.setting-management.category.create.modal')->close();
         $this->dispatch('shop.setting-management.category.index.render');
-        $this->dispatch('shop.product.category.refresh');
+        $this->dispatch('shop.product.category.refresh', ['id' => $category->id]);
         Flux::toast(variant: 'success', text: __('app.category_created', ['name' => $validated['name']]));
         $this->reset(['name', 'slug', 'slug_fa', 'icon', 'sort_order', 'main_category_id']);
     }

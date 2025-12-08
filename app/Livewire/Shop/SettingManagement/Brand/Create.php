@@ -27,6 +27,7 @@ class Create extends Component
 
         Flux::modal('shop.setting-management.brand.create.modal')->close();
         $this->dispatch('shop.setting-management.brand.index.render');
+        \Illuminate\Support\Facades\Log::info("Brand Created:",[$brand->id]);
         $this->dispatch('shop.product.brand.refresh', ['id' => $brand->id]);
         Flux::toast(variant: 'success', text: __('app.brand_created', ['name' => $validated['name']]));
         $this->reset(['name', 'slug', 'slug_fa']);
