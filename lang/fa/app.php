@@ -303,4 +303,7 @@ return [
     'no_warranties_added_to_product' => 'هیچ گارانتی به این محصول اضافه نشده است. ابتدا گارانتی را از صفحه محصول اضافه کنید.',
     'product_not_found' => 'محصول یافت نشد.',
     'warranty' => 'گارانتی',
+    'price_today' => 'قیمت امروز',
+    'sale_price_yesterday' => 'قیمت دیروز',
+    'price_history_description' => 'تاریخچه تغییرات قیمت محصول را مشاهده کنید.',
 ];

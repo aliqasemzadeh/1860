@@ -34,7 +34,7 @@
 
     <flux:table :paginate="$this->repairs">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
-            <flux:table.column colspan="8" class="bg-white dark:bg-zinc-900">
+            <flux:table.column colspan="9" class="bg-white dark:bg-zinc-900">
                 <div class="flex flex-col gap-1 pe-2 items-end">
                     <flux:input
                         size="sm"
@@ -65,6 +65,9 @@
             </flux:table.column>
             <flux:table.column class="bg-white dark:bg-zinc-900">
                 <span>{{ __('app.description') }}</span>
+            </flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')" class="bg-white dark:bg-zinc-900">
+                <span>{{ __('app.created_at') }}</span>
             </flux:table.column>
             <flux:table.column class="bg-white dark:bg-zinc-900">
                 <span>{{ __('app.options') }}</span>
@@ -104,6 +107,9 @@
                     </flux:table.cell>
                     <flux:table.cell>
                         {{ $repair->admission_description }}
+                    </flux:table.cell>
+                    <flux:table.cell class="whitespace-nowrap">
+                        {{ \Morilog\Jalali\Jalalian::fromCarbon($repair->created_at)->format('%Y-%m-%d %H:%M') }}
                     </flux:table.cell>
                     <flux:table.cell>
                         @can('service_center_repair_edit')

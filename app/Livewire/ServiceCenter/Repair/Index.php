@@ -14,6 +14,10 @@ class Index extends Component
 
     public string $search = '';
 
+    public string $sortBy = 'created_at';
+
+    public string $sortDirection = 'desc';
+
     protected $queryString = [
         'search' => ['except' => ''],
         'page' => ['except' => 1],
@@ -22,6 +26,17 @@ class Index extends Component
     public function mount(): void
     {
         $this->authorize('service_center_repair_index');
+    }
+
+    public function sort(string $column): void
+    {
+        if ($this->sortBy === $column) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $column;
+            $this->sortDirection = 'asc';
+        }
+        $this->resetPage();
     }
 
     #[\Livewire\Attributes\Computed]
@@ -40,7 +55,11 @@ class Index extends Component
                         ->orWhere('device_serial_number', 'like', $search);
                 });
             })
-            ->orderByDesc('created_at')
+            ->tap(function ($query) {
+                if ($this->sortBy !== '') {
+                    $query->orderBy($this->sortBy, $this->sortDirection);
+                }
+            })
             ->paginate(10);
     }
 
