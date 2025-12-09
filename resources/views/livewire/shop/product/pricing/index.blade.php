@@ -18,6 +18,7 @@
         <flux:separator variant="subtle" />
     </div>
     <livewire:shop.product.pricing.create :productId="$productId" />
+    <livewire:shop.product.pricing.history :productId="$productId" />
 
     @if ($this->latestPrices->isEmpty())
         <div class="text-center py-12">

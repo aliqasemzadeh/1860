@@ -5,6 +5,7 @@ namespace App\Models\Shop;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 class ProductPrice extends Model
 {
@@ -47,5 +48,19 @@ class ProductPrice extends Model
     public function warranty(): BelongsTo
     {
         return $this->belongsTo(Warranty::class);
+    }
+
+    protected static function booted(): void
+    {
+        $forget = function (self $model): void {
+            if ($model->product_id) {
+                Cache::forget(Product::defaultPriceCacheKey((int) $model->product_id));
+            }
+        };
+
+        static::saved($forget);
+        static::deleted($forget);
+        static::restored($forget);
+        static::forceDeleted($forget);
     }
 }
