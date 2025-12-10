@@ -16,7 +16,7 @@
     <livewire:shop.setting-management.category.create />
     <livewire:shop.setting-management.category.edit />
 
-    <flux:table :paginate="$this->categories">
+    <flux:table>
         <flux:table.columns>
             <flux:table.column sortable>{{ __('app.name') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.slug') }}</flux:table.column>
@@ -37,7 +37,7 @@
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.setting-management.category.edit.assign-data', { id: '{{ $category->id }}' })">{{ __('app.edit') }}</flux:button>
-                    <flux:button size="xs" variant="danger" wire:click="delete({{ $category->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
+                    <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>
                 </flux:table.cell>
             </flux:table.row>
 
@@ -54,7 +54,7 @@
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.setting-management.category.edit.assign-data', { id: '{{ $child->id }}' })">{{ __('app.edit') }}</flux:button>
-                        <flux:button size="xs" variant="danger" wire:click="delete({{ $child->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
+                        <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>
                     </flux:table.cell>
                 </flux:table.row>
             @endforeach

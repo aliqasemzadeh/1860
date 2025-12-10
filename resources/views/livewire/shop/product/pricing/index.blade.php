@@ -1,3 +1,6 @@
+<x-slot name="title">
+    {{ __('app.pricing') }} - {{ $product->name }}
+</x-slot>
 <div>
     <flux:breadcrumbs class="mb-6">
         <flux:breadcrumbs.item href="{{ route('shop.product.index') }}" wire:navigate>{{ __('app.products') }}</flux:breadcrumbs.item>

@@ -19,7 +19,6 @@
                 <flux:field>
                     <flux:label>{{ __('app.transaction_type') }}</flux:label>
                     <flux:select wire:model="linker" placeholder="{{ __('app.select_transaction_type') }}">
-                        <flux:select.option value="">{{ __('app.select_transaction_type') }}</flux:select.option>
                         @foreach ($this->transactionTypes as $type)
                             @php
                                 $typeEnum = \App\Enums\TransactionTypeEnum::tryFrom($type);

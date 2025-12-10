@@ -18,9 +18,6 @@
     @can('service_center_repair_create')
     <livewire:service-center.repair.create />
     @endcan
-    @can('service_center_repair_edit')
-    <livewire:service-center.repair.edit />
-    @endcan
     @can('service_center_repair_view')
     <livewire:service-center.repair.problem />
     <livewire:service-center.repair.view />
@@ -34,7 +31,7 @@
 
     <flux:table :paginate="$this->repairs">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
-            <flux:table.column colspan="9" class="bg-white dark:bg-zinc-900">
+            <flux:table.column colspan="7" class="bg-white dark:bg-zinc-900">
                 <div class="flex flex-col gap-1 pe-2 items-end">
                     <flux:input
                         size="sm"
@@ -64,12 +61,6 @@
                 <span>{{ __('app.device_serial_number') }}</span>
             </flux:table.column>
             <flux:table.column class="bg-white dark:bg-zinc-900">
-                <span>{{ __('app.description') }}</span>
-            </flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')" class="bg-white dark:bg-zinc-900">
-                <span>{{ __('app.created_at') }}</span>
-            </flux:table.column>
-            <flux:table.column class="bg-white dark:bg-zinc-900">
                 <span>{{ __('app.options') }}</span>
             </flux:table.column>
         </flux:table.columns>
@@ -81,12 +72,7 @@
                         {{ $repair->id }}
                     </flux:table.cell>
                     <flux:table.cell>
-                        <div class="flex flex-col">
-                            <span>{{ $repair->owner_name }}</span>
-                            @if($repair->owner_organization)
-                                <span class="text-sm text-zinc-500 dark:text-zinc-400">{{ $repair->owner_organization }}</span>
-                            @endif
-                        </div>
+                        {{ $repair->owner_name }}
                     </flux:table.cell>
                     <flux:table.cell>
                         {{ $repair->owner_mobile }}
@@ -106,22 +92,6 @@
                         {{ $repair->device_serial_number }}
                     </flux:table.cell>
                     <flux:table.cell>
-                        {{ $repair->admission_description }}
-                    </flux:table.cell>
-                    <flux:table.cell class="whitespace-nowrap">
-                        {{ \Morilog\Jalali\Jalalian::fromCarbon($repair->created_at)->format('%Y-%m-%d %H:%M') }}
-                    </flux:table.cell>
-                    <flux:table.cell>
-                        @can('service_center_repair_edit')
-                        <flux:button
-                            size="xs"
-                            variant="primary"
-                            color="fuchsia"
-                            wire:click="$dispatch('service-center.repair.edit.assign-data', { id: {{ $repair->id }} })"
-                        >
-                            {{ __('app.edit') }}
-                        </flux:button>
-                        @endcan
                         @can('service_center_repair_view')
                         <flux:button
                             size="xs"

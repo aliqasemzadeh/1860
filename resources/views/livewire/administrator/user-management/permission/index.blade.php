@@ -18,7 +18,7 @@
     <livewire:administrator.user-management.permission.create />
     <livewire:administrator.user-management.permission.edit />
 
-    <flux:table :paginate="$this->permissions">
+    <flux:table>
         <flux:table.columns>
             <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('app.name') }}</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'guard_name'" :direction="$sortDirection" wire:click="sort('guard_name')">{{ __('app.guard_name') }}</flux:table.column>

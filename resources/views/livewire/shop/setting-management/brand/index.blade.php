@@ -16,7 +16,7 @@
     <livewire:shop.setting-management.brand.create />
     <livewire:shop.setting-management.brand.edit />
 
-    <flux:table :paginate="$this->brands">
+    <flux:table>
         <flux:table.columns>
             <flux:table.column sortable>{{ __('app.name') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.slug') }}</flux:table.column>
@@ -37,7 +37,7 @@
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.setting-management.brand.edit.assign-data', { id: '{{ $brand->id }}' })">{{ __('app.edit') }}</flux:button>
-                    <flux:button size="xs" variant="danger" wire:click="delete({{ $brand->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
+                    <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>
                 </flux:table.cell>
             </flux:table.row>
         @endforeach
