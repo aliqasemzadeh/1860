@@ -6,6 +6,9 @@
                 <flux:subheading size="lg" class="mb-6">{{ __('app.banks_description') }}</flux:subheading>
             </div>
             <div class="flex gap-2">
+                @can('accounting_bank_transaction_create')
+                    <flux:button variant="primary" color="blue" wire:click="$dispatch('accounting.bank.create-transaction.assign-data', { id: 0 })">{{ __('app.create_transaction_button') }}</flux:button>
+                @endcan
                 @can('accounting_bank_remittance_request')
                     <flux:modal.trigger name="accounting.bank.request-remittance.modal">
                         <flux:button variant="primary" color="green">{{ __('app.request_remittance_button') }}</flux:button>
@@ -24,6 +27,7 @@
     <livewire:panel.accounting.bank.create />
     <livewire:panel.accounting.bank.edit />
     <livewire:panel.accounting.bank.request-remittance />
+    <livewire:panel.accounting.bank.create-transaction />
 
     <flux:table :paginate="$this->banks">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
@@ -66,6 +70,9 @@
                         @can('accounting_bank_delete')
                             <flux:button size="xs" variant="danger" color="red" wire:click="delete({{ $bank->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
                         @endcan
+                            @can('accounting_bank_transaction_create')
+                                <flux:button size="xs" variant="primary" color="blue" wire:click="$dispatch('accounting.bank.create-transaction.assign-data', { id: '{{ $bank->id }}' })">{{ __('app.create_transaction') }}</flux:button>
+                            @endcan
                             @can('accounting_bank_remittance_create')
                                 <flux:button size="xs" variant="primary" color="green" wire:click="$dispatch('accounting.bank.request-remittance.assign-data', { id: '{{ $bank->id }}' })">{{ __('app.create_remittance') }}</flux:button>
                             @endcan
