@@ -116,6 +116,9 @@ return [
         'accounting_bank_remittance_request' => 'درخواست حواله',
         'accounting_bank_remittance_transfer' => 'پرداخت حواله',
 
-        'accounting_bank_transaction_index' => 'تراکنش‌ها',
+        'accounting_bank_transaction_index' => 'فهرست تراکنش‌ها',
+        'accounting_bank_transaction_create' => 'ایجاد تراکنش',
+        'accounting_bank_transaction_edit' => 'ویرایش تراکنش',
+        'accounting_bank_transaction_delete' => 'حذف تراکنش',
     ],
 ];
