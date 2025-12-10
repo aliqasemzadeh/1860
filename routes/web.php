@@ -35,6 +35,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/shop/setting-management/warranty/index', \App\Livewire\Shop\SettingManagement\Warranty\Index::class)->name('shop.setting-management.warranty.index');
     Route::get('/shop/setting-management/unit/index', \App\Livewire\Shop\SettingManagement\Unit\Index::class)->name('shop.setting-management.unit.index');
 
+
+    Route::get('/accounting/dashboard/index', \App\Livewire\Panel\Accounting\Dashboard\Index::class)->name('accounting.dashboard.index');
+    Route::get('/accounting/bank/index', \App\Livewire\Panel\Accounting\Bank\Index::class)->name('accounting.bank.index');
+    Route::get('/accounting/bank/remittance/index', \App\Livewire\Panel\Accounting\Bank\Remittance\Index::class)->name('accounting.bank.remittance.index');
+    Route::get('/accounting/bank/transaction/index', \App\Livewire\Panel\Accounting\Bank\Transaction\Index::class)->name('accounting.bank.transaction.index');
+
 });
 
 Route::get('/login', \App\Livewire\Auth\Login::class)->name('login')->middleware('guest');

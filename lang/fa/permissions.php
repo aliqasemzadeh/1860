@@ -100,4 +100,19 @@ return [
     'shop' => [
         'shop_access' => 'فروشگاه',
     ],
+
+    'accounting' => [
+        'accounting_access' => 'دسترسی حساب داری',
+        'accounting_bank_index' => 'فهرست حساب‌های بانکی',
+        'accounting_bank_create' => 'ایجاد حساب بانکی',
+        'accounting_bank_edit' => 'ویرایش حساب بانکی',
+        'accounting_bank_delete' => 'حذف حساب بانکی',
+
+        'accounting_bank_remittance_index' => 'حواله ها',
+        'accounting_bank_remittance_create' => 'ایجاد حواله',
+        'accounting_bank_remittance_edit' => 'ویرایش حواله',
+        'accounting_bank_remittance_check' => 'بررسی حواله',
+
+        'accounting_bank_transaction_index' => 'تراکنش‌ها',
+    ],
 ];
