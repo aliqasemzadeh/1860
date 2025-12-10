@@ -353,6 +353,7 @@ return [
     'remittance_status_transferred' => 'انتقال یافته',
     'remittance_can_edit' => 'این حواله قابل ویرایش است.',
     'remittance_cannot_edit' => 'این حواله بررسی شده و قابل ویرایش نیست.',
+    'remittance_cannot_delete' => 'این حواله منتقل شده یا رد شده و قابل حذف نیست.',
     'check_remittance_button' => 'بررسی حواله',
     'request_remittance_button' => 'درخواست حواله',
     'transfer_remittance' => 'پرداخت حواله',

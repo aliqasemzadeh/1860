@@ -32,7 +32,7 @@ class Edit extends Component
     {
         $this->remittance = BankRemittance::findOrFail($id);
 
-        if ($this->remittance->checked_at) {
+        if ($this->remittance->checked_at || $this->remittance->status === 'transferred' || $this->remittance->status === 'rejected') {
             return;
         }
 
@@ -51,7 +51,7 @@ class Edit extends Component
             return;
         }
 
-        if ($this->remittance->checked_at) {
+        if ($this->remittance->checked_at || $this->remittance->status === 'transferred' || $this->remittance->status === 'rejected') {
             return;
         }
 
@@ -68,7 +68,7 @@ class Edit extends Component
             'final_amount' => (float) $validated['draft_amount'],
         ]);
 
-        Flux::toast(__('app.remittance_updated'));
+        Flux::toast(variant: 'success', text: __('app.remittance_updated'));
         $this->dispatch('accounting.bank.remittance.index.render');
         Flux::modal('accounting.bank.remittance.edit.modal')->close();
     }

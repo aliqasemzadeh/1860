@@ -58,7 +58,7 @@ class Edit extends Component
 
         $this->bank->updateBalance();
 
-        Flux::toast(__('app.bank_updated'));
+        Flux::toast(variant: 'success', text: __('app.bank_updated'));
         $this->dispatch('accounting.bank.index.render');
         Flux::modal('accounting.bank.edit.modal')->close();
     }

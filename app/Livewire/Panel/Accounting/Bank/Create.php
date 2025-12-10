@@ -35,7 +35,7 @@ class Create extends Component
             'balance' => $validated['init_balance'],
         ]);
 
-        Flux::toast(__('app.bank_created'));
+        Flux::toast(variant: 'success', text: __('app.bank_created'));
         $this->dispatch('accounting.bank.index.render');
         Flux::modal('accounting.bank.create.modal')->close();
 

@@ -41,7 +41,7 @@ class Create extends Component
             'status' => 'pending',
         ]);
 
-        Flux::toast(__('app.remittance_created'));
+        Flux::toast(variant: 'success', text: __('app.remittance_created'));
         $this->dispatch('accounting.bank.remittance.index.render');
         Flux::modal('accounting.bank.remittance.create.modal')->close();
 

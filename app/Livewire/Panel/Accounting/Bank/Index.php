@@ -62,7 +62,7 @@ class Index extends Component
         $bank = Bank::findOrFail($id);
         $bank->delete();
 
-        Flux::toast(__('app.bank_deleted'));
+        Flux::toast(variant: 'success', text: __('app.bank_deleted'));
         $this->dispatch('accounting.bank.index.render');
     }
 

@@ -37,7 +37,7 @@ class RequestRemittance extends Component
         $validated = $this->validate([
             'bank_id' => ['required', 'exists:banks,id'],
             'description' => ['required', 'string', 'max:255'],
-            'draft_amount' => ['required', 'numeric', 'min:0'],
+            'draft_amount' => ['required', 'min:0'],
         ]);
 
         BankRemittance::create([
@@ -49,7 +49,7 @@ class RequestRemittance extends Component
             'status' => 'pending',
         ]);
 
-        Flux::toast(__('app.remittance_requested'));
+        Flux::toast(variant: 'success', text: __('app.remittance_requested'));
         $this->dispatch('accounting.bank.remittance.index.render');
         Flux::modal('accounting.bank.request-remittance.modal')->close();
 

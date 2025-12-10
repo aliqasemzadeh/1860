@@ -75,9 +75,15 @@ class Index extends Component
         $this->authorize('accounting_bank_remittance_delete');
 
         $remittance = BankRemittance::findOrFail($id);
+
+        if ($remittance->status === 'transferred' || $remittance->status === 'rejected') {
+            Flux::toast(variant: 'danger', text: __('app.remittance_cannot_delete'));
+            return;
+        }
+
         $remittance->delete();
 
-        Flux::toast(__('app.remittance_deleted'));
+        Flux::toast(variant: 'success', text: __('app.remittance_deleted'));
         $this->dispatch('accounting.bank.remittance.index.render');
     }
 
