@@ -1,17 +1,17 @@
-<flux:modal name="accounting.bank.remittance.create.modal" class="md:w-96" flyout position="right">
+<flux:modal name="accounting.bank.request-remittance.modal" class="md:w-96" flyout position="right">
     <div class="space-y-6">
         <div>
-            <flux:heading size="lg">{{ __('app.create_remittance') }}</flux:heading>
-            <flux:text class="mt-2">{{ __('app.create_remittance_description') }}</flux:text>
+            <flux:heading size="lg">{{ __('app.request_remittance') }}</flux:heading>
+            <flux:text class="mt-2">{{ __('app.request_remittance_description') }}</flux:text>
         </div>
-        <form wire:submit="create" method="post">
+        <form wire:submit="request" method="post">
             <div class="pb-2 space-y-4">
                 <flux:field>
                     <flux:label>{{ __('app.remittance_bank') }}</flux:label>
                     <flux:select wire:model="bank_id" placeholder="{{ __('app.select_bank') }}">
                         <flux:select.option value="0">{{ __('app.select_bank') }}</flux:select.option>
                         @foreach ($this->banks as $bank)
-                            <flux:select.option value="{{ $bank->id }}">{{ $bank->name }}</flux:option>
+                            <flux:select.option value="{{ $bank->id }}">{{ $bank->name }}</flux:select.option>
                         @endforeach
                     </flux:select>
                     <flux:error name="bank_id" />

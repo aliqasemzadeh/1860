@@ -16,7 +16,7 @@
             <flux:sidebar.item href="{{ route('accounting.bank.index') }}" wire:navigate>{{ __('app.banks') }}</flux:sidebar.item>
             @endcan
             @can('accounting_bank_remittance_index')
-            <flux:sidebar.item href="{{ route('accounting.bank.remittance.index') }}" wire:navigate>{{ __('app.accounting_bank_remittance_index') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('accounting.bank.remittance.index') }}" wire:navigate>{{ __('app.remittances') }}</flux:sidebar.item>
             @endcan
             @can('accounting_bank_transaction_index')
             <flux:sidebar.item href="{{ route('accounting.bank.transaction.index') }}" wire:navigate>{{ __('app.accounting_bank_transaction_index') }}</flux:sidebar.item>

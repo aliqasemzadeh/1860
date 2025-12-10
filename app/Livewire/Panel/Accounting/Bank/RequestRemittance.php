@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Panel\Accounting\Bank\Remittance;
+namespace App\Livewire\Panel\Accounting\Bank;
 
 use App\Models\Accounting\Bank;
 use App\Models\Accounting\BankRemittance;
@@ -8,7 +8,7 @@ use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
-class Create extends Component
+class RequestRemittance extends Component
 {
     public int $bank_id = 0;
 
@@ -22,9 +22,9 @@ class Create extends Component
         return Bank::orderBy('sort_order')->get();
     }
 
-    public function create()
+    public function request()
     {
-        $this->authorize('accounting_bank_remittance_create');
+        $this->authorize('accounting_bank_remittance_request');
 
         $validated = $this->validate([
             'bank_id' => ['required', 'exists:banks,id'],
@@ -42,13 +42,13 @@ class Create extends Component
         ]);
 
         $this->dispatch('accounting.bank.remittance.index.render');
-        Flux::modal('accounting.bank.remittance.create.modal')->close();
+        Flux::modal('accounting.bank.request-remittance.modal')->close();
 
         $this->reset(['bank_id', 'description', 'draft_amount']);
     }
 
     public function render()
     {
-        return view('livewire.panel.accounting.bank.remittance.create');
+        return view('livewire.panel.accounting.bank.request-remittance');
     }
 }

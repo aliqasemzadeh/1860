@@ -5,17 +5,25 @@
                 <flux:heading size="xl" level="1">{{ __('app.banks') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.banks_description') }}</flux:subheading>
             </div>
-            @can('accounting_bank_create')
-                <flux:modal.trigger name="accounting.bank.create.modal">
-                    <flux:button variant="primary">{{ __('app.create_bank') }}</flux:button>
-                </flux:modal.trigger>
-            @endcan
+            <div class="flex gap-2">
+                @can('accounting_bank_remittance_request')
+                    <flux:modal.trigger name="accounting.bank.request-remittance.modal">
+                        <flux:button variant="primary">{{ __('app.request_remittance_button') }}</flux:button>
+                    </flux:modal.trigger>
+                @endcan
+                @can('accounting_bank_create')
+                    <flux:modal.trigger name="accounting.bank.create.modal">
+                        <flux:button variant="primary">{{ __('app.create_bank') }}</flux:button>
+                    </flux:modal.trigger>
+                @endcan
+            </div>
         </div>
 
         <flux:separator variant="subtle" />
     </div>
     <livewire:panel.accounting.bank.create />
     <livewire:panel.accounting.bank.edit />
+    <livewire:panel.accounting.bank.request-remittance />
 
     <flux:table :paginate="$this->banks">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">

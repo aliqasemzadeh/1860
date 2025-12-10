@@ -108,10 +108,12 @@ return [
         'accounting_bank_edit' => 'ویرایش حساب بانکی',
         'accounting_bank_delete' => 'حذف حساب بانکی',
 
-        'accounting_bank_remittance_index' => 'حواله ها',
+        'accounting_bank_remittance_index' => 'فهرست حواله‌ها',
         'accounting_bank_remittance_create' => 'ایجاد حواله',
         'accounting_bank_remittance_edit' => 'ویرایش حواله',
+        'accounting_bank_remittance_delete' => 'حذف حواله',
         'accounting_bank_remittance_check' => 'بررسی حواله',
+        'accounting_bank_remittance_request' => 'درخواست حواله',
 
         'accounting_bank_transaction_index' => 'تراکنش‌ها',
     ],
