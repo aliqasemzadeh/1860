@@ -393,4 +393,6 @@ return [
     'transaction_type_expense' => 'هزینه',
     'transaction_type_remittance' => 'حواله',
     'transaction_type_transfer' => 'انتقال',
+    'transaction_type_receive' => 'دریافت',
+    'transaction_type_payment' => 'پرداخت',
 ];

@@ -34,7 +34,7 @@ class BankRemittance extends Model
      */
     public function bank(): BelongsTo
     {
-        return $this->belongsTo(Bank::class);
+        return $this->belongsTo(Bank::class, 'bank_id')->withTrashed();
     }
 
     /**
@@ -42,6 +42,8 @@ class BankRemittance extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id')->withDefault(
+            ['name' => '[System]']
+        )->withTrashed();
     }
 }

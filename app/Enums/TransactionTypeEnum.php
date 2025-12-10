@@ -9,6 +9,8 @@ enum TransactionTypeEnum: string
     case Expense = 'Expense';
     case Remittance = 'Remittance';
     case Transfer = 'Transfer';
+    case Receive = 'Receive';
+    case Payment = 'Payment';
 
     /**
      * Get the translation key for the transaction type.
@@ -21,6 +23,8 @@ enum TransactionTypeEnum: string
             self::Expense => 'transaction_type_expense',
             self::Remittance => 'transaction_type_remittance',
             self::Transfer => 'transaction_type_transfer',
+            self::Receive => 'transaction_type_receive',
+            self::Payment => 'transaction_type_payment',
         };
     }
 
@@ -43,6 +47,8 @@ enum TransactionTypeEnum: string
             self::Expense => 'red',
             self::Remittance => 'blue',
             self::Transfer => 'indigo',
+            self::Receive => 'emerald',
+            self::Payment => 'orange',
         };
     }
 

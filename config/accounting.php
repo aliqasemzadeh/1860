@@ -6,5 +6,7 @@ return [
         'Expense',
         'Remittance',
         'Transfer',
+        'Receive',
+        'Payment',
     ]
 ];
