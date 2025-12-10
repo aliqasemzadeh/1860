@@ -34,7 +34,7 @@ class Check extends Component
         }
 
         $validated = $this->validate([
-            'final_amount' => ['required', 'numeric', 'min:0'],
+            'final_amount' => ['required', 'min:0'],
         ]);
 
         $this->remittance->update([

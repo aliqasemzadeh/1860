@@ -31,7 +31,7 @@ class Edit extends Component
     public function assignData($id): void
     {
         $this->remittance = BankRemittance::findOrFail($id);
-        
+
         if ($this->remittance->checked_at) {
             return;
         }
@@ -58,7 +58,7 @@ class Edit extends Component
         $validated = $this->validate([
             'bank_id' => ['required', 'exists:banks,id'],
             'description' => ['required', 'string', 'max:255'],
-            'draft_amount' => ['required', 'numeric', 'min:0'],
+            'draft_amount' => ['required', 'min:0'],
         ]);
 
         $this->remittance->update([

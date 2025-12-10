@@ -29,7 +29,7 @@ class Create extends Component
         $validated = $this->validate([
             'bank_id' => ['required', 'exists:banks,id'],
             'description' => ['required', 'string', 'max:255'],
-            'draft_amount' => ['required', 'numeric', 'min:0'],
+            'draft_amount' => ['required', 'min:0'],
         ]);
 
         BankRemittance::create([

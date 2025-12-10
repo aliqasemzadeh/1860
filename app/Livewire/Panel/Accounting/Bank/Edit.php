@@ -46,7 +46,7 @@ class Edit extends Component
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'sort_order' => ['required', 'integer', 'min:0'],
-            'init_balance' => ['required', 'numeric', 'min:0'],
+            'init_balance' => ['required', 'min:0'],
         ]);
 
         $this->bank->update([
