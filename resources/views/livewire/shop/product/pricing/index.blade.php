@@ -78,7 +78,7 @@
                         @endif
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
-                        {{ $price->created_at?->format('Y-m-d H:i') }}
+                        {{ \Morilog\Jalali\Jalalian::fromCarbon($price->created_at)->format('%Y-%m-%d %H:%M') }}
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         <div class="flex items-center gap-2">

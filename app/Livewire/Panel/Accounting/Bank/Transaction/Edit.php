@@ -44,7 +44,8 @@ class Edit extends Component
         $this->id = $this->transaction->id;
         $this->bank_id = $this->transaction->bank_id;
         $this->linker = $this->transaction->linker ?? '';
-        $this->amount = (string) $this->transaction->amount;
+        // Display absolute value for editing (amounts are stored as negative for expense types)
+        $this->amount = (string) abs($this->transaction->amount);
         $this->description = $this->transaction->description;
         $this->linker_id = $this->transaction->linker_id;
         Flux::modal('accounting.bank.transaction.edit.modal')->show();
@@ -68,6 +69,25 @@ class Edit extends Component
 
         // Convert amount string to float (remove formatting)
         $amountValue = (float) str_replace(',', '', $validated['amount']);
+
+        // Transaction types that decrease balance (should be stored as negative)
+        $decreasingTypes = ['Expense', 'Remittance', 'Payment'];
+        
+        // Check if transaction would result in negative balance
+        $bank = Bank::findOrFail($validated['bank_id']);
+        
+        // Calculate balance without this transaction (add back the old amount)
+        $balanceWithoutTransaction = $bank->calculateBalance() - $this->transaction->amount;
+        
+        if (in_array($validated['linker'], $decreasingTypes)) {
+            // For decreasing types, check if balance would go negative
+            if ($amountValue > $balanceWithoutTransaction) {
+                Flux::toast(variant: 'danger', text: __('app.insufficient_balance'));
+                return;
+            }
+            // Store as negative amount
+            $amountValue = -$amountValue;
+        }
 
         $this->transaction->update([
             'bank_id' => $validated['bank_id'],

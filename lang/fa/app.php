@@ -395,4 +395,6 @@ return [
     'transaction_type_transfer' => 'انتقال',
     'transaction_type_receive' => 'دریافت',
     'transaction_type_payment' => 'پرداخت',
+    'negative_balance_not_allowed' => 'موجودی بانک نمی‌تواند منفی شود.',
+    'insufficient_balance' => 'موجودی کافی نیست.',
 ];

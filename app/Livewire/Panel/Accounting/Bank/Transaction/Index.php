@@ -63,6 +63,7 @@ class Index extends Component
             ->when($this->bankFilter, function ($query) {
                 $query->where('bank_id', $this->bankFilter);
             })
+            ->when(!$this->sortBy, fn ($query) => $query->orderBy('created_at', 'desc'))
             ->tap(fn ($query) => $this->sortBy ? $query->orderBy($this->sortBy, $this->sortDirection) : $query)
             ->paginate(10);
     }
@@ -99,6 +100,12 @@ class Index extends Component
     public function banks()
     {
         return Bank::orderBy('sort_order')->get();
+    }
+
+    #[\Livewire\Attributes\Computed]
+    public function transactionTypes()
+    {
+        return config('accounting.transaction_type', []);
     }
 
     public function render()

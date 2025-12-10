@@ -55,6 +55,23 @@ class CreateTransaction extends Component
         // Convert amount string to float (remove formatting)
         $amountValue = (float) str_replace(',', '', $validated['amount']);
 
+        // Transaction types that decrease balance (should be stored as negative)
+        $decreasingTypes = ['Expense', 'Remittance', 'Payment'];
+        
+        // Check if transaction would result in negative balance
+        $bank = Bank::findOrFail($validated['bank_id']);
+        $currentBalance = $bank->calculateBalance();
+        
+        if (in_array($validated['linker'], $decreasingTypes)) {
+            // For decreasing types, check if balance would go negative
+            if ($amountValue > $currentBalance) {
+                Flux::toast(variant: 'danger', text: __('app.insufficient_balance'));
+                return;
+            }
+            // Store as negative amount
+            $amountValue = -$amountValue;
+        }
+
         BankTransaction::create([
             'bank_id' => $validated['bank_id'],
             'user_id' => Auth::id(),
