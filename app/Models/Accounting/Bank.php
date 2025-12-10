@@ -10,10 +10,12 @@ class Bank extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'description', 'sort_order', 'meta'];
+    protected $fillable = ['name', 'description', 'sort_order', 'meta', 'balance', 'init_balance'];
 
     protected $casts = [
         'meta' => 'array',
+        'balance' => 'decimal:5',
+        'init_balance' => 'decimal:5',
     ];
 
     /**
@@ -30,5 +32,23 @@ class Bank extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(BankTransaction::class);
+    }
+
+    /**
+     * Calculate balance from transactions and init_balance.
+     */
+    public function calculateBalance(): float
+    {
+        $transactionsSum = $this->transactions()->sum('amount');
+        return (float) ($this->init_balance + $transactionsSum);
+    }
+
+    /**
+     * Update balance from transactions.
+     */
+    public function updateBalance(): void
+    {
+        $this->balance = $this->calculateBalance();
+        $this->save();
     }
 }

@@ -20,6 +20,8 @@ class Edit extends Component
 
     public int $sort_order = 0;
 
+    public string $init_balance = '0';
+
     #[On('accounting.bank.edit.assign-data')]
     public function assignData($id): void
     {
@@ -28,6 +30,7 @@ class Edit extends Component
         $this->name = $this->bank->name;
         $this->description = $this->bank->description;
         $this->sort_order = $this->bank->sort_order;
+        $this->init_balance = (string) $this->bank->init_balance;
         Flux::modal('accounting.bank.edit.modal')->show();
     }
 
@@ -43,10 +46,19 @@ class Edit extends Component
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'sort_order' => ['required', 'integer', 'min:0'],
+            'init_balance' => ['required', 'numeric', 'min:0'],
         ]);
 
-        $this->bank->update($validated);
+        $this->bank->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'sort_order' => $validated['sort_order'],
+            'init_balance' => $validated['init_balance'],
+        ]);
 
+        $this->bank->updateBalance();
+
+        Flux::toast(__('app.bank_updated'));
         $this->dispatch('accounting.bank.index.render');
         Flux::modal('accounting.bank.edit.modal')->close();
     }

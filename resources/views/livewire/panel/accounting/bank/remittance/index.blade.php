@@ -17,16 +17,23 @@
     <livewire:panel.accounting.bank.remittance.create />
     <livewire:panel.accounting.bank.remittance.edit />
     <livewire:panel.accounting.bank.remittance.check />
+    <livewire:panel.accounting.bank.remittance.transfer />
 
     <flux:table :paginate="$this->remittances">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
-            <flux:table.column colspan="7" class="bg-white dark:bg-zinc-900">
-                <div class="flex flex-col gap-1 pe-2 items-end">
+            <flux:table.column colspan="8" class="bg-white dark:bg-zinc-900">
+                <div class="flex flex-col gap-2 pe-2 items-end">
                     <flux:input
                         size="sm"
                         placeholder="{{ __('app.search_placeholder') }}"
                         wire:model.live="search"
                     />
+                    <flux:select wire:model.live="statusFilter" size="sm" placeholder="{{ __('app.filter_status') }}">
+                        <flux:select.option value="">{{ __('app.all_statuses') }}</flux:select.option>
+                        @foreach (\App\Enums\RemittanceStatusEnum::options() as $status)
+                            <flux:select.option value="{{ $status['value'] }}">{{ $status['label'] }}</flux:select.option>
+                        @endforeach
+                    </flux:select>
                 </div>
             </flux:table.column>
         </flux:table.columns>
@@ -59,15 +66,12 @@
                         {{ number_format($remittance->final_amount, 0) }} {{ __('app.toman') }}
                     </flux:table.cell>
                     <flux:table.cell>
-                        @if ($remittance->status === 'pending')
-                            <span class="text-yellow-600">{{ __('app.remittance_status_pending') }}</span>
-                        @elseif ($remittance->status === 'checked')
-                            <span class="text-green-600">{{ __('app.remittance_status_checked') }}</span>
-                        @elseif ($remittance->status === 'transferred')
-                            <span class="text-blue-600">{{ __('app.remittance_status_transferred') }}</span>
-                        @else
-                            {{ $remittance->status }}
-                        @endif
+                        @php
+                            $statusEnum = \App\Enums\RemittanceStatusEnum::tryFromSafe($remittance->status);
+                        @endphp
+                        <flux:badge variant="solid" color="{{ $statusEnum->color() }}">
+                            {{ $statusEnum->label() }}
+                        </flux:badge>
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         {{ \Morilog\Jalali\Jalalian::fromCarbon($remittance->created_at)->format('%Y-%m-%d %H:%M') }}
@@ -80,11 +84,16 @@
                         @endif
                         @if (!$remittance->checked_at)
                             @can('accounting_bank_remittance_check')
-                                <flux:button size="xs" variant="primary" wire:click="$dispatch('accounting.bank.remittance.check.assign-data', { id: '{{ $remittance->id }}' })">{{ __('app.check_remittance_button') }}</flux:button>
+                                <flux:button size="xs" variant="primary" color="green" wire:click="$dispatch('accounting.bank.remittance.check.assign-data', { id: '{{ $remittance->id }}' })">{{ __('app.check_remittance_button') }}</flux:button>
+                            @endcan
+                        @endif
+                        @if ($remittance->checked_at && !$remittance->transfer_at)
+                            @can('accounting_bank_remittance_transfer')
+                                <flux:button size="xs" variant="primary" color="blue" wire:click="$dispatch('accounting.bank.remittance.transfer.assign-data', { id: '{{ $remittance->id }}' })">{{ __('app.transfer_remittance_button') }}</flux:button>
                             @endcan
                         @endif
                         @can('accounting_bank_remittance_delete')
-                            <flux:button size="xs" variant="danger" wire:click="delete({{ $remittance->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
+                            <flux:button size="xs" variant="danger" color="red" wire:click="delete({{ $remittance->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
                         @endcan
                     </flux:table.cell>
                 </flux:table.row>

@@ -10,7 +10,11 @@ class BankTransaction extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['bank_id', 'amount', 'linker_id', 'linker'];
+    protected $fillable = ['bank_id', 'user_id', 'amount', 'linker_id', 'linker', 'description'];
+
+    protected $casts = [
+        'amount' => 'decimal:5',
+    ];
 
     /**
      * Get the bank that owns this transaction.
@@ -18,5 +22,29 @@ class BankTransaction extends Model
     public function bank(): BelongsTo
     {
         return $this->belongsTo(Bank::class);
+    }
+
+    /**
+     * Get the user that created this transaction.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\User::class);
+    }
+
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($transaction) {
+            $transaction->bank->updateBalance();
+        });
+
+        static::deleted(function ($transaction) {
+            $transaction->bank->updateBalance();
+        });
     }
 }

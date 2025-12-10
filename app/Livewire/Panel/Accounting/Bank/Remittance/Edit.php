@@ -68,6 +68,7 @@ class Edit extends Component
             'final_amount' => $validated['draft_amount'],
         ]);
 
+        Flux::toast(__('app.remittance_updated'));
         $this->dispatch('accounting.bank.remittance.index.render');
         Flux::modal('accounting.bank.remittance.edit.modal')->close();
     }

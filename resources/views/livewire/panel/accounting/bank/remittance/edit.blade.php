@@ -24,7 +24,7 @@
                     </flux:field>
                     <flux:field>
                         <flux:label>{{ __('app.remittance_draft_amount') }}</flux:label>
-                        <flux:input wire:model="draft_amount" type="number" step="0.01" min="0" />
+                        <flux:input wire:model="draft_amount" type="text" mask:dynamic="$money($input)" />
                         <flux:error name="draft_amount" />
                     </flux:field>
                 </div>

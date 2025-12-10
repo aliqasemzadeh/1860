@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Panel\Accounting\Bank\Remittance;
 
+use App\Enums\RemittanceStatusEnum;
 use App\Models\Accounting\BankRemittance;
+use Flux\Flux;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -18,8 +20,11 @@ class Index extends Component
 
     public string $search = '';
 
+    public string $statusFilter = '';
+
     protected $queryString = [
         'search' => ['except' => ''],
+        'statusFilter' => ['except' => ''],
         'page' => ['except' => 1],
     ];
 
@@ -48,11 +53,19 @@ class Index extends Component
                         });
                 });
             })
+            ->when($this->statusFilter, function ($query) {
+                $query->where('status', $this->statusFilter);
+            })
             ->tap(fn ($query) => $this->sortBy ? $query->orderBy($this->sortBy, $this->sortDirection) : $query)
             ->paginate(10);
     }
 
     public function updatingSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingStatusFilter(): void
     {
         $this->resetPage();
     }
@@ -64,6 +77,7 @@ class Index extends Component
         $remittance = BankRemittance::findOrFail($id);
         $remittance->delete();
 
+        Flux::toast(__('app.remittance_deleted'));
         $this->dispatch('accounting.bank.remittance.index.render');
     }
 

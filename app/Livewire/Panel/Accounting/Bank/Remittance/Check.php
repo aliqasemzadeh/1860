@@ -16,12 +16,15 @@ class Check extends Component
 
     public float $final_amount = 0;
 
+    public bool $reject = false;
+
     #[On('accounting.bank.remittance.check.assign-data')]
     public function assignData($id): void
     {
         $this->remittance = BankRemittance::findOrFail($id);
         $this->id = $this->remittance->id;
         $this->final_amount = (float) $this->remittance->final_amount;
+        $this->reject = false;
         Flux::modal('accounting.bank.remittance.check.modal')->show();
     }
 
@@ -33,15 +36,26 @@ class Check extends Component
             return;
         }
 
-        $validated = $this->validate([
-            'final_amount' => ['required', 'numeric', 'min:0'],
-        ]);
+        if ($this->reject) {
+            $this->remittance->update([
+                'checked_at' => now(),
+                'status' => 'rejected',
+            ]);
 
-        $this->remittance->update([
-            'final_amount' => $validated['final_amount'],
-            'checked_at' => now(),
-            'status' => 'checked',
-        ]);
+            Flux::toast(__('app.remittance_rejected'));
+        } else {
+            $validated = $this->validate([
+                'final_amount' => ['required', 'numeric', 'min:0'],
+            ]);
+
+            $this->remittance->update([
+                'final_amount' => $validated['final_amount'],
+                'checked_at' => now(),
+                'status' => 'checked',
+            ]);
+
+            Flux::toast(__('app.remittance_checked'));
+        }
 
         $this->dispatch('accounting.bank.remittance.index.render');
         Flux::modal('accounting.bank.remittance.check.modal')->close();

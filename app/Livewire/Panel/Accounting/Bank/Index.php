@@ -3,6 +3,7 @@
 namespace App\Livewire\Panel\Accounting\Bank;
 
 use App\Models\Accounting\Bank;
+use Flux\Flux;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -61,6 +62,7 @@ class Index extends Component
         $bank = Bank::findOrFail($id);
         $bank->delete();
 
+        Flux::toast(__('app.bank_deleted'));
         $this->dispatch('accounting.bank.index.render');
     }
 

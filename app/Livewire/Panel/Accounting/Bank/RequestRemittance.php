@@ -6,6 +6,7 @@ use App\Models\Accounting\Bank;
 use App\Models\Accounting\BankRemittance;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class RequestRemittance extends Component
@@ -15,6 +16,13 @@ class RequestRemittance extends Component
     public string $description = '';
 
     public float $draft_amount = 0;
+
+    #[On('accounting.bank.request-remittance.assign-data')]
+    public function assignData($id): void
+    {
+        $this->bank_id = $id;
+        Flux::modal('accounting.bank.request-remittance.modal')->show();
+    }
 
     #[\Livewire\Attributes\Computed]
     public function banks()
@@ -41,6 +49,7 @@ class RequestRemittance extends Component
             'status' => 'pending',
         ]);
 
+        Flux::toast(__('app.remittance_requested'));
         $this->dispatch('accounting.bank.remittance.index.render');
         Flux::modal('accounting.bank.request-remittance.modal')->close();
 

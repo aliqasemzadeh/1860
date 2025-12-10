@@ -21,6 +21,11 @@
                     <flux:input wire:model="sort_order" type="number" min="0" />
                     <flux:error name="sort_order" />
                 </flux:field>
+                <flux:field>
+                    <flux:label>{{ __('app.bank_init_balance') }}</flux:label>
+                    <flux:input wire:model="init_balance" type="text" mask:dynamic="$money($input)" />
+                    <flux:error name="init_balance" />
+                </flux:field>
             </div>
             <flux:button type="submit" class="w-full" variant="primary">
                 {{ __('app.update') }}

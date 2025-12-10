@@ -11,6 +11,12 @@
                     <flux:text>{{ $remittance->bank->name }}</flux:text>
                 </div>
                 <div>
+                    <flux:label>{{ __('app.bank_balance') }}</flux:label>
+                    <flux:text class="{{ $remittance->bank->calculateBalance() < $remittance->final_amount ? 'text-red-600 font-bold' : '' }}">
+                        {{ number_format($remittance->bank->calculateBalance(), 0) }} {{ __('app.toman') }}
+                    </flux:text>
+                </div>
+                <div>
                     <flux:label>{{ __('app.remittance_description') }}</flux:label>
                     <flux:text>{{ $remittance->description }}</flux:text>
                 </div>
@@ -23,13 +29,25 @@
                 <div class="pb-2 space-y-4">
                     <flux:field>
                         <flux:label>{{ __('app.remittance_final_amount') }}</flux:label>
-                        <flux:input wire:model="final_amount" type="number" step="0.01" min="0" />
+                        <flux:input wire:model="final_amount" type="text" mask:dynamic="$money($input)" :disabled="$reject" />
                         <flux:error name="final_amount" />
                     </flux:field>
+                    <flux:field>
+                        <flux:checkbox wire:model="reject" />
+                        <flux:label>{{ __('app.reject_remittance') }}</flux:label>
+                    </flux:field>
                 </div>
-                <flux:button type="submit" class="w-full" variant="primary">
-                    {{ __('app.check_remittance_button') }}
-                </flux:button>
+                <div class="flex gap-2">
+                    @if ($reject)
+                        <flux:button type="submit" class="flex-1" variant="danger" color="red">
+                            {{ __('app.reject') }}
+                        </flux:button>
+                    @else
+                        <flux:button type="submit" class="flex-1" variant="primary">
+                            {{ __('app.check_remittance_button') }}
+                        </flux:button>
+                    @endif
+                </div>
             </form>
         @endif
     </div>

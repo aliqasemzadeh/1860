@@ -114,6 +114,7 @@ return [
         'accounting_bank_remittance_delete' => 'حذف حواله',
         'accounting_bank_remittance_check' => 'بررسی حواله',
         'accounting_bank_remittance_request' => 'درخواست حواله',
+        'accounting_bank_remittance_transfer' => 'پرداخت حواله',
 
         'accounting_bank_transaction_index' => 'تراکنش‌ها',
     ],
