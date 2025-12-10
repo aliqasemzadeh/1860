@@ -29,24 +29,17 @@
                 <div class="pb-2 space-y-4">
                     <flux:field>
                         <flux:label>{{ __('app.remittance_final_amount') }}</flux:label>
-                        <flux:input wire:model="final_amount" type="text" mask:dynamic="$money($input)" :disabled="$reject" />
+                        <flux:input wire:model="final_amount" type="text" mask:dynamic="$money($input)" />
                         <flux:error name="final_amount" />
-                    </flux:field>
-                    <flux:field>
-                        <flux:checkbox wire:model="reject" />
-                        <flux:label>{{ __('app.reject_remittance') }}</flux:label>
                     </flux:field>
                 </div>
                 <div class="flex gap-2">
-                    @if ($reject)
-                        <flux:button type="submit" class="flex-1" variant="danger" color="red">
-                            {{ __('app.reject') }}
-                        </flux:button>
-                    @else
-                        <flux:button type="submit" class="flex-1" variant="primary">
-                            {{ __('app.check_remittance_button') }}
-                        </flux:button>
-                    @endif
+                    <flux:button type="submit" class="flex-1" variant="primary">
+                        {{ __('app.check_remittance_button') }}
+                    </flux:button>
+                    <flux:button type="button" wire:click="reject" class="flex-1" variant="danger" color="red" wire:confirm="{{ __('app.are_you_sure') }}">
+                        {{ __('app.reject') }}
+                    </flux:button>
                 </div>
             </form>
         @endif

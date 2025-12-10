@@ -19,7 +19,7 @@ class Edit extends Component
 
     public string $description = '';
 
-    public float $draft_amount = 0;
+    public string $draft_amount = '0';
 
     #[\Livewire\Attributes\Computed]
     public function banks()
@@ -39,7 +39,7 @@ class Edit extends Component
         $this->id = $this->remittance->id;
         $this->bank_id = $this->remittance->bank_id;
         $this->description = $this->remittance->description;
-        $this->draft_amount = (float) $this->remittance->draft_amount;
+        $this->draft_amount = (string) $this->remittance->draft_amount;
         Flux::modal('accounting.bank.remittance.edit.modal')->show();
     }
 
@@ -64,8 +64,8 @@ class Edit extends Component
         $this->remittance->update([
             'bank_id' => $validated['bank_id'],
             'description' => $validated['description'],
-            'draft_amount' => $validated['draft_amount'],
-            'final_amount' => $validated['draft_amount'],
+            'draft_amount' => (float) $validated['draft_amount'],
+            'final_amount' => (float) $validated['draft_amount'],
         ]);
 
         Flux::toast(__('app.remittance_updated'));

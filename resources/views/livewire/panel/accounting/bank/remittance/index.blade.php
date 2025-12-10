@@ -22,7 +22,7 @@
     <flux:table :paginate="$this->remittances">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
             <flux:table.column colspan="8" class="bg-white dark:bg-zinc-900">
-                <div class="flex flex-col gap-2 pe-2 items-end">
+                <div class="flex flex-row gap-2 pe-2 items-end">
                     <flux:input
                         size="sm"
                         placeholder="{{ __('app.search_placeholder') }}"
@@ -69,7 +69,7 @@
                         @php
                             $statusEnum = \App\Enums\RemittanceStatusEnum::tryFromSafe($remittance->status);
                         @endphp
-                        <flux:badge variant="solid" color="{{ $statusEnum->color() }}">
+                        <flux:badge variant="solid" color="{{ $statusEnum->color() }}" size="sm">
                             {{ $statusEnum->label() }}
                         </flux:badge>
                     </flux:table.cell>

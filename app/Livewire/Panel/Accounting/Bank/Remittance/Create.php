@@ -14,7 +14,7 @@ class Create extends Component
 
     public string $description = '';
 
-    public float $draft_amount = 0;
+    public string $draft_amount = '0';
 
     #[\Livewire\Attributes\Computed]
     public function banks()
@@ -36,8 +36,8 @@ class Create extends Component
             'bank_id' => $validated['bank_id'],
             'user_id' => Auth::id(),
             'description' => $validated['description'],
-            'draft_amount' => $validated['draft_amount'],
-            'final_amount' => $validated['draft_amount'],
+            'draft_amount' => (float) $validated['draft_amount'],
+            'final_amount' => (float) $validated['draft_amount'],
             'status' => 'pending',
         ]);
 
