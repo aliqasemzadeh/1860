@@ -48,11 +48,11 @@
                             <flux:chart.line field="price" class="text-sky-500 dark:text-sky-400" curve="monotone" />
                             <flux:chart.axis axis="x" field="date">
                                 <flux:chart.axis.grid />
-                                <flux:chart.axis.tick :format="@js(['year' => 'numeric', 'month' => 'short', 'day' => 'numeric', 'hour' => 'numeric', 'minute' => '2-digit'])" />
+                                <flux:chart.axis.tick :format='["year" => "numeric", "month" => "short", "day" => "numeric", "hour" => "numeric", "minute" => "2-digit"]' />
                                 <flux:chart.axis.line />
                             </flux:chart.axis>
                             <flux:chart.axis axis="y">
-                                <flux:chart.axis.tick :format="@js(['style' => 'currency', 'currency' => 'IRR', 'minimumFractionDigits' => 0])" />
+                                <flux:chart.axis.tick :format='["style" => "currency", "currency" => "IRR", "minimumFractionDigits" => 0]' />
                             </flux:chart.axis>
                             <flux:chart.cursor />
                         </flux:chart.svg>

@@ -20,8 +20,9 @@ class History extends Component
 
     public Product $product;
 
-    public function mount(int $productId, array $data = [])
+    public function mount(int $productId)
     {
+        $data = [];
         $this->productId = $productId;
         $this->colorId = $data['colorId'] ?? null;
         $this->warrantyId = $data['warrantyId'] ?? null;
@@ -57,12 +58,12 @@ class History extends Component
                 'date' => $price->created_at->timestamp * 1000, // Convert to milliseconds for chart
                 'price' => (float) $price->price,
             ];
-            
+
             // Only include sale_price if it exists
             if ($price->sale_price) {
                 $item['sale_price'] = (float) $price->sale_price;
             }
-            
+
             return $item;
         })->values()->toArray();
 
