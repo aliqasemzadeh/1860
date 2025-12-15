@@ -9,6 +9,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Carbon\Carbon;
 
 class History extends Component
 {
@@ -55,7 +56,7 @@ class History extends Component
     {
         $data = $this->priceHistory->map(function ($price) {
             $item = [
-                'date' => $price->created_at->timestamp * 1000, // Convert to milliseconds for chart
+                'date' =>  Carbon::make($price->created_at)->toString(),
                 'price' => (float) $price->price,
             ];
 
@@ -71,7 +72,7 @@ class History extends Component
         if (empty($data)) {
             return [
                 [
-                    'date' => now()->timestamp * 1000,
+                    'date' => Carbon::now()->toIso8601String(),
                     'price' => 0,
                 ]
             ];

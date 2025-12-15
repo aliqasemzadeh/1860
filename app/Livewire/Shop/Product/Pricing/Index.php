@@ -48,14 +48,9 @@ class Index extends Component
             });
     }
 
-    #[On('shop.product.pricing.index.render')]
-    public function refresh(): void
-    {
-        $this->product->refresh();
-    }
-
     #[Layout('layouts.panels.shop')]
-    public function render(): View
+    #[On('shop.product.pricing.index.render')]
+    public function render()
     {
         return view('livewire.shop.product.pricing.index');
     }

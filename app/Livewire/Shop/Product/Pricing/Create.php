@@ -76,7 +76,7 @@ class Create extends Component
         $this->resetValidation();
     }
 
-    public function create(): void
+    public function create()
     {
         // Ensure product is loaded
         if (!$this->product && $this->productId) {
@@ -129,10 +129,10 @@ class Create extends Component
             'is_default' => $validated['is_default'],
         ]);
 
-        $this->dispatch('shop.product.pricing.index.render');
+
         Flux::toast(variant: 'success', text: __('app.price_created'));
         Flux::modal('shop.product.pricing.create.modal')->close();
-        $this->resetForm();
+        return redirect(route('shop.product.pricing.index', [$this->productId]));
     }
 
     #[Computed]
