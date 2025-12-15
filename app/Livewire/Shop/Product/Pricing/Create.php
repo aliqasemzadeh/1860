@@ -21,8 +21,8 @@ class Create extends Component
 
     public ?int $color_id = null;
     public ?int $warranty_id = null;
-    public ?string $price = null;
-    public ?string $sale_price = null;
+    public string $price = '0';
+    public string $sale_price = '0';
     public ?string $quantity = '0';
     public bool $is_default = false;
 
@@ -67,8 +67,8 @@ class Create extends Component
     {
         $this->color_id = null;
         $this->warranty_id = null;
-        $this->price = null;
-        $this->sale_price = null;
+        $this->price = '';
+        $this->sale_price = '';
         $this->quantity = '0';
         $this->is_default = false;
         $this->color_search = '';
@@ -93,9 +93,9 @@ class Create extends Component
         $this->warranty_id = $this->warranty_id === '' ? null : $this->warranty_id;
 
         $validated = $this->validate([
-            'price' => ['required', 'min:0'],
-            'sale_price' => ['nullable', 'min:0'],
-            'quantity' => ['required', 'numeric', 'min:0'],
+            'price' => ['required'],
+            'sale_price' => ['nullable'],
+            'quantity' => ['required', 'numeric'],
             'color_id' => ['nullable', 'exists:colors,id'],
             'warranty_id' => ['nullable', 'exists:warranties,id'],
             'is_default' => ['boolean'],
@@ -123,16 +123,15 @@ class Create extends Component
             'product_id' => $this->productId,
             'color_id' => $validated['color_id'],
             'warranty_id' => $validated['warranty_id'],
-            'price' => $validated['price'],
-            'sale_price' => $validated['sale_price'],
+            'price' => str_replace(",","", $validated['price']),
+            'sale_price' => str_replace(",","", $validated['sale_price']),
             'quantity' => $validated['quantity'],
             'is_default' => $validated['is_default'],
         ]);
 
+        $this->dispatch('shop.product.pricing.index.render');
         Flux::toast(variant: 'success', text: __('app.price_created'));
         Flux::modal('shop.product.pricing.create.modal')->close();
-
-        $this->dispatch('shop.product.pricing.index.render');
         $this->resetForm();
     }
 

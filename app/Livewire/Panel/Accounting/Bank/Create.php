@@ -24,15 +24,15 @@ class Create extends Component
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'sort_order' => ['required', 'integer', 'min:0'],
-            'init_balance' => ['required', 'min:0'],
+            'init_balance' => ['required'],
         ]);
 
         $bank = Bank::create([
             'name' => $validated['name'],
             'description' => $validated['description'],
             'sort_order' => $validated['sort_order'],
-            'init_balance' => $validated['init_balance'],
-            'balance' => $validated['init_balance'],
+            'init_balance' => str_replace(",", "", $validated['init_balance']),
+            'balance' => str_replace(",", "", $validated['init_balance']),
         ]);
 
         Flux::toast(variant: 'success', text: __('app.bank_created'));

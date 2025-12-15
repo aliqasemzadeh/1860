@@ -6,11 +6,6 @@
                 <flux:subheading size="lg" class="mb-6">{{ __('app.banks_description') }}</flux:subheading>
             </div>
             <div class="flex gap-2">
-                @can('accounting_bank_transaction_create')
-                    <flux:modal.trigger name="accounting.bank.create-transaction.modal">
-                        <flux:button variant="primary" color="blue">{{ __('app.create_transaction_button') }}</flux:button>
-                    </flux:modal.trigger>
-                @endcan
                 @can('accounting_bank_remittance_request')
                     <flux:modal.trigger name="accounting.bank.request-remittance.modal">
                         <flux:button variant="primary" color="green">{{ __('app.request_remittance_button') }}</flux:button>
@@ -28,7 +23,6 @@
     </div>
     <livewire:panel.accounting.bank.create />
     <livewire:panel.accounting.bank.edit />
-    <livewire:panel.accounting.bank.create-transaction />
     <livewire:panel.accounting.bank.request-remittance />
 
     <flux:table :paginate="$this->banks">
@@ -46,6 +40,7 @@
         <flux:table.columns>
             <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('app.bank_name') }}</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'balance'" :direction="$sortDirection" wire:click="sort('balance')">{{ __('app.bank_balance') }}</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'sort_order'" :direction="$sortDirection" wire:click="sort('sort_order')">{{ __('app.sort_order') }}</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')">{{ __('app.date') }}</flux:table.column>
             <flux:table.column>{{ __('app.options') }}</flux:table.column>
         </flux:table.columns>
@@ -58,6 +53,9 @@
                     <flux:table.cell>
                         {{ number_format($bank->calculateBalance(), 0) }} {{ __('app.toman') }}
                     </flux:table.cell>
+                    <flux:table.cell>
+                        {{ $bank->sort_order }}
+                    </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         {{ \Morilog\Jalali\Jalalian::fromCarbon($bank->created_at)->format('%Y-%m-%d %H:%M') }}
                     </flux:table.cell>
@@ -65,15 +63,12 @@
                         @can('accounting_bank_edit')
                             <flux:button size="xs" variant="primary" wire:click="$dispatch('accounting.bank.edit.assign-data', { id: '{{ $bank->id }}' })">{{ __('app.edit') }}</flux:button>
                         @endcan
-                        @can('accounting_bank_transaction_create')
-                            <flux:button size="xs" variant="primary" color="blue" wire:click="$dispatch('accounting.bank.create-transaction.assign-data', { id: '{{ $bank->id }}' })">{{ __('app.create_transaction_button') }}</flux:button>
-                        @endcan
-                        @can('accounting_bank_remittance_create')
-                            <flux:button size="xs" variant="primary" color="green" wire:click="$dispatch('accounting.bank.request-remittance.assign-data', { id: '{{ $bank->id }}' })">{{ __('app.create_remittance') }}</flux:button>
-                        @endcan
                         @can('accounting_bank_delete')
                             <flux:button size="xs" variant="danger" color="red" wire:click="delete({{ $bank->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
                         @endcan
+                            @can('accounting_bank_remittance_create')
+                                <flux:button size="xs" variant="primary" color="green" wire:click="$dispatch('accounting.bank.request-remittance.assign-data', { id: '{{ $bank->id }}' })">{{ __('app.create_remittance') }}</flux:button>
+                            @endcan
                     </flux:table.cell>
                 </flux:table.row>
             @endforeach
