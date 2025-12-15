@@ -83,7 +83,7 @@
                     <flux:table.cell class="whitespace-nowrap">
                         <div class="flex items-center gap-2">
                             <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.product.pricing.edit.assign-data', { id: '{{ $price->id }}' })">{{ __('app.edit') }}</flux:button>
-                            <flux:button size="xs" variant="primary" color="sky" wire:click="$dispatch('shop.product.pricing.history.assign-data', { colorId: '{{ $price->color_id ?? 'null' }}', warrantyId: '{{ $price->warranty_id ?? 'null' }}' })">{{ __('app.price_history') }}</flux:button>
+                            <flux:button size="xs" variant="primary" color="sky" wire:click="$dispatch('shop.product.pricing.history.assign-data', { colorId: {{ $price->color_id ?? 'null' }}, warrantyId: {{ $price->warranty_id ?? 'null' }} })">{{ __('app.price_history') }}</flux:button>
                         </div>
                     </flux:table.cell>
                 </flux:table.row>

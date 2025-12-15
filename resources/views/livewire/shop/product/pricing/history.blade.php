@@ -19,7 +19,7 @@
             </div>
         @else
             <flux:card>
-                <flux:chart class="grid gap-6" :data="$this->chartData">
+                <flux:chart class="grid gap-6" :value="$this->chartData">
                     <flux:chart.summary class="flex gap-12">
                         <div>
                             <flux:text>{{ __('app.price_today') }}</flux:text>

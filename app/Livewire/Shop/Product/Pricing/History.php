@@ -30,11 +30,11 @@ class History extends Component
     }
 
     #[On('shop.product.pricing.history.assign-data')]
-    public function assignData(array $data): void
+    public function assignData(int $colorId = null, int $warrantyId = null): void
     {
-        $this->colorId = $data['colorId'] === 'null' ? null : ($data['colorId'] ?? null);
-        $this->warrantyId = $data['warrantyId'] === 'null' ? null : ($data['warrantyId'] ?? null);
-        Flux::modal('shop.product.pricing.history.modal')->open();
+        $this->colorId = $colorId;
+        $this->warrantyId = $warrantyId;
+        Flux::modal('shop.product.pricing.history.modal')->show();
     }
 
     #[Computed]
