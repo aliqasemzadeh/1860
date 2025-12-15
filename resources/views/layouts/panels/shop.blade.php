@@ -21,6 +21,12 @@
             <flux:sidebar.item href="{{ route('shop.setting-management.color.index') }}" wire:navigate>{{ __('app.colors') }}</flux:sidebar.item>
             <flux:sidebar.item href="{{ route('shop.setting-management.unit.index') }}" wire:navigate>{{ __('app.units') }}</flux:sidebar.item>
         </flux:sidebar.group>
+
+        <flux:sidebar.group expandable heading="{{ __('app.shipping') }}" class="grid" :expanded="request()->routeIs('shop.shipping.*')">
+            <flux:sidebar.item href="{{ route('shop.shipping.method.index') }}" wire:navigate>{{ __('app.shipping_methods') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('shop.shipping.zone.index') }}" wire:navigate>{{ __('app.shipping_zones') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('shop.shipping.rate.index') }}" wire:navigate>{{ __('app.shipping_rates') }}</flux:sidebar.item>
+        </flux:sidebar.group>
     </flux:sidebar.nav>
 
     <flux:sidebar.spacer />
