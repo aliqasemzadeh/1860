@@ -28,12 +28,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/shop/product/pricing/{productId}', \App\Livewire\Shop\Product\Pricing\Index::class)->name('shop.product.pricing.index');
     Route::get('/shop/order/index', \App\Livewire\Shop\Order\Index::class)->name('shop.order.index');
 
-
     Route::get('/shop/setting-management/category/index', \App\Livewire\Shop\SettingManagement\Category\Index::class)->name('shop.setting-management.category.index');
     Route::get('/shop/setting-management/brand/index', \App\Livewire\Shop\SettingManagement\Brand\Index::class)->name('shop.setting-management.brand.index');
     Route::get('/shop/setting-management/color/index', \App\Livewire\Shop\SettingManagement\Color\Index::class)->name('shop.setting-management.color.index');
     Route::get('/shop/setting-management/warranty/index', \App\Livewire\Shop\SettingManagement\Warranty\Index::class)->name('shop.setting-management.warranty.index');
     Route::get('/shop/setting-management/unit/index', \App\Livewire\Shop\SettingManagement\Unit\Index::class)->name('shop.setting-management.unit.index');
+
+    // Shop / Shipping management
+    Route::get('/shop/shipping/method/index', \App\Livewire\Panel\Shop\Shipping\Method\Index::class)->name('shop.shipping.method.index');
+    Route::get('/shop/shipping/zone/index', \App\Livewire\Panel\Shop\Shipping\Zone\Index::class)->name('shop.shipping.zone.index');
+    Route::get('/shop/shipping/rate/index', \App\Livewire\Panel\Shop\Shipping\Rate\Index::class)->name('shop.shipping.rate.index');
 
 
     Route::get('/accounting/dashboard/index', \App\Livewire\Panel\Accounting\Dashboard\Index::class)->name('accounting.dashboard.index');
