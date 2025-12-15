@@ -13,7 +13,6 @@ use Livewire\Component;
 
 class Index extends Component
 {
-    #[Locked]
     public $productId;
     public Product $product;
 
@@ -49,8 +48,13 @@ class Index extends Component
             });
     }
 
-    #[Layout('layouts.panels.shop')]
     #[On('shop.product.pricing.index.render')]
+    public function refresh(): void
+    {
+        $this->product->refresh();
+    }
+
+    #[Layout('layouts.panels.shop')]
     public function render(): View
     {
         return view('livewire.shop.product.pricing.index');
