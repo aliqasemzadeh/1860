@@ -22,6 +22,6 @@ class ShippingZone extends Model
 
     public function rates(): HasMany
     {
-        return $this->hasMany(\App\Models\ShippingRate::class);
+        return $this->hasMany(\App\Models\Shop\ShippingRate::class);
     }
 }

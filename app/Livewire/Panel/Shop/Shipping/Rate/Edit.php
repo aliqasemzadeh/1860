@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Panel\Shop\Shipping\Rate;
 
-use App\Models\ShippingRate;
 use App\Models\Shop\ShippingMethod;
+use App\Models\Shop\ShippingRate;
 use App\Models\Shop\ShippingZone;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;

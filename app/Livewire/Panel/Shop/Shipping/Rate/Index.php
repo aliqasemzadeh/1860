@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Panel\Shop\Shipping\Rate;
 
-use App\Models\ShippingRate;
+use App\Models\Shop\ShippingRate;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
