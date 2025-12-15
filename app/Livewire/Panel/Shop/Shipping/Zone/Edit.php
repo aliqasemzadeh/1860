@@ -18,9 +18,57 @@ class Edit extends Component
 
     public string $countries = '';
 
-    public string $states = '';
+    /**
+     * Selected provinces (استان‌ها) as an array of names.
+     *
+     * @var array<int,string>
+     */
+    public array $states = [];
 
-    public string $cities = '';
+    /**
+     * Selected cities (شهرها) as an array of names.
+     *
+     * @var array<int,string>
+     */
+    public array $cities = [];
+
+    /**
+     * Optional areas / postal code prefixes for finer granularity.
+     * Stored as array in DB, edited as textarea (line by line).
+     */
+    public string $areas = '';
+
+    /**
+     * City options based on selected provinces.
+     *
+     * @var array<int,string>
+     */
+    public array $cityOptions = [];
+
+    public function updatedStates(): void
+    {
+        $provinces = (array) __('provinces');
+        $citiesByProvince = (array) __('cities');
+
+        $selectedProvinceIds = [];
+        foreach ($provinces as $id => $name) {
+            if (in_array($name, $this->states, true)) {
+                $selectedProvinceIds[] = (int) $id;
+            }
+        }
+
+        $cities = [];
+        foreach ($selectedProvinceIds as $provinceId) {
+            if (isset($citiesByProvince[$provinceId]) && is_array($citiesByProvince[$provinceId])) {
+                $cities = array_merge($cities, $citiesByProvince[$provinceId]);
+            }
+        }
+
+        $cities = array_values(array_unique($cities));
+        sort($cities, SORT_NATURAL);
+
+        $this->cityOptions = $cities;
+    }
 
     #[On('shop.shipping.zone.edit.assign-data')]
     public function assignData($id): void
@@ -30,8 +78,10 @@ class Edit extends Component
         $this->id = $this->zone->id;
         $this->name = (string) $this->zone->name;
         $this->countries = implode("\n", (array) $this->zone->countries);
-        $this->states = implode("\n", (array) $this->zone->states);
-        $this->cities = implode("\n", (array) $this->zone->cities);
+        $this->states = array_values((array) $this->zone->states);
+        $this->cities = array_values((array) $this->zone->cities);
+        $this->areas = implode("\n", (array) $this->zone->areas);
+        $this->updatedStates();
 
         Flux::modal('shop.shipping.zone.edit.modal')->show();
     }
@@ -45,15 +95,17 @@ class Edit extends Component
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'countries' => ['required', 'string'],
-            'states' => ['nullable', 'string'],
-            'cities' => ['nullable', 'string'],
+            'states' => ['nullable', 'array'],
+            'cities' => ['nullable', 'array'],
+            'areas' => ['nullable', 'string'],
         ]);
 
         $this->zone->update([
             'name' => $validated['name'],
             'countries' => array_filter(array_map('trim', explode("\n", $validated['countries']))),
-            'states' => array_filter(array_map('trim', explode("\n", (string) $validated['states']))),
-            'cities' => array_filter(array_map('trim', explode("\n", (string) $validated['cities']))),
+            'states' => array_values($validated['states'] ?? []),
+            'cities' => array_values($validated['cities'] ?? []),
+            'areas' => array_filter(array_map('trim', explode("\n", (string) ($validated['areas'] ?? '')))),
         ]);
 
         $this->dispatch('shop.shipping.zone.index.render');
@@ -63,6 +115,9 @@ class Edit extends Component
 
     public function render(): View
     {
-        return view('livewire.panel.shop.shipping.zone.edit');
+        $provinces = array_values((array) __('provinces'));
+        $cityOptions = $this->cityOptions;
+
+        return view('livewire.panel.shop.shipping.zone.edit', compact('provinces', 'cityOptions'));
     }
 }

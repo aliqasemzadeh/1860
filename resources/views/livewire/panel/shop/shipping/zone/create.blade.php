@@ -24,7 +24,18 @@
 
                 <flux:field>
                     <flux:label>{{ __('app.states') }}</flux:label>
-                    <flux:textarea wire:model="states" rows="3" />
+                    <flux:pillbox
+                        multiple
+                        searchable
+                        wire:model="states"
+                        placeholder="{{ __('app.select_provinces') }}"
+                    >
+                        @foreach($provinces as $province)
+                            <flux:pillbox.option value="{{ $province }}">
+                                {{ $province }}
+                            </flux:pillbox.option>
+                        @endforeach
+                    </flux:pillbox>
                     <flux:text class="mt-1 text-xs text-gray-500">
                         {{ __('app.shipping_states_help') }}
                     </flux:text>
@@ -33,11 +44,31 @@
 
                 <flux:field>
                     <flux:label>{{ __('app.cities') }}</flux:label>
-                    <flux:textarea wire:model="cities" rows="3" />
+                    <flux:pillbox
+                        multiple
+                        searchable
+                        wire:model="cities"
+                        placeholder="{{ __('app.select_cities') }}"
+                    >
+                        @foreach($cityOptions as $city)
+                            <flux:pillbox.option value="{{ $city }}">
+                                {{ $city }}
+                            </flux:pillbox.option>
+                        @endforeach
+                    </flux:pillbox>
                     <flux:text class="mt-1 text-xs text-gray-500">
                         {{ __('app.shipping_cities_help') }}
                     </flux:text>
                     <flux:error name="cities" />
+                </flux:field>
+
+                <flux:field>
+                    <flux:label>{{ __('app.areas') }}</flux:label>
+                    <flux:textarea wire:model="areas" rows="3" />
+                    <flux:text class="mt-1 text-xs text-gray-500">
+                        {{ __('app.shipping_areas_help') }}
+                    </flux:text>
+                    <flux:error name="areas" />
                 </flux:field>
             </div>
 

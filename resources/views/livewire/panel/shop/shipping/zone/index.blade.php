@@ -35,6 +35,7 @@
             <flux:table.column>{{ __('app.countries') }}</flux:table.column>
             <flux:table.column>{{ __('app.states') }}</flux:table.column>
             <flux:table.column>{{ __('app.cities') }}</flux:table.column>
+            <flux:table.column>{{ __('app.areas') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.date') }}</flux:table.column>
         </flux:table.columns>
 
@@ -52,6 +53,9 @@
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap text-xs">
                         {{ implode(', ', (array) $zone->cities) }}
+                    </flux:table.cell>
+                    <flux:table.cell class="whitespace-nowrap text-xs">
+                        {{ implode(', ', (array) $zone->areas) }}
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.shipping.zone.edit.assign-data', { id: '{{ $zone->id }}' })">

@@ -13,36 +13,90 @@ class Create extends Component
 
     public string $countries = "IR";
 
-    public string $states = '';
+    /**
+     * Selected provinces (استان‌ها) as an array of names.
+     *
+     * @var array<int,string>
+     */
+    public array $states = [];
 
-    public string $cities = '';
+    /**
+     * Selected cities (شهرها) as an array of names.
+     *
+     * @var array<int,string>
+     */
+    public array $cities = [];
+
+    /**
+     * Optional areas / postal code prefixes for finer granularity.
+     * Stored as array in DB, edited as textarea (line by line).
+     */
+    public string $areas = '';
+
+    /**
+     * City options based on selected provinces.
+     *
+     * @var array<int,string>
+     */
+    public array $cityOptions = [];
+
+    public function updatedStates(): void
+    {
+        $provinces = (array) __('provinces');
+        $citiesByProvince = (array) __('cities');
+
+        // پیدا کردن کد استان‌ها بر اساس نام انتخاب‌شده
+        $selectedProvinceIds = [];
+        foreach ($provinces as $id => $name) {
+            if (in_array($name, $this->states, true)) {
+                $selectedProvinceIds[] = (int) $id;
+            }
+        }
+
+        // جمع‌آوری شهرها بر اساس کد استان‌ها
+        $cities = [];
+        foreach ($selectedProvinceIds as $provinceId) {
+            if (isset($citiesByProvince[$provinceId]) && is_array($citiesByProvince[$provinceId])) {
+                $cities = array_merge($cities, $citiesByProvince[$provinceId]);
+            }
+        }
+
+        $cities = array_values(array_unique($cities));
+        sort($cities, SORT_NATURAL);
+
+        $this->cityOptions = $cities;
+    }
 
     public function create(): void
     {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'countries' => ['required', 'string'],
-            'states' => ['nullable', 'string'],
-            'cities' => ['nullable', 'string'],
+            'states' => ['nullable', 'array'],
+            'cities' => ['nullable', 'array'],
+            'areas' => ['nullable', 'string'],
         ]);
 
         ShippingZone::create([
             'name' => $validated['name'],
             'countries' => array_filter(array_map('trim', explode("\n", $validated['countries']))),
-            'states' => array_filter(array_map('trim', explode("\n", (string) $validated['states']))),
-            'cities' => array_filter(array_map('trim', explode("\n", (string) $validated['cities']))),
+            'states' => array_values($validated['states'] ?? []),
+            'cities' => array_values($validated['cities'] ?? []),
+            'areas' => array_filter(array_map('trim', explode("\n", (string) ($validated['areas'] ?? '')))),
         ]);
 
         Flux::modal('shop.shipping.zone.create.modal')->close();
         $this->dispatch('shop.shipping.zone.index.render');
         Flux::toast(variant: 'success', text: __('app.shipping_zone_created'));
 
-        $this->reset(['name', 'countries', 'states', 'cities']);
+        $this->reset(['name', 'countries', 'states', 'cities', 'areas', 'cityOptions']);
         $this->countries = "IR";
     }
 
     public function render(): View
     {
-        return view('livewire.panel.shop.shipping.zone.create');
+        $provinces = array_values((array) __('provinces'));
+
+        return view('livewire.panel.shop.shipping.zone.create', compact('provinces'));
     }
 }

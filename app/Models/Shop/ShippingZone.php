@@ -12,12 +12,14 @@ class ShippingZone extends Model
         'countries',
         'states',
         'cities',
+        'areas',
     ];
 
     protected $casts = [
         'countries' => 'array',
         'states' => 'array',
         'cities' => 'array',
+        'areas' => 'array',
     ];
 
     public function rates(): HasMany
