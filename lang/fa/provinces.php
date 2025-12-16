@@ -1,8 +1,6 @@
 <?php
 
 return [
-    // کدها بر اساس منبع رسمی:
-    // https://raw.githubusercontent.com/sajaddp/list-of-cities-in-Iran/main/dist/json/provinces.json
     100 => 'مرکزی',
     101 => 'گیلان',
     102 => 'مازندران',
