@@ -53,7 +53,7 @@ class Edit extends Component
             'name' => $validated['name'],
             'description' => $validated['description'],
             'sort_order' => $validated['sort_order'],
-            'init_balance' => $validated['init_balance'],
+            'init_balance' => str_replace(",","", $validated['init_balance']),
         ]);
 
         $this->bank->updateBalance();
