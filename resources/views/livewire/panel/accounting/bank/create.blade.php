@@ -13,6 +13,31 @@
                     <flux:error name="name" />
                 </flux:field>
                 <flux:field>
+                    <flux:label>{{ __('app.bank_code') }}</flux:label>
+                    <flux:select wire:model="code" variant="listbox" searchable placeholder="{{ __('app.select_bank_code') }}">
+                        <flux:select.option value="">{{ __('app.none') }}</flux:select.option>
+                        @foreach (__('banks') as $key => $value)
+                            <flux:select.option value="{{ $key }}">{{ $value }}</flux:select.option>
+                        @endforeach
+                    </flux:select>
+                    <flux:error name="code" />
+                </flux:field>
+                <flux:field>
+                    <flux:label>{{ __('app.bank_number') }}</flux:label>
+                    <flux:input wire:model="number" type="text" />
+                    <flux:error name="number" />
+                </flux:field>
+                <flux:field>
+                    <flux:label>{{ __('app.bank_iban') }}</flux:label>
+                    <flux:input wire:model="iban" type="text" />
+                    <flux:error name="iban" />
+                </flux:field>
+                <flux:field>
+                    <flux:label>{{ __('app.bank_card_number') }}</flux:label>
+                    <flux:input wire:model="card_number" type="text" />
+                    <flux:error name="card_number" />
+                </flux:field>
+                <flux:field>
                     <flux:label>{{ __('app.bank_description') }}</flux:label>
                     <flux:textarea wire:model="description" rows="3" />
                     <flux:error name="description" />
@@ -23,8 +48,8 @@
                     <flux:error name="sort_order" />
                 </flux:field>
                 <flux:field>
-                    <flux:label>{{ __('app.bank_init_balance') }}</flux:label>
-                    <flux:input wire:model="init_balance" type="text" mask:dynamic="$money($input)" />
+                    <flux:label>{{ __('app.bank_balance') }}</flux:label>
+                    <flux:input wire:model="init_balance" mask:dynamic="$money($input)" type="text" />
                     <flux:error name="init_balance" />
                 </flux:field>
             </div>

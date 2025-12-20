@@ -16,6 +16,14 @@ class Edit extends Component
 
     public string $name = '';
 
+    public ?string $code = null;
+
+    public ?string $number = null;
+
+    public ?string $iban = null;
+
+    public ?string $card_number = null;
+
     public ?string $description = null;
 
     public int $sort_order = 0;
@@ -28,6 +36,10 @@ class Edit extends Component
         $this->bank = Bank::findOrFail($id);
         $this->id = $this->bank->id;
         $this->name = $this->bank->name;
+        $this->code = $this->bank->code;
+        $this->number = $this->bank->number;
+        $this->iban = $this->bank->iban;
+        $this->card_number = $this->bank->card_number;
         $this->description = $this->bank->description;
         $this->sort_order = $this->bank->sort_order;
         $this->init_balance = (string) $this->bank->init_balance;
@@ -44,16 +56,26 @@ class Edit extends Component
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
+            'code' => ['nullable', 'string', 'max:255'],
+            'number' => ['nullable', 'string', 'max:255'],
+            'iban' => ['nullable', 'string', 'ir_iban'],
+            'card_number' => ['nullable', 'string', 'ir_bank_card_number'],
             'description' => ['nullable', 'string'],
             'sort_order' => ['required', 'integer', 'min:0'],
-            'init_balance' => ['required', 'min:0'],
+            'init_balance' => ['required', 'string'],
         ]);
+
+        $initBalance = (int) str_replace(",", "", $validated['init_balance']);
 
         $this->bank->update([
             'name' => $validated['name'],
+            'code' => $validated['code'] ?? null,
+            'number' => $validated['number'] ?? null,
+            'iban' => $validated['iban'] ?? null,
+            'card_number' => $validated['card_number'] ?? null,
             'description' => $validated['description'],
             'sort_order' => $validated['sort_order'],
-            'init_balance' => str_replace(",","", $validated['init_balance']),
+            'init_balance' => $initBalance,
         ]);
 
         $this->bank->updateBalance();

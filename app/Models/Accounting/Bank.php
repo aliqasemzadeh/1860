@@ -10,12 +10,12 @@ class Bank extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'description', 'sort_order', 'meta', 'balance', 'init_balance'];
+    protected $fillable = ['name', 'code', 'number', 'iban', 'card_number', 'description', 'sort_order', 'meta', 'balance', 'init_balance'];
 
     protected $casts = [
         'meta' => 'array',
-        'balance' => 'decimal:5',
-        'init_balance' => 'decimal:5',
+        'balance' => 'decimal:0',
+        'init_balance' => 'decimal:0',
     ];
 
     /**

@@ -47,7 +47,15 @@ class Index extends Component
                 });
             })
             ->tap(fn ($query) => $this->sortBy ? $query->orderBy($this->sortBy, $this->sortDirection) : $query)
-            ->paginate(10);
+            ->paginate(100);
+    }
+
+    #[\Livewire\Attributes\Computed]
+    public function totalBalance()
+    {
+        return Bank::query()
+            ->get()
+            ->sum(fn ($bank) => $bank->calculateBalance());
     }
 
     public function updatingSearch(): void

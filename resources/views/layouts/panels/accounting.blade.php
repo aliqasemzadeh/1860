@@ -11,17 +11,7 @@
 
     <flux:sidebar.nav>
         <flux:sidebar.item icon="home" href="{{ route('accounting.dashboard.index') }}" wire:navigate>{{ __('app.dashboard') }}</flux:sidebar.item>
-        <flux:sidebar.group expandable heading="{{ __('app.banks') }}" class="grid" :expanded="request()->routeIs('accounting.bank.*')">
-            @can('accounting_bank_index')
-            <flux:sidebar.item href="{{ route('accounting.bank.index') }}" wire:navigate>{{ __('app.banks') }}</flux:sidebar.item>
-            @endcan
-            @can('accounting_bank_remittance_index')
-            <flux:sidebar.item href="{{ route('accounting.bank.remittance.index') }}" wire:navigate>{{ __('app.remittances') }}</flux:sidebar.item>
-            @endcan
-            @can('accounting_bank_transaction_index')
-            <flux:sidebar.item href="{{ route('accounting.bank.transaction.index') }}" wire:navigate>{{ __('app.accounting_bank_transaction_index') }}</flux:sidebar.item>
-            @endcan
-        </flux:sidebar.group>
+        <flux:sidebar.item icon="landmark" href="{{ route('accounting.bank.index') }}" wire:navigate>{{ __('app.banks') }}</flux:sidebar.item>
     </flux:sidebar.nav>
 
     <flux:sidebar.spacer />
