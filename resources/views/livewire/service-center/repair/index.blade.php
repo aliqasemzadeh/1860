@@ -71,8 +71,13 @@
                     <flux:table.cell class="whitespace-nowrap">
                         {{ $repair->id }}
                     </flux:table.cell>
-                    <flux:table.cell>
+                    <flux:table.cell class="flex flex-col">
                         {{ $repair->owner_name }}
+                        @if($repair->owner_organization)
+                            {{ $repair->owner_organization }}
+                        @endif
+
+
                     </flux:table.cell>
                     <flux:table.cell>
                         {{ $repair->owner_mobile }}
