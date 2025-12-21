@@ -72,7 +72,6 @@
                         </flux:autocomplete>
                         <flux:error name="device_type" />
                     </flux:field>
-                    {{ $device_type }}
 
                     <flux:field>
                         <flux:label>{{ __('app.device_brand') }}</flux:label>
