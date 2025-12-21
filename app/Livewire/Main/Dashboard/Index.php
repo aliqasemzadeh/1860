@@ -3,6 +3,7 @@
 namespace App\Livewire\Main\Dashboard;
 
 use App\Models\Shop\Category;
+use App\Models\Shop\Product;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -16,6 +17,13 @@ class Index extends Component
             ->get();
     }
 
+    #[Computed(cache: true, key: 'products_with_relations')]
+    public function products()
+    {
+        return Product::query()
+            ->with(['colors', 'warranties'])
+            ->get();
+    }
     public function render()
     {
         return view('livewire.main.dashboard.index');
