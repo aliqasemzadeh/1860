@@ -96,6 +96,11 @@ class Create extends Component
         }
     }
 
+    public function fillDeviceType(string $device_type)
+    {
+        $this->device_type = $device_type;
+    }
+
     #[Computed]
     public function owners(): array
     {

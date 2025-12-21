@@ -66,7 +66,7 @@
                         <flux:label>{{ __('app.device_type') }}</flux:label>
                         <flux:autocomplete wire:model="device_type" size="sm">
                             @foreach($this->types as $type)
-                                <flux:autocomplete.item>{{ $type }}</flux:autocomplete.item>
+                                <flux:autocomplete.item @click="$wire.fillDeviceType('{{ $type }}')">{{ $type }}</flux:autocomplete.item>
                             @endforeach
                         </flux:autocomplete>
                         <flux:error name="device_type" />
@@ -84,7 +84,7 @@
 
                     <flux:field>
                         <flux:label>{{ __('app.device_model') }}</flux:label>
-                        <flux:autocomplete wire:model="device_model" size="sm">
+                        <flux:autocomplete wire:model="device_model" size="sm" type="text">
                             @foreach($this->models as $model)
                                 <flux:autocomplete.item>{{ $model }}</flux:autocomplete.item>
                             @endforeach

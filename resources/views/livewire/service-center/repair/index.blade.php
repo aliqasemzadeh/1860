@@ -28,6 +28,9 @@
     @can('service_center_repair_logs')
     <livewire:service-center.repair.logs />
     @endcan
+    @can('service_center_repair_edit')
+        <livewire:service-center.repair.edit />
+    @endcan
 
     <flux:table :paginate="$this->repairs">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
@@ -74,6 +77,7 @@
                     <flux:table.cell class="flex flex-col">
                         {{ $repair->owner_name }}
                         @if($repair->owner_organization)
+                            <br />
                             {{ $repair->owner_organization }}
                         @endif
 
@@ -127,6 +131,14 @@
                             {{ __('app.logs') }}
                         </flux:button>
                         @endcan
+
+                            @can('service_center_repair_edit')
+                                <flux:button size="xs" variant="primary" color="blue"
+                                             wire:click="$dispatch('service-center.repair.edit.assign-data', { id: {{ $repair->id }} })"
+                                >
+                                    {{ __('app.edit') }}
+                                </flux:button>
+                            @endcan
                     </flux:table.cell>
                 </flux:table.row>
             @endforeach

@@ -65,17 +65,18 @@
 
                     <flux:field>
                         <flux:label>{{ __('app.device_type') }}</flux:label>
-                        <flux:autocomplete wire:model="device_type" size="sm">
+                        <flux:autocomplete wire:model="device_type" size="sm" type="text">
                             @foreach($this->types as $type)
-                                <flux:autocomplete.item>{{ $type }}</flux:autocomplete.item>
+                                <flux:autocomplete.item @click="$wire.fillDeviceType('{{ $type }}')">{{ $type }}</flux:autocomplete.item>
                             @endforeach
                         </flux:autocomplete>
                         <flux:error name="device_type" />
                     </flux:field>
+                    {{ $device_type }}
 
                     <flux:field>
                         <flux:label>{{ __('app.device_brand') }}</flux:label>
-                        <flux:autocomplete wire:model="device_brand" size="sm">
+                        <flux:autocomplete wire:model="device_brand" size="sm" type="text">
                             @foreach($this->brands as $brand)
                                 <flux:autocomplete.item>{{ $brand }}</flux:autocomplete.item>
                             @endforeach
@@ -85,7 +86,7 @@
 
                     <flux:field>
                         <flux:label>{{ __('app.device_model') }}</flux:label>
-                        <flux:autocomplete wire:model="device_model" size="sm">
+                        <flux:autocomplete wire:model="device_model" size="sm" type="text">
                             @foreach($this->models as $model)
                                 <flux:autocomplete.item>{{ $model }}</flux:autocomplete.item>
                             @endforeach
@@ -102,6 +103,7 @@
                     <flux:field>
                         <flux:label>{{ __('app.warranty_type') }}</flux:label>
                         <flux:select wire:model="warranty_type" placeholder="{{ __('app.select_warranty_status') }}" size="sm">
+                            <flux:select.option>{{ __('app.select_warranty_status') }}</flux:select.option>
                             <flux:select.option value="no">{{ __('app.warranty_no') }}</flux:select.option>
                             <flux:select.option value="yes">{{ __('app.warranty_yes') }}</flux:select.option>
                         </flux:select>
