@@ -23,6 +23,7 @@ class Repair extends Model
         'status_date',
         'estimate_date',
         'owner_name',
+        'owner_organization',
         'owner_mobile',
         'owner_email',
         'owner_national_code',
@@ -55,5 +56,10 @@ class Repair extends Model
     public function services(): HasMany
     {
         return $this->hasMany(RepairService::class);
+    }
+
+    public function logs(): HasMany
+    {
+        return $this->hasMany(RepairLog::class);
     }
 }
