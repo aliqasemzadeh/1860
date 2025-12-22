@@ -430,4 +430,5 @@ return [
     'select_provinces' => 'انتخاب استان‌ها...',
     'select_cities' => 'انتخاب شهرها...',
     'logo' => 'لوگو',
+    'repair_admission_sms' => "سلام\nدستگاه شما با شماره\n:admission_code پذیرش شد\n\nستارگان رز جنوب",
 ];

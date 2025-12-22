@@ -2,6 +2,7 @@
 
 namespace App\Models\ServiceCenter;
 
+use App\Jobs\Notification\SendSmsMessageJob;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -75,7 +76,24 @@ class Repair extends Model
 
         static::created(function (Repair $repair) {
             $repair->saveAdmissionCode();
+            $repair->sendAdmissionSms();
         });
+    }
+
+    /**
+     * Send admission SMS to owner.
+     */
+    public function sendAdmissionSms(): void
+    {
+        if (! $this->owner_mobile) {
+            return;
+        }
+
+        $message = __('app.repair_admission_sms', [
+            'admission_code' => $this->admission_code,
+        ]);
+
+        SendSmsMessageJob::dispatch($this->owner_mobile, $message);
     }
 
     /**
@@ -101,6 +119,7 @@ class Repair extends Model
                     return false;
                 }
                 $repairJalali = Jalalian::fromCarbon($repair->created_at);
+
                 return $repairJalali->getYear() === $year && $repairJalali->getMonth() === $month;
             })
             ->count();
