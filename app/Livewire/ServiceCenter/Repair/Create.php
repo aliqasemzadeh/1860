@@ -101,6 +101,16 @@ class Create extends Component
         $this->device_type = $device_type;
     }
 
+    public function fillDeviceBrand(string $device_brand)
+    {
+        $this->device_brand = $device_brand;
+    }
+
+    public function fillDeviceModel(string $device_model)
+    {
+        $this->device_model = $device_model;
+    }
+
     #[Computed]
     public function owners(): array
     {

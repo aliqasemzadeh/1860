@@ -267,6 +267,21 @@ class Edit extends Component
         Flux::modal('service-center.repair.edit.modal')->close();
     }
 
+    public function fillDeviceType(string $device_type)
+    {
+        $this->device_type = $device_type;
+    }
+
+    public function fillDeviceBrand(string $device_brand)
+    {
+        $this->device_brand = $device_brand;
+    }
+
+    public function fillDeviceModel(string $device_model)
+    {
+        $this->device_model = $device_model;
+    }
+
     public function render()
     {
         return view('livewire.service-center.repair.edit');
