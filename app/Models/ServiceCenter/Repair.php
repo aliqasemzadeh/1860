@@ -5,6 +5,7 @@ namespace App\Models\ServiceCenter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Morilog\Jalali\Jalalian;
 
 class Repair extends Model
 {
@@ -18,6 +19,8 @@ class Repair extends Model
     protected $fillable = [
         'admission_user_id',
         'admission_description',
+        'admission_code',
+        'admission_counter',
         'status',
         'status_description',
         'status_date',
@@ -61,5 +64,52 @@ class Repair extends Model
     public function logs(): HasMany
     {
         return $this->hasMany(RepairLog::class);
+    }
+
+    /**
+     * Boot the model.
+     */
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::created(function (Repair $repair) {
+            $repair->saveAdmissionCode();
+        });
+    }
+
+    /**
+     * Generate and save admission code based on Jalali date.
+     */
+    public function saveAdmissionCode(): void
+    {
+        if ($this->admission_code) {
+            return;
+        }
+
+        $createdAt = $this->created_at ?? now();
+        $jalaliDate = Jalalian::fromCarbon($createdAt);
+        $year = $jalaliDate->getYear();
+        $month = $jalaliDate->getMonth();
+
+        // Find repairs in the same Jalali month to get correct counter
+        $sameMonthRepairs = static::query()
+            ->whereNotNull('created_at')
+            ->get()
+            ->filter(function ($repair) use ($year, $month) {
+                if ($repair->id === $this->id) {
+                    return false;
+                }
+                $repairJalali = Jalalian::fromCarbon($repair->created_at);
+                return $repairJalali->getYear() === $year && $repairJalali->getMonth() === $month;
+            })
+            ->count();
+
+        $admissionCounter = $sameMonthRepairs + 1;
+
+        $this->admission_counter = $admissionCounter;
+        $this->admission_code = sprintf('%d%02d%03d', $year, $month, $admissionCounter);
+
+        $this->saveQuietly();
     }
 }
