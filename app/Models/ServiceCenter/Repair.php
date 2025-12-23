@@ -89,7 +89,7 @@ class Repair extends Model
             return;
         }
 
-        $message = __('app.repair_admission_sms', [
+        $message = __('app.repair_admission_sms'.PHP_EOL. "لغو 11", [
             'admission_code' => $this->admission_code,
         ]);
 

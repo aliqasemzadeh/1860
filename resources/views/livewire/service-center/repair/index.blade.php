@@ -73,7 +73,7 @@
             @foreach ($this->repairs as $repair)
                 <flux:table.row :key="$repair->id">
                     <flux:table.cell class="whitespace-nowrap">
-                        {{ $repair->id }}
+                        {{ $repair->admission_code }}
                     </flux:table.cell>
                     <flux:table.cell class="flex flex-col">
                         {{ $repair->owner_name }}
