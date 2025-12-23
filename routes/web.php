@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', \App\Livewire\Main\Dashboard\Index::class)->name('home');
+Route::get('/product/{slug}', \App\Livewire\Main\Product\View::class)->name('product.view');
+Route::get('/product/id/{id}', \App\Livewire\Main\Product\View::class)->name('product.view.id');
 
 Route::group(['middleware' => ['auth']], function () {
 

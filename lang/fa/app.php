@@ -482,4 +482,10 @@ return [
     'no_products_found_description' => 'در حال حاضر هیچ محصولی در سیستم ثبت نشده است.',
     'discount' => 'تخفیف',
     'price_not_available' => 'قیمت در دسترس نیست',
+    'product_not_found' => 'محصول یافت نشد',
+    'product_not_found_description' => 'محصول مورد نظر شما وجود ندارد یا حذف شده است.',
+    'return_to_home' => 'بازگشت به صفحه اصلی',
+    'technical_specifications' => 'مشخصات فنی',
+    'dimensions' => 'ابعاد',
+    'centimeter' => 'سانتیمتر',
 ];
