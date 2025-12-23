@@ -22,6 +22,7 @@ class Index extends Component
     {
         return Product::query()
             ->with(['colors', 'warranties'])
+            ->orderBy('created_at', 'asc')
             ->get();
     }
     public function render()

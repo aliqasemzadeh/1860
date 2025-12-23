@@ -478,4 +478,8 @@ return [
     'type' => 'نوع',
     'no_data' => 'داده‌ای وجود ندارد',
     'repair_admission_sms' => "سلام\nدستگاه شما با شماره\n:admission_code پذیرش شد\n\nستارگان رز جنوب",
+    'no_products_found' => 'محصولی یافت نشد',
+    'no_products_found_description' => 'در حال حاضر هیچ محصولی در سیستم ثبت نشده است.',
+    'discount' => 'تخفیف',
+    'price_not_available' => 'قیمت در دسترس نیست',
 ];
