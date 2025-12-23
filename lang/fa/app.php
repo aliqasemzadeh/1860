@@ -376,6 +376,23 @@ return [
     'account_balance' => 'مانده حساب',
     'invalid_date' => 'تاریخ وارد شده نامعتبر است.',
 
+    // Accounting / Cheques
+    'cheques' => 'چک‌ها',
+    'cheques_description' => 'مدیریت و مشاهده چک‌های ثبت‌شده.',
+    'create_cheque' => 'ایجاد چک',
+    'create_cheque_description' => 'برای ایجاد چک جدید، اطلاعات زیر را تکمیل کنید.',
+    'edit_cheque' => 'ویرایش چک',
+    'edit_cheque_description' => 'اطلاعات چک را ویرایش و به‌روزرسانی کنید.',
+    'cheque_description' => 'شرح چک',
+    'cheque_amount' => 'مبلغ چک',
+    'cheque_due_at' => 'تاریخ سررسید',
+    'cheque_created' => 'چک با موفقیت ایجاد شد.',
+    'cheque_updated' => 'چک با موفقیت به‌روزرسانی شد.',
+    'cheque_deleted' => 'چک با موفقیت حذف شد.',
+    'import_cheques' => 'ایمپورت چک‌ها',
+    'import_cheques_description' => 'فایل اکسل شامل چک‌ها را آپلود کنید تا تمامی چک‌های قبلی حذف و اطلاعات جدید ثبت شود.',
+    'import_cheques_help' => 'ستون E مبلغ، ستون F تاریخ سررسید (شمسی) و ستون G شرح را شامل می‌شود. ردیف اول عنوان ستون‌ها است و نادیده گرفته می‌شود. هر بار ایمپورت، تمام چک‌های قبلی حذف و فقط داده‌های فایل جدید ثبت می‌شوند.',
+
     // Shipping
     'shipping' => 'حمل‌ونقل',
     'shipping_methods' => 'روش‌های حمل‌ونقل',
