@@ -50,7 +50,11 @@
                         <flux:table.row>
                             <flux:table.cell class="max-md:hidden">#{{ $cheque->id }}</flux:table.cell>
                             <flux:table.cell class="max-md:hidden">
-                                {{ optional($cheque->due_at)->format('Y-m-d') ?? '-' }}
+                                @if ($cheque->due_at)
+                                    {{ \Morilog\Jalali\Jalalian::fromCarbon($cheque->due_at)->format('Y/m/d') }}
+                                @else
+                                    -
+                                @endif
                             </flux:table.cell>
                             <flux:table.cell class="truncate">
                                 {{ $cheque->description ?: __('app.empty_description') }}
