@@ -65,6 +65,32 @@ class Index extends Component
             ->get();
     }
 
+    #[Computed]
+    public function lastUpdates(): array
+    {
+        $lastCheque = Cheque::orderBy('updated_at', 'desc')->first();
+        $lastBank = Bank::orderBy('updated_at', 'desc')->first();
+        $lastRemittance = Remittance::orderBy('updated_at', 'desc')->first();
+
+        return [
+            [
+                'type' => 'cheques',
+                'name' => __('app.cheques'),
+                'updated_at' => $lastCheque?->updated_at,
+            ],
+            [
+                'type' => 'banks',
+                'name' => __('app.banks'),
+                'updated_at' => $lastBank?->updated_at,
+            ],
+            [
+                'type' => 'remittances',
+                'name' => __('app.remittances'),
+                'updated_at' => $lastRemittance?->updated_at,
+            ],
+        ];
+    }
+
     #[Layout('layouts.panels.accounting')]
     public function render()
     {

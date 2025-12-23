@@ -69,4 +69,37 @@
                 </flux:table.rows>
             </flux:table>
         </flux:card>
+
+        <flux:card class="mt-6">
+            <div class="flex items-start justify-between gap-2 mb-4">
+                <div>
+                    <flux:heading size="md">{{ __('app.last_updates') }}</flux:heading>
+                    <flux:subheading>{{ __('app.last_updates_description') }}</flux:subheading>
+                </div>
+            </div>
+
+            <flux:table class="mt-2">
+                <flux:table.columns>
+                    <flux:table.column>{{ __('app.type') }}</flux:table.column>
+                    <flux:table.column>{{ __('app.last_update_date') }}</flux:table.column>
+                </flux:table.columns>
+
+                <flux:table.rows>
+                    @foreach ($this->lastUpdates as $update)
+                        <flux:table.row>
+                            <flux:table.cell class="font-medium">
+                                {{ $update['name'] }}
+                            </flux:table.cell>
+                            <flux:table.cell class="whitespace-nowrap">
+                                @if ($update['updated_at'])
+                                    {{ \Morilog\Jalali\Jalalian::fromCarbon($update['updated_at'])->format('Y/m/d H:i') }}
+                                @else
+                                    <span class="text-zinc-400 dark:text-zinc-500">{{ __('app.no_data') }}</span>
+                                @endif
+                            </flux:table.cell>
+                        </flux:table.row>
+                    @endforeach
+                </flux:table.rows>
+            </flux:table>
+        </flux:card>
 </div>

@@ -472,5 +472,10 @@ return [
     'upcoming_cheques' => 'چک‌های هفته آینده',
     'upcoming_cheques_description' => 'چک‌هایی که تاریخ سررسید آن‌ها در ۷ روز آینده است.',
     'no_upcoming_cheques' => 'در هفته آینده، چکی سررسید نمی‌شود.',
+    'last_updates' => 'آخرین بروزرسانی‌ها',
+    'last_updates_description' => 'آخرین تاریخ بروزرسانی هر واحد',
+    'last_update_date' => 'تاریخ آخرین بروزرسانی',
+    'type' => 'نوع',
+    'no_data' => 'داده‌ای وجود ندارد',
     'repair_admission_sms' => "سلام\nدستگاه شما با شماره\n:admission_code پذیرش شد\n\nستارگان رز جنوب",
 ];
