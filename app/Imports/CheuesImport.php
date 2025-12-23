@@ -25,7 +25,7 @@ class CheuesImport implements ToModel
             return null;
         }
 
-        $amountRaw = (string) ($row[4] ?? '');
+        $amountRaw = (string) ($row[4]/10 ?? '');
         $dueAtJalali = (string) ($row[5] ?? '');
         $description = trim((string) ($row[6] ?? ''));
 

@@ -465,5 +465,12 @@ return [
     'select_cities' => 'انتخاب شهرها...',
     'logo' => 'لوگو',
     'account_balance' => 'مانده حساب',
+    'cheques_total' => 'جمع مبلغ چک‌ها',
+    'banks_balance_total' => 'جمع موجودی حساب‌های بانکی',
+    'remittance_balance_total' => 'جمع مانده حواله‌ها',
+    'remittance_payment_total' => 'جمع پرداختی حواله‌ها',
+    'upcoming_cheques' => 'چک‌های هفته آینده',
+    'upcoming_cheques_description' => 'چک‌هایی که تاریخ سررسید آن‌ها در ۷ روز آینده است.',
+    'no_upcoming_cheques' => 'در هفته آینده، چکی سررسید نمی‌شود.',
     'repair_admission_sms' => "سلام\nدستگاه شما با شماره\n:admission_code پذیرش شد\n\nستارگان رز جنوب",
 ];
