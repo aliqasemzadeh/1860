@@ -28,7 +28,7 @@
     <flux:table :paginate="$this->remittances">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
             <flux:table.column colspan="6" class="bg-white dark:bg-zinc-900">
-                <div class="flex flex-col md:flex-row gap-2 pe-2 items-end justify-end">
+                <div class="flex flex-row md:flex-row gap-2 pe-2 items-end justify-end">
                     <flux:input
                         size="sm"
                         placeholder="{{ __('app.search_placeholder') }}"
