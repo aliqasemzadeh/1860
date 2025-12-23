@@ -32,6 +32,7 @@
     <livewire:panel.accounting.cheque.create />
     <livewire:panel.accounting.cheque.edit />
     <livewire:panel.accounting.cheque.import />
+    <livewire:panel.accounting.cheque.report />
 
     <flux:table :paginate="$this->cheques">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
