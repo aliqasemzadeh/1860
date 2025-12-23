@@ -21,7 +21,7 @@ class Import extends Component
         $this->authorize('accounting_cheque_import');
 
         $this->validate([
-            'file' => ['required', 'file', 'mimes:xlsx,xls,csv'],
+            'file' => ['required', 'file'],
         ]);
 
         // Remove all previous cheques before importing new data

@@ -125,5 +125,11 @@ return [
         'accounting_remittance_create' => 'ایجاد تراکنش',
         'accounting_remittance_edit' => 'ویرایش تراکنش',
         'accounting_remittance_delete' => 'حذف تراکنش',
+
+        'accounting_cheque_index' => 'فهرست تراکنش‌ها',
+        'accounting_cheque_create' => 'ایجاد تراکنش',
+        'accounting_cheque_edit' => 'ویرایش تراکنش',
+        'accounting_cheque_delete' => 'حذف تراکنش',
+        'accounting_cheque_import' => 'حذف تراکنش',
     ],
 ];
