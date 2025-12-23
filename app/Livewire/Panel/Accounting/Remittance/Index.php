@@ -104,6 +104,12 @@ class Index extends Component
         return Remittance::query()->sum('payment');
     }
 
+    #[\Livewire\Attributes\Computed]
+    public function totalAccountBalance()
+    {
+        return Remittance::query()->sum('account_balance');
+    }
+
     public function updatingSearch(): void
     {
         $this->resetPage();

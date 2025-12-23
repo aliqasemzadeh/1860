@@ -17,10 +17,17 @@
         <flux:separator variant="subtle" />
     </div>
 
-    <div class="mb-6">
-        <flux:text>{{ __('app.remittance_amount') }}</flux:text>
-        <flux:heading size="xl" class="mb-1">{{ number_format($this->totalPayment, 0) }} {{ __('app.toman') }}</flux:heading>
+    <div class="flex flex-row gap-6">
+        <div class="mb-6">
+            <flux:text>{{ __('app.remittance_amount') }}</flux:text>
+            <flux:heading size="xl" class="mb-1">{{ number_format($this->totalPayment, 0) }} {{ __('app.toman') }}</flux:heading>
+        </div>
+        <div class="mb-6">
+            <flux:text>{{ __('app.account_balance') }}</flux:text>
+            <flux:heading size="xl" class="mb-1">{{ number_format($this->totalAccountBalance, 0) }} {{ __('app.toman') }}</flux:heading>
+        </div>
     </div>
+
 
     <livewire:panel.accounting.remittance.create />
     <livewire:panel.accounting.remittance.edit />
