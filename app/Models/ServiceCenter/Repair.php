@@ -89,9 +89,9 @@ class Repair extends Model
             return;
         }
 
-        $message = __('app.repair_admission_sms'.PHP_EOL. "لغو 11", [
+        $message = __('app.repair_admission_sms', [
             'admission_code' => $this->admission_code,
-        ]);
+        ]).PHP_EOL. "لغو 11";
 
         SendSmsMessageJob::dispatch($this->owner_mobile, $message);
     }

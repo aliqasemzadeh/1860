@@ -12,6 +12,7 @@
     <flux:sidebar.nav>
         <flux:sidebar.item icon="home" href="{{ route('accounting.dashboard.index') }}" wire:navigate>{{ __('app.dashboard') }}</flux:sidebar.item>
         <flux:sidebar.item icon="landmark" href="{{ route('accounting.bank.index') }}" wire:navigate>{{ __('app.banks') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="scale" href="{{ route('accounting.remittance.index') }}" wire:navigate>{{ __('app.remittances') }}</flux:sidebar.item>
     </flux:sidebar.nav>
 
     <flux:sidebar.spacer />

@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/accounting/bank/index', \App\Livewire\Panel\Accounting\Bank\Index::class)->name('accounting.bank.index');
     Route::get('/accounting/bank/remittance/index', \App\Livewire\Panel\Accounting\Bank\Remittance\Index::class)->name('accounting.bank.remittance.index');
     Route::get('/accounting/bank/transaction/index', \App\Livewire\Panel\Accounting\Bank\Transaction\Index::class)->name('accounting.bank.transaction.index');
+    Route::get('/accounting/remittance/index', \App\Livewire\Panel\Accounting\Remittance\Index::class)->name('accounting.remittance.index');
 
 });
 

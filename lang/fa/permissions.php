@@ -120,5 +120,10 @@ return [
         'accounting_bank_transaction_create' => 'ایجاد تراکنش',
         'accounting_bank_transaction_edit' => 'ویرایش تراکنش',
         'accounting_bank_transaction_delete' => 'حذف تراکنش',
+
+        'accounting_remittance_index' => 'فهرست تراکنش‌ها',
+        'accounting_remittance_create' => 'ایجاد تراکنش',
+        'accounting_remittance_edit' => 'ویرایش تراکنش',
+        'accounting_remittance_delete' => 'حذف تراکنش',
     ],
 ];

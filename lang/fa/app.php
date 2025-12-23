@@ -373,6 +373,8 @@ return [
     'all_statuses' => 'همه وضعیت‌ها',
     'reject_remittance' => 'رد کردن حواله',
     'reject' => 'رد',
+    'account_balance' => 'مانده حساب',
+    'invalid_date' => 'تاریخ وارد شده نامعتبر است.',
 
     // Shipping
     'shipping' => 'حمل‌ونقل',
@@ -430,5 +432,6 @@ return [
     'select_provinces' => 'انتخاب استان‌ها...',
     'select_cities' => 'انتخاب شهرها...',
     'logo' => 'لوگو',
+    'account_balance' => 'مانده حساب',
     'repair_admission_sms' => "سلام\nدستگاه شما با شماره\n:admission_code پذیرش شد\n\nستارگان رز جنوب",
 ];
