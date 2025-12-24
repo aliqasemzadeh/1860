@@ -20,8 +20,8 @@
                     {{-- Product Image --}}
                     <div class="flex flex-col">
                         <div class="relative aspect-square w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 rounded-2xl shadow-lg">
-                            <img 
-                                src="{{ Storage::url($this->product->file_path) }}" 
+                            <img
+                                src="{{ Storage::url($this->product->file_path) }}"
                                 alt="{{ $this->product->name }}"
                                 class="w-full h-full object-cover"
                             />
@@ -48,27 +48,39 @@
                         </div>
 
                         {{-- Price --}}
-                        <div class="border-t border-b border-zinc-200 dark:border-zinc-700 py-6">
-                            @if($this->product->price)
+                        <div class="border-t border-b border-zinc-200 dark:border-zinc-700 py-6" wire:ignore.self>
+                            @php
+                                $selectedPrice = $this->selectedPrice;
+                            @endphp
+                            @if($selectedPrice)
                                 <div class="flex flex-col gap-2">
-                                    @if($this->product->sale_price && $this->product->sale_price < $this->product->price)
+                                    @if($selectedPrice->sale_price && $selectedPrice->sale_price < $selectedPrice->price)
                                         <div class="flex items-center gap-4">
                                             <div class="text-4xl font-bold text-green-600 dark:text-green-400">
-                                                {{ number_format($this->product->sale_price, 0) }} {{ __('app.toman') }}
+                                                {{ number_format($selectedPrice->sale_price, 0) }} {{ __('app.toman') }}
                                             </div>
                                             <div class="text-2xl text-zinc-400 dark:text-zinc-500 line-through">
-                                                {{ number_format($this->product->price, 0) }} {{ __('app.toman') }}
+                                                {{ number_format($selectedPrice->price, 0) }} {{ __('app.toman') }}
                                             </div>
                                         </div>
                                         @php
-                                            $discountPercent = round((($this->product->price - $this->product->sale_price) / $this->product->price) * 100);
+                                            $discountPercent = round((($selectedPrice->price - $selectedPrice->sale_price) / $selectedPrice->price) * 100);
                                         @endphp
                                         <div class="text-sm text-green-600 dark:text-green-400 font-medium">
                                             {{ $discountPercent }}% {{ __('app.discount') }}
                                         </div>
                                     @else
                                         <div class="text-4xl font-bold text-zinc-900 dark:text-zinc-100">
-                                            {{ number_format($this->product->price, 0) }} {{ __('app.toman') }}
+                                            {{ number_format($selectedPrice->price, 0) }} {{ __('app.toman') }}
+                                        </div>
+                                    @endif
+                                    @if($selectedPrice->quantity <= 0)
+                                        <div class="text-sm text-red-600 dark:text-red-400 font-medium">
+                                            {{ __('app.out_of_stock') }}
+                                        </div>
+                                    @elseif($selectedPrice->quantity < 10)
+                                        <div class="text-sm text-orange-600 dark:text-orange-400 font-medium">
+                                            {{ __('app.low_stock') }} ({{ number_format($selectedPrice->quantity, 0) }} {{ __('app.remaining') }})
                                         </div>
                                     @endif
                                 </div>
@@ -87,18 +99,27 @@
                                 </flux:heading>
                                 <div class="flex flex-wrap gap-3">
                                     @foreach($this->product->colors as $color)
-                                        <div 
-                                            class="relative group cursor-pointer"
+                                        <button
+                                            type="button"
+                                            wire:click="selectColor({{ $color->id }})"
+                                            class="relative group cursor-pointer focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-full"
                                             title="{{ $color->name }}"
                                         >
-                                            <div 
-                                                class="w-12 h-12 rounded-full border-2 border-zinc-300 dark:border-zinc-600 group-hover:border-zinc-900 dark:group-hover:border-zinc-100 transition-colors shadow-md"
+                                            <div
+                                                class="w-12 h-12 rounded-full border-2 transition-colors shadow-md {{ $this->selectedColorId == $color->id ? 'border-zinc-900 dark:border-zinc-100 ring-2 ring-zinc-900 dark:ring-zinc-100' : 'border-zinc-300 dark:border-zinc-600 group-hover:border-zinc-900 dark:group-hover:border-zinc-100' }}"
                                                 style="background-color: {{ $color->hex }};"
                                             ></div>
                                             @if($color->hex === '#ffffff' || $color->hex === '#FFFFFF')
                                                 <div class="absolute inset-0 rounded-full border-2 border-zinc-300 dark:border-zinc-600"></div>
                                             @endif
-                                        </div>
+                                            @if($this->selectedColorId == $color->id)
+                                                <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-zinc-900 flex items-center justify-center">
+                                                    <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                </div>
+                                            @endif
+                                        </button>
                                     @endforeach
                                 </div>
                             </div>
@@ -112,12 +133,73 @@
                                 </flux:heading>
                                 <div class="flex flex-wrap gap-2">
                                     @foreach($this->product->warranties as $warranty)
-                                        <span class="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-lg text-sm font-medium">
+                                        <button
+                                            type="button"
+                                            wire:click="selectWarranty({{ $warranty->id }})"
+                                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100 {{ $this->selectedWarrantyId == $warranty->id ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 ring-2 ring-zinc-900 dark:ring-zinc-100' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-700' }}"
+                                        >
                                             {{ $warranty->name }}
-                                        </span>
+                                        </button>
                                     @endforeach
                                 </div>
                             </div>
+                        @endif
+
+                        {{-- Quantity and Add to Cart --}}
+                        @if($this->selectedPrice && $this->selectedPrice->quantity > 0)
+                            <div class="space-y-4">
+                                <div>
+                                    <flux:heading size="sm" class="mb-3 text-zinc-900 dark:text-zinc-100">
+                                        {{ __('app.quantity') }}
+                                    </flux:heading>
+                                    <div class="flex items-center gap-3">
+                                        <button
+                                            type="button"
+                                            wire:click="decreaseQuantity"
+                                            class="w-10 h-10 flex items-center justify-center border border-zinc-300 dark:border-zinc-600 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100"
+                                        >
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                                            </svg>
+                                        </button>
+                                        <input
+                                            type="number"
+                                            wire:model.live="quantity"
+                                            min="1"
+                                            max="{{ $this->selectedPrice->quantity }}"
+                                            class="w-20 text-center border border-zinc-300 dark:border-zinc-600 rounded-lg px-3 py-2 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100"
+                                        />
+                                        <button
+                                            type="button"
+                                            wire:click="increaseQuantity"
+                                            class="w-10 h-10 flex items-center justify-center border border-zinc-300 dark:border-zinc-600 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100"
+                                        >
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                            </svg>
+                                        </button>
+                                        <flux:text class="text-sm text-zinc-600 dark:text-zinc-400">
+                                            {{ __('app.max_quantity') }}: {{ number_format($this->selectedPrice->quantity, 0) }}
+                                        </flux:text>
+                                    </div>
+                                </div>
+                                <flux:button
+                                    wire:click="addToCart"
+                                    variant="primary"
+                                    icon="shopping-cart"
+                                    class="w-full py-3 text-lg"
+                                >
+                                    {{ __('app.add_to_cart') }}
+                                </flux:button>
+                            </div>
+                        @elseif($this->selectedPrice && $this->selectedPrice->quantity <= 0)
+                            <flux:button
+                                variant="ghost"
+                                class="w-full py-3 text-lg"
+                                disabled
+                            >
+                                {{ __('app.out_of_stock') }}
+                            </flux:button>
                         @endif
 
                         {{-- Specifications --}}
@@ -198,7 +280,7 @@
                                             <div class="flex-1">
                                                 <div class="flex items-center gap-3 mb-1">
                                                     @if($price->color)
-                                                        <div 
+                                                        <div
                                                             class="w-6 h-6 rounded-full border border-zinc-300 dark:border-zinc-600"
                                                             style="background-color: {{ $price->color->hex }};"
                                                             title="{{ $price->color->name }}"

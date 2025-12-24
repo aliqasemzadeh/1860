@@ -2,6 +2,7 @@
 
 namespace App\Models\Shop;
 
+use Binafy\LaravelCart\Cartable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 
-class Product extends Model
+class Product extends Model implements Cartable
 {
     use SoftDeletes;
 
@@ -177,5 +178,22 @@ class Product extends Model
                 'message' => null,
             ];
         });
+    }
+
+    /**
+     * Get the price for cart item.
+     * This method is required by Cartable interface.
+     */
+    public function getPrice(): float
+    {
+        $salePrice = $this->sale_price;
+        $regularPrice = $this->price;
+
+        // Return sale price if available, otherwise regular price
+        if ($salePrice && $salePrice < $regularPrice) {
+            return (float) $salePrice;
+        }
+
+        return $regularPrice ? (float) $regularPrice : 0.0;
     }
 }

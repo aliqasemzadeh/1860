@@ -3,6 +3,9 @@
 namespace App\Livewire\Main\Product;
 
 use App\Models\Shop\Product;
+use App\Models\Shop\ProductPrice;
+use Binafy\LaravelCart\LaravelCart;
+use Binafy\LaravelCart\Models\Cart;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -10,6 +13,9 @@ class View extends Component
 {
     public $id = null;
     public $slug = null;
+    public $selectedColorId = null;
+    public $selectedWarrantyId = null;
+    public $quantity = 1;
 
     public function mount($id = null, $slug = null)
     {
@@ -38,6 +44,166 @@ class View extends Component
         }
 
         return $query->first();
+    }
+
+    #[Computed]
+    public function selectedPrice()
+    {
+        if (!$this->product) {
+            return null;
+        }
+
+        $query = ProductPrice::query()
+            ->where('product_id', $this->product->id)
+            ->where('quantity', '>', 0);
+
+        if ($this->selectedColorId) {
+            $query->where('color_id', $this->selectedColorId);
+        } else {
+            $query->whereNull('color_id');
+        }
+
+        if ($this->selectedWarrantyId) {
+            $query->where('warranty_id', $this->selectedWarrantyId);
+        } else {
+            $query->whereNull('warranty_id');
+        }
+
+        $price = $query->first();
+
+        // If no exact match, try to find a price with just color or just warranty
+        if (!$price && $this->selectedColorId) {
+            $price = ProductPrice::query()
+                ->where('product_id', $this->product->id)
+                ->where('color_id', $this->selectedColorId)
+                ->whereNull('warranty_id')
+                ->where('quantity', '>', 0)
+                ->first();
+        }
+
+        if (!$price && $this->selectedWarrantyId) {
+            $price = ProductPrice::query()
+                ->where('product_id', $this->product->id)
+                ->where('warranty_id', $this->selectedWarrantyId)
+                ->whereNull('color_id')
+                ->where('quantity', '>', 0)
+                ->first();
+        }
+
+        // If still no match, use default price
+        if (!$price) {
+            $default = $this->product->default_price;
+            $price = $default['record'] ?? null;
+        }
+
+        return $price;
+    }
+
+    public function selectColor($colorId)
+    {
+        $this->selectedColorId = $colorId;
+        $this->dispatch('price-updated');
+    }
+
+    public function selectWarranty($warrantyId)
+    {
+        $this->selectedWarrantyId = $warrantyId;
+        $this->dispatch('price-updated');
+    }
+
+    public function increaseQuantity()
+    {
+        if ($this->selectedPrice && $this->quantity < $this->selectedPrice->quantity) {
+            $this->quantity++;
+        }
+    }
+
+    public function decreaseQuantity()
+    {
+        if ($this->quantity > 1) {
+            $this->quantity--;
+        }
+    }
+
+    public function addToCart()
+    {
+        if (!auth()->check()) {
+            session()->flash('error', __('app.please_login_to_add_to_cart'));
+            return $this->redirect(route('login'), navigate: true);
+        }
+
+        if (!$this->product) {
+            session()->flash('error', __('app.product_not_found'));
+            return;
+        }
+
+        $selectedPrice = $this->selectedPrice();
+
+        if (!$selectedPrice || $selectedPrice->quantity < $this->quantity) {
+            session()->flash('error', __('app.insufficient_quantity'));
+            return;
+        }
+
+        try {
+            $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
+
+            // Prepare options for cart item
+            $options = [];
+            if ($this->selectedColorId) {
+                $color = $this->product->colors->firstWhere('id', $this->selectedColorId);
+                if ($color) {
+                    $options['color'] = [
+                        'id' => $color->id,
+                        'name' => $color->name,
+                        'hex' => $color->hex,
+                    ];
+                }
+            }
+
+            if ($this->selectedWarrantyId) {
+                $warranty = $this->product->warranties->firstWhere('id', $this->selectedWarrantyId);
+                if ($warranty) {
+                    $options['warranty'] = [
+                        'id' => $warranty->id,
+                        'name' => $warranty->name,
+                    ];
+                }
+            }
+
+            $options['price_id'] = $selectedPrice->id;
+
+            // Check if item already exists in cart with same options
+            $existingItem = $cart->items()
+                ->where('itemable_id', $this->product->id)
+                ->where('itemable_type', Product::class)
+                ->whereJsonContains('options->price_id', $selectedPrice->id)
+                ->first();
+
+            if ($existingItem) {
+                // Check stock before increasing
+                $newQuantity = $existingItem->quantity + $this->quantity;
+                if ($newQuantity <= $selectedPrice->quantity) {
+                    $existingItem->increment('quantity', $this->quantity);
+                } else {
+                    session()->flash('error', __('app.insufficient_quantity'));
+                    return;
+                }
+            } else {
+                // Add new item
+                $cart->storeItem([
+                    'itemable' => $this->product,
+                    'quantity' => $this->quantity,
+                    'options' => $options,
+                ]);
+            }
+
+            session()->flash('success', __('app.product_added_to_cart'));
+            $this->dispatch('cart-updated');
+            // Open basket modal after adding item
+            $this->dispatch('open-basket-modal');
+        } catch (\Exception $e) {
+            session()->flash('error', __('app.failed_to_add_to_cart'));
+        }
     }
 
     public function render()
