@@ -1,3 +1,6 @@
+<x-slot name="title">
+    {{ $this->product->name ?? __('app.product_not_found') }}
+</x-slot>
 <div>
     @if($this->product)
         <section class="py-8 antialiased md:py-12">

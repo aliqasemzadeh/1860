@@ -1,3 +1,6 @@
+<x-slot name="title">
+    {{ __('app.dashboard') }}
+</x-slot>
 <div>
     <section class="py-8 antialiased md:py-12">
         <div class="mx-auto max-w-7xl px-4 2xl:px-0">
