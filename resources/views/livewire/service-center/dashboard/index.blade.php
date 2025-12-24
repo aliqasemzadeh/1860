@@ -1,3 +1,6 @@
+<x-slot name="title">
+    {{ __('app.service_center_dashboard') ?? 'Service Center Dashboard' }}
+</x-slot>
 <div>
     <flux:kanban>
         <flux:kanban.column>

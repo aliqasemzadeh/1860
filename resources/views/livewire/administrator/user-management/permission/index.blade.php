@@ -1,3 +1,6 @@
+<x-slot name="title">
+    {{ __('app.permissions') }}
+</x-slot>
 <div>
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">

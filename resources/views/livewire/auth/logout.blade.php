@@ -1,3 +1,6 @@
+<x-slot name="title">
+    {{ __('app.logout.title') }}
+</x-slot>
 <div class="max-w-md mx-auto px-4 py-8">
     <div class="flex items-start gap-4">
         <div class="flex-1">

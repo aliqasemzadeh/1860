@@ -1,3 +1,6 @@
+<x-slot name="title">
+    {{ $step === 1 ? __('app.login_with_mobile') : __('app.verify_login') }}
+</x-slot>
 <div>
     @if ($step === 1)
         <form wire:submit="send" class="space-y-6 max-w-sm mx-auto w-full">
