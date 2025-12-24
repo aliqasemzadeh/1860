@@ -59,6 +59,7 @@
 <flux:main>
     {{ $slot }}
 </flux:main>
-@include('partials.foot')
+    @include('partials.foot')
+    <flux:toast />
 </body>
 </html>

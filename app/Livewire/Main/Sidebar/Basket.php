@@ -5,6 +5,7 @@ namespace App\Livewire\Main\Sidebar;
 use App\Models\Shop\Product;
 use Binafy\LaravelCart\Models\Cart;
 use Binafy\LaravelCart\Models\CartItem;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -14,7 +15,7 @@ class Basket extends Component
     #[Computed]
     public function cart()
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return null;
         }
 
@@ -27,7 +28,7 @@ class Basket extends Component
     #[Computed]
     public function cartItems()
     {
-        if (!$this->cart) {
+        if (! $this->cart) {
             return collect();
         }
 
@@ -37,7 +38,7 @@ class Basket extends Component
     #[Computed]
     public function totalAmount()
     {
-        if (!$this->cart) {
+        if (! $this->cart) {
             return 0;
         }
 
@@ -50,8 +51,8 @@ class Basket extends Component
             if ($priceId) {
                 $priceRecord = \App\Models\Shop\ProductPrice::find($priceId);
                 if ($priceRecord) {
-                    $price = $priceRecord->sale_price && $priceRecord->sale_price < $priceRecord->price 
-                        ? $priceRecord->sale_price 
+                    $price = $priceRecord->sale_price && $priceRecord->sale_price < $priceRecord->price
+                        ? $priceRecord->sale_price
                         : $priceRecord->price;
                 }
             }
@@ -63,7 +64,7 @@ class Basket extends Component
 
     public function increaseQuantity($itemId)
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
@@ -73,9 +74,9 @@ class Basket extends Component
             $selectedPrice = $this->getPriceForItem($item);
             if ($selectedPrice && $item->quantity < $selectedPrice->quantity) {
                 $item->increment('quantity');
-                session()->flash('success', __('app.quantity_increased'));
+                Flux::toast(variant: 'success', text: __('app.quantity_increased'));
             } else {
-                session()->flash('error', __('app.max_quantity_reached'));
+                Flux::toast(variant: 'danger', text: __('app.max_quantity_reached'));
             }
             $this->dispatch('cart-updated');
         }
@@ -83,14 +84,14 @@ class Basket extends Component
 
     public function decreaseQuantity($itemId)
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
         $item = CartItem::find($itemId);
         if ($item && $item->quantity > 1) {
             $item->decrement('quantity');
-            session()->flash('success', __('app.quantity_decreased'));
+            Flux::toast(variant: 'success', text: __('app.quantity_decreased'));
             $this->dispatch('cart-updated');
         } elseif ($item && $item->quantity == 1) {
             // Remove item if quantity is 1
@@ -100,7 +101,7 @@ class Basket extends Component
 
     public function removeItem($itemId)
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
@@ -108,14 +109,14 @@ class Basket extends Component
         if ($item) {
             // Delete the specific cart item directly to preserve options (color/warranty)
             $item->delete();
-            session()->flash('success', __('app.item_removed_from_cart'));
+            Flux::toast(variant: 'success', text: __('app.item_removed_from_cart'));
             $this->dispatch('cart-updated');
         }
     }
 
     protected function getPriceForItem($cartItem)
     {
-        if (!$cartItem->itemable instanceof Product) {
+        if (! $cartItem->itemable instanceof Product) {
             return null;
         }
 

@@ -1,8 +1,8 @@
-<div 
+<div
     x-data
-    @open-basket-modal.window="$dispatch('open-modal', { name: 'main.sidebar.basket' })"
->
-    <flux:modal.trigger name="main.sidebar.basket" class="relative">
+        @open-basket-modal.window="$dispatch('open-modal', { name: 'main.sidebar.basket.modal' })"
+    >
+    <flux:modal.trigger name="main.sidebar.basket.modal" class="relative">
         <flux:button icon="shopping-cart" />
         @if($this->cartItems && $this->cartItems->count() > 0)
             <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
@@ -10,7 +10,7 @@
             </span>
         @endif
     </flux:modal.trigger>
-    <flux:modal name="main.sidebar.basket" position="right" flyout>
+    <flux:modal name="main.sidebar.basket.modal" position="right" flyout>
         <div class="space-y-6 h-full flex flex-col">
             <div>
                 <flux:heading size="lg">{{ __('app.shopping_cart') }}</flux:heading>
@@ -25,8 +25,8 @@
                                 {{-- Product Image --}}
                                 @if(method_exists($item->itemable, 'file_path') && $item->itemable->file_path)
                                     <div class="flex-shrink-0">
-                                        <img 
-                                            src="{{ \Illuminate\Support\Facades\Storage::url($item->itemable->file_path) }}" 
+                                        <img
+                                            src="{{ \Illuminate\Support\Facades\Storage::url($item->itemable->file_path) }}"
                                             alt="{{ $item->itemable->name ?? '' }}"
                                             class="w-20 h-20 object-cover rounded-lg"
                                         />
@@ -46,7 +46,7 @@
                                         @endphp
                                         @if(isset($options['color']))
                                             <div class="flex items-center gap-2 mb-1">
-                                                <div 
+                                                <div
                                                     class="w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-600"
                                                     style="background-color: {{ $options['color']['hex'] ?? '#000' }};"
                                                 ></div>
@@ -70,8 +70,8 @@
                                         if ($priceId) {
                                             $priceRecord = \App\Models\Shop\ProductPrice::find($priceId);
                                             if ($priceRecord) {
-                                                $itemPrice = $priceRecord->sale_price && $priceRecord->sale_price < $priceRecord->price 
-                                                    ? $priceRecord->sale_price 
+                                                $itemPrice = $priceRecord->sale_price && $priceRecord->sale_price < $priceRecord->price
+                                                    ? $priceRecord->sale_price
                                                     : $priceRecord->price;
                                             }
                                         }

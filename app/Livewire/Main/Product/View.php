@@ -4,17 +4,21 @@ namespace App\Livewire\Main\Product;
 
 use App\Models\Shop\Product;
 use App\Models\Shop\ProductPrice;
-use Binafy\LaravelCart\LaravelCart;
 use Binafy\LaravelCart\Models\Cart;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class View extends Component
 {
     public $id = null;
+
     public $slug = null;
+
     public $selectedColorId = null;
+
     public $selectedWarrantyId = null;
+
     public $quantity = 1;
 
     public function mount($id = null, $slug = null)
@@ -49,7 +53,7 @@ class View extends Component
     #[Computed]
     public function selectedPrice()
     {
-        if (!$this->product) {
+        if (! $this->product) {
             return null;
         }
 
@@ -72,7 +76,7 @@ class View extends Component
         $price = $query->first();
 
         // If no exact match, try to find a price with just color or just warranty
-        if (!$price && $this->selectedColorId) {
+        if (! $price && $this->selectedColorId) {
             $price = ProductPrice::query()
                 ->where('product_id', $this->product->id)
                 ->where('color_id', $this->selectedColorId)
@@ -81,7 +85,7 @@ class View extends Component
                 ->first();
         }
 
-        if (!$price && $this->selectedWarrantyId) {
+        if (! $price && $this->selectedWarrantyId) {
             $price = ProductPrice::query()
                 ->where('product_id', $this->product->id)
                 ->where('warranty_id', $this->selectedWarrantyId)
@@ -91,7 +95,7 @@ class View extends Component
         }
 
         // If still no match, use default price
-        if (!$price) {
+        if (! $price) {
             $default = $this->product->default_price;
             $price = $default['record'] ?? null;
         }
@@ -127,20 +131,23 @@ class View extends Component
 
     public function addToCart()
     {
-        if (!auth()->check()) {
-            session()->flash('error', __('app.please_login_to_add_to_cart'));
+        if (! auth()->check()) {
+            Flux::toast(variant: 'danger', text: __('app.please_login_to_add_to_cart'));
+
             return $this->redirect(route('login'), navigate: true);
         }
 
-        if (!$this->product) {
-            session()->flash('error', __('app.product_not_found'));
+        if (! $this->product) {
+            Flux::toast(variant: 'danger', text: __('app.product_not_found'));
+
             return;
         }
 
         $selectedPrice = $this->selectedPrice();
 
-        if (!$selectedPrice || $selectedPrice->quantity < $this->quantity) {
-            session()->flash('error', __('app.insufficient_quantity'));
+        if (! $selectedPrice || $selectedPrice->quantity < $this->quantity) {
+            Flux::toast(variant: 'danger', text: __('app.insufficient_quantity'));
+
             return;
         }
 
@@ -185,7 +192,8 @@ class View extends Component
                 if ($newQuantity <= $selectedPrice->quantity) {
                     $existingItem->increment('quantity', $this->quantity);
                 } else {
-                    session()->flash('error', __('app.insufficient_quantity'));
+                    Flux::toast(variant: 'danger', text: __('app.insufficient_quantity'));
+
                     return;
                 }
             } else {
@@ -197,18 +205,19 @@ class View extends Component
                 ]);
             }
 
-            session()->flash('success', __('app.product_added_to_cart'));
+            Flux::toast(variant: 'success', text: __('app.product_added_to_cart'));
             $this->dispatch('cart-updated');
             // Open basket modal after adding item
             $this->dispatch('open-basket-modal');
         } catch (\Exception $e) {
-            session()->flash('error', __('app.failed_to_add_to_cart'));
+            Flux::toast(variant: 'danger', text: $e->getMessage());
+            //Flux::toast(variant: 'danger', text: __('app.failed_to_add_to_cart'));
         }
     }
 
     public function render()
     {
-        if (!$this->product) {
+        if (! $this->product) {
             abort(404);
         }
 
