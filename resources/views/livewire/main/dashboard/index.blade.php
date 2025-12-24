@@ -1,5 +1,5 @@
 <x-slot name="title">
-    {{ __('app.dashboard') }}
+    {{ "ستارگان رز جنوب" }}
 </x-slot>
 <div>
     <section class="py-8 antialiased md:py-12">
@@ -16,14 +16,14 @@
             @else
                 <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
                     @foreach($this->products as $product)
-                        <a 
+                        <a
                             href="{{ $product->slug ? route('product.view', $product->slug) : route('product.view.id', $product->id) }}"
                             class="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col h-full"
                         >
                             <flux:card class="h-full flex flex-col">
                                 <div class="relative aspect-square w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 rounded-t-lg">
-                                    <img 
-                                        src="{{ Storage::url($product->file_path) }}" 
+                                    <img
+                                        src="{{ Storage::url($product->file_path) }}"
                                         alt="{{ $product->name }}"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                     />
@@ -33,15 +33,15 @@
                                         </div>
                                     @endif
                                 </div>
-                                
+
                                 <div class="p-4 flex flex-col flex-grow">
-                                    <flux:heading 
-                                        size="sm" 
+                                    <flux:heading
+                                        size="sm"
                                         class="mb-2 line-clamp-2 min-h-[3rem] text-right group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors"
                                     >
                                         {{ $product->name }}
                                     </flux:heading>
-                                    
+
                                     <div class="mt-auto pt-3 border-t border-zinc-200 dark:border-zinc-700">
                                         @if($product->price)
                                             <div class="flex items-center justify-between gap-2">
