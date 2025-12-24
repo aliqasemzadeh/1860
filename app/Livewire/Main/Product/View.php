@@ -145,7 +145,7 @@ class View extends Component
 
         $selectedPrice = $this->selectedPrice();
 
-        if (! $selectedPrice || $selectedPrice->quantity >= $this->quantity) {
+        if (! $selectedPrice || $selectedPrice->quantity < $this->quantity) {
             Flux::toast(variant: 'danger', text: __('app.insufficient_quantity'));
 
             return;

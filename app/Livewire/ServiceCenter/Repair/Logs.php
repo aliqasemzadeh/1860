@@ -74,6 +74,10 @@ class Logs extends Component
             'status' => $this->status,
         ]);
 
+        $this->repair->update([
+            'status' => $this->status,
+        ]);
+
         $this->status = '';
         $this->description = '';
 
