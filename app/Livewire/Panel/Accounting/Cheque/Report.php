@@ -32,13 +32,29 @@ class Report extends Component
     {
         $today = Jalalian::now();
 
+        // Start date: today
         $this->start_date = $today->format('Y/m/d');
 
-        $this->end_date = sprintf(
-            '%d/12/%d',
-            $today->getYear(),
-            $today->isLeapYear() ? 30 : 29
-        );
+        // Default end date: end of current Jalali year
+        $currentYear = $today->getYear();
+        $currentYearLastMonthDays = (new Jalalian($currentYear, 12, 1))->getMonthDays();
+
+        $endOfCurrentYear = new Jalalian($currentYear, 12, $currentYearLastMonthDays);
+
+        // If the difference between start and end is less than 30 days,
+        // extend the range to the end of next year.
+        $startCarbon = $today->toCarbon()->startOfDay();
+        $endCurrentYearCarbon = $endOfCurrentYear->toCarbon()->endOfDay();
+
+        if ($endCurrentYearCarbon->diffInDays($startCarbon) < 30) {
+            $nextYear = $currentYear + 1;
+            $nextYearLastMonthDays = (new Jalalian($nextYear, 12, 1))->getMonthDays();
+            $endOfNextYear = new Jalalian($nextYear, 12, $nextYearLastMonthDays);
+
+            $this->end_date = $endOfNextYear->format('Y/m/d');
+        } else {
+            $this->end_date = $endOfCurrentYear->format('Y/m/d');
+        }
 
         $this->refreshReport();
     }
