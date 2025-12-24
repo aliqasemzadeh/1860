@@ -16,7 +16,7 @@ class Index extends Component
 
     public string $search = '';
 
-    public string $statusFilter = '';
+    public string $statusFilter = 'new';
 
     public string $sortBy = 'created_at';
 

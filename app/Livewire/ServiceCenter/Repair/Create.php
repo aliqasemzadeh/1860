@@ -213,7 +213,7 @@ class Create extends Component
             // System-filled fields
             'admission_user_id' => Auth::user()->id,
             'admission_description' => $this->admission_description,
-            'status' => __('app.repair_status_new'),
+            'status' => 'new',
             'status_description' => __('app.repair_status_new_description'),
             'status_date' => now(),
             'estimate_date' => null,

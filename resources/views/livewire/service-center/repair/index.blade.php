@@ -47,7 +47,7 @@
                         <div class="w-48">
                             <flux:select
                                 size="sm"
-                                placeholder="{{ __('app.status') }}"
+                                placeholder="{{ __('app.filter_status') }}"
                                 wire:model.live="statusFilter"
                             >
                                 <option value="">{{ __('app.all_statuses') }}</option>
@@ -62,7 +62,7 @@
                                 variant="ghost"
                                 wire:click="clearStatusFilter"
                             >
-                                {{ __('app.clear_filter') }}
+                                {{ __('app.clear') }}
                             </flux:button>
                         @endif
                     </div>

@@ -38,24 +38,31 @@ class SyncRepairStatusWithLogsCommand extends Command
         $synced = 0;
         $skipped = 0;
 
+        $bar = $this->output->createProgressBar($repairs->count());
+        $bar->start();
+
         foreach ($repairs as $repair) {
             $latestLog = $repair->logs->first();
 
             if (!$latestLog) {
                 $skipped++;
+                $bar->advance();
                 continue;
             }
 
             if ($repair->status !== $latestLog->status) {
-                $repair->update([
-                    'status' => $latestLog->status,
-                ]);
+                $repair->status = $latestLog->status;
+                $repair->saveQuietly();
                 $synced++;
             } else {
                 $skipped++;
             }
+
+            $bar->advance();
         }
 
+        $bar->finish();
+        $this->newLine();
         $this->info("Sync completed! Synced: {$synced}, Skipped: {$skipped}");
 
         return Command::SUCCESS;
