@@ -78,7 +78,7 @@ class Basket extends Component
             } else {
                 Flux::toast(variant: 'danger', text: __('app.max_quantity_reached'));
             }
-            $this->dispatch('cart-updated');
+            $this->dispatch('main.sidebar.basket.refresh-cart');
         }
     }
 
@@ -92,7 +92,7 @@ class Basket extends Component
         if ($item && $item->quantity > 1) {
             $item->decrement('quantity');
             Flux::toast(variant: 'success', text: __('app.quantity_decreased'));
-            $this->dispatch('cart-updated');
+            $this->dispatch('main.sidebar.basket.refresh-cart');
         } elseif ($item && $item->quantity == 1) {
             // Remove item if quantity is 1
             $this->removeItem($itemId);
@@ -110,7 +110,7 @@ class Basket extends Component
             // Delete the specific cart item directly to preserve options (color/warranty)
             $item->delete();
             Flux::toast(variant: 'success', text: __('app.item_removed_from_cart'));
-            $this->dispatch('cart-updated');
+            $this->dispatch('main.sidebar.basket.refresh-cart');
         }
     }
 
@@ -130,17 +130,10 @@ class Basket extends Component
         return $cartItem->itemable->default_price['record'] ?? null;
     }
 
-    #[On('cart-updated')]
+    #[On('main.sidebar.basket.refresh-cart')]
     public function refreshCart()
     {
         $this->reset('cart', 'cartItems', 'totalAmount');
-    }
-
-    #[On('open-basket-modal')]
-    public function openBasketModal()
-    {
-        // Refresh cart data when modal is opened
-        $this->refreshCart();
     }
 
     public function render()

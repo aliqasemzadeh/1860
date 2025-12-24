@@ -16,7 +16,7 @@ class Index extends Component
 
     public $sortBy = 'created_at';
 
-    public $sortDirection = 'desc';
+    public $sortDirection = 'asc';
 
     public string $search = '';
 

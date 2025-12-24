@@ -61,7 +61,7 @@
             @foreach ($this->remittances as $remittance)
                 <flux:table.row :key="$remittance->id">
                     <flux:table.cell>
-                        {{ $remittance->id }}
+                        {{ $loop->iteration }}
                     </flux:table.cell>
                     <flux:table.cell>
                         {{ $remittance->description }}

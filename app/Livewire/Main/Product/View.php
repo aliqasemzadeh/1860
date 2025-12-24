@@ -145,7 +145,7 @@ class View extends Component
 
         $selectedPrice = $this->selectedPrice();
 
-        if (! $selectedPrice || $selectedPrice->quantity < $this->quantity) {
+        if (! $selectedPrice || $selectedPrice->quantity >= $this->quantity) {
             Flux::toast(variant: 'danger', text: __('app.insufficient_quantity'));
 
             return;
@@ -201,14 +201,14 @@ class View extends Component
                 $cart->storeItem([
                     'itemable' => $this->product,
                     'quantity' => $this->quantity,
-                    'options' => $options,
+                    'options' => json_encode($options),
                 ]);
             }
 
             Flux::toast(variant: 'success', text: __('app.product_added_to_cart'));
-            $this->dispatch('cart-updated');
+            $this->dispatch('main.sidebar.basket.refresh-cart');
             // Open basket modal after adding item
-            $this->dispatch('open-basket-modal');
+            Flux::modal('main.sidebar.basket.modal')->open();
         } catch (\Exception $e) {
             Flux::toast(variant: 'danger', text: $e->getMessage());
             //Flux::toast(variant: 'danger', text: __('app.failed_to_add_to_cart'));
