@@ -35,12 +35,37 @@
     <flux:table :paginate="$this->repairs">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
             <flux:table.column colspan="8" class="bg-white dark:bg-zinc-900">
-                <div class="flex flex-col gap-1 pe-2 items-end">
-                    <flux:input
-                        size="sm"
-                        placeholder="{{ __('app.search_placeholder') }}"
-                        wire:model.live="search"
-                    />
+                <div class="flex flex-col gap-2 pe-2 items-end">
+                    <div class="flex gap-2 w-full">
+                        <div class="flex-1">
+                            <flux:input
+                                size="sm"
+                                placeholder="{{ __('app.search_placeholder') }}"
+                                wire:model.live="search"
+                            />
+                        </div>
+                        <div class="w-48">
+                            <flux:select
+                                size="sm"
+                                placeholder="{{ __('app.status') }}"
+                                wire:model.live="statusFilter"
+                            >
+                                <option value="">{{ __('app.all_statuses') }}</option>
+                                @foreach($this->statusOptions as $status)
+                                    <option value="{{ $status['value'] }}">{{ $status['label'] }}</option>
+                                @endforeach
+                            </flux:select>
+                        </div>
+                        @if($statusFilter)
+                            <flux:button
+                                size="sm"
+                                variant="ghost"
+                                wire:click="clearStatusFilter"
+                            >
+                                {{ __('app.clear_filter') }}
+                            </flux:button>
+                        @endif
+                    </div>
                 </div>
             </flux:table.column>
         </flux:table.columns>

@@ -2,7 +2,9 @@
 
 namespace App\Livewire\ServiceCenter\Repair;
 
+use App\Enums\StatusEnum;
 use App\Models\ServiceCenter\Repair;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -14,12 +16,15 @@ class Index extends Component
 
     public string $search = '';
 
+    public string $statusFilter = '';
+
     public string $sortBy = 'created_at';
 
     public string $sortDirection = 'desc';
 
     protected $queryString = [
         'search' => ['except' => ''],
+        'statusFilter' => ['except' => ''],
         'page' => ['except' => 1],
     ];
 
@@ -39,7 +44,7 @@ class Index extends Component
         $this->resetPage();
     }
 
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function repairs()
     {
         return Repair::query()
@@ -55,6 +60,9 @@ class Index extends Component
                         ->orWhere('device_serial_number', 'like', $search);
                 });
             })
+            ->when($this->statusFilter, function ($query) {
+                $query->where('status', $this->statusFilter);
+            })
             ->tap(function ($query) {
                 if ($this->sortBy !== '') {
                     $query->orderBy($this->sortBy, $this->sortDirection);
@@ -63,8 +71,25 @@ class Index extends Component
             ->paginate(10);
     }
 
+    #[Computed]
+    public function statusOptions()
+    {
+        return StatusEnum::options();
+    }
+
     public function updatingSearch()
     {
+        $this->resetPage();
+    }
+
+    public function updatingStatusFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function clearStatusFilter(): void
+    {
+        $this->statusFilter = '';
         $this->resetPage();
     }
 

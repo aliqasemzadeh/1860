@@ -82,6 +82,7 @@ class Logs extends Component
         $this->description = '';
 
         $this->dispatch('$refresh');
+        $this->dispatch('service-center.repair.index.render');
 
         Flux::toast(variant: 'success', text: __('app.log_added'));
     }
