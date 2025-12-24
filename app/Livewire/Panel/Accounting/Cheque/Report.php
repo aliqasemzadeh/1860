@@ -30,12 +30,15 @@ class Report extends Component
 
     public function mount(): void
     {
-        // Default: monthly for the next 3 months from today.
-        $start = Carbon::now()->startOfDay();
-        $end = Carbon::now()->copy()->addMonths(3)->endOfDay();
+        $today = Jalalian::now();
 
-        $this->start_date = Jalalian::fromCarbon($start)->format('Y/m/d');
-        $this->end_date = Jalalian::fromCarbon($end)->format('Y/m/d');
+        $this->start_date = $today->format('Y/m/d');
+
+        $this->end_date = sprintf(
+            '%d/12/%d',
+            $today->getYear(),
+            $today->isLeapYear() ? 30 : 29
+        );
 
         $this->refreshReport();
     }

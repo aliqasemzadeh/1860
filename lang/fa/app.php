@@ -507,4 +507,5 @@ return [
     'quantity_increased' => 'تعداد افزایش یافت.',
     'quantity_decreased' => 'تعداد کاهش یافت.',
     'max_quantity_reached' => 'حداکثر تعداد موجودی رسیده است.',
+    'due_at' => 'تاریخ سررسید',
 ];
