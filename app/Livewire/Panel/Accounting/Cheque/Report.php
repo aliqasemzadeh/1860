@@ -41,12 +41,13 @@ class Report extends Component
 
         $endOfCurrentYear = new Jalalian($currentYear, 12, $currentYearLastMonthDays);
 
-        // If the difference between start and end is less than 30 days,
+        // If we are in the last month of the year AND
+        // the difference between start and end is less than 30 days,
         // extend the range to the end of next year.
         $startCarbon = $today->toCarbon()->startOfDay();
         $endCurrentYearCarbon = $endOfCurrentYear->toCarbon()->endOfDay();
 
-        if ($endCurrentYearCarbon->diffInDays($startCarbon) < 30) {
+        if ($today->getMonth() === 12 && $endCurrentYearCarbon->diffInDays($startCarbon) < 30) {
             $nextYear = $currentYear + 1;
             $nextYearLastMonthDays = (new Jalalian($nextYear, 12, 1))->getMonthDays();
             $endOfNextYear = new Jalalian($nextYear, 12, $nextYearLastMonthDays);
