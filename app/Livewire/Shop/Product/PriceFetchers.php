@@ -43,7 +43,7 @@ class PriceFetchers extends Component
 
         $this->validate([
             'type' => 'required|in:digikala,fafait,markazi',
-            'url' => 'required|url',
+            'url' => 'required|url|max:500',
         ], [], [
             'type' => __('app.price_fetcher_type'),
             'url' => __('app.price_fetcher_url'),
