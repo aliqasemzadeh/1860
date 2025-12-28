@@ -21,7 +21,7 @@ class View extends Component
         $this->repair = Repair::findOrFail($id);
         $this->id = $this->repair->id;
 
-        Flux::modal('service-center.repair.view.modal')->show();
+        Flux::modal('panel.service-center.repair.view.modal')->show();
     }
     public function render()
     {

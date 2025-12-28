@@ -206,7 +206,7 @@ class Edit extends Component
 
         $this->admission_description = $this->repair->admission_description;
 
-        Flux::modal('service-center.repair.edit.modal')->show();
+        Flux::modal('panel.service-center.repair.edit.modal')->show();
     }
 
     public function update(): void
@@ -264,7 +264,7 @@ class Edit extends Component
         Flux::toast(__('app.repair_updated_message'));
 
         $this->dispatch('panel.service-center.repair.index.render');
-        Flux::modal('service-center.repair.edit.modal')->close();
+        Flux::modal('panel.service-center.repair.edit.modal')->close();
     }
 
     public function fillDeviceType(string $device_type)

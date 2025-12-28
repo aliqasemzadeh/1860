@@ -11,13 +11,13 @@
 
     <flux:sidebar.nav>
         @can('service_center_dashboard_index')
-        <flux:sidebar.item icon="gauge" href="{{ route('service-center.dashboard.index') }}" wire:navigate>{{ __('app.dashboard') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="gauge" href="{{ route('panel.service-center.dashboard.index') }}" wire:navigate>{{ __('app.dashboard') }}</flux:sidebar.item>
         @endcan
         @can('service_center_assembly_index')
-        <flux:sidebar.item icon="pc-case" badge="12" href="{{ route('service-center.assembly.index') }}" wire:navigate>{{ __('app.assemblies') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="pc-case" badge="12" href="{{ route('panel.service-center.assembly.index') }}" wire:navigate>{{ __('app.assemblies') }}</flux:sidebar.item>
         @endcan
         @can('service_center_repair_index')
-        <flux:sidebar.item icon="repairs" href="{{ route('service-center.repair.index') }}" wire:navigate>{{ __('app.repairs') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="repairs" href="{{ route('panel.service-center.repair.index') }}" wire:navigate>{{ __('app.repairs') }}</flux:sidebar.item>
         @endcan
     </flux:sidebar.nav>
 

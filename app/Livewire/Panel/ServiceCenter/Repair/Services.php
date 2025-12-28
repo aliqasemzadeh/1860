@@ -27,7 +27,7 @@ class Services extends Component
         $this->repair = Repair::findOrFail($id);
         $this->id = $this->repair->id;
 
-        Flux::modal('service-center.repair.services.modal')->show();
+        Flux::modal('panel.service-center.repair.services.modal')->show();
     }
 
     #[Computed]

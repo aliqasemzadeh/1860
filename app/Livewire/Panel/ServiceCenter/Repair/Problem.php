@@ -22,7 +22,7 @@ class Problem extends Component
         $this->repair = Repair::findOrFail($id);
         $this->id = $this->repair->id;
 
-        Flux::modal('service-center.repair.problem.modal')->show();
+        Flux::modal('panel.service-center.repair.problem.modal')->show();
     }
 
     public function render(): View

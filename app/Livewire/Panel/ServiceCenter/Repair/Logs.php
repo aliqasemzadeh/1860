@@ -28,7 +28,7 @@ class Logs extends Component
         $this->repair = Repair::findOrFail($id);
         $this->id = $this->repair->id;
 
-        Flux::modal('service-center.repair.logs.modal')->show();
+        Flux::modal('panel.service-center.repair.logs.modal')->show();
     }
 
     #[Computed]
