@@ -208,7 +208,7 @@ class View extends Component
             Flux::toast(variant: 'success', text: __('app.product_added_to_cart'));
             $this->dispatch('main.sidebar.basket.refresh-cart');
             // Open basket modal after adding item
-            Flux::modal('main.sidebar.basket.modal')->open();
+            Flux::modal('main.sidebar.basket.modal')->show();
         } catch (\Exception $e) {
             Flux::toast(variant: 'danger', text: $e->getMessage());
             //Flux::toast(variant: 'danger', text: __('app.failed_to_add_to_cart'));
