@@ -40,7 +40,7 @@ class CreatePermissionsCommand extends Command
             $user->givePermissionTo($permission);
         }
 
-        $administrator = Role::findByName('administrator');
+        $administrator = Role::findByname('panel.administrator');
         $permissions_administrator = __('permissions.administrator');
 
         foreach ($permissions_administrator as $permission => $translate) {

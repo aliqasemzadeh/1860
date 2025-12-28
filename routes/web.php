@@ -16,13 +16,13 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/panel/crm/dashboard/index', \App\Livewire\Panel\Crm\Dashboard\Index::class)->name('panel.crm.dashboard.index');
 
-    Route::get('/administrator/dashboard/index', \App\Livewire\Administrator\Dashboard\Index::class)->name('administrator.dashboard.index');
-    Route::get('/administrator/user-management/user/index', \App\Livewire\Administrator\UserManagement\User\Index::class)->name('administrator.user-management.user.index');
-    Route::get('/administrator/user-management/role/index', \App\Livewire\Administrator\UserManagement\Role\Index::class)->name('administrator.user-management.role.index');
-    Route::get('/administrator/user-management/permission/index', \App\Livewire\Administrator\UserManagement\Permission\Index::class)->name('administrator.user-management.permission.index');
+    Route::get('/administrator/dashboard/index', \App\Livewire\Panel\Administrator\Dashboard\Index::class)->name('panel.administrator.dashboard.index');
+    Route::get('/administrator/user-management/user/index', \App\Livewire\Panel\Administrator\UserManagement\User\Index::class)->name('panel.administrator.user-management.user.index');
+    Route::get('/administrator/user-management/role/index', \App\Livewire\Panel\Administrator\UserManagement\Role\Index::class)->name('panel.administrator.user-management.role.index');
+    Route::get('/administrator/user-management/permission/index', \App\Livewire\Panel\Administrator\UserManagement\Permission\Index::class)->name('panel.administrator.user-management.permission.index');
 
-    Route::get('/administrator/setting-management/function/index', \App\Livewire\Administrator\SettingManagement\Function\Index::class)->name('administrator.setting-management.function.index');
-    Route::get('/administrator/setting-management/option/index', \App\Livewire\Administrator\SettingManagement\Option\Index::class)->name('administrator.setting-management.option.index');
+    Route::get('/administrator/setting-management/function/index', \App\Livewire\Panel\Administrator\SettingManagement\Function\Index::class)->name('panel.administrator.setting-management.function.index');
+    Route::get('/administrator/setting-management/option/index', \App\Livewire\Panel\Administrator\SettingManagement\Option\Index::class)->name('panel.administrator.setting-management.option.index');
 
     Route::get('/panel/shop/dashboard/index', \App\Livewire\Panel\Shop\Dashboard\Index::class)->name('panel.shop.dashboard.index');
 

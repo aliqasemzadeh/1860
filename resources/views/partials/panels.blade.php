@@ -12,6 +12,6 @@
             <flux:sidebar.item icon="chart-no-axes-combined" href="{{ route('accounting.dashboard.index') }}">{{ __('app.accounting') }}</flux:sidebar.item>
         @endcan
     @can('administrator_access')
-    <flux:sidebar.item icon="settings" href="{{ route('administrator.dashboard.index') }}">{{ __('app.administrator') }}</flux:sidebar.item>
+    <flux:sidebar.item icon="settings" href="{{ route('panel.administrator.dashboard.index') }}">{{ __('app.administrator') }}</flux:sidebar.item>
     @endcan
 </flux:sidebar.nav>
