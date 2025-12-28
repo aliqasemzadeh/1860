@@ -22,7 +22,7 @@ class FaterProductFetcher
 
             if (!$response->successful()) {
                 if ($logger) {
-                    $logger->warn("Request failed with status: {$response->status()}");
+                    $logger->warning("Request failed with status: {$response->status()}");
                 }
                 return null;
             }
