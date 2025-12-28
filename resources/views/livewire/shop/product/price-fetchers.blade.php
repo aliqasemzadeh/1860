@@ -61,7 +61,7 @@
                                             </div>
                                             @if ($priceFetcher->last_fetched_at)
                                                 <div class="text-xs text-gray-500 dark:text-gray-400">
-                                                    {{ __('app.last_fetched_at') }}: {{ $priceFetcher->last_fetched_at->format('Y-m-d H:i') }}
+                                                    {{ __('app.last_fetched_at') }}: {{ \Morilog\Jalali\Jalalian::fromCarbon($priceFetcher->last_fetched_at)->format('%Y-%m-%d %H:%M') }}
                                                 </div>
                                             @endif
                                         </div>
