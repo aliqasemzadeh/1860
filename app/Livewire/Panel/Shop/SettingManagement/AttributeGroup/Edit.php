@@ -51,3 +51,4 @@ class Edit extends Component
         return view('livewire.panel.shop.setting-management.attribute-group.edit');
     }
 }
+

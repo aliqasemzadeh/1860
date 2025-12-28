@@ -33,3 +33,4 @@ class Create extends Component
         return view('livewire.panel.shop.setting-management.attribute-group.create');
     }
 }
+
