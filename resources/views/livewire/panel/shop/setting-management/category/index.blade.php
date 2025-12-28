@@ -37,6 +37,7 @@
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.category.edit.assign-data', { id: '{{ $category->id }}' })">{{ __('app.edit') }}</flux:button>
+                    <flux:button size="xs" variant="primary" color="purple" href="{{ route('panel.shop.setting-management.category.attributes', ['id' => $category->id]) }}" wire:navigate>{{ __('app.attributes') }}</flux:button>
                     <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>
                 </flux:table.cell>
             </flux:table.row>
@@ -54,6 +55,7 @@
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.category.edit.assign-data', { id: '{{ $child->id }}' })">{{ __('app.edit') }}</flux:button>
+                        <flux:button size="xs" variant="primary" color="purple" href="{{ route('panel.shop.setting-management.category.attributes', ['id' => $child->id]) }}" wire:navigate>{{ __('app.attributes') }}</flux:button>
                         <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>
                     </flux:table.cell>
                 </flux:table.row>

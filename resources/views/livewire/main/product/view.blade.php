@@ -318,6 +318,59 @@
                                 </div>
                             </div>
                         @endif
+
+                        {{-- Product Attributes --}}
+                        @php
+                            $attributeValues = $this->product->attributeValues->keyBy('attribute_id');
+                            $attributesByGroup = collect();
+                            if($this->product->category) {
+                                $attributesByGroup = $this->product->category->attributes
+                                    ->filter(function($attribute) use ($attributeValues) {
+                                        return $attributeValues->has($attribute->id) && !empty($attributeValues[$attribute->id]->display_value);
+                                    })
+                                    ->groupBy('attributeGroup.name');
+                            }
+                        @endphp
+                        @if($attributesByGroup->isNotEmpty())
+                            <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6">
+                                <flux:heading size="sm" class="mb-4 text-zinc-900 dark:text-zinc-100">
+                                    {{ __('app.technical_specifications') }}
+                                </flux:heading>
+                                <div class="space-y-4">
+                                    @foreach($attributesByGroup as $groupName => $groupAttributes)
+                                        <div>
+                                            @if($groupName)
+                                                <flux:heading size="xs" class="mb-2 text-zinc-700 dark:text-zinc-300">
+                                                    {{ $groupName }}
+                                                </flux:heading>
+                                            @endif
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                @foreach($groupAttributes as $attribute)
+                                                    @php
+                                                        $value = $attributeValues[$attribute->id] ?? null;
+                                                        $displayValue = $value?->display_value ?? '-';
+                                                    @endphp
+                                                    @if($displayValue !== '-')
+                                                        <div>
+                                                            <flux:text class="text-sm text-zinc-600 dark:text-zinc-400">
+                                                                {{ $attribute->label }}
+                                                            </flux:text>
+                                                            <div class="text-base font-medium text-zinc-900 dark:text-zinc-100 mt-1">
+                                                                @if($attribute->type === 'multiselect' && is_array($displayValue))
+                                                                    {{ implode('، ', $displayValue) }}
+                                                                @else
+                                                                    {{ $displayValue }}
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

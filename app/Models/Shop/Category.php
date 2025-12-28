@@ -4,6 +4,7 @@ namespace App\Models\Shop;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -21,6 +22,16 @@ class Category extends Model
     public function children(): HasMany
     {
         return $this->hasMany(Category::class, 'main_category_id');
+    }
+
+    /**
+     * Get the attributes assigned to this category.
+     */
+    public function attributes(): BelongsToMany
+    {
+        return $this->belongsToMany(Attribute::class, 'category_attribute')
+            ->withPivot(['is_required', 'sort_order'])
+            ->withTimestamps();
     }
 
     /**

@@ -31,10 +31,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/panel/shop/order/index', \App\Livewire\Panel\Shop\Order\Index::class)->name('panel.shop.order.index');
 
     Route::get('/panel/shop/setting-management/category/index', \App\Livewire\Panel\Shop\SettingManagement\Category\Index::class)->name('panel.shop.setting-management.category.index');
+    Route::get('/panel/shop/setting-management/category/attributes/{id}', \App\Livewire\Panel\Shop\SettingManagement\Category\Attributes::class)->name('panel.shop.setting-management.category.attributes');
     Route::get('/panel/shop/setting-management/brand/index', \App\Livewire\Panel\Shop\SettingManagement\Brand\Index::class)->name('panel.shop.setting-management.brand.index');
     Route::get('/panel/shop/setting-management/color/index', \App\Livewire\Panel\Shop\SettingManagement\Color\Index::class)->name('panel.shop.setting-management.color.index');
     Route::get('/panel/shop/setting-management/warranty/index', \App\Livewire\Panel\Shop\SettingManagement\Warranty\Index::class)->name('panel.shop.setting-management.warranty.index');
     Route::get('/panel/shop/setting-management/unit/index', \App\Livewire\Panel\Shop\SettingManagement\Unit\Index::class)->name('panel.shop.setting-management.unit.index');
+    Route::get('/panel/shop/setting-management/attribute-group/index', \App\Livewire\Panel\Shop\SettingManagement\AttributeGroup\Index::class)->name('panel.shop.setting-management.attribute-group.index');
+    Route::get('/panel/shop/setting-management/attribute-group/attribute/{attributeGroupId}', \App\Livewire\Panel\Shop\SettingManagement\AttributeGroup\Attributes::class)->name('panel.shop.setting-management.attribute-group.attributes');
 
     // Shop / Shipping management
     Route::get('/panel/shop/shipping/method/index', \App\Livewire\Panel\Shop\Shipping\Method\Index::class)->name('panel.shop.shipping.method.index');

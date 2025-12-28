@@ -35,7 +35,18 @@ class View extends Component
     public function product()
     {
         $query = Product::query()
-            ->with(['category', 'brand', 'unit', 'colors', 'warranties', 'prices.color', 'prices.warranty']);
+            ->with([
+                'category.attributes.attributeGroup',
+                'category.attributes.options',
+                'brand',
+                'unit',
+                'colors',
+                'warranties',
+                'prices.color',
+                'prices.warranty',
+                'attributeValues.attribute.attributeGroup',
+                'attributeValues.attribute.options',
+            ]);
 
         if ($this->slug) {
             $query->where(function ($q) {

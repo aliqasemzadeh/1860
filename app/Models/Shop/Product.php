@@ -102,6 +102,14 @@ class Product extends Model implements Cartable
     }
 
     /**
+     * Get the attribute values for the product.
+     */
+    public function attributeValues(): HasMany
+    {
+        return $this->hasMany(ProductAttributeValue::class);
+    }
+
+    /**
      * Build the cache key for storing the computed default price payload.
      */
     public static function defaultPriceCacheKey(int $productId): string

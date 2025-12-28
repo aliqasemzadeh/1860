@@ -66,6 +66,7 @@
                         <flux:button size="xs" variant="primary" color="purple" wire:click="$dispatch('panel.shop.product.price-fetchers.assign-data', { id: '{{ $product->id }}' })">{{ __('app.price_fetchers') }}</flux:button>
                         <flux:button size="xs" variant="primary" color="orange" wire:click="$dispatch('panel.shop.product.images.assign-data', { id: '{{ $product->id }}' })">{{ __('app.images') }}</flux:button>
                         <flux:button size="xs" variant="primary" color="teal" href="{{ route('panel.shop.product.pricing.index', ['productId' => $product->id]) }}">{{ __('app.pricing') }}</flux:button>
+                        <flux:button size="xs" variant="primary" color="indigo" href="{{ route('panel.shop.product.attributes', ['id' => $product->id]) }}" wire:navigate>{{ __('app.attributes') }}</flux:button>
                         <flux:button size="xs" variant="danger" wire:click="delete({{ $product->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
                     </div>
                 </flux:table.cell>
