@@ -20,8 +20,6 @@
             <flux:sidebar.item href="{{ route('panel.shop.setting-management.warranty.index') }}" wire:navigate>{{ __('app.warranties') }}</flux:sidebar.item>
             <flux:sidebar.item href="{{ route('panel.shop.setting-management.color.index') }}" wire:navigate>{{ __('app.colors') }}</flux:sidebar.item>
             <flux:sidebar.item href="{{ route('panel.shop.setting-management.unit.index') }}" wire:navigate>{{ __('app.units') }}</flux:sidebar.item>
-            <flux:sidebar.item href="{{ route('panel.shop.setting-management.attribute.group.index') }}" wire:navigate>{{ __('app.attribute_groups') }}</flux:sidebar.item>
-            <flux:sidebar.item href="{{ route('panel.shop.setting-management.attribute.index') }}" wire:navigate>{{ __('app.attributes') }}</flux:sidebar.item>
         </flux:sidebar.group>
 
         <flux:sidebar.group expandable heading="{{ __('app.shipping') }}" class="grid" :expanded="request()->routeIs('shop.shipping.*')">
