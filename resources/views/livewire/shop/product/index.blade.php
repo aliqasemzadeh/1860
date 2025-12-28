@@ -38,11 +38,8 @@
     <flux:table :paginate="$this->products">
         <flux:table.columns>
             <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('app.name') }}</flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'slug'" :direction="$sortDirection" wire:click="sort('slug')">{{ __('app.slug') }}</flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'slug_fa'" :direction="$sortDirection" wire:click="sort('slug_fa')">{{ __('app.slug_fa') }}</flux:table.column>
             <flux:table.column>{{ __('app.category') }}</flux:table.column>
             <flux:table.column>{{ __('app.brand') }}</flux:table.column>
-            <flux:table.column>{{ __('app.unit') }}</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')">{{ __('app.date') }}</flux:table.column>
             <flux:table.column>{{ __('app.options') }}</flux:table.column>
         </flux:table.columns>
@@ -53,19 +50,10 @@
                     {{ $product->name }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
-                    {{ $product->slug }}
-                </flux:table.cell>
-                <flux:table.cell class="whitespace-nowrap">
-                    {{ $product->slug_fa }}
-                </flux:table.cell>
-                <flux:table.cell class="whitespace-nowrap">
                     {{ $product->category?->name ?? '-' }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     {{ $product->brand?->name ?? '-' }}
-                </flux:table.cell>
-                <flux:table.cell class="whitespace-nowrap">
-                    {{ $product->unit?->name ?? '-' }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     {{ $product->created_at ? \Morilog\Jalali\Jalalian::fromCarbon($product->created_at)->format('%Y-%m-%d %H:%M') : '-' }}

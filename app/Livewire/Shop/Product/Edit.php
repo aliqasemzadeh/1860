@@ -59,7 +59,7 @@ class Edit extends Component
     public function updatedName(string $value): void
     {
         $this->slug = Str::slug($value);
-        $this->slug_fa = str_replace(' ', '-', $value);
+        $this->slug_fa = slug_fa( $value);
     }
 
     #[On('shop.product.edit.assign-data')]
@@ -182,21 +182,21 @@ class Edit extends Component
             ->with('main_category')
             ->orderBy('name')
             ->limit(20);
-        
+
         $categories = $query->get(['id', 'name', 'main_category_id']);
-        
+
         // If a category is selected but not in the filtered results, include it
         if ($this->category_id && !$categories->contains('id', $this->category_id)) {
             $selectedCategory = Category::with('main_category')
                 ->where('id', $this->category_id)
                 ->where('main_category_id', '!=', 0)
                 ->first(['id', 'name', 'main_category_id']);
-            
+
             if ($selectedCategory) {
                 $categories->prepend($selectedCategory);
             }
         }
-        
+
         return $categories;
     }
 
@@ -207,18 +207,18 @@ class Edit extends Component
             ->when($this->brand_search, fn ($query) => $query->where('name', 'like', '%'.$this->brand_search.'%'))
             ->orderBy('name')
             ->limit(20);
-        
+
         $brands = $query->get(['id', 'name']);
-        
+
         // If a brand is selected but not in the filtered results, include it
         if ($this->brand_id && !$brands->contains('id', $this->brand_id)) {
             $selectedBrand = Brand::where('id', $this->brand_id)->first(['id', 'name']);
-            
+
             if ($selectedBrand) {
                 $brands->prepend($selectedBrand);
             }
         }
-        
+
         return $brands;
     }
 
@@ -229,18 +229,18 @@ class Edit extends Component
             ->when($this->unit_search, fn ($query) => $query->where('name', 'like', '%'.$this->unit_search.'%'))
             ->orderBy('name')
             ->limit(20);
-        
+
         $units = $query->get(['id', 'name']);
-        
+
         // If a unit is selected but not in the filtered results, include it
         if ($this->unit_id && !$units->contains('id', $this->unit_id)) {
             $selectedUnit = Unit::where('id', $this->unit_id)->first(['id', 'name']);
-            
+
             if ($selectedUnit) {
                 $units->prepend($selectedUnit);
             }
         }
-        
+
         return $units;
     }
 
