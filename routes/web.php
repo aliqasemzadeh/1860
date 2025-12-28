@@ -28,6 +28,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/panel/shop/product/index', \App\Livewire\Panel\Shop\Product\Index::class)->name('panel.shop.product.index');
     Route::get('/panel/shop/product/pricing/{productId}', \App\Livewire\Panel\Shop\Product\Pricing\Index::class)->name('panel.shop.product.pricing.index');
+    Route::get('/panel/shop/product/attributes/{id}', \App\Livewire\Panel\Shop\Product\Attributes::class)->name('panel.shop.product.attributes.index');
     Route::get('/panel/shop/order/index', \App\Livewire\Panel\Shop\Order\Index::class)->name('panel.shop.order.index');
 
     Route::get('/panel/shop/setting-management/category/index', \App\Livewire\Panel\Shop\SettingManagement\Category\Index::class)->name('panel.shop.setting-management.category.index');

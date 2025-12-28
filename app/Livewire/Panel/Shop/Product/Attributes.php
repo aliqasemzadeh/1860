@@ -49,7 +49,7 @@ class Attributes extends Component
             'number' => $value->value_number,
             'boolean' => $value->value_bool,
             'date' => $value->value_date?->format('Y-m-d'),
-            'select' => $value->value_json,
+            'select' => is_array($value->value_json) ? ($value->value_json[0] ?? null) : $value->value_json,
             'multiselect' => $value->value_json ?? [],
             default => $value->value_text,
         };
@@ -79,8 +79,12 @@ class Attributes extends Component
         foreach ($categoryAttributes as $attribute) {
             $value = $this->attributeValues[$attribute->id] ?? null;
 
+            // Handle multiselect - empty array means no selection
+            $isEmpty = ($attribute->type === 'multiselect' && (empty($value) || (is_array($value) && count($value) === 0)))
+                || ($attribute->type !== 'multiselect' && empty($value));
+
             // Skip if value is empty and not required
-            if (empty($value) && !$attribute->is_required) {
+            if ($isEmpty && !$attribute->is_required) {
                 // Delete existing value if exists
                 ProductAttributeValue::query()
                     ->where('product_id', $this->product->id)
@@ -90,7 +94,7 @@ class Attributes extends Component
             }
 
             // Validate required attributes
-            if ($attribute->is_required && empty($value)) {
+            if ($attribute->is_required && $isEmpty) {
                 Flux::toast(variant: 'error', text: __('app.attribute_required', ['name' => $attribute->label]));
 
                 return;
@@ -107,7 +111,8 @@ class Attributes extends Component
                 'number' => $valueData['value_number'] = $value,
                 'boolean' => $valueData['value_bool'] = (bool) $value,
                 'date' => $valueData['value_date'] = $value ? \Carbon\Carbon::parse($value) : null,
-                'select', 'multiselect' => $valueData['value_json'] = is_array($value) ? $value : [$value],
+                'select' => $valueData['value_json'] = $value ? [$value] : null,
+                'multiselect' => $valueData['value_json'] = is_array($value) ? array_values($value) : ($value ? [$value] : []),
                 default => $valueData['value_text'] = $value,
             };
 
