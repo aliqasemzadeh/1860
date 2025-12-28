@@ -14,7 +14,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/service-center/assembly/index', \App\Livewire\ServiceCenter\Assembly\Index::class)->name('service-center.assembly.index');
     Route::get('/service-center/repair/index', \App\Livewire\ServiceCenter\Repair\Index::class)->name('service-center.repair.index');
 
-    Route::get('/crm/dashboard/index', \App\Livewire\Crm\Dashboard\Index::class)->name('crm.dashboard.index');
+    Route::get('/crm/dashboard/index', \App\Livewire\Panel\Crm\Dashboard\Index::class)->name('crm.dashboard.index');
 
     Route::get('/administrator/dashboard/index', \App\Livewire\Administrator\Dashboard\Index::class)->name('administrator.dashboard.index');
     Route::get('/administrator/user-management/user/index', \App\Livewire\Administrator\UserManagement\User\Index::class)->name('administrator.user-management.user.index');
@@ -24,17 +24,17 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/administrator/setting-management/function/index', \App\Livewire\Administrator\SettingManagement\Function\Index::class)->name('administrator.setting-management.function.index');
     Route::get('/administrator/setting-management/option/index', \App\Livewire\Administrator\SettingManagement\Option\Index::class)->name('administrator.setting-management.option.index');
 
-    Route::get('/shop/dashboard/index', \App\Livewire\Shop\Dashboard\Index::class)->name('shop.dashboard.index');
+    Route::get('/shop/dashboard/index', \App\Livewire\Panel\Shop\Dashboard\Index::class)->name('shop.dashboard.index');
 
-    Route::get('/shop/product/index', \App\Livewire\Shop\Product\Index::class)->name('shop.product.index');
-    Route::get('/shop/product/pricing/{productId}', \App\Livewire\Shop\Product\Pricing\Index::class)->name('shop.product.pricing.index');
-    Route::get('/shop/order/index', \App\Livewire\Shop\Order\Index::class)->name('shop.order.index');
+    Route::get('/shop/product/index', \App\Livewire\Panel\Shop\Product\Index::class)->name('shop.product.index');
+    Route::get('/shop/product/pricing/{productId}', \App\Livewire\Panel\Shop\Product\Pricing\Index::class)->name('shop.product.pricing.index');
+    Route::get('/shop/order/index', \App\Livewire\Panel\Shop\Order\Index::class)->name('shop.order.index');
 
-    Route::get('/shop/setting-management/category/index', \App\Livewire\Shop\SettingManagement\Category\Index::class)->name('shop.setting-management.category.index');
-    Route::get('/shop/setting-management/brand/index', \App\Livewire\Shop\SettingManagement\Brand\Index::class)->name('shop.setting-management.brand.index');
-    Route::get('/shop/setting-management/color/index', \App\Livewire\Shop\SettingManagement\Color\Index::class)->name('shop.setting-management.color.index');
-    Route::get('/shop/setting-management/warranty/index', \App\Livewire\Shop\SettingManagement\Warranty\Index::class)->name('shop.setting-management.warranty.index');
-    Route::get('/shop/setting-management/unit/index', \App\Livewire\Shop\SettingManagement\Unit\Index::class)->name('shop.setting-management.unit.index');
+    Route::get('/shop/setting-management/category/index', \App\Livewire\Panel\Shop\SettingManagement\Category\Index::class)->name('shop.setting-management.category.index');
+    Route::get('/shop/setting-management/brand/index', \App\Livewire\Panel\Shop\SettingManagement\Brand\Index::class)->name('shop.setting-management.brand.index');
+    Route::get('/shop/setting-management/color/index', \App\Livewire\Panel\Shop\SettingManagement\Color\Index::class)->name('shop.setting-management.color.index');
+    Route::get('/shop/setting-management/warranty/index', \App\Livewire\Panel\Shop\SettingManagement\Warranty\Index::class)->name('shop.setting-management.warranty.index');
+    Route::get('/shop/setting-management/unit/index', \App\Livewire\Panel\Shop\SettingManagement\Unit\Index::class)->name('shop.setting-management.unit.index');
 
     // Shop / Shipping management
     Route::get('/shop/shipping/method/index', \App\Livewire\Panel\Shop\Shipping\Method\Index::class)->name('shop.shipping.method.index');

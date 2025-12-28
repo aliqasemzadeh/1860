@@ -63,7 +63,7 @@
                         </flux:badge>
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
-                        <flux:button size="xs" variant="primary" wire:click="$dispatch('shop.shipping.rate.edit.assign-data', { id: '{{ $rate->id }}' })">
+                        <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.shipping.rate.edit.assign-data', { id: '{{ $rate->id }}' })">
                             {{ __('app.edit') }}
                         </flux:button>
                         <flux:button size="xs" variant="danger" wire:click="delete({{ $rate->id }})">

@@ -10,22 +10,22 @@
     <flux:sidebar.search placeholder="Search..." />
 
     <flux:sidebar.nav>
-        <flux:sidebar.item icon="gauge" href="{{ route('shop.dashboard.index') }}" wire:navigate>{{ __('app.dashboard') }}</flux:sidebar.item>
-        <flux:sidebar.item icon="boxes" href="{{ route('shop.product.index') }}" wire:navigate>{{ __('app.products') }}</flux:sidebar.item>
-        <flux:sidebar.item icon="bring-to-front" href="{{ route('shop.order.index') }}" wire:navigate>{{ __('app.orders') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="gauge" href="{{ route('panel.shop.dashboard.index') }}" wire:navigate>{{ __('app.dashboard') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="boxes" href="{{ route('panel.shop.product.index') }}" wire:navigate>{{ __('app.products') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="bring-to-front" href="{{ route('panel.shop.order.index') }}" wire:navigate>{{ __('app.orders') }}</flux:sidebar.item>
 
         <flux:sidebar.group expandable heading="{{ __('app.setting_management') }}" class="grid" :expanded="request()->routeIs('shop.setting-management.*')">
-            <flux:sidebar.item href="{{ route('shop.setting-management.category.index') }}" wire:navigate>{{ __('app.categories') }}</flux:sidebar.item>
-            <flux:sidebar.item href="{{ route('shop.setting-management.brand.index') }}" wire:navigate>{{ __('app.brands') }}</flux:sidebar.item>
-            <flux:sidebar.item href="{{ route('shop.setting-management.warranty.index') }}" wire:navigate>{{ __('app.warranties') }}</flux:sidebar.item>
-            <flux:sidebar.item href="{{ route('shop.setting-management.color.index') }}" wire:navigate>{{ __('app.colors') }}</flux:sidebar.item>
-            <flux:sidebar.item href="{{ route('shop.setting-management.unit.index') }}" wire:navigate>{{ __('app.units') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('panel.shop.setting-management.category.index') }}" wire:navigate>{{ __('app.categories') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('panel.shop.setting-management.brand.index') }}" wire:navigate>{{ __('app.brands') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('panel.shop.setting-management.warranty.index') }}" wire:navigate>{{ __('app.warranties') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('panel.shop.setting-management.color.index') }}" wire:navigate>{{ __('app.colors') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('panel.shop.setting-management.unit.index') }}" wire:navigate>{{ __('app.units') }}</flux:sidebar.item>
         </flux:sidebar.group>
 
         <flux:sidebar.group expandable heading="{{ __('app.shipping') }}" class="grid" :expanded="request()->routeIs('shop.shipping.*')">
-            <flux:sidebar.item href="{{ route('shop.shipping.method.index') }}" wire:navigate>{{ __('app.shipping_methods') }}</flux:sidebar.item>
-            <flux:sidebar.item href="{{ route('shop.shipping.zone.index') }}" wire:navigate>{{ __('app.shipping_zones') }}</flux:sidebar.item>
-            <flux:sidebar.item href="{{ route('shop.shipping.rate.index') }}" wire:navigate>{{ __('app.shipping_rates') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('panel.shop.shipping.method.index') }}" wire:navigate>{{ __('app.shipping_methods') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('panel.shop.shipping.zone.index') }}" wire:navigate>{{ __('app.shipping_zones') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('panel.shop.shipping.rate.index') }}" wire:navigate>{{ __('app.shipping_rates') }}</flux:sidebar.item>
         </flux:sidebar.group>
     </flux:sidebar.nav>
 
