@@ -25,7 +25,7 @@ class Edit extends Component
         $this->id = $this->attributeGroup->id;
         $this->name = (string) $this->attributeGroup->name;
         $this->sort_order = $this->attributeGroup->sort_order;
-        Flux::modal('shop.setting-management.attribute-group.edit.modal')->show();
+        Flux::modal('panel.shop.setting-management.attribute-group.edit.modal')->show();
     }
 
     public function edit(): void
@@ -42,7 +42,7 @@ class Edit extends Component
         $this->attributeGroup->fill($validated)->save();
 
         $this->dispatch('panel.shop.setting-management.attribute-group.index.render');
-        Flux::modal('shop.setting-management.attribute-group.edit.modal')->close();
+        Flux::modal('panel.shop.setting-management.attribute-group.edit.modal')->close();
         Flux::toast(variant: 'success', text: __('app.attribute_group_updated'));
     }
 

@@ -25,7 +25,7 @@ class Create extends Component
 
         $brand = Brand::create($validated);
 
-        Flux::modal('shop.setting-management.brand.create.modal')->close();
+        Flux::modal('panel.shop.setting-management.brand.create.modal')->close();
         $this->dispatch('shop.setting-management.brand.index.render');
         \Illuminate\Support\Facades\Log::info("Brand Created:",[$brand->id]);
         $this->dispatch('shop.product.brand.refresh', ['id' => $brand->id]);

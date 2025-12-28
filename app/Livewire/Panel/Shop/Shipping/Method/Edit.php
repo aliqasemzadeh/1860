@@ -34,7 +34,7 @@ class Edit extends Component
         $this->description = $this->method->description;
         $this->is_active = (bool) $this->method->is_active;
 
-        Flux::modal('shop.shipping.method.edit.modal')->show();
+        Flux::modal('panel.shop.shipping.method.edit.modal')->show();
     }
 
     public function edit(): void
@@ -53,7 +53,7 @@ class Edit extends Component
         $this->method->fill($validated)->save();
 
         $this->dispatch('shop.shipping.method.index.render');
-        Flux::modal('shop.shipping.method.edit.modal')->close();
+        Flux::modal('panel.shop.shipping.method.edit.modal')->close();
         Flux::toast(variant: 'success', text: __('app.shipping_method_updated'));
     }
 

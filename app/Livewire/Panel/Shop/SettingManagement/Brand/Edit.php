@@ -29,7 +29,7 @@ class Edit extends Component
         $this->name = (string) $this->brand->name;
         $this->slug = (string) $this->brand->slug;
         $this->slug_fa = (string) $this->brand->slug_fa;
-        Flux::modal('shop.setting-management.brand.edit.modal')->show();
+        Flux::modal('panel.shop.setting-management.brand.edit.modal')->show();
     }
 
     public function edit(): void
@@ -47,7 +47,7 @@ class Edit extends Component
         $this->brand->fill($validated)->save();
 
         $this->dispatch('shop.setting-management.brand.index.render');
-        Flux::modal('shop.setting-management.brand.edit.modal')->close();
+        Flux::modal('panel.shop.setting-management.brand.edit.modal')->close();
     }
 
     public function render(): View

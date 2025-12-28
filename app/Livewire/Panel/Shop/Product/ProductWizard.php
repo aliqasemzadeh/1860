@@ -237,7 +237,7 @@ class ProductWizard extends Component
             }
         }
 
-        Flux::modal('shop.product.product-wizard.modal')->close();
+        Flux::modal('panel.shop.product.product-wizard.modal')->close();
         $this->dispatch('shop.product.index.render');
         Flux::toast(variant: 'success', text: __('app.product_created_with_price_fetcher'));
 
@@ -337,7 +337,7 @@ class ProductWizard extends Component
 
     public function closeModal(): void
     {
-        Flux::modal('shop.product.product-wizard.modal')->close();
+        Flux::modal('panel.shop.product.product-wizard.modal')->close();
     }
 
     public function render(): View

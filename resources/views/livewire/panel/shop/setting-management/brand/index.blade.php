@@ -16,7 +16,7 @@
     <livewire:panel.shop.setting-management.brand.create />
     <livewire:panel.shop.setting-management.brand.edit />
 
-    <flux:table>
+    <flux:table :paginate="$this->brands">
         <flux:table.columns>
             <flux:table.column sortable>{{ __('app.name') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.slug') }}</flux:table.column>

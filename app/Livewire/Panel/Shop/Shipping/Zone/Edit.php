@@ -83,7 +83,7 @@ class Edit extends Component
         $this->areas = implode("\n", (array) $this->zone->areas);
         $this->updatedStates();
 
-        Flux::modal('shop.shipping.zone.edit.modal')->show();
+        Flux::modal('panel.shop.shipping.zone.edit.modal')->show();
     }
 
     public function edit(): void
@@ -109,7 +109,7 @@ class Edit extends Component
         ]);
 
         $this->dispatch('shop.shipping.zone.index.render');
-        Flux::modal('shop.shipping.zone.edit.modal')->close();
+        Flux::modal('panel.shop.shipping.zone.edit.modal')->close();
         Flux::toast(variant: 'success', text: __('app.shipping_zone_updated'));
     }
 

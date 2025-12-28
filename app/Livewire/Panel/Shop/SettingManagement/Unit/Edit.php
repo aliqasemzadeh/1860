@@ -23,7 +23,7 @@ class Edit extends Component
         $this->unit = UnitModel::findOrFail($id);
         $this->id = $this->unit->id;
         $this->name = (string) $this->unit->name;
-        Flux::modal('shop.setting-management.unit.edit.modal')->show();
+        Flux::modal('panel.shop.setting-management.unit.edit.modal')->show();
     }
 
     public function edit(): void
@@ -39,7 +39,7 @@ class Edit extends Component
         $this->unit->fill($validated)->save();
 
         $this->dispatch('shop.setting-management.unit.index.render');
-        Flux::modal('shop.setting-management.unit.edit.modal')->close();
+        Flux::modal('panel.shop.setting-management.unit.edit.modal')->close();
     }
 
     public function render(): View

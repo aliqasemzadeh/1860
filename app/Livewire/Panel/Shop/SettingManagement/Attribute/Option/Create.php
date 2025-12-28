@@ -42,7 +42,7 @@ class Create extends Component
         $validated['attribute_id'] = $this->attributeId;
         AttributeOption::create($validated);
 
-        Flux::modal('shop.setting-management.attribute.option.create.modal')->close();
+        Flux::modal('panel.shop.setting-management.attribute.option.create.modal')->close();
         $this->dispatch('panel.shop.setting-management.attribute.option.index.refresh');
         Flux::toast(variant: 'success', text: __('app.attribute_option_created'));
         $this->reset(['value', 'label', 'sort_order']);

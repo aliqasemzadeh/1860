@@ -21,7 +21,7 @@ class Create extends Component
     #[On('panel.shop.shipping.method.create.open')]
     public function open(): void
     {
-        Flux::modal('shop.shipping.method.create.modal')->show();
+        Flux::modal('panel.shop.shipping.method.create.modal')->show();
     }
 
     public function create(): void
@@ -35,7 +35,7 @@ class Create extends Component
 
         ShippingMethod::create($validated);
 
-        Flux::modal('shop.shipping.method.create.modal')->close();
+        Flux::modal('panel.shop.shipping.method.create.modal')->close();
         $this->dispatch('shop.shipping.method.index.render');
         Flux::toast(variant: 'success', text: __('app.shipping_method_created'));
 

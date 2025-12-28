@@ -85,7 +85,7 @@ class Create extends Component
             'areas' => array_filter(array_map('trim', explode("\n", (string) ($validated['areas'] ?? '')))),
         ]);
 
-        Flux::modal('shop.shipping.zone.create.modal')->close();
+        Flux::modal('panel.shop.shipping.zone.create.modal')->close();
         $this->dispatch('shop.shipping.zone.index.render');
         Flux::toast(variant: 'success', text: __('app.shipping_zone_created'));
 

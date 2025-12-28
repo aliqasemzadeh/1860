@@ -44,7 +44,7 @@ class Create extends Component
 
         $category = Category::create($validated);
 
-        Flux::modal('shop.setting-management.category.create.modal')->close();
+        Flux::modal('panel.shop.setting-management.category.create.modal')->close();
         $this->dispatch('shop.setting-management.category.index.render');
         $this->dispatch('shop.product.category.refresh', ['id' => $category->id]);
         Flux::toast(variant: 'success', text: __('app.category_created', ['name' => $validated['name']]));

@@ -32,7 +32,7 @@ class Edit extends Component
         $this->slug = (string) $this->color->slug;
         $this->slug_fa = (string) $this->color->slug_fa;
         $this->hex = (string) $this->color->hex;
-        Flux::modal('shop.setting-management.color.edit.modal')->show();
+        Flux::modal('panel.shop.setting-management.color.edit.modal')->show();
     }
 
     public function edit(): void
@@ -51,7 +51,7 @@ class Edit extends Component
         $this->color->fill($validated)->save();
 
         $this->dispatch('shop.setting-management.color.index.render');
-        Flux::modal('shop.setting-management.color.edit.modal')->close();
+        Flux::modal('panel.shop.setting-management.color.edit.modal')->close();
     }
 
     public function render(): View

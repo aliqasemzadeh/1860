@@ -129,7 +129,7 @@ class Create extends Component
 
 
         Flux::toast(variant: 'success', text: __('app.price_created'));
-        Flux::modal('shop.product.pricing.create.modal')->close();
+        Flux::modal('panel.shop.product.pricing.create.modal')->close();
         return redirect(route('panel.shop.product.pricing.index', [$this->productId]));
     }
 

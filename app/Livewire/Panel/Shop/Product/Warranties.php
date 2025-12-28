@@ -28,7 +28,7 @@ class Warranties extends Component
         $this->productId = $this->product->id;
         $this->warrantySearch = '';
         $this->selectedWarrantyId = null;
-        Flux::modal('shop.product.warranties.modal')->show();
+        Flux::modal('panel.shop.product.warranties.modal')->show();
     }
 
     #[On('panel.shop.setting-management.warranty.index.render')]

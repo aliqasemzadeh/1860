@@ -35,7 +35,7 @@ class History extends Component
     {
         $this->colorId = $colorId;
         $this->warrantyId = $warrantyId;
-        Flux::modal('shop.product.pricing.history.modal')->show();
+        Flux::modal('panel.shop.product.pricing.history.modal')->show();
     }
 
     #[Computed]

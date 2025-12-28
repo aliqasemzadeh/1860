@@ -38,7 +38,7 @@ class Edit extends Component
         $this->icon = $this->category->icon;
         $this->sort_order = (int) $this->category->sort_order;
         $this->main_category_id = (int) $this->category->main_category_id;
-        Flux::modal('shop.setting-management.category.edit.modal')->show();
+        Flux::modal('panel.shop.setting-management.category.edit.modal')->show();
     }
 
     public function edit(): void
@@ -76,7 +76,7 @@ class Edit extends Component
         $this->category->fill($validated)->save();
 
         $this->dispatch('shop.setting-management.category.index.render');
-        Flux::modal('shop.setting-management.category.edit.modal')->close();
+        Flux::modal('panel.shop.setting-management.category.edit.modal')->close();
     }
 
     public function render(): View

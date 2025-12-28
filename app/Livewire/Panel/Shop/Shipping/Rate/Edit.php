@@ -53,7 +53,7 @@ class Edit extends Component
         $this->estimated_days = $this->rate->estimated_days;
         $this->is_active = (bool) $this->rate->is_active;
 
-        Flux::modal('shop.shipping.rate.edit.modal')->show();
+        Flux::modal('panel.shop.shipping.rate.edit.modal')->show();
     }
 
     public function edit(): void
@@ -78,7 +78,7 @@ class Edit extends Component
         $this->rate->fill($validated)->save();
 
         $this->dispatch('shop.shipping.rate.index.render');
-        Flux::modal('shop.shipping.rate.edit.modal')->close();
+        Flux::modal('panel.shop.shipping.rate.edit.modal')->close();
         Flux::toast(variant: 'success', text: __('app.shipping_rate_updated'));
     }
 

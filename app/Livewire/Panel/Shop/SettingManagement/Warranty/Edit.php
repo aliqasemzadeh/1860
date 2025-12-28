@@ -29,7 +29,7 @@ class Edit extends Component
         $this->name = (string) $this->warranty->name;
         $this->slug = (string) $this->warranty->slug;
         $this->slug_fa = (string) $this->warranty->slug_fa;
-        Flux::modal('shop.setting-management.warranty.edit.modal')->show();
+        Flux::modal('panel.shop.setting-management.warranty.edit.modal')->show();
     }
 
     public function edit(): void
@@ -47,7 +47,7 @@ class Edit extends Component
         $this->warranty->fill($validated)->save();
 
         $this->dispatch('shop.setting-management.warranty.index.render');
-        Flux::modal('shop.setting-management.warranty.edit.modal')->close();
+        Flux::modal('panel.shop.setting-management.warranty.edit.modal')->close();
     }
 
     public function render(): View

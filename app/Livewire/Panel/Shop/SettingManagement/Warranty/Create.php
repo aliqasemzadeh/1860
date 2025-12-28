@@ -25,7 +25,7 @@ class Create extends Component
 
         Warranty::create($validated);
 
-        Flux::modal('shop.setting-management.warranty.create.modal')->close();
+        Flux::modal('panel.shop.setting-management.warranty.create.modal')->close();
         $this->dispatch('shop.setting-management.warranty.index.render');
         $this->reset(['name', 'slug', 'slug_fa']);
     }

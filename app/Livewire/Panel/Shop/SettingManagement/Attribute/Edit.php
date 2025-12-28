@@ -39,7 +39,7 @@ class Edit extends Component
         $this->type = (string) $this->attribute->type;
         $this->is_required = $this->attribute->is_required;
         $this->sort_order = $this->attribute->sort_order;
-        Flux::modal('shop.setting-management.attribute.edit.modal')->show();
+        Flux::modal('panel.shop.setting-management.attribute.edit.modal')->show();
     }
 
     public function edit(): void
@@ -60,7 +60,7 @@ class Edit extends Component
         $this->attribute->fill($validated)->save();
 
         $this->dispatch('panel.shop.setting-management.attribute.index.render');
-        Flux::modal('shop.setting-management.attribute.edit.modal')->close();
+        Flux::modal('panel.shop.setting-management.attribute.edit.modal')->close();
         Flux::toast(variant: 'success', text: __('app.attribute_updated'));
     }
 

@@ -32,7 +32,7 @@ class PriceFetchers extends Component
         $this->productId = $this->product->id;
         $this->type = 'digikala';
         $this->url = '';
-        Flux::modal('shop.product.price-fetchers.modal')->show();
+        Flux::modal('panel.shop.product.price-fetchers.modal')->show();
     }
 
     public function addPriceFetcher(): void

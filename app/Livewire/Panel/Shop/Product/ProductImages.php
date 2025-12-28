@@ -29,7 +29,7 @@ class ProductImages extends Component
         $this->product = Product::with('images')->findOrFail($id);
         $this->productId = $this->product->id;
         $this->images = [];
-        Flux::modal('shop.product.images.modal')->show();
+        Flux::modal('panel.shop.product.images.modal')->show();
     }
 
     public function removeImage(int $index): void

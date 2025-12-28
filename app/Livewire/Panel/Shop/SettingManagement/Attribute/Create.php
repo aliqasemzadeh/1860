@@ -35,7 +35,7 @@ class Create extends Component
 
         Attribute::create($validated);
 
-        Flux::modal('shop.setting-management.attribute.create.modal')->close();
+        Flux::modal('panel.shop.setting-management.attribute.create.modal')->close();
         $this->dispatch('panel.shop.setting-management.attribute.index.render');
         Flux::toast(variant: 'success', text: __('app.attribute_created'));
         $this->reset(['attribute_group_id', 'key', 'label', 'type', 'is_required', 'sort_order']);

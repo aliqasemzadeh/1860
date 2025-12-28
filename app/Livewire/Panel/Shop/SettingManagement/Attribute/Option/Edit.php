@@ -33,7 +33,7 @@ class Edit extends Component
         $this->value = (string) $this->attributeOption->value;
         $this->label = (string) $this->attributeOption->label;
         $this->sort_order = $this->attributeOption->sort_order;
-        Flux::modal('shop.setting-management.attribute.option.edit.modal')->show();
+        Flux::modal('panel.shop.setting-management.attribute.option.edit.modal')->show();
     }
 
     public function edit(): void
@@ -58,7 +58,7 @@ class Edit extends Component
         $this->attributeOption->fill($validated)->save();
 
         $this->dispatch('panel.shop.setting-management.attribute.option.index.refresh');
-        Flux::modal('shop.setting-management.attribute.option.edit.modal')->close();
+        Flux::modal('panel.shop.setting-management.attribute.option.edit.modal')->close();
         Flux::toast(variant: 'success', text: __('app.attribute_option_updated'));
     }
 

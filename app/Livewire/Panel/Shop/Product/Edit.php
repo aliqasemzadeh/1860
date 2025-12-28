@@ -82,7 +82,7 @@ class Edit extends Component
         $this->category_search = '';
         $this->brand_search = '';
         $this->unit_search = '';
-        Flux::modal('shop.product.edit.modal')->show();
+        Flux::modal('panel.shop.product.edit.modal')->show();
     }
 
     public function edit(): void
@@ -138,7 +138,7 @@ class Edit extends Component
         $this->product->fill($updateData)->save();
 
         $this->dispatch('shop.product.index.render');
-        Flux::modal('shop.product.edit.modal')->close();
+        Flux::modal('panel.shop.product.edit.modal')->close();
         Flux::toast(variant: 'success', text: __('app.product_updated'));
     }
 

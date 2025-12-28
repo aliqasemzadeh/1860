@@ -28,7 +28,7 @@ class Colors extends Component
         $this->productId = $this->product->id;
         $this->colorSearch = '';
         $this->selectedColorId = null;
-        Flux::modal('shop.product.colors.modal')->show();
+        Flux::modal('panel.shop.product.colors.modal')->show();
     }
 
     #[On('panel.shop.setting-management.color.index.render')]
