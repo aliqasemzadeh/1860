@@ -7,39 +7,40 @@ use Illuminate\Console\Command;
 
 class FetchDigikalaPriceCommand extends Command
 {
-    protected $signature = 'digikala:price {url : The Digikala product URL}';
+    protected $signature = 'digikala:price {url : The Digikala product URL} {--debug : Show detailed debugging information}';
 
     protected $description = 'Fetch product price from Digikala';
 
     public function handle(): int
     {
         $url = $this->argument('url');
+        $debug = $this->option('debug');
 
-        // Extract product ID from URL
-        $productId = $this->extractProductId($url);
+        $this->info("Fetching price from: {$url}");
 
-        if (!$productId) {
-            $this->error('Could not extract product ID from URL');
-            return 1;
+        if ($debug) {
+            $this->line('Debug mode enabled');
         }
 
-        $this->info("Fetching price for product ID: {$productId}");
-
         try {
-            // Use the DigikalaPriceFetcher service
-            $price = DigikalaPriceFetcher::fetchPrice($url);
+            $price = DigikalaPriceFetcher::fetchPrice($url, $debug ? $this : null);
 
             if ($price) {
                 $this->info("Price: " . number_format($price) . " تومان");
                 return 0;
             } else {
                 $this->warn('Could not fetch price. The product might not be available or the page structure has changed.');
+                if (!$debug) {
+                    $this->warn('Try using --debug flag to see detailed debugging information.');
+                }
                 return 1;
             }
         } catch (\Exception $e) {
             $this->error('Error: ' . $e->getMessage());
+            if ($debug) {
+                $this->error('Stack trace: ' . $e->getTraceAsString());
+            }
             return 1;
         }
     }
 }
-

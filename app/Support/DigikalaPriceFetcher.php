@@ -6,101 +6,257 @@ use Illuminate\Support\Facades\Http;
 
 class DigikalaPriceFetcher
 {
-    public static function fetchPrice(string $url): ?int
+    public static function fetchPrice(string $url, $logger = null): ?int
     {
         // Extract product ID from URL
         if (!preg_match('/dkp-(\d+)/', $url, $matches)) {
+            if ($logger) {
+                $logger->warn('Could not extract product ID from URL');
+            }
             return null;
         }
 
         $productId = $matches[1];
 
+        if ($logger) {
+            $logger->info("Extracted product ID: {$productId}");
+        }
+
         // Try multiple methods to fetch price
-        $price = self::tryApiMethod($productId);
+        if ($logger) {
+            $logger->info('Trying API method...');
+        }
+        $price = self::tryApiMethod($productId, $logger);
         if ($price) {
+            if ($logger) {
+                $logger->info("Price found via API method: {$price}");
+            }
             return $price;
         }
 
-        $price = self::tryWebApiMethod($productId);
+        if ($logger) {
+            $logger->info('Trying web API method...');
+        }
+        $price = self::tryWebApiMethod($productId, $logger);
         if ($price) {
+            if ($logger) {
+                $logger->info("Price found via web API method: {$price}");
+            }
             return $price;
         }
 
-        $price = self::tryHtmlScraping($productId);
+        if ($logger) {
+            $logger->info('Trying HTML scraping method...');
+        }
+        $price = self::tryHtmlScraping($productId, $logger);
         if ($price) {
+            if ($logger) {
+                $logger->info("Price found via HTML scraping: {$price}");
+            }
             return $price;
+        }
+
+        if ($logger) {
+            $logger->warn('All methods failed to fetch price');
         }
 
         return null;
     }
 
-    private static function tryApiMethod(string $productId): ?int
+    private static function tryApiMethod(string $productId, $logger = null): ?int
     {
         try {
             $response = Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 'Accept' => 'application/json',
+                'Accept-Language' => 'fa-IR,fa;q=0.9',
+                'Referer' => 'https://www.digikala.com/',
             ])->timeout(10)->get("https://api.digikala.com/v1/product/{$productId}/");
 
             if ($response->successful()) {
                 $data = $response->json();
-                $price = $data['data']['product']['default_variant']['price']['selling_price'] ??
-                    $data['data']['product']['price']['selling_price'] ?? null;
-                if ($price) {
-                    return (int) $price;
+                if (is_array($data)) {
+                    // Try multiple paths
+                    $paths = [
+                        'data.product.default_variant.price.selling_price',
+                        'data.product.price.selling_price',
+                        'data.product.defaultVariant.price.selling_price',
+                        'product.default_variant.price.selling_price',
+                        'product.price.selling_price',
+                    ];
+
+                    foreach ($paths as $path) {
+                        $price = self::getNestedValue($data, $path);
+                        if ($price && is_numeric($price)) {
+                            return (int) $price;
+                        }
+                    }
+                } else {
+                    if ($logger) {
+                        $logger->warn('API returned non-array data');
+                    }
+                }
+            } else {
+                if ($logger) {
+                    $logger->warn("API request failed with status: {$response->status()}");
                 }
             }
         } catch (\Exception $e) {
-            // Silent fail
+            if ($logger) {
+                $logger->warn("API method exception: {$e->getMessage()}");
+            }
         }
 
         return null;
     }
 
-    private static function tryWebApiMethod(string $productId): ?int
+    private static function tryWebApiMethod(string $productId, $logger = null): ?int
     {
-        try {
-            $response = Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'Accept' => 'application/json',
-            ])->timeout(10)->get("https://www.digikala.com/api/v1/product/{$productId}/");
+        $endpoints = [
+            "https://www.digikala.com/api/v1/product/{$productId}/",
+            "https://api.digikala.com/v2/product/{$productId}/",
+            "https://www.digikala.com/api/v2/product/{$productId}/",
+        ];
 
-            if ($response->successful()) {
-                $data = $response->json();
-                $price = $data['data']['product']['default_variant']['price']['selling_price'] ??
-                    $data['data']['product']['price']['selling_price'] ?? null;
-                if ($price) {
-                    return (int) $price;
+        foreach ($endpoints as $endpoint) {
+            try {
+                $response = Http::withHeaders([
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept' => 'application/json',
+                    'Accept-Language' => 'fa-IR,fa;q=0.9',
+                    'Referer' => 'https://www.digikala.com/',
+                ])->timeout(10)->get($endpoint);
+
+                if ($response->successful()) {
+                    $data = $response->json();
+                    if (is_array($data)) {
+                        $paths = [
+                            'data.product.default_variant.price.selling_price',
+                            'data.product.price.selling_price',
+                            'data.product.defaultVariant.price.selling_price',
+                            'product.default_variant.price.selling_price',
+                            'product.price.selling_price',
+                        ];
+
+                        foreach ($paths as $path) {
+                            $price = self::getNestedValue($data, $path);
+                            if ($price && is_numeric($price)) {
+                                return (int) $price;
+                            }
+                        }
+                    } else {
+                        if ($logger) {
+                            $logger->warn("Web API endpoint {$endpoint} returned non-array data");
+                        }
+                    }
+                } else {
+                    if ($logger) {
+                        $logger->warn("Web API endpoint {$endpoint} failed with status: {$response->status()}");
+                    }
                 }
+            } catch (\Exception $e) {
+                if ($logger) {
+                    $logger->warn("Web API endpoint {$endpoint} exception: {$e->getMessage()}");
+                }
+                // Continue to next endpoint
+                continue;
             }
-        } catch (\Exception $e) {
-            // Silent fail
         }
 
         return null;
     }
 
-    private static function tryHtmlScraping(string $productId): ?int
+    private static function tryHtmlScraping(string $productId, $logger = null): ?int
     {
         try {
             $response = Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'Accept' => 'text/html',
-            ])->timeout(10)->get("https://www.digikala.com/product/dkp-{$productId}/");
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language' => 'fa-IR,fa;q=0.9,en-US;q=0.8,en;q=0.7',
+                'Referer' => 'https://www.digikala.com/',
+            ])->timeout(15)->get("https://www.digikala.com/product/dkp-{$productId}/");
 
             if ($response->successful()) {
                 $html = $response->body();
 
-                // Look for price patterns
-                if (preg_match('/"selling_price"\s*:\s*(\d+)/', $html, $matches)) {
-                    return (int) $matches[1];
+                // Method 1: Look for __NEXT_DATA__ script tag (Next.js)
+                if (preg_match('/<script[^>]*id=["\']__NEXT_DATA__["\'][^>]*>(.+?)<\/script>/s', $html, $matches)) {
+                    $jsonData = json_decode($matches[1], true);
+                    if ($jsonData && is_array($jsonData)) {
+                        // Try different paths in Next.js data structure
+                        $paths = [
+                            'props.pageProps.product.default_variant.price.selling_price',
+                            'props.pageProps.product.price.selling_price',
+                            'props.pageProps.product.defaultVariant.price.selling_price',
+                            'props.pageProps.product.price.sellingPrice',
+                        ];
+
+                        foreach ($paths as $path) {
+                            $value = self::getNestedValue($jsonData, $path);
+                            if ($value && is_numeric($value)) {
+                                return (int) $value;
+                            }
+                        }
+                    }
+                }
+
+                // Method 2: Look for price in various JSON patterns
+                $patterns = [
+                    '/"selling_price"\s*:\s*(\d+)/',
+                    '/"sellingPrice"\s*:\s*(\d+)/',
+                    '/"price"\s*:\s*(\d+)/',
+                    '/"final_price"\s*:\s*(\d+)/',
+                    '/"finalPrice"\s*:\s*(\d+)/',
+                    '/price["\']?\s*[:=]\s*["\']?(\d{4,})/',
+                ];
+
+                foreach ($patterns as $pattern) {
+                    if (preg_match($pattern, $html, $matches)) {
+                        $price = (int) $matches[1];
+                        // Validate price is reasonable (between 1000 and 100000000)
+                        if ($price >= 1000 && $price <= 100000000) {
+                            return $price;
+                        }
+                    }
+                }
+
+                // Method 3: Look for price in data attributes
+                if (preg_match('/data-price=["\'](\d+)["\']/', $html, $matches)) {
+                    $price = (int) $matches[1];
+                    if ($price >= 1000 && $price <= 100000000) {
+                        return $price;
+                    }
+                }
+            } else {
+                if ($logger) {
+                    $logger->warn("HTML request failed with status: {$response->status()}");
                 }
             }
         } catch (\Exception $e) {
-            // Silent fail
+            if ($logger) {
+                $logger->warn("HTML scraping exception: {$e->getMessage()}");
+            }
         }
 
         return null;
+    }
+
+    /**
+     * Get nested value from array using dot notation
+     */
+    private static function getNestedValue(array $array, string $path): mixed
+    {
+        $keys = explode('.', $path);
+        $value = $array;
+
+        foreach ($keys as $key) {
+            if (!isset($value[$key])) {
+                return null;
+            }
+            $value = $value[$key];
+        }
+
+        return $value;
     }
 }
 
