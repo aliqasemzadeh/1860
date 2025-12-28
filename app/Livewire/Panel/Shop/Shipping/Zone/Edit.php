@@ -70,7 +70,7 @@ class Edit extends Component
         $this->cityOptions = $cities;
     }
 
-    #[On('shop.shipping.zone.edit.assign-data')]
+    #[On('panel.shop.shipping.zone.edit.assign-data')]
     public function assignData($id): void
     {
         $this->zone = ShippingZone::findOrFail($id);

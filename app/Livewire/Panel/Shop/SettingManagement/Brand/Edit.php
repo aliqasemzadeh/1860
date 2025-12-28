@@ -21,7 +21,7 @@ class Edit extends Component
 
     public string $slug_fa = '';
 
-    #[On('shop.setting-management.brand.edit.assign-data')]
+    #[On('panel.shop.setting-management.brand.edit.assign-data')]
     public function assignData($id): void
     {
         $this->brand = BrandModel::findOrFail($id);

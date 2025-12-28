@@ -18,7 +18,7 @@ class Create extends Component
 
     public bool $is_active = true;
 
-    #[On('shop.shipping.method.create.open')]
+    #[On('panel.shop.shipping.method.create.open')]
     public function open(): void
     {
         Flux::modal('shop.shipping.method.create.modal')->show();

@@ -21,7 +21,7 @@ class Warranties extends Component
 
     public ?int $selectedWarrantyId = null;
 
-    #[On('shop.product.warranties.assign-data')]
+    #[On('panel.shop.product.warranties.assign-data')]
     public function assignData($id): void
     {
         $this->product = Product::with('warranties')->findOrFail($id);
@@ -31,7 +31,7 @@ class Warranties extends Component
         Flux::modal('shop.product.warranties.modal')->show();
     }
 
-    #[On('shop.setting-management.warranty.index.render')]
+    #[On('panel.shop.setting-management.warranty.index.render')]
     public function refreshWarranties(): void
     {
         // Refresh the product to get updated warranties list

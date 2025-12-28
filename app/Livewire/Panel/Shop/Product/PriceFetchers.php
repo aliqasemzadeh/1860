@@ -25,7 +25,7 @@ class PriceFetchers extends Component
         //
     }
 
-    #[On('shop.product.price-fetchers.assign-data')]
+    #[On('panel.shop.product.price-fetchers.assign-data')]
     public function assignData($id): void
     {
         $this->product = Product::with('priceFetchers')->findOrFail($id);

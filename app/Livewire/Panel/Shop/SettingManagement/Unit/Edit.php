@@ -17,7 +17,7 @@ class Edit extends Component
 
     public string $name = '';
 
-    #[On('shop.setting-management.unit.edit.assign-data')]
+    #[On('panel.shop.setting-management.unit.edit.assign-data')]
     public function assignData($id): void
     {
         $this->unit = UnitModel::findOrFail($id);

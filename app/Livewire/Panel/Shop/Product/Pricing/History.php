@@ -30,7 +30,7 @@ class History extends Component
         $this->product = Product::findOrFail($productId);
     }
 
-    #[On('shop.product.pricing.history.assign-data')]
+    #[On('panel.shop.product.pricing.history.assign-data')]
     public function assignData(int $colorId = null, int $warrantyId = null): void
     {
         $this->colorId = $colorId;

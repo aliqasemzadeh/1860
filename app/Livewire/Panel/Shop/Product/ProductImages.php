@@ -23,7 +23,7 @@ class ProductImages extends Component
     #[Validate(['images.*' => 'image|max:10240'])] // 10MB Max per image
     public array $images = [];
 
-    #[On('shop.product.images.assign-data')]
+    #[On('panel.shop.product.images.assign-data')]
     public function assignData($id): void
     {
         $this->product = Product::with('images')->findOrFail($id);

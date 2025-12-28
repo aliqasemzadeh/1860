@@ -108,21 +108,21 @@ class Create extends Component
         }
     }
 
-    #[On('shop.product.category.refresh')]
+    #[On('panel.shop.product.category.refresh')]
     public function refreshCategory($id): void
     {
         $this->category_id = $id['id'];
         $this->category_search = '';
     }
 
-    #[On('shop.product.brand.refresh')]
+    #[On('panel.shop.product.brand.refresh')]
     public function refreshBrand($id): void
     {
         $this->brand_id = $id['id'];
         $this->brand_search = '';
     }
 
-    #[On('shop.product.unit.refresh')]
+    #[On('panel.shop.product.unit.refresh')]
     public function refreshUnit($id): void
     {
         $this->unit_id = $id['id'];

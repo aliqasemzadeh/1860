@@ -21,7 +21,7 @@ class Colors extends Component
 
     public ?int $selectedColorId = null;
 
-    #[On('shop.product.colors.assign-data')]
+    #[On('panel.shop.product.colors.assign-data')]
     public function assignData($id): void
     {
         $this->product = Product::with('colors')->findOrFail($id);
@@ -31,7 +31,7 @@ class Colors extends Component
         Flux::modal('shop.product.colors.modal')->show();
     }
 
-    #[On('shop.setting-management.color.index.render')]
+    #[On('panel.shop.setting-management.color.index.render')]
     public function refreshColors(): void
     {
         // Refresh the product to get updated colors list

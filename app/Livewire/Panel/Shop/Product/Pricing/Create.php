@@ -60,7 +60,7 @@ class Create extends Component
         }
     }
 
-    #[On('shop.product.pricing.create.modal.opened')]
+    #[On('panel.shop.product.pricing.create.modal.opened')]
     public function resetForm(): void
     {
         $this->color_id = null;

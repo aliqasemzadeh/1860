@@ -23,7 +23,7 @@ class Edit extends Component
 
     public string $hex = '#14b8a6';
 
-    #[On('shop.setting-management.color.edit.assign-data')]
+    #[On('panel.shop.setting-management.color.edit.assign-data')]
     public function assignData($id): void
     {
         $this->color = Color::findOrFail($id);

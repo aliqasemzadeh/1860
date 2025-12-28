@@ -36,7 +36,7 @@ class Edit extends Component
 
     public bool $is_active = true;
 
-    #[On('shop.shipping.rate.edit.assign-data')]
+    #[On('panel.shop.shipping.rate.edit.assign-data')]
     public function assignData($id): void
     {
         $this->rate = ShippingRate::with(['method', 'zone'])->findOrFail($id);

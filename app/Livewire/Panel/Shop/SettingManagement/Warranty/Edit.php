@@ -21,7 +21,7 @@ class Edit extends Component
 
     public string $slug_fa = '';
 
-    #[On('shop.setting-management.warranty.edit.assign-data')]
+    #[On('panel.shop.setting-management.warranty.edit.assign-data')]
     public function assignData($id): void
     {
         $this->warranty = Warranty::findOrFail($id);

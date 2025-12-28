@@ -48,7 +48,7 @@ class Index extends Component
     }
 
     #[Layout('layouts.panels.shop')]
-    #[On('shop.setting-management.unit.index.render')]
+    #[On('panel.shop.setting-management.unit.index.render')]
     public function render()
     {
         return view('livewire.panel.shop.setting-management.unit.index');

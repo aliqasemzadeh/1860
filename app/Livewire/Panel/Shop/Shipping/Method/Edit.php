@@ -23,7 +23,7 @@ class Edit extends Component
 
     public bool $is_active = true;
 
-    #[On('shop.shipping.method.edit.assign-data')]
+    #[On('panel.shop.shipping.method.edit.assign-data')]
     public function assignData($id): void
     {
         $this->method = ShippingMethod::findOrFail($id);
