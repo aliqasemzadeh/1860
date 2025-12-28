@@ -5,6 +5,7 @@ namespace App\Jobs\Shop\PriceFetcher;
 use App\Models\Shop\PriceFetcher;
 use App\Support\DigikalaPriceFetcher;
 use App\Support\FafaitPriceFetcher;
+use App\Support\FaterPriceFetcher;
 use App\Support\MarkaziPriceFetcher;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -33,6 +34,7 @@ class FetchPriceJob implements ShouldQueue
                 'digikala' => DigikalaPriceFetcher::fetchPrice($this->priceFetcher->url),
                 'fafait' => FafaitPriceFetcher::fetchPrice($this->priceFetcher->url),
                 'markazi' => MarkaziPriceFetcher::fetchPrice($this->priceFetcher->url),
+                'fater' => FaterPriceFetcher::fetchPrice($this->priceFetcher->url),
                 default => null,
             };
 

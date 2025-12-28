@@ -51,6 +51,7 @@ class PriceFetcher extends Model
             'digikala' => __('app.price_fetcher_type_digikala'),
             'fafait' => __('app.price_fetcher_type_fafait'),
             'markazi' => __('app.price_fetcher_type_markazi'),
+            'fater' => __('app.price_fetcher_type_fater'),
             default => $this->type,
         };
     }

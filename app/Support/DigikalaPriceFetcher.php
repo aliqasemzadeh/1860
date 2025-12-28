@@ -29,9 +29,9 @@ class DigikalaPriceFetcher
         $price = self::tryApiMethod($productId, $logger);
         if ($price) {
             if ($logger) {
-                $logger->info("Price found via API method: {$price}");
+                $logger->info("Price found via API method: {$price} Toman");
             }
-            return $price;
+            return self::convertTomanToRial($price);
         }
         
         if ($logger) {
@@ -40,9 +40,9 @@ class DigikalaPriceFetcher
         $price = self::tryWebApiMethod($productId, $logger);
         if ($price) {
             if ($logger) {
-                $logger->info("Price found via web API method: {$price}");
+                $logger->info("Price found via web API method: {$price} Toman");
             }
-            return $price;
+            return self::convertTomanToRial($price);
         }
         
         if ($logger) {
@@ -51,9 +51,9 @@ class DigikalaPriceFetcher
         $price = self::tryHtmlScraping($productId, $logger);
         if ($price) {
             if ($logger) {
-                $logger->info("Price found via HTML scraping: {$price}");
+                $logger->info("Price found via HTML scraping: {$price} Toman");
             }
-            return $price;
+            return self::convertTomanToRial($price);
         }
         
         if ($logger) {
@@ -328,6 +328,14 @@ class DigikalaPriceFetcher
         }
         
         return null;
+    }
+    
+    /**
+     * Convert Toman to Rial (1 Toman = 10 Rial)
+     */
+    private static function convertTomanToRial(int $priceInToman): int
+    {
+        return $priceInToman * 10;
     }
     
     /**
