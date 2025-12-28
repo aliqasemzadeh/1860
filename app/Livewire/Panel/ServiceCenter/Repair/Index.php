@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\ServiceCenter\Repair;
+namespace App\Livewire\Panel\ServiceCenter\Repair;
 
 use App\Enums\StatusEnum;
 use App\Models\ServiceCenter\Repair;
@@ -94,9 +94,9 @@ class Index extends Component
     }
 
     #[Layout('layouts.panels.service-center')]
-    #[On('service-center.repair.index.render')]
+    #[On('panel.service-center.repair.index.render')]
     public function render()
     {
-        return view('livewire.service-center.repair.index');
+        return view('livewire.panel.service-center.repair.index');
     }
 }

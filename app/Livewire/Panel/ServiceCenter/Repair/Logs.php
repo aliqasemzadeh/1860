@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\ServiceCenter\Repair;
+namespace App\Livewire\Panel\ServiceCenter\Repair;
 
 use App\Enums\StatusEnum;
 use App\Models\ServiceCenter\Repair;
@@ -20,7 +20,7 @@ class Logs extends Component
     public string $status = '';
     public string $description = '';
 
-    #[On('service-center.repair.logs.assign-data')]
+    #[On('panel.service-center.repair.logs.assign-data')]
     public function assignData(int $id): void
     {
         $this->authorize('service_center_repair_logs');
@@ -82,7 +82,7 @@ class Logs extends Component
         $this->description = '';
 
         $this->dispatch('$refresh');
-        $this->dispatch('service-center.repair.index.render');
+        $this->dispatch('panel.service-center.repair.index.render');
 
         Flux::toast(variant: 'success', text: __('app.log_added'));
     }
@@ -105,6 +105,6 @@ class Logs extends Component
 
     public function render()
     {
-        return view('livewire.service-center.repair.logs');
+        return view('livewire.panel.service-center.repair.logs');
     }
 }

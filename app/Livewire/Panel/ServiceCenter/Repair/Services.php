@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\ServiceCenter\Repair;
+namespace App\Livewire\Panel\ServiceCenter\Repair;
 
 use App\Models\ServiceCenter\Repair;
 use App\Models\ServiceCenter\RepairService;
@@ -19,7 +19,7 @@ class Services extends Component
     public string $description = '';
     public string $price = '';
 
-    #[On('service-center.repair.services.assign-data')]
+    #[On('panel.service-center.repair.services.assign-data')]
     public function assignData(int $id): void
     {
         $this->authorize('service_center_repair_services');
@@ -92,6 +92,6 @@ class Services extends Component
 
     public function render()
     {
-        return view('livewire.service-center.repair.services');
+        return view('livewire.panel.service-center.repair.services');
     }
 }

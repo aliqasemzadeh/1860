@@ -8,11 +8,11 @@ Route::get('/product/id/{id}', \App\Livewire\Main\Product\View::class)->name('pr
 
 Route::group(['middleware' => ['auth']], function () {
 
-    Route::get('/service-center/dashboard/index', \App\Livewire\ServiceCenter\Dashboard\Index::class)->name('dashboard');
+    Route::get('/service-center/dashboard/index', \App\Livewire\Panel\ServiceCenter\Dashboard\Index::class)->name('dashboard');
 
-    Route::get('/service-center/dashboard/index', \App\Livewire\ServiceCenter\Dashboard\Index::class)->name('service-center.dashboard.index');
-    Route::get('/service-center/assembly/index', \App\Livewire\ServiceCenter\Assembly\Index::class)->name('service-center.assembly.index');
-    Route::get('/service-center/repair/index', \App\Livewire\ServiceCenter\Repair\Index::class)->name('service-center.repair.index');
+    Route::get('/service-center/dashboard/index', \App\Livewire\Panel\ServiceCenter\Dashboard\Index::class)->name('service-center.dashboard.index');
+    Route::get('/service-center/assembly/index', \App\Livewire\Panel\ServiceCenter\Assembly\Index::class)->name('service-center.assembly.index');
+    Route::get('/service-center/repair/index', \App\Livewire\Panel\ServiceCenter\Repair\Index::class)->name('service-center.repair.index');
 
     Route::get('/crm/dashboard/index', \App\Livewire\Panel\Crm\Dashboard\Index::class)->name('crm.dashboard.index');
 
