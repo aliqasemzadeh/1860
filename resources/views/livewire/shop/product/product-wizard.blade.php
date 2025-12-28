@@ -81,14 +81,23 @@
             {{-- Step 2: Preview and edit fetched product information --}}
             <div class="space-y-6">
                 @if ($is_fetching)
-                    <div class="flex items-center justify-center py-12">
-                        <flux:spinner size="lg" />
-                        <flux:text class="ml-3">{{ __('app.fetching_product_info') }}</flux:text>
+                    <div class="flex flex-col items-center justify-center py-12">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mb-4"></div>
+                        <flux:text>{{ __('app.fetching_product_info') }}</flux:text>
                     </div>
                 @elseif ($fetch_error)
-                    <flux:alert variant="danger">
-                        {{ $fetch_error }}
-                    </flux:alert>
+                    <div class="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <flux:text class="text-red-800 dark:text-red-200">{{ $fetch_error }}</flux:text>
+                            </div>
+                        </div>
+                    </div>
                     <div class="flex justify-end gap-3">
                         <flux:button wire:click="back" variant="ghost">
                             {{ __('app.back') }}
