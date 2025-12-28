@@ -133,33 +133,72 @@ class Create extends Component
     public function categories()
     {
         // Only get subcategories (children), not root categories
-        return Category::query()
+        $query = Category::query()
             ->where('main_category_id', '!=', 0)
             ->when($this->category_search, fn ($query) => $query->where('name', 'like', '%'.$this->category_search.'%'))
             ->with('main_category')
             ->orderBy('name')
-            ->limit(20)
-            ->get(['id', 'name', 'main_category_id']);
+            ->limit(20);
+        
+        $categories = $query->get(['id', 'name', 'main_category_id']);
+        
+        // If a category is selected but not in the filtered results, include it
+        if ($this->category_id && !$categories->contains('id', $this->category_id)) {
+            $selectedCategory = Category::with('main_category')
+                ->where('id', $this->category_id)
+                ->where('main_category_id', '!=', 0)
+                ->first(['id', 'name', 'main_category_id']);
+            
+            if ($selectedCategory) {
+                $categories->prepend($selectedCategory);
+            }
+        }
+        
+        return $categories;
     }
 
     #[Computed]
     public function brands()
     {
-        return Brand::query()
+        $query = Brand::query()
             ->when($this->brand_search, fn ($query) => $query->where('name', 'like', '%'.$this->brand_search.'%'))
             ->orderBy('name')
-            ->limit(20)
-            ->get(['id', 'name']);
+            ->limit(20);
+        
+        $brands = $query->get(['id', 'name']);
+        
+        // If a brand is selected but not in the filtered results, include it
+        if ($this->brand_id && !$brands->contains('id', $this->brand_id)) {
+            $selectedBrand = Brand::where('id', $this->brand_id)->first(['id', 'name']);
+            
+            if ($selectedBrand) {
+                $brands->prepend($selectedBrand);
+            }
+        }
+        
+        return $brands;
     }
 
     #[Computed]
     public function units()
     {
-        return Unit::query()
+        $query = Unit::query()
             ->when($this->unit_search, fn ($query) => $query->where('name', 'like', '%'.$this->unit_search.'%'))
             ->orderBy('name')
-            ->limit(20)
-            ->get(['id', 'name']);
+            ->limit(20);
+        
+        $units = $query->get(['id', 'name']);
+        
+        // If a unit is selected but not in the filtered results, include it
+        if ($this->unit_id && !$units->contains('id', $this->unit_id)) {
+            $selectedUnit = Unit::where('id', $this->unit_id)->first(['id', 'name']);
+            
+            if ($selectedUnit) {
+                $units->prepend($selectedUnit);
+            }
+        }
+        
+        return $units;
     }
 
     public function render(): View
