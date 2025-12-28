@@ -2,7 +2,8 @@
 
 namespace App\Livewire\Panel\Shop\SettingManagement\AttributeGroup;
 
-use App\Models\Shop\AttributeGroup;
+use App\Models\Shop\Attribute;
+use App\Models\Shop\AttributeOption;
 use Flux\Flux;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
@@ -10,13 +11,29 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class Index extends Component
+class Options extends Component
 {
     use \Livewire\WithPagination;
+
+    public Attribute $attribute;
+
+    public int $attributeId;
 
     public string $sortBy = 'sort_order';
 
     public string $sortDirection = 'asc';
+
+    public function mount(int $attributeId): void
+    {
+        $this->attributeId = $attributeId;
+        $this->loadAttribute();
+    }
+
+    #[On('panel.shop.setting-management.attribute-group.attribute.options.refresh')]
+    public function loadAttribute(): void
+    {
+        $this->attribute = Attribute::with('attributeGroup')->findOrFail($this->attributeId);
+    }
 
     public function sort(string $column): void
     {
@@ -30,19 +47,19 @@ class Index extends Component
 
     public function delete(int $id): void
     {
-        $group = AttributeGroup::query()->find($id);
-        if ($group !== null) {
-            $group->delete();
-            Flux::toast(variant: 'success', text: __('app.attribute_group_deleted'));
-            $this->dispatch('panel.shop.setting-management.attribute-group.index.render');
+        $option = AttributeOption::query()->find($id);
+        if ($option !== null) {
+            $option->delete();
+            Flux::toast(variant: 'success', text: __('app.attribute_option_deleted'));
+            $this->loadAttribute();
         }
     }
 
     #[Computed]
-    public function attributeGroups(): LengthAwarePaginator
+    public function options(): LengthAwarePaginator
     {
-        return AttributeGroup::query()
-            ->withCount('attributes')
+        return AttributeOption::query()
+            ->where('attribute_id', $this->attributeId)
             ->tap(function ($query) {
                 if ($this->sortBy) {
                     $query->orderBy($this->sortBy, $this->sortDirection);
@@ -52,9 +69,9 @@ class Index extends Component
     }
 
     #[Layout('layouts.panels.shop')]
-    #[On('panel.shop.setting-management.attribute-group.index.render')]
     public function render()
     {
-        return view('livewire.panel.shop.setting-management.attribute-group.index');
+        return view('livewire.panel.shop.setting-management.attribute-group.options');
     }
 }
+
