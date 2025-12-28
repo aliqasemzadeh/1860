@@ -12,12 +12,20 @@
                     <flux:field>
                         <flux:label>{{ __('app.add_price_fetcher') }}</flux:label>
                         <div class="space-y-3">
-                            <flux:select wire:model="type" placeholder="{{ __('app.select_price_fetcher_type') }}">
-                                <flux:select.option value="digikala">{{ __('app.price_fetcher_type_digikala') }}</flux:select.option>
-                                <flux:select.option value="fafait">{{ __('app.price_fetcher_type_fafait') }}</flux:select.option>
-                                <flux:select.option value="markazi">{{ __('app.price_fetcher_type_markazi') }}</flux:select.option>
-                            </flux:select>
-                            <flux:input wire:model="url" type="url" placeholder="{{ __('app.price_fetcher_url_placeholder') }}" />
+
+                            <flux:field>
+                                <flux:select wire:model="type" placeholder="{{ __('app.select_price_fetcher_type') }}">
+                                    <flux:select.option value="digikala">{{ __('app.price_fetcher_type_digikala') }}</flux:select.option>
+                                    <flux:select.option value="fafait">{{ __('app.price_fetcher_type_fafait') }}</flux:select.option>
+                                    <flux:select.option value="markazi">{{ __('app.price_fetcher_type_markazi') }}</flux:select.option>
+                                </flux:select>
+                                <flux:error name="email" />
+                            </flux:field>
+                            <flux:field>
+                                <flux:input wire:model="url" type="url" placeholder="{{ __('app.price_fetcher_url_placeholder') }}" />
+                                <flux:error name="email" />
+                            </flux:field>
+
 
                             <flux:button wire:click="addPriceFetcher" variant="primary" color="zinc">
                                 {{ __('app.add') }}
