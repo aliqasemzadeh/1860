@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Support\DigikalaPriceFetcher;
+use App\Support\MarkaziPriceFetcher;
 use Illuminate\Console\Command;
 
-class FetchDigikalaPriceCommand extends Command
+class FetchMarkaziPriceCommand extends Command
 {
-    protected $signature = 'digikala:price {url : The Digikala product URL} {--debug : Show detailed debugging information}';
+    protected $signature = 'markazi:price {url : The Markazi product URL} {--debug : Show detailed debugging information}';
 
-    protected $description = 'Fetch product price from Digikala';
+    protected $description = 'Fetch product price from Markazi';
 
     public function handle(): int
     {
@@ -23,7 +23,7 @@ class FetchDigikalaPriceCommand extends Command
         }
 
         try {
-            $price = DigikalaPriceFetcher::fetchPrice($url, $debug ? $this : null);
+            $price = MarkaziPriceFetcher::fetchPrice($url, $debug ? $this : null);
             
             if ($price) {
                 $this->info("Price: " . number_format($price) . " تومان");
@@ -44,3 +44,4 @@ class FetchDigikalaPriceCommand extends Command
         }
     }
 }
+
