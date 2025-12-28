@@ -18,6 +18,7 @@
                                     <flux:select.option value="digikala">{{ __('app.price_fetcher_type_digikala') }}</flux:select.option>
                                     <flux:select.option value="fafait">{{ __('app.price_fetcher_type_fafait') }}</flux:select.option>
                                     <flux:select.option value="markazi">{{ __('app.price_fetcher_type_markazi') }}</flux:select.option>
+                                    <flux:select.option value="fater">{{ __('app.price_fetcher_type_fater') }}</flux:select.option>
                                 </flux:select>
                                 <flux:error name="type" />
                             </flux:field>

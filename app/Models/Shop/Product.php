@@ -94,6 +94,14 @@ class Product extends Model implements Cartable
     }
 
     /**
+     * Get the images for the product.
+     */
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    /**
      * Build the cache key for storing the computed default price payload.
      */
     public static function defaultPriceCacheKey(int $productId): string

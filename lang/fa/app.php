@@ -519,6 +519,7 @@ return [
     'price_fetcher_type_digikala' => 'دیجی‌کالا',
     'price_fetcher_type_fafait' => 'فافایت',
     'price_fetcher_type_markazi' => 'مرکزی',
+    'price_fetcher_type_fater' => 'فاطر',
     'price_fetcher_url' => 'آدرس',
     'price_fetcher_url_placeholder' => 'https://example.com/product',
     'product_price_fetchers_list' => 'لیست دریافت‌کننده‌های قیمت محصول',
@@ -532,4 +533,20 @@ return [
     'price_fetcher_fetching' => 'در حال دریافت قیمت...',
     'price_fetcher_fetched' => 'قیمت با موفقیت دریافت شد.',
     'price_fetcher_fetch_failed' => 'خطا در دریافت قیمت.',
+    
+    // Product Images
+    'product_images' => 'تصاویر محصول',
+    'product_images_description' => 'مدیریت و افزودن تصاویر مختلف به محصول.',
+    'add_images' => 'افزودن تصاویر',
+    'upload_images' => 'آپلود تصاویر',
+    'drop_files_here' => 'فایل‌ها را اینجا رها کنید یا کلیک کنید',
+    'image_upload_hint' => 'JPG, PNG, GIF تا 10MB',
+    'product_images_list' => 'لیست تصاویر محصول',
+    'images_added' => 'تصاویر با موفقیت به محصول اضافه شد.',
+    'image_removed' => 'تصویر با موفقیت از محصول حذف شد.',
+    'no_images_added' => 'هیچ تصویری به این محصول اضافه نشده است.',
+    'no_images_selected' => 'هیچ تصویری انتخاب نشده است.',
+    'remove_file' => 'حذف فایل',
+    'images' => 'تصاویر',
+    'image' => 'تصویر',
 ];
