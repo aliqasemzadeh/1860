@@ -520,6 +520,7 @@ return [
     'price_fetcher_type_fafait' => 'فافایت',
     'price_fetcher_type_markazi' => 'مرکزی',
     'price_fetcher_type_fater' => 'فاطر',
+    'price_fetcher_type_gigabyte' => 'گیگابایت',
     'price_fetcher_url' => 'آدرس',
     'price_fetcher_url_placeholder' => 'https://example.com/product',
     'product_price_fetchers_list' => 'لیست دریافت‌کننده‌های قیمت محصول',
@@ -573,6 +574,7 @@ return [
     'url_does_not_match_site_type' => 'آدرس وارد شده با نوع سایت انتخاب شده مطابقت ندارد.',
     'images_will_be_uploaded_after_confirmation' => 'تصاویر پس از تایید و ایجاد محصول آپلود خواهند شد.',
     'remove_image' => 'حذف تصویر',
+    'specifications_in_description' => 'مشخصات فنی در قسمت توضیحات محصول قرار گرفته‌اند.',
 
     // Common / General
     'cancel' => 'انصراف',
