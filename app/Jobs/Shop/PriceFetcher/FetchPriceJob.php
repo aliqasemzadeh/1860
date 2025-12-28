@@ -2,8 +2,13 @@
 
 namespace App\Jobs\Shop\PriceFetcher;
 
+use App\Models\Shop\PriceFetcher;
+use App\Support\DigikalaPriceFetcher;
+use App\Support\FafaitPriceFetcher;
+use App\Support\MarkaziPriceFetcher;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
 
 class FetchPriceJob implements ShouldQueue
 {
@@ -12,8 +17,9 @@ class FetchPriceJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct()
-    {
+    public function __construct(
+        public PriceFetcher $priceFetcher
+    ) {
         //
     }
 
@@ -22,6 +28,26 @@ class FetchPriceJob implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        try {
+            $price = match ($this->priceFetcher->type) {
+                'digikala' => DigikalaPriceFetcher::fetchPrice($this->priceFetcher->url),
+                'fafait' => FafaitPriceFetcher::fetchPrice($this->priceFetcher->url),
+                'markazi' => MarkaziPriceFetcher::fetchPrice($this->priceFetcher->url),
+                default => null,
+            };
+
+            if ($price !== null) {
+                $this->priceFetcher->update([
+                    'last_price' => $price,
+                    'last_fetched_at' => now(),
+                ]);
+
+                Log::info("Price fetched for price fetcher {$this->priceFetcher->id}: {$price}");
+            } else {
+                Log::warning("Failed to fetch price for price fetcher {$this->priceFetcher->id}");
+            }
+        } catch (\Exception $e) {
+            Log::error("Error fetching price for price fetcher {$this->priceFetcher->id}: {$e->getMessage()}");
+        }
     }
 }

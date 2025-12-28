@@ -2,6 +2,7 @@
 
 namespace App\Models\Shop;
 
+use App\Models\Shop\PriceFetcher;
 use Binafy\LaravelCart\Cartable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -82,6 +83,14 @@ class Product extends Model implements Cartable
     public function prices(): HasMany
     {
         return $this->hasMany(ProductPrice::class);
+    }
+
+    /**
+     * Get the price fetchers for the product.
+     */
+    public function priceFetchers(): HasMany
+    {
+        return $this->hasMany(PriceFetcher::class);
     }
 
     /**

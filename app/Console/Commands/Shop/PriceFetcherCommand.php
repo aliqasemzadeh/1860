@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Shop;
 
+use App\Jobs\Shop\PriceFetcher\UpdatePriceJob;
 use Illuminate\Console\Command;
 
 class PriceFetcherCommand extends Command
@@ -11,20 +12,26 @@ class PriceFetcherCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'app:price-fetcher-command';
+    protected $signature = 'shop:update-price-fetchers';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Update all price fetchers';
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
-        //
+        $this->info('Dispatching price update job...');
+        
+        UpdatePriceJob::dispatch();
+        
+        $this->info('Price update job dispatched successfully.');
+        
+        return 0;
     }
 }

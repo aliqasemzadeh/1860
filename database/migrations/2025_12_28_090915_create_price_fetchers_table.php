@@ -13,7 +13,15 @@ return new class extends Migration
     {
         Schema::create('price_fetchers', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('product_id');
+            $table->enum('type', ['digikala', 'fafait', 'markazi']);
+            $table->string('url');
+            $table->bigInteger('last_price')->nullable();
+            $table->timestamp('last_fetched_at')->nullable();
             $table->timestamps();
+
+            $table->index('product_id');
+            $table->index('type');
         });
     }
 
