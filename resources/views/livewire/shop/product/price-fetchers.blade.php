@@ -19,11 +19,11 @@
                                     <flux:select.option value="fafait">{{ __('app.price_fetcher_type_fafait') }}</flux:select.option>
                                     <flux:select.option value="markazi">{{ __('app.price_fetcher_type_markazi') }}</flux:select.option>
                                 </flux:select>
-                                <flux:error name="email" />
+                                <flux:error name="type" />
                             </flux:field>
                             <flux:field>
                                 <flux:input wire:model="url" type="url" placeholder="{{ __('app.price_fetcher_url_placeholder') }}" />
-                                <flux:error name="email" />
+                                <flux:error name="url" />
                             </flux:field>
 
 
