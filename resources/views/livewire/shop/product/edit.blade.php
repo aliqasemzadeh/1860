@@ -13,7 +13,7 @@
                     <div class="space-y-3">
                         <flux:field>
                             <flux:label>{{ __('app.name') }}</flux:label>
-                            <flux:input wire:model="name" type="text" />
+                            <flux:input wire:model.live.debounce.500ms="name" type="text" />
                             <flux:error name="name" />
                         </flux:field>
 

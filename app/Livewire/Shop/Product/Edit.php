@@ -9,6 +9,7 @@ use App\Models\Shop\Unit;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
@@ -54,6 +55,12 @@ class Edit extends Component
     public ?int $brand_id = null;
 
     public ?int $unit_id = null;
+
+    public function updatedName(string $value): void
+    {
+        $this->slug = Str::slug($value);
+        $this->slug_fa = str_replace(' ', '-', $value);
+    }
 
     #[On('shop.product.edit.assign-data')]
     public function assignData($id): void
@@ -171,7 +178,7 @@ class Edit extends Component
         // Only get subcategories (children), not root categories
         return Category::query()
             ->where('main_category_id', '!=', 0)
-            ->when($this->category_search, fn($query) => $query->where('name', 'like', '%' . $this->category_search . '%'))
+            ->when($this->category_search, fn ($query) => $query->where('name', 'like', '%'.$this->category_search.'%'))
             ->with('main_category')
             ->orderBy('name')
             ->limit(20)
@@ -182,7 +189,7 @@ class Edit extends Component
     public function brands()
     {
         return Brand::query()
-            ->when($this->brand_search, fn($query) => $query->where('name', 'like', '%' . $this->brand_search . '%'))
+            ->when($this->brand_search, fn ($query) => $query->where('name', 'like', '%'.$this->brand_search.'%'))
             ->orderBy('name')
             ->limit(20)
             ->get(['id', 'name']);
@@ -192,7 +199,7 @@ class Edit extends Component
     public function units()
     {
         return Unit::query()
-            ->when($this->unit_search, fn($query) => $query->where('name', 'like', '%' . $this->unit_search . '%'))
+            ->when($this->unit_search, fn ($query) => $query->where('name', 'like', '%'.$this->unit_search.'%'))
             ->orderBy('name')
             ->limit(20)
             ->get(['id', 'name']);

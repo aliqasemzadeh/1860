@@ -5,9 +5,17 @@
                 <flux:heading size="xl" level="1">{{ __('app.products') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.products_description') }}</flux:subheading>
             </div>
-            <flux:modal.trigger name="shop.product.create.modal">
-                <flux:button variant="primary">{{ __('app.create_product') }}</flux:button>
-            </flux:modal.trigger>
+            <div class="flex items-center gap-2">
+                <flux:modal.trigger name="shop.product.product-wizard.modal">
+                    <flux:button variant="primary" color="purple">
+                        {{ __('app.product_wizard') }}
+                    </flux:button>
+                </flux:modal.trigger>
+
+                <flux:modal.trigger name="shop.product.create.modal">
+                    <flux:button variant="primary">{{ __('app.create_product') }}</flux:button>
+                </flux:modal.trigger>
+            </div>
         </div>
 
         <flux:separator variant="subtle" />
@@ -19,6 +27,7 @@
     <livewire:shop.product.warranties />
     <livewire:shop.product.price-fetchers />
     <livewire:shop.product.product-images />
+    <livewire:shop.product.product-wizard />
 
     <livewire:shop.setting-management.category.create />
     <livewire:shop.setting-management.brand.create />

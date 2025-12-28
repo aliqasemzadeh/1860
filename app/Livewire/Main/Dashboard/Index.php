@@ -9,7 +9,7 @@ use Livewire\Component;
 
 class Index extends Component
 {
-    #[Computed(cache: true, key: 'categories_root')]
+    #[Computed]
     public function categories()
     {
         return Category::query()
@@ -17,7 +17,7 @@ class Index extends Component
             ->get();
     }
 
-    #[Computed(cache: true, key: 'products_with_relations')]
+    #[Computed]
     public function products()
     {
         return Product::query()
@@ -25,6 +25,7 @@ class Index extends Component
             ->orderBy('created_at', 'asc')
             ->get();
     }
+
     public function render()
     {
         return view('livewire.main.dashboard.index');

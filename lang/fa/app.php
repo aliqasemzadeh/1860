@@ -508,7 +508,7 @@ return [
     'quantity_decreased' => 'تعداد کاهش یافت.',
     'max_quantity_reached' => 'حداکثر تعداد موجودی رسیده است.',
     'due_at' => 'تاریخ سررسید',
-    
+
     // Price Fetchers
     'price_fetchers' => 'دریافت‌کننده‌های قیمت',
     'product_price_fetchers' => 'دریافت‌کننده‌های قیمت محصول',
@@ -533,7 +533,7 @@ return [
     'price_fetcher_fetching' => 'در حال دریافت قیمت...',
     'price_fetcher_fetched' => 'قیمت با موفقیت دریافت شد.',
     'price_fetcher_fetch_failed' => 'خطا در دریافت قیمت.',
-    
+
     // Product Images
     'product_images' => 'تصاویر محصول',
     'product_images_description' => 'مدیریت و افزودن تصاویر مختلف به محصول.',
@@ -549,4 +549,23 @@ return [
     'remove_file' => 'حذف فایل',
     'images' => 'تصاویر',
     'image' => 'تصویر',
+
+    // Product Wizard
+    'product_wizard' => 'ویزارد محصول',
+    'product_wizard_description' => 'ایجاد محصول جدید از طریق دریافت اطلاعات از سایت‌های خارجی',
+    'product_wizard_url' => 'آدرس محصول',
+    'product_wizard_url_placeholder' => 'https://example.com/product/...',
+    'product_wizard_url_help' => 'لینک محصول را از سایت مورد نظر وارد کنید',
+    'fetch_product_info' => 'دریافت اطلاعات پایه',
+    'fetching_product_info' => 'در حال دریافت اطلاعات...',
+    'product_info_fetched' => 'اطلاعات محصول با موفقیت دریافت شد.',
+    'product_info_fetch_failed' => 'خطا در دریافت اطلاعات محصول.',
+    'product_wizard_step_1' => 'مرحله 1: وارد کردن لینک',
+    'product_wizard_step_2' => 'مرحله 2: بررسی و تکمیل اطلاعات',
+    'invalid_url' => 'آدرس وارد شده معتبر نیست.',
+    'unsupported_site' => 'این سایت پشتیبانی نمی‌شود.',
+    'product_info_preview' => 'پیش‌نمایش اطلاعات دریافت شده',
+    'create_product_and_price_fetcher' => 'ایجاد محصول و دریافت‌کننده قیمت',
+    'product_created_with_price_fetcher' => 'محصول و دریافت‌کننده قیمت با موفقیت ایجاد شد.',
+    'back' => 'بازگشت',
 ];
