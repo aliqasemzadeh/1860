@@ -24,22 +24,22 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/administrator/setting-management/function/index', \App\Livewire\Administrator\SettingManagement\Function\Index::class)->name('administrator.setting-management.function.index');
     Route::get('/administrator/setting-management/option/index', \App\Livewire\Administrator\SettingManagement\Option\Index::class)->name('administrator.setting-management.option.index');
 
-    Route::get('/shop/dashboard/index', \App\Livewire\Panel\Shop\Dashboard\Index::class)->name('shop.dashboard.index');
+    Route::get('/panel/shop/dashboard/index', \App\Livewire\Panel\Shop\Dashboard\Index::class)->name('panel.shop.dashboard.index');
 
-    Route::get('/shop/product/index', \App\Livewire\Panel\Shop\Product\Index::class)->name('shop.product.index');
-    Route::get('/shop/product/pricing/{productId}', \App\Livewire\Panel\Shop\Product\Pricing\Index::class)->name('shop.product.pricing.index');
-    Route::get('/shop/order/index', \App\Livewire\Panel\Shop\Order\Index::class)->name('shop.order.index');
+    Route::get('/panel/shop/product/index', \App\Livewire\Panel\Shop\Product\Index::class)->name('panel.shop.product.index');
+    Route::get('/panel/shop/product/pricing/{productId}', \App\Livewire\Panel\Shop\Product\Pricing\Index::class)->name('panel.shop.product.pricing.index');
+    Route::get('/panel/shop/order/index', \App\Livewire\Panel\Shop\Order\Index::class)->name('panel.shop.order.index');
 
-    Route::get('/shop/setting-management/category/index', \App\Livewire\Panel\Shop\SettingManagement\Category\Index::class)->name('shop.setting-management.category.index');
-    Route::get('/shop/setting-management/brand/index', \App\Livewire\Panel\Shop\SettingManagement\Brand\Index::class)->name('shop.setting-management.brand.index');
-    Route::get('/shop/setting-management/color/index', \App\Livewire\Panel\Shop\SettingManagement\Color\Index::class)->name('shop.setting-management.color.index');
-    Route::get('/shop/setting-management/warranty/index', \App\Livewire\Panel\Shop\SettingManagement\Warranty\Index::class)->name('shop.setting-management.warranty.index');
-    Route::get('/shop/setting-management/unit/index', \App\Livewire\Panel\Shop\SettingManagement\Unit\Index::class)->name('shop.setting-management.unit.index');
+    Route::get('/panel/shop/setting-management/category/index', \App\Livewire\Panel\Shop\SettingManagement\Category\Index::class)->name('panel.shop.setting-management.category.index');
+    Route::get('/panel/shop/setting-management/brand/index', \App\Livewire\Panel\Shop\SettingManagement\Brand\Index::class)->name('panel.shop.setting-management.brand.index');
+    Route::get('/panel/shop/setting-management/color/index', \App\Livewire\Panel\Shop\SettingManagement\Color\Index::class)->name('panel.shop.setting-management.color.index');
+    Route::get('/panel/shop/setting-management/warranty/index', \App\Livewire\Panel\Shop\SettingManagement\Warranty\Index::class)->name('panel.shop.setting-management.warranty.index');
+    Route::get('/panel/shop/setting-management/unit/index', \App\Livewire\Panel\Shop\SettingManagement\Unit\Index::class)->name('panel.shop.setting-management.unit.index');
 
     // Shop / Shipping management
-    Route::get('/shop/shipping/method/index', \App\Livewire\Panel\Shop\Shipping\Method\Index::class)->name('shop.shipping.method.index');
-    Route::get('/shop/shipping/zone/index', \App\Livewire\Panel\Shop\Shipping\Zone\Index::class)->name('shop.shipping.zone.index');
-    Route::get('/shop/shipping/rate/index', \App\Livewire\Panel\Shop\Shipping\Rate\Index::class)->name('shop.shipping.rate.index');
+    Route::get('/panel/shop/shipping/method/index', \App\Livewire\Panel\Shop\Shipping\Method\Index::class)->name('panel.shop.shipping.method.index');
+    Route::get('/panel/shop/shipping/zone/index', \App\Livewire\Panel\Shop\Shipping\Zone\Index::class)->name('panel.shop.shipping.zone.index');
+    Route::get('/panel/shop/shipping/rate/index', \App\Livewire\Panel\Shop\Shipping\Rate\Index::class)->name('panel.shop.shipping.rate.index');
 
 
     Route::get('/accounting/dashboard/index', \App\Livewire\Panel\Accounting\Dashboard\Index::class)->name('accounting.dashboard.index');
