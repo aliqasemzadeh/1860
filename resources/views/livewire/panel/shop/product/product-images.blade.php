@@ -8,7 +8,6 @@
         @if ($product)
             <div class="space-y-4">
                 <!-- Upload Images Section -->
-                <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4">
                     <flux:field>
                         <flux:label>{{ __('app.add_images') }}</flux:label>
                         <form wire:submit="save">
@@ -16,6 +15,8 @@
                                 <flux:file-upload.dropzone
                                     heading="{{ __('app.drop_files_here') }}"
                                     text="{{ __('app.image_upload_hint') }}"
+                                    with-progress
+                                    inline
                                 />
                             </flux:file-upload>
                             <flux:error name="images" />
@@ -40,14 +41,11 @@
                                 </div>
                             @endif
 
-                            <div class="mt-4">
-                                <flux:button type="submit" variant="primary" :disabled="count($images) === 0">
+                                <flux:button type="submit" variant="primary" class="w-full mt-4" :disabled="count($images) === 0">
                                     {{ __('app.save') }}
                                 </flux:button>
-                            </div>
                         </form>
                     </flux:field>
-                </div>
 
                 <!-- Images List -->
                 <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4">
@@ -61,6 +59,7 @@
                                         src="{{ asset('storage/' . $image->file_path) }}"
                                         alt="{{ $image->file_name }}"
                                         class="w-full h-32 object-cover"
+
                                     />
                                     <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center">
                                         <flux:button
