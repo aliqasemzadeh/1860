@@ -10,6 +10,8 @@ use App\Models\Shop\Unit;
 use App\Support\FaterProductFetcher;
 use App\Support\GigabyteProductFetcher;
 use App\Support\SetareganProductFetcher;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Http;
@@ -49,6 +51,7 @@ class ProductWizard extends Component
     public ?int $unit_id = null;
     public string $unit_search = '';
     public array $image_urls = [];
+    protected ?ImageManager $imageManager = null;
 
     public function updatedName(string $value): void
     {
@@ -176,7 +179,7 @@ class ProductWizard extends Component
             'unit_id' => __('app.unit'),
         ]);
 
-        // Download and save first image as product file
+        // Download and save first image as processed product file
         $filePath = null;
         $fileName = null;
         if (!empty($this->image_urls)) {
@@ -185,14 +188,17 @@ class ProductWizard extends Component
                 $imageResponse = Http::timeout(30)->get($firstImageUrl);
 
                 if ($imageResponse->successful()) {
-                    $extension = pathinfo(parse_url($firstImageUrl, PHP_URL_PATH), PATHINFO_EXTENSION);
-                    if (empty($extension)) {
-                        $extension = 'jpg';
-                    }
-                    $fileName = Str::slug($this->name) . '.' . $extension;
+                    // Always store processed main image as PNG and square
+                    $fileName = Str::slug($this->name) . '.png';
                     $filePath = 'products/' . $fileName;
 
-                    Storage::disk('public')->put($filePath, $imageResponse->body());
+                    $processedImage = $this->processImageToSquare($imageResponse->body());
+                    if ($processedImage !== null) {
+                        Storage::disk('public')->put($filePath, $processedImage);
+                    } else {
+                        // Fallback: store original response if processing fails
+                        Storage::disk('public')->put($filePath, $imageResponse->body());
+                    }
                 }
             } catch (\Exception $e) {
                 Log::warning('Failed to download product image: ' . $e->getMessage());
@@ -216,21 +222,24 @@ class ProductWizard extends Component
             'unit_id' => $this->unit_id,
         ]);
 
-        // Download and save additional images
+        // Download and save additional processed images
         if (!empty($this->image_urls) && count($this->image_urls) > 1) {
             foreach (array_slice($this->image_urls, 1) as $imageUrl) {
                 try {
                     $imageResponse = Http::timeout(30)->get($imageUrl);
 
                     if ($imageResponse->successful()) {
-                        $extension = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_EXTENSION);
-                        if (empty($extension)) {
-                            $extension = 'jpg';
-                        }
-                        $imageFileName = Str::slug($this->name) . '-' . uniqid() . '.' . $extension;
+                        // Store additional images as processed square PNGs
+                        $imageFileName = Str::slug($this->name) . '-' . uniqid() . '.png';
                         $imageFilePath = 'products/images/' . $imageFileName;
 
-                        Storage::disk('public')->put($imageFilePath, $imageResponse->body());
+                        $processedImage = $this->processImageToSquare($imageResponse->body());
+                        if ($processedImage !== null) {
+                            Storage::disk('public')->put($imageFilePath, $processedImage);
+                        } else {
+                            // Fallback: store original response if processing fails
+                            Storage::disk('public')->put($imageFilePath, $imageResponse->body());
+                        }
 
                         ProductImage::create([
                             'product_id' => $product->id,
@@ -272,6 +281,47 @@ class ProductWizard extends Component
     {
         $this->unit_id = $id['id'];
         $this->unit_search = '';
+    }
+
+    /**
+     * Process raw image data to a square PNG with (best-effort) white background removal.
+     */
+    protected function processImageToSquare(string $imageData): ?string
+    {
+        try {
+            if ($this->imageManager === null) {
+                $this->imageManager = new ImageManager(new Driver());
+            }
+
+            $image = $this->imageManager->read($imageData);
+
+            // Try to trim white (or near-white) borders/background
+            // Note: trim support depends on the Intervention Image version/driver
+            try {
+                // Tolerance 40 is usually enough for near-white
+                $image = $image->trim('top-left', null, 40);
+            } catch (\Throwable $e) {
+                // If trim is not supported, continue without it
+                Log::debug('Image trim not supported or failed: ' . $e->getMessage());
+            }
+
+            // Fit to a square while keeping aspect ratio
+            // Choose a reasonable size for product images
+            $size = 1000;
+            $width = $image->width();
+            $height = $image->height();
+            $minSide = max(1, min($width, $height));
+
+            // Crop to centered square first to avoid distortion
+            $image = $image->crop($minSide, $minSide, intval(($width - $minSide) / 2), intval(($height - $minSide) / 2));
+            $image = $image->scaleDown($size, $size);
+
+            // Encode to PNG
+            return (string) $image->toPng();
+        } catch (\Throwable $e) {
+            Log::warning('Failed to process product image: ' . $e->getMessage());
+            return null;
+        }
     }
 
     #[Computed]
