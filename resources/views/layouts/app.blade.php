@@ -20,7 +20,7 @@
 
 <flux:header sticky class="bg-white lg:bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
     <flux:navbar class="w-full flex flex-row">
-        <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+        <flux:sidebar.toggle class="lg:hidden" icon="bars-3" inset="left" />
         <flux:modal.trigger name="search" shortcut="cmd.f">
             <flux:input as="button" placeholder="{{ __('app.search') }}" icon="magnifying-glass" kbd="⌘K" />
         </flux:modal.trigger>
@@ -49,8 +49,6 @@
         @guest
         <flux:button icon="user" href="{{ route('login') }}" />
         @endguest
-
-
 
     </flux:navbar>
 </flux:header>
