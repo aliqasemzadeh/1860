@@ -1,6 +1,6 @@
 <div>
     <flux:modal.trigger name="main.sidebar.basket.modal">
-        <flux:button icon="shopping-cart" />
+        <flux:button icon="shopping-cart" square variant="ghost" />
     </flux:modal.trigger>
     <flux:modal name="main.sidebar.basket.modal" position="right" flyout>
         <div class="space-y-6 h-full flex flex-col">

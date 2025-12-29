@@ -521,6 +521,7 @@ return [
     'price_fetcher_type_markazi' => 'مرکزی',
     'price_fetcher_type_fater' => 'فاطر',
     'price_fetcher_type_gigabyte' => 'گیگابایت',
+    'price_fetcher_type_setaregan' => 'ستارگان رز جنوب',
     'price_fetcher_url' => 'آدرس',
     'price_fetcher_url_placeholder' => 'https://example.com/product',
     'product_price_fetchers_list' => 'لیست دریافت‌کننده‌های قیمت محصول',

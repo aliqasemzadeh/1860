@@ -43,11 +43,11 @@
         <livewire:main.sidebar.basket />
 
         @auth
-        <flux:button icon="user" href="{{ route('logout') }}" />
+        <flux:button icon="user" href="{{ route('logout') }}" square variant="ghost" />
         @endauth
 
         @guest
-        <flux:button icon="user" href="{{ route('login') }}" />
+        <flux:button icon="user" href="{{ route('login') }}" square variant="ghost" />
         @endguest
 
     </flux:navbar>

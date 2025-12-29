@@ -7,6 +7,7 @@ use App\Support\DigikalaPriceFetcher;
 use App\Support\FafaitPriceFetcher;
 use App\Support\FaterPriceFetcher;
 use App\Support\MarkaziPriceFetcher;
+use App\Support\SetareganPriceFetcher;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
@@ -35,6 +36,7 @@ class FetchPriceJob implements ShouldQueue
                 'fafait' => FafaitPriceFetcher::fetchPrice($this->priceFetcher->url),
                 'markazi' => MarkaziPriceFetcher::fetchPrice($this->priceFetcher->url),
                 'fater' => FaterPriceFetcher::fetchPrice($this->priceFetcher->url),
+                'setaregan' => SetareganPriceFetcher::fetchPrice($this->priceFetcher->url),
                 default => null,
             };
 

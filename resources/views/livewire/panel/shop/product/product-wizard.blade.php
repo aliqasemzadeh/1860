@@ -14,6 +14,7 @@
                         <flux:select wire:model="site_type" placeholder="{{ __('app.select_site_type') }}">
                             <flux:select.option value="fater">{{ __('app.price_fetcher_type_fater') }}</flux:select.option>
                             <flux:select.option value="gigabyte">{{ __('app.price_fetcher_type_gigabyte') }}</flux:select.option>
+                            <flux:select.option value="setaregan">{{ __('app.price_fetcher_type_setaregan') }}</flux:select.option>
                         </flux:select>
                         <flux:error name="site_type" />
                     </flux:field>

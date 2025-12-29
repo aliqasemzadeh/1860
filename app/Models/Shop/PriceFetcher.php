@@ -52,6 +52,7 @@ class PriceFetcher extends Model
             'fafait' => __('app.price_fetcher_type_fafait'),
             'markazi' => __('app.price_fetcher_type_markazi'),
             'fater' => __('app.price_fetcher_type_fater'),
+            'setaregan' => __('app.price_fetcher_type_setaregan'),
             default => $this->type,
         };
     }

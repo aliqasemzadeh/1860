@@ -9,6 +9,7 @@ use App\Models\Shop\ProductImage;
 use App\Models\Shop\Unit;
 use App\Support\FaterProductFetcher;
 use App\Support\GigabyteProductFetcher;
+use App\Support\SetareganProductFetcher;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Http;
@@ -59,7 +60,7 @@ class ProductWizard extends Component
     {
         if ($this->step === 1) {
             $this->validate([
-                'site_type' => ['required', 'string', 'in:fater,gigabyte'],
+                'site_type' => ['required', 'string', 'in:fater,gigabyte,setaregan'],
                 'url' => ['required', 'url'],
                 'category_id' => ['required', 'integer', 'exists:categories,id'],
                 'brand_id' => ['required', 'integer', 'exists:brands,id'],
@@ -76,6 +77,10 @@ class ProductWizard extends Component
                 return;
             }
             if ($this->site_type === 'gigabyte' && !str_contains($this->url, 'gigabyte.com')) {
+                $this->addError('url', __('app.url_does_not_match_site_type'));
+                return;
+            }
+            if ($this->site_type === 'setaregan' && !str_contains($this->url, 'setaregan.co')) {
                 $this->addError('url', __('app.url_does_not_match_site_type'));
                 return;
             }
@@ -97,6 +102,8 @@ class ProductWizard extends Component
                 $data = FaterProductFetcher::fetchProductInfo($this->url, $logger);
             } elseif ($this->site_type === 'gigabyte') {
                 $data = GigabyteProductFetcher::fetchProductInfo($this->url, $logger);
+            } elseif ($this->site_type === 'setaregan') {
+                $data = SetareganProductFetcher::fetchProductInfo($this->url, $logger);
             } else {
                 $this->fetch_error = __('app.unsupported_site');
                 $this->is_fetching = false;
