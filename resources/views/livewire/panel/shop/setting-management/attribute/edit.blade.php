@@ -45,9 +45,9 @@
                     <flux:error name="type" />
                 </flux:field>
 
-                <flux:field>
-                    <flux:checkbox wire:model="is_required" />
+                <flux:field variant="inline">
                     <flux:label>{{ __('app.required') }}</flux:label>
+                    <flux:switch wire:model="is_required" />
                     <flux:error name="is_required" />
                 </flux:field>
 

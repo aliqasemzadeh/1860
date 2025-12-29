@@ -2,8 +2,7 @@
 
 namespace App\Livewire\Panel\Shop\SettingManagement\Attribute;
 
-use App\Models\Shop\Attribute;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use App\Models\Shop\Attribute as AttributeModel;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
@@ -30,7 +29,7 @@ class Index extends Component
 
     public function delete(int $id): void
     {
-        $attribute = Attribute::query()->find($id);
+        $attribute = AttributeModel::query()->find($id);
         if ($attribute !== null) {
             $attribute->delete();
             \Flux\Flux::toast(variant: 'success', text: __('app.attribute_deleted'));
@@ -39,9 +38,9 @@ class Index extends Component
     }
 
     #[Computed]
-    public function attributes(): LengthAwarePaginator
+    public function attributesList(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        return Attribute::query()
+        return AttributeModel::query()
             ->with(['attributeGroup'])
             ->withCount('options')
             ->tap(function ($query) {

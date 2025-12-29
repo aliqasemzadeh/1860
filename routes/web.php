@@ -43,7 +43,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     // Shop / Attributes management
     Route::get('/panel/shop/setting-management/attribute/index', \App\Livewire\Panel\Shop\SettingManagement\Attribute\Index::class)->name('panel.shop.setting-management.attribute.index');
-    Route::get('/panel/shop/setting-management/attribute/options/{id}', \App\Livewire\Panel\Shop\SettingManagement\Attribute\Option\Index::class)->name('panel.shop.setting-management.attribute.options.index');
+    Route::get('/panel/shop/setting-management/attribute/options/{attributeId}', \App\Livewire\Panel\Shop\SettingManagement\Attribute\Option\Index::class)->name('panel.shop.setting-management.attribute.options.index');
 
     // Shop / Shipping management
     Route::get('/panel/shop/shipping/method/index', \App\Livewire\Panel\Shop\Shipping\Method\Index::class)->name('panel.shop.shipping.method.index');

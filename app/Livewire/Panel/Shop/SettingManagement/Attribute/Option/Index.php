@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Panel\Shop\SettingManagement\Attribute\Option;
 
-use App\Models\Shop\Attribute;
+use App\Models\Shop\Attribute as AttributeModel;
 use App\Models\Shop\AttributeOption;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
@@ -15,7 +15,7 @@ class Index extends Component
 {
     use WithPagination;
 
-    public Attribute $attribute;
+    public AttributeModel $attribute;
 
     public int $attributeId;
 
@@ -23,16 +23,15 @@ class Index extends Component
 
     public string $sortDirection = 'asc';
 
-    public function mount(int $id): void
+    public function mount(int $attributeId): void
     {
-        $this->attributeId = $id;
-        $this->loadAttribute();
-    }
+        $this->attributeId = $attributeId;
+        try {
+            $this->attribute = AttributeModel::find($attributeId);
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
 
-    #[On('panel.shop.setting-management.attribute.option.index.refresh')]
-    public function loadAttribute(): void
-    {
-        $this->attribute = Attribute::findOrFail($this->attributeId);
     }
 
     public function sort(string $column): void
@@ -69,6 +68,7 @@ class Index extends Component
     }
 
     #[Layout('layouts.panels.shop')]
+    #[On('panel.shop.setting-management.attribute.option.index.refresh')]
     public function render()
     {
         return view('livewire.panel.shop.setting-management.attribute.option.index');

@@ -16,7 +16,7 @@
     <livewire:panel.shop.setting-management.attribute.create />
     <livewire:panel.shop.setting-management.attribute.edit />
 
-    <flux:table :paginate="$this->attributes">
+    <flux:table :paginate="$this->attributesList">
         <flux:table.columns>
             <flux:table.column sortable wire:click="sort('label')">{{ __('app.attribute_label') }}</flux:table.column>
             <flux:table.column sortable wire:click="sort('key')">{{ __('app.attribute_key') }}</flux:table.column>
@@ -27,7 +27,7 @@
             <flux:table.column>{{ __('app.actions') }}</flux:table.column>
         </flux:table.columns>
 
-        @foreach ($this->attributes as $attribute)
+        @foreach ($this->attributesList as $attribute)
             <flux:table.row :key="$attribute->id">
                 <flux:table.cell class="flex items-center gap-3">
                     {{ $attribute->label }}
