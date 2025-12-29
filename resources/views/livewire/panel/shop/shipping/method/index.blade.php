@@ -9,7 +9,7 @@
                 <flux:subheading size="lg" class="mb-6">{{ __('app.shipping_methods_description') }}</flux:subheading>
             </div>
 
-            <flux:modal.trigger name="shop.shipping.method.create.modal">
+            <flux:modal.trigger name="panel.shop.shipping.method.create.modal">
                 <flux:button variant="primary">{{ __('app.create_shipping_method') }}</flux:button>
             </flux:modal.trigger>
         </div>

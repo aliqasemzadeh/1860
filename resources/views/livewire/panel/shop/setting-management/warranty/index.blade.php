@@ -5,7 +5,7 @@
                 <flux:heading size="xl" level="1">{{ __('app.warranties') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.warranties_description') }}</flux:subheading>
             </div>
-            <flux:modal.trigger name="shop.setting-management.warranty.create.modal">
+            <flux:modal.trigger name="panel.shop.setting-management.warranty.create.modal">
                 <flux:button variant="primary">{{ __('app.create_warranty') }}</flux:button>
             </flux:modal.trigger>
         </div>

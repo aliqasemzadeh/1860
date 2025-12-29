@@ -25,7 +25,7 @@
                             <flux:button wire:click="addWarranty" variant="primary" color="red" :disabled="!$selectedWarrantyId">
                                 {{ __('app.add') }}
                             </flux:button>
-                            <flux:modal.trigger name="shop.setting-management.warranty.create.modal">
+                            <flux:modal.trigger name="panel.shop.setting-management.warranty.create.modal">
                                 <flux:button variant="ghost" color="red" icon="plus" />
                             </flux:modal.trigger>
                         </div>

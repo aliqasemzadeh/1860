@@ -86,7 +86,7 @@ class Create extends Component
         ]);
 
         Flux::modal('panel.shop.shipping.zone.create.modal')->close();
-        $this->dispatch('shop.shipping.zone.index.render');
+        $this->dispatch('panel.shop.shipping.zone.index.render');
         Flux::toast(variant: 'success', text: __('app.shipping_zone_created'));
 
         $this->reset(['name', 'countries', 'states', 'cities', 'areas', 'cityOptions']);

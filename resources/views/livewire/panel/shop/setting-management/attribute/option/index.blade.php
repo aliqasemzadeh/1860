@@ -10,7 +10,7 @@
                 </flux:subheading>
             </div>
             <div class="flex gap-2">
-                <flux:modal.trigger name="shop.setting-management.attribute.option.create.modal">
+                <flux:modal.trigger name="panel.shop.setting-management.attribute.option.create.modal">
                     <flux:button variant="primary">{{ __('app.add_option') }}</flux:button>
                 </flux:modal.trigger>
             </div>

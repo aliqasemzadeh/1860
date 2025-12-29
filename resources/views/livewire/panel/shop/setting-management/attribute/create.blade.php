@@ -1,4 +1,4 @@
-<flux:modal name="shop.setting-management.attribute.create.modal" class="md:w-[32rem]" flyout position="right">
+<flux:modal name="panel.shop.setting-management.attribute.create.modal" class="md:w-[32rem]" flyout position="right">
     <div class="space-y-6">
         <div>
             <flux:heading size="lg">{{ __('app.create_attribute') }}</flux:heading>

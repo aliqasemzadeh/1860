@@ -1,4 +1,4 @@
-<flux:modal name="shop.setting-management.attribute.option.create.modal" class="md:w-96" flyout position="right">
+<flux:modal name="panel.shop.setting-management.attribute.option.create.modal" class="md:w-96" flyout position="right">
     <div class="space-y-6">
         <div>
             <flux:heading size="lg">{{ __('app.add_option') }}</flux:heading>

@@ -1,4 +1,4 @@
-<flux:modal name="shop.shipping.zone.edit.modal" class="md:w-[32rem]" flyout position="right">
+<flux:modal name="panel.shop.shipping.zone.edit.modal" class="md:w-[32rem]" flyout position="right">
     <div class="space-y-6">
         <div>
             <flux:heading size="lg">

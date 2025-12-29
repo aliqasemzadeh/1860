@@ -38,7 +38,7 @@ class Edit extends Component
 
         $this->unit->fill($validated)->save();
 
-        $this->dispatch('shop.setting-management.unit.index.render');
+        $this->dispatch('panel.shop.setting-management.unit.index.render');
         Flux::modal('panel.shop.setting-management.unit.edit.modal')->close();
     }
 

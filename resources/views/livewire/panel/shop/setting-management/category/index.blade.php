@@ -5,7 +5,7 @@
                 <flux:heading size="xl" level="1">{{ __('app.categories') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.categories_description') }}</flux:subheading>
             </div>
-            <flux:modal.trigger name="shop.setting-management.category.create.modal">
+            <flux:modal.trigger name="panel.shop.setting-management.category.create.modal">
                 <flux:button variant="primary">{{ __('app.create_category') }}</flux:button>
             </flux:modal.trigger>
         </div>

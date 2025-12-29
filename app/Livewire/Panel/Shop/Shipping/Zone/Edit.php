@@ -108,7 +108,7 @@ class Edit extends Component
             'areas' => array_filter(array_map('trim', explode("\n", (string) ($validated['areas'] ?? '')))),
         ]);
 
-        $this->dispatch('shop.shipping.zone.index.render');
+        $this->dispatch('panel.shop.shipping.zone.index.render');
         Flux::modal('panel.shop.shipping.zone.edit.modal')->close();
         Flux::toast(variant: 'success', text: __('app.shipping_zone_updated'));
     }

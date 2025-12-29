@@ -36,7 +36,7 @@
                                         </flux:select.option>
                                     @endforeach
                                 </flux:select>
-                                <flux:modal.trigger name="shop.setting-management.category.create.modal">
+                                <flux:modal.trigger name="panel.shop.setting-management.category.create.modal">
                                     <flux:button icon="plus" variant="ghost" />
                                 </flux:modal.trigger>
                             </flux:input.group>
@@ -56,7 +56,7 @@
                                         </flux:select.option>
                                     @endforeach
                                 </flux:select>
-                                <flux:modal.trigger name="shop.setting-management.brand.create.modal">
+                                <flux:modal.trigger name="panel.shop.setting-management.brand.create.modal">
                                     <flux:button icon="plus" variant="ghost" />
                                 </flux:modal.trigger>
                             </flux:input.group>
@@ -76,7 +76,7 @@
                                         </flux:select.option>
                                     @endforeach
                                 </flux:select>
-                                <flux:modal.trigger name="shop.setting-management.unit.create.modal">
+                                <flux:modal.trigger name="panel.shop.setting-management.unit.create.modal">
                                     <flux:button icon="plus" variant="ghost" />
                                 </flux:modal.trigger>
                             </flux:input.group>

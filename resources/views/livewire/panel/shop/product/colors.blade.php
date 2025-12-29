@@ -30,7 +30,7 @@
                             <flux:button wire:click="addColor" variant="primary" color="zinc" :disabled="!$selectedColorId">
                                 {{ __('app.add') }}
                             </flux:button>
-                            <flux:modal.trigger name="shop.setting-management.color.create.modal">
+                            <flux:modal.trigger name="panel.shop.setting-management.color.create.modal">
                                 <flux:button variant="ghost" color="zinc" icon="plus" />
                             </flux:modal.trigger>
                         </div>

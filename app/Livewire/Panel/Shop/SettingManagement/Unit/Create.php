@@ -20,8 +20,8 @@ class Create extends Component
         $unit = Unit::create($validated);
 
         Flux::modal('panel.shop.setting-management.unit.create.modal')->close();
-        $this->dispatch('shop.setting-management.unit.index.render');
-        $this->dispatch('shop.product.unit.refresh', ['id' => $unit->id]);
+        $this->dispatch('panel.shop.setting-management.unit.index.render');
+        $this->dispatch('panel.shop.product.unit.refresh', ['id' => $unit->id]);
         Flux::toast(variant: 'success', text: __('app.unit_created', ['name' => $validated['name']]));
         $this->reset(['name']);
     }

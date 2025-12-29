@@ -5,7 +5,7 @@
                 <flux:heading size="xl" level="1">{{ __('app.attribute_groups') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.attribute_groups_description') }}</flux:subheading>
             </div>
-            <flux:modal.trigger name="shop.setting-management.attribute-group.create.modal">
+            <flux:modal.trigger name="panel.shop.setting-management.attribute-group.create.modal">
                 <flux:button variant="primary">{{ __('app.create_attribute_group') }}</flux:button>
             </flux:modal.trigger>
         </div>

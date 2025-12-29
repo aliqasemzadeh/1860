@@ -46,7 +46,7 @@ class Edit extends Component
 
         $this->warranty->fill($validated)->save();
 
-        $this->dispatch('shop.setting-management.warranty.index.render');
+        $this->dispatch('panel.shop.setting-management.warranty.index.render');
         Flux::modal('panel.shop.setting-management.warranty.edit.modal')->close();
     }
 
