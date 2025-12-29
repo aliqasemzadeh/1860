@@ -13,3 +13,7 @@
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+[data-flux-main] {
+    @apply  p-1 md:p-6 lg:p-8;
+}

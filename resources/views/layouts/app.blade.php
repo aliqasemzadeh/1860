@@ -18,7 +18,7 @@
 
 </flux:sidebar>
 
-<flux:header class="bg-white lg:bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
+<flux:header sticky class="bg-white lg:bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
     <flux:navbar class="w-full flex flex-row">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
         <flux:modal.trigger name="search" shortcut="cmd.f">
@@ -50,10 +50,12 @@
         <flux:button icon="user" href="{{ route('login') }}" />
         @endguest
 
+
+
     </flux:navbar>
 </flux:header>
 
-<flux:main>
+<flux:main class="p-2 md:p-6">
     {{ $slot }}
 </flux:main>
     @include('partials.foot')
