@@ -50,7 +50,7 @@ class Index extends Component
     }
 
     #[Computed]
-    public function options(): LengthAwarePaginator
+    public function optionsList(): LengthAwarePaginator
     {
         return AttributeOption::query()
             ->where('attribute_id', $this->attributeId)

@@ -33,6 +33,7 @@ class Edit extends Component
         $this->value = (string) $this->attributeOption->value;
         $this->label = (string) $this->attributeOption->label;
         $this->sort_order = $this->attributeOption->sort_order;
+
         Flux::modal('panel.shop.setting-management.attribute.option.edit.modal')->show();
     }
 
@@ -64,11 +65,7 @@ class Edit extends Component
 
     public function render(): View
     {
-        $attribute = Attribute::findOrFail($this->attributeId ?? $this->attributeOption->attribute_id ?? 0);
-
-        return view('livewire.panel.shop.setting-management.attribute.option.edit', [
-            'attribute' => $attribute,
-        ]);
+        return view('livewire.panel.shop.setting-management.attribute.option.edit');
     }
 }
 

@@ -3,16 +3,13 @@
         <div class="flex items-center justify-between">
             <div>
                 <flux:heading size="xl" level="1">
-                    {{ __('app.attribute_options') }} - {{ $this->attribute->label }}
+                    {{ __('app.attribute_options') }} - {{ $attribute->label }}
                 </flux:heading>
                 <flux:subheading size="lg" class="mb-6">
                     {{ __('app.create_attribute_option_description') }}
                 </flux:subheading>
             </div>
             <div class="flex gap-2">
-                <flux:button variant="ghost" href="{{ route('panel.shop.setting-management.attribute.index') }}" wire:navigate>
-                    {{ __('app.back') }}
-                </flux:button>
                 <flux:modal.trigger name="shop.setting-management.attribute.option.create.modal">
                     <flux:button variant="primary">{{ __('app.add_option') }}</flux:button>
                 </flux:modal.trigger>
@@ -25,7 +22,7 @@
     <livewire:panel.shop.setting-management.attribute.option.create :id="$attributeId" />
     <livewire:panel.shop.setting-management.attribute.option.edit />
 
-    <flux:table :paginate="$this->options">
+    <flux:table :paginate="$this->optionsList">
         <flux:table.columns>
             <flux:table.column sortable wire:click="sort('value')">{{ __('app.option_value') }}</flux:table.column>
             <flux:table.column sortable wire:click="sort('label')">{{ __('app.option_label') }}</flux:table.column>
@@ -33,7 +30,7 @@
             <flux:table.column>{{ __('app.actions') }}</flux:table.column>
         </flux:table.columns>
 
-        @foreach ($this->options as $option)
+        @foreach ($this->optionsList as $option)
             <flux:table.row :key="$option->id">
                 <flux:table.cell>
                     <code class="text-xs">{{ $option->value }}</code>
