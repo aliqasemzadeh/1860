@@ -75,7 +75,7 @@ class Edit extends Component
 
         $this->category->fill($validated)->save();
 
-        $this->dispatch('shop.setting-management.category.index.render');
+        $this->dispatch('panel.shop.setting-management.category.index.render');
         Flux::modal('panel.shop.setting-management.category.edit.modal')->close();
     }
 

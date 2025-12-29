@@ -30,7 +30,7 @@ class Create extends Component
         Color::create($validated);
 
         Flux::modal('panel.shop.setting-management.color.create.modal')->close();
-        $this->dispatch('shop.setting-management.color.index.render');
+        $this->dispatch('panel.shop.setting-management.color.index.render');
         $this->reset(['name', 'slug', 'slug_fa', 'hex']);
     }
 

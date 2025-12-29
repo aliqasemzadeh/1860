@@ -21,6 +21,13 @@
         <flux:separator variant="subtle" />
     </div>
 
+    <div class="mb-6">
+        <flux:field>
+            <flux:label>{{ __('app.search') }}</flux:label>
+            <flux:input wire:model.live.debounce.500ms="search" type="text" placeholder="{{ __('app.search_in_products') }}" />
+        </flux:field>
+    </div>
+
     <livewire:panel.shop.product.create />
     <livewire:panel.shop.product.edit />
     <livewire:panel.shop.product.colors />

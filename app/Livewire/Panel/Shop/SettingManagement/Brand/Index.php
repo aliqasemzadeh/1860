@@ -33,6 +33,7 @@ class Index extends Component
         if ($brand !== null) {
             $brand->delete();
         }
+        $this->dispatch('panel.shop.setting-management.brand.index.render');
     }
 
     #[Computed]

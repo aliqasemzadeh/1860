@@ -46,7 +46,7 @@ class Edit extends Component
 
         $this->brand->fill($validated)->save();
 
-        $this->dispatch('shop.setting-management.brand.index.render');
+        $this->dispatch('panel.shop.setting-management.brand.index.render');
         Flux::modal('panel.shop.setting-management.brand.edit.modal')->close();
     }
 

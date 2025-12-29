@@ -98,7 +98,10 @@
                         <flux:field>
                             @if (isset($product) && $product->file_path)
                                 <div class="mb-3">
-                                    <flux:text class="text-sm text-gray-500">{{ __('app.current_file') }}: {{ $product->file_name }}</flux:text>
+                                    <flux:text class="text-sm text-gray-500 mb-2">{{ __('app.current_file') }}: {{ $product->file_name }}</flux:text>
+                                    <div class="mt-2">
+                                        <img src="{{ Storage::url($product->file_path) }}" alt="{{ $product->name }}" class="max-w-full h-auto rounded-lg border border-gray-200 dark:border-gray-700" style="max-height: 200px;" />
+                                    </div>
                                 </div>
                             @endif
                             <flux:file-upload wire:model="file" label="{{ __('app.file_upload') }}">
@@ -135,35 +138,35 @@
                             <flux:input wire:model="slug_fa" type="text" />
                             <flux:error name="slug_fa" />
                         </flux:field>
-                    </div>
-                    <!-- Second Row: 3 columns for dimensions -->
-                    <div class="grid grid-cols-3 gap-6">
-                        <flux:field>
-                            <flux:label>{{ __('app.x_dimension') }}</flux:label>
-                            <flux:input.group>
-                                <flux:input.group.prefix>mm</flux:input.group.prefix>
-                                <flux:input wire:model="x_dimension" type="number" step="0.01" min="0" />
-                            </flux:input.group>
-                            <flux:error name="x_dimension" />
-                        </flux:field>
 
-                        <flux:field>
-                            <flux:label>{{ __('app.y_dimension') }}</flux:label>
-                            <flux:input.group>
-                                <flux:input.group.prefix>mm</flux:input.group.prefix>
-                                <flux:input wire:model="y_dimension" type="number" step="0.01" min="0" />
-                            </flux:input.group>
-                            <flux:error name="y_dimension" />
-                        </flux:field>
+                        <div class="grid grid-cols-3 gap-6">
+                            <flux:field>
+                                <flux:label>{{ __('app.x_dimension') }}</flux:label>
+                                <flux:input.group>
+                                    <flux:input.group.prefix>mm</flux:input.group.prefix>
+                                    <flux:input wire:model="x_dimension" type="number" step="0.01" min="0" />
+                                </flux:input.group>
+                                <flux:error name="x_dimension" />
+                            </flux:field>
 
-                        <flux:field>
-                            <flux:label>{{ __('app.z_dimension') }}</flux:label>
-                            <flux:input.group>
-                                <flux:input.group.prefix>mm</flux:input.group.prefix>
-                                <flux:input wire:model="z_dimension" type="number" step="0.01" min="0" />
-                            </flux:input.group>
-                            <flux:error name="z_dimension" />
-                        </flux:field>
+                            <flux:field>
+                                <flux:label>{{ __('app.y_dimension') }}</flux:label>
+                                <flux:input.group>
+                                    <flux:input.group.prefix>mm</flux:input.group.prefix>
+                                    <flux:input wire:model="y_dimension" type="number" step="0.01" min="0" />
+                                </flux:input.group>
+                                <flux:error name="y_dimension" />
+                            </flux:field>
+
+                            <flux:field>
+                                <flux:label>{{ __('app.z_dimension') }}</flux:label>
+                                <flux:input.group>
+                                    <flux:input.group.prefix>mm</flux:input.group.prefix>
+                                    <flux:input wire:model="z_dimension" type="number" step="0.01" min="0" />
+                                </flux:input.group>
+                                <flux:error name="z_dimension" />
+                            </flux:field>
+                        </div>
                     </div>
                 </div>
 

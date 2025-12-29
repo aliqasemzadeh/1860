@@ -663,4 +663,5 @@ return [
     'attribute_options_only_for_select_types' => 'گزینه‌ها فقط برای ویژگی‌های نوع "انتخاب تکی" و "انتخاب چندتایی" قابل استفاده هستند.',
     'option_value_help' => 'مقدار ذخیره‌شده در سیستم (مثال: red, xl, large)',
     'option_label_help' => 'برچسب نمایش داده شده به کاربر (مثال: Red, XL, Large)',
+    'search_in_products' => 'جستجو در محصولات',
 ];

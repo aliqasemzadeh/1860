@@ -18,6 +18,8 @@ class Index extends Component
 
     public string $sortDirection = 'desc';
 
+    public string $search = '';
+
     public function sort(string $column): void
     {
         if ($this->sortBy === $column) {
@@ -42,6 +44,12 @@ class Index extends Component
     {
         return Product::query()
             ->with(['category', 'brand', 'unit'])
+            ->when($this->search, function ($query) {
+                $query->where(function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%')
+                      ->orWhere('description', 'like', '%' . $this->search . '%');
+                });
+            })
             ->tap(function ($query) {
                 if ($this->sortBy) {
                     $query->orderBy($this->sortBy, $this->sortDirection);

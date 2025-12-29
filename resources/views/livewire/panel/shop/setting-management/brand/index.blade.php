@@ -5,7 +5,7 @@
                 <flux:heading size="xl" level="1">{{ __('app.brands') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.brands_description') }}</flux:subheading>
             </div>
-            <flux:modal.trigger name="shop.setting-management.brand.create.modal">
+            <flux:modal.trigger name="panel.shop.setting-management.brand.create.modal">
                 <flux:button variant="primary">{{ __('app.create_brand') }}</flux:button>
             </flux:modal.trigger>
         </div>
