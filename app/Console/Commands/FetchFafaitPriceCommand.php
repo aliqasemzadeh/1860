@@ -49,3 +49,4 @@ class FetchFafaitPriceCommand extends Command
 
 
 
+
