@@ -73,7 +73,7 @@
                 <flux:table.cell class="whitespace-nowrap">
                     <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.attribute.edit.assign-data', { id: '{{ $attribute->id }}' })">{{ __('app.edit') }}</flux:button>
                     @if(in_array($attribute->type, ['select', 'multiselect']))
-                        <flux:button size="xs" variant="ghost" href="{{ route('panel.shop.setting-management.attribute.options.index', $attribute->id) }}" wire:navigate>{{ __('app.attribute_options') }}</flux:button>
+                        <flux:button size="xs" variant="ghost" href="{{ route('panel.shop.setting-management.attribute.options.index', ['attributeId' => $attribute->id]) }}" wire:navigate>{{ __('app.attribute_options') }}</flux:button>
                     @endif
                     <flux:button size="xs" variant="danger" wire:click="delete({{ $attribute->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
                 </flux:table.cell>

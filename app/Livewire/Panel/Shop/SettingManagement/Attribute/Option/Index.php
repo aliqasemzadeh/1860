@@ -26,12 +26,7 @@ class Index extends Component
     public function mount(int $attributeId): void
     {
         $this->attributeId = $attributeId;
-        try {
-            $this->attribute = AttributeModel::find($attributeId);
-        } catch (\Exception $e) {
-            dd($e->getMessage());
-        }
-
+        $this->attribute = AttributeModel::find($attributeId);
     }
 
     public function sort(string $column): void
