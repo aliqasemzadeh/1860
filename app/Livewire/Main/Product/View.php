@@ -142,6 +142,10 @@ class View extends Component
 
     public function addToCart()
     {
+        $this->dispatch('main.sidebar.basket.refresh-cart');
+        // Open basket modal after adding item
+        Flux::modal('main.sidebar.basket.modal')->show();
+
         if (! auth()->check()) {
             Flux::toast(variant: 'danger', text: __('app.please_login_to_add_to_cart'));
 

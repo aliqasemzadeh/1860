@@ -133,7 +133,7 @@ class Basket extends Component
     #[On('main.sidebar.basket.refresh-cart')]
     public function refreshCart()
     {
-        $this->reset('cart', 'cartItems', 'totalAmount');
+        $this->dispatch('$refresh');
     }
 
     public function render()
