@@ -51,7 +51,6 @@ class ProductWizard extends Component
     public ?int $unit_id = null;
     public string $unit_search = '';
     public array $image_urls = [];
-    protected ?ImageManager $imageManager = null;
 
     public function updatedName(string $value): void
     {
@@ -165,7 +164,7 @@ class ProductWizard extends Component
             'z_dimension' => ['required', 'numeric', 'min:0'],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'brand_id' => ['required', 'integer', 'exists:brands,id'],
-            'unit_id' => ['nullable', 'integer', 'exists:units,id'],
+            'unit_id' => ['required', 'integer', 'exists:units,id'],
         ], [], [
             'name' => __('app.name'),
             'slug' => __('app.slug'),
@@ -185,23 +184,42 @@ class ProductWizard extends Component
         if (!empty($this->image_urls)) {
             try {
                 $firstImageUrl = $this->image_urls[0];
+                Log::info("Downloading first image from: {$firstImageUrl}");
                 $imageResponse = Http::timeout(30)->get($firstImageUrl);
 
                 if ($imageResponse->successful()) {
+                    // Ensure directory exists
+                    Storage::disk('public')->makeDirectory('products');
+
                     // Always store processed main image as PNG and square
                     $fileName = Str::slug($this->name) . '.png';
                     $filePath = 'products/' . $fileName;
 
                     $processedImage = $this->processImageToSquare($imageResponse->body());
                     if ($processedImage !== null) {
-                        Storage::disk('public')->put($filePath, $processedImage);
+                        $saved = Storage::disk('public')->put($filePath, $processedImage);
+                        if ($saved) {
+                            Log::info("Successfully saved processed main image: {$filePath}");
+                        } else {
+                            Log::error("Failed to save processed main image: {$filePath}");
+                        }
                     } else {
                         // Fallback: store original response if processing fails
-                        Storage::disk('public')->put($filePath, $imageResponse->body());
+                        Log::warning("Image processing failed, storing original image");
+                        $saved = Storage::disk('public')->put($filePath, $imageResponse->body());
+                        if ($saved) {
+                            Log::info("Successfully saved original main image: {$filePath}");
+                        } else {
+                            Log::error("Failed to save original main image: {$filePath}");
+                        }
                     }
+                } else {
+                    Log::warning("Failed to download first image. Status: {$imageResponse->status()}");
                 }
             } catch (\Exception $e) {
-                Log::warning('Failed to download product image: ' . $e->getMessage());
+                Log::error('Failed to download product image: ' . $e->getMessage(), [
+                    'trace' => $e->getTraceAsString()
+                ]);
             }
         }
 
@@ -224,8 +242,15 @@ class ProductWizard extends Component
 
         // Download and save additional processed images
         if (!empty($this->image_urls) && count($this->image_urls) > 1) {
-            foreach (array_slice($this->image_urls, 1) as $imageUrl) {
+            // Ensure directory exists
+            Storage::disk('public')->makeDirectory('products/images');
+
+            $additionalImages = array_slice($this->image_urls, 1);
+            Log::info("Processing " . count($additionalImages) . " additional images");
+
+            foreach ($additionalImages as $index => $imageUrl) {
                 try {
+                    Log::info("Downloading additional image #{$index} from: {$imageUrl}");
                     $imageResponse = Http::timeout(30)->get($imageUrl);
 
                     if ($imageResponse->successful()) {
@@ -234,27 +259,52 @@ class ProductWizard extends Component
                         $imageFilePath = 'products/images/' . $imageFileName;
 
                         $processedImage = $this->processImageToSquare($imageResponse->body());
+                        $saved = false;
+
                         if ($processedImage !== null) {
-                            Storage::disk('public')->put($imageFilePath, $processedImage);
+                            $saved = Storage::disk('public')->put($imageFilePath, $processedImage);
+                            if ($saved) {
+                                Log::info("Successfully saved processed additional image: {$imageFilePath}");
+                            } else {
+                                Log::error("Failed to save processed additional image: {$imageFilePath}");
+                            }
                         } else {
                             // Fallback: store original response if processing fails
-                            Storage::disk('public')->put($imageFilePath, $imageResponse->body());
+                            Log::warning("Image processing failed for additional image, storing original");
+                            $saved = Storage::disk('public')->put($imageFilePath, $imageResponse->body());
+                            if ($saved) {
+                                Log::info("Successfully saved original additional image: {$imageFilePath}");
+                            } else {
+                                Log::error("Failed to save original additional image: {$imageFilePath}");
+                            }
                         }
 
-                        ProductImage::create([
-                            'product_id' => $product->id,
-                            'file_path' => $imageFilePath,
-                            'file_name' => $imageFileName,
-                        ]);
+                        if ($saved) {
+                            ProductImage::create([
+                                'product_id' => $product->id,
+                                'file_path' => $imageFilePath,
+                                'file_name' => $imageFileName,
+                            ]);
+                            Log::info("Created ProductImage record for: {$imageFilePath}");
+                        } else {
+                            Log::error("Skipping ProductImage creation because file was not saved: {$imageFilePath}");
+                        }
+                    } else {
+                        Log::warning("Failed to download additional image #{$index}. Status: {$imageResponse->status()}");
                     }
                 } catch (\Exception $e) {
-                    Log::warning('Failed to download product image: ' . $e->getMessage());
+                    Log::error("Failed to download additional product image #{$index}: " . $e->getMessage(), [
+                        'url' => $imageUrl,
+                        'trace' => $e->getTraceAsString()
+                    ]);
                 }
             }
+        } else {
+            Log::info("No additional images to process (total images: " . count($this->image_urls) . ")");
         }
 
         Flux::modal('panel.shop.product.product-wizard.modal')->close();
-        $this->dispatch('shop.product.index.render');
+        $this->dispatch('panel.shop.product.index.render');
         Flux::toast(variant: 'success', text: __('app.product_created_with_price_fetcher'));
 
         // Reset all fields
@@ -284,42 +334,90 @@ class ProductWizard extends Component
     }
 
     /**
-     * Process raw image data to a square PNG with (best-effort) white background removal.
+     * Process raw image data to a square PNG with white background converted to transparent.
      */
     protected function processImageToSquare(string $imageData): ?string
     {
         try {
-            if ($this->imageManager === null) {
-                $this->imageManager = new ImageManager(new Driver());
+            $imageManager = new ImageManager(new Driver());
+            $image = $imageManager->read($imageData);
+
+            $originalWidth = $image->width();
+            $originalHeight = $image->height();
+            Log::debug("Processing image: {$originalWidth}x{$originalHeight}");
+
+            // Convert white background to transparent using fill
+            // Similar to: $img->fill($transparent_black, 0, 0);
+            $transparentBlack = [0, 0, 0, 0];
+
+            try {
+                // Fill white areas with transparent starting from top-left corner
+                // This will replace white/near-white pixels with transparent
+                $image->fill($transparentBlack, 0, 0);
+                Log::debug("Filled white background with transparent");
+            } catch (\Throwable $e) {
+                // If fill doesn't work as expected, try alternative method
+                Log::debug('Fill method failed, trying alternative: ' . $e->getMessage());
+
+                // Alternative: Create transparent canvas and place image
+                // This ensures transparency is preserved
+                try {
+                    $width = $image->width();
+                    $height = $image->height();
+                    $canvas = $imageManager->create($width, $height);
+                    $canvas->place($image, 'top-left', 0, 0);
+                    $image = $canvas;
+                } catch (\Throwable $e2) {
+                    Log::debug('Alternative method also failed: ' . $e2->getMessage());
+                }
             }
 
-            $image = $this->imageManager->read($imageData);
-
-            // Try to trim white (or near-white) borders/background
-            // Note: trim support depends on the Intervention Image version/driver
+            // Try to trim transparent/white borders
             try {
-                // Tolerance 40 is usually enough for near-white
                 $image = $image->trim('top-left', null, 40);
+                $trimmedWidth = $image->width();
+                $trimmedHeight = $image->height();
+                Log::debug("After trim: {$trimmedWidth}x{$trimmedHeight}");
             } catch (\Throwable $e) {
-                // If trim is not supported, continue without it
                 Log::debug('Image trim not supported or failed: ' . $e->getMessage());
             }
 
             // Fit to a square while keeping aspect ratio
-            // Choose a reasonable size for product images
             $size = 1000;
             $width = $image->width();
             $height = $image->height();
             $minSide = max(1, min($width, $height));
 
-            // Crop to centered square first to avoid distortion
-            $image = $image->crop($minSide, $minSide, intval(($width - $minSide) / 2), intval(($height - $minSide) / 2));
-            $image = $image->scaleDown($size, $size);
+            Log::debug("Cropping to square: {$minSide}x{$minSide} from {$width}x{$height}");
 
-            // Encode to PNG
-            return (string) $image->toPng();
+            // Calculate position to center the image on canvas
+            $cropX = intval(($width - $minSide) / 2);
+            $cropY = intval(($height - $minSide) / 2);
+            $croppedImage = $image->crop($minSide, $minSide, $cropX, $cropY);
+
+            // Scale down if needed
+            $finalSize = $minSide;
+            if ($minSide > $size) {
+                $croppedImage = $croppedImage->scaleDown($size, $size);
+                $finalSize = $croppedImage->width();
+            }
+
+            // Create transparent square canvas and place image centered
+            $canvas = $imageManager->create($finalSize, $finalSize);
+
+            // Place the cropped image on transparent canvas (centered)
+            $offsetX = intval(($finalSize - $croppedImage->width()) / 2);
+            $offsetY = intval(($finalSize - $croppedImage->height()) / 2);
+            $canvas->place($croppedImage, 'top-left', $offsetX, $offsetY);
+
+            // Encode to PNG with transparency
+            $pngData = (string) $canvas->toPng();
+            Log::debug("Image processed successfully, PNG size: " . strlen($pngData) . " bytes");
+            return $pngData;
         } catch (\Throwable $e) {
-            Log::warning('Failed to process product image: ' . $e->getMessage());
+            Log::error('Failed to process product image: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
             return null;
         }
     }

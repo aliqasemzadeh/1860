@@ -47,7 +47,10 @@
         @foreach ($this->products as $product)
             <flux:table.row :key="$product->id">
                 <flux:table.cell class="whitespace-nowrap">
-                    {{ $product->name }}
+                    <div class="flex flex-row items-center gap-2">
+                        <flux:avatar src="{{ Storage::url($product->file_path) }}"/>
+                        {{ $product->name }}
+                    </div>
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     {{ $product->category?->name ?? '-' }}

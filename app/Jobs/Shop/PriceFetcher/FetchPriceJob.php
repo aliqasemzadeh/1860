@@ -31,27 +31,33 @@ class FetchPriceJob implements ShouldQueue
     public function handle(): void
     {
         try {
+            $logger = Log::channel('single');
+            
             $price = match ($this->priceFetcher->type) {
-                'digikala' => DigikalaPriceFetcher::fetchPrice($this->priceFetcher->url),
-                'fafait' => FafaitPriceFetcher::fetchPrice($this->priceFetcher->url),
-                'markazi' => MarkaziPriceFetcher::fetchPrice($this->priceFetcher->url),
-                'fater' => FaterPriceFetcher::fetchPrice($this->priceFetcher->url),
-                'setaregan' => SetareganPriceFetcher::fetchPrice($this->priceFetcher->url),
+                'digikala' => DigikalaPriceFetcher::fetchPrice($this->priceFetcher->url, $logger),
+                'fafait' => FafaitPriceFetcher::fetchPrice($this->priceFetcher->url, $logger),
+                'markazi' => MarkaziPriceFetcher::fetchPrice($this->priceFetcher->url, $logger),
+                'fater' => FaterPriceFetcher::fetchPrice($this->priceFetcher->url, $logger),
+                'setaregan' => SetareganPriceFetcher::fetchPrice($this->priceFetcher->url, $logger),
                 default => null,
             };
 
             if ($price !== null) {
+                $this->priceFetcher->refresh();
                 $this->priceFetcher->update([
                     'last_price' => $price,
                     'last_fetched_at' => now(),
                 ]);
 
+                $logger->info("Price fetched for price fetcher {$this->priceFetcher->id}: {$price}");
                 Log::info("Price fetched for price fetcher {$this->priceFetcher->id}: {$price}");
             } else {
+                $logger->warning("Failed to fetch price for price fetcher {$this->priceFetcher->id}");
                 Log::warning("Failed to fetch price for price fetcher {$this->priceFetcher->id}");
             }
         } catch (\Exception $e) {
             Log::error("Error fetching price for price fetcher {$this->priceFetcher->id}: {$e->getMessage()}");
+            Log::error("Stack trace: " . $e->getTraceAsString());
         }
     }
 }

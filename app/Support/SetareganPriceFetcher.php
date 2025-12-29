@@ -163,7 +163,7 @@ class SetareganPriceFetcher
             $best = $unique[0];
 
             if ($logger) {
-                $logger->info("Selected price {$best['price']} from source {$best['source']]}");
+                $logger->info("Selected price {$best['price']} from source {$best['source']}");
             }
 
             return $best['price'];

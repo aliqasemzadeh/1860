@@ -137,7 +137,7 @@ class Edit extends Component
 
         $this->product->fill($updateData)->save();
 
-        $this->dispatch('shop.product.index.render');
+        $this->dispatch('panel.shop.product.index.render');
         Flux::modal('panel.shop.product.edit.modal')->close();
         Flux::toast(variant: 'success', text: __('app.product_updated'));
     }

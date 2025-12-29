@@ -94,7 +94,7 @@ class Create extends Component
         ]);
 
         Flux::modal('panel.shop.product.create.modal')->close();
-        $this->dispatch('shop.product.index.render');
+        $this->dispatch('panel.shop.product.index.render');
         Flux::toast(variant: 'success', text: __('app.product_created'));
         $this->reset(['name', 'description', 'slug', 'slug_fa', 'file', 'weight', 'x_dimension', 'y_dimension', 'z_dimension', 'category_id', 'brand_id', 'unit_id', 'category_search', 'brand_search', 'unit_search']);
     }

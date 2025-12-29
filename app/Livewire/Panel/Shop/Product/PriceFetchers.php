@@ -90,10 +90,16 @@ class PriceFetchers extends Component
             return;
         }
 
-        // Dispatch job to fetch price
-        FetchPriceJob::dispatch($priceFetcher);
-
-        Flux::toast(variant: 'info', text: __('app.price_fetcher_fetching'));
+        // Execute job synchronously to update immediately
+        try {
+            // Use sync connection to execute immediately without queue
+            FetchPriceJob::dispatch($priceFetcher)->onConnection('sync');
+            $this->product->refresh();
+            $priceFetcher->refresh();
+            Flux::toast(variant: 'success', text: __('app.price_fetcher_fetched'));
+        } catch (\Exception $e) {
+            Flux::toast(variant: 'danger', text: __('app.price_fetcher_fetch_failed') . ': ' . $e->getMessage());
+        }
     }
 
     public function render(): View
