@@ -19,17 +19,34 @@ class ProductImageWizard extends Component
 
     public ?int $productId = null;
 
+    public string $site_type = '';
+
     public string $url = '';
 
     public array $images = []; // [['url' => '', 'name' => '', 'id' => unique_id]]
 
     public bool $isLoading = false;
 
+    public function getSiteTypes(): array
+    {
+        return [
+            'logitech' => 'Logitech',
+            'logikey' => 'Logi-key',
+            'gigabyte' => 'Gigabyte',
+            'xvision' => 'X-Vision',
+            'matin' => 'Matin',
+            'green' => 'Green',
+            'fater' => 'Fater',
+            'generic' => 'سایر (عمومی)',
+        ];
+    }
+
     #[On('panel.shop.product.images.wizard.assign-data')]
     public function assignData($id): void
     {
         $this->product = Product::findOrFail($id);
         $this->productId = $this->product->id;
+        $this->site_type = '';
         $this->url = '';
         $this->images = [];
         $this->isLoading = false;
@@ -39,15 +56,17 @@ class ProductImageWizard extends Component
     public function fetchImages(): void
     {
         $this->validate([
+            'site_type' => 'required|string|in:logitech,logikey,gigabyte,xvision,matin,green,fater,generic',
             'url' => 'required|url',
         ], [], [
+            'site_type' => __('app.site_type'),
             'url' => __('app.url'),
         ]);
 
         $this->isLoading = true;
 
         try {
-            $imageUrls = BaseImageFetcher::fetch($this->url);
+            $imageUrls = BaseImageFetcher::fetchBySiteType($this->site_type, $this->url);
 
             if (empty($imageUrls)) {
                 Flux::toast(variant: 'warning', text: __('app.no_images_found'));

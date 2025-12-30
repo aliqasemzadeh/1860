@@ -7,6 +7,17 @@
 
         @if ($product)
             <div class="space-y-4">
+                <!-- Site Type Selection -->
+                <flux:field>
+                    <flux:label>{{ __('app.site_type') }}</flux:label>
+                    <flux:select wire:model.live="site_type" placeholder="{{ __('app.select_site_type') }}">
+                        @foreach($this->getSiteTypes() as $value => $label)
+                            <flux:select.option value="{{ $value }}">{{ $label }}</flux:select.option>
+                        @endforeach
+                    </flux:select>
+                    <flux:error name="site_type" />
+                </flux:field>
+
                 <!-- URL Input Section -->
                 <flux:field>
                     <flux:label>{{ __('app.product_page_url') }}</flux:label>
@@ -20,11 +31,12 @@
                         <flux:button 
                             wire:click="fetchImages" 
                             variant="primary"
-                            :disabled="$isLoading || !$url"
+                            :disabled="$isLoading || !$url || !$site_type"
                         >
                             {{ __('app.fetch') }}
                         </flux:button>
                     </div>
+                    <flux:error name="url" />
                     @if ($isLoading)
                         <flux:text class="text-sm text-gray-500 dark:text-gray-400 mt-1">
                             {{ __('app.loading') }}...

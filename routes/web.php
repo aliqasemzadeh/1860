@@ -7,6 +7,10 @@ Route::get('/product/{slug}', \App\Livewire\Main\Product\View::class)->name('pro
 Route::get('/product/id/{id}', \App\Livewire\Main\Product\View::class)->name('product.view.id');
 
 Route::group(['middleware' => ['auth']], function () {
+    Route::get('/cart', \App\Livewire\Main\Order\Cart::class)->name('order.cart');
+    Route::get('/orders', \App\Livewire\Main\Order\Index::class)->name('order.index');
+    Route::get('/orders/{id}', \App\Livewire\Main\Order\View::class)->name('order.view');
+
 
     Route::get('/panel/service-center/dashboard/index', \App\Livewire\Panel\ServiceCenter\Dashboard\Index::class)->name('panel.service-center.dashboard');
 

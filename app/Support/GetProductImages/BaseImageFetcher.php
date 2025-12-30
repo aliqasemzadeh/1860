@@ -154,6 +154,27 @@ abstract class BaseImageFetcher
     }
 
     /**
+     * Factory method to get the appropriate fetcher based on site type.
+     *
+     * @param  string  $siteType
+     * @return BaseImageFetcher|null
+     */
+    public static function getFetcherBySiteType(string $siteType): ?BaseImageFetcher
+    {
+        return match ($siteType) {
+            'logitech' => new LogitechImageFetcher(),
+            'logikey' => new LogikeyImageFetcher(),
+            'gigabyte' => new GigabyteImageFetcher(),
+            'xvision' => new XVisionImageFetcher(),
+            'matin' => new MatinImageFetcher(),
+            'green' => new GreenImageFetcher(),
+            'fater' => new FaterImageFetcher(),
+            'generic' => new GenericImageFetcher(),
+            default => null,
+        };
+    }
+
+    /**
      * Fetch image URLs using the appropriate fetcher for the given URL.
      *
      * @param  string  $url
@@ -162,6 +183,24 @@ abstract class BaseImageFetcher
     public static function fetch(string $url): array
     {
         $fetcher = self::getFetcher($url);
+        if (! $fetcher) {
+            return [];
+        }
+
+        // Call the static method on the fetcher instance's class
+        return $fetcher::fetchImageUrls($url);
+    }
+
+    /**
+     * Fetch image URLs using the specified site type fetcher.
+     *
+     * @param  string  $siteType
+     * @param  string  $url
+     * @return array<int, string>
+     */
+    public static function fetchBySiteType(string $siteType, string $url): array
+    {
+        $fetcher = self::getFetcherBySiteType($siteType);
         if (! $fetcher) {
             return [];
         }

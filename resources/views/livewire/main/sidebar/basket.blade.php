@@ -131,7 +131,7 @@
                             {{ number_format($this->totalAmount, 0) }} {{ __('app.toman') }}
                         </flux:heading>
                     </div>
-                    <flux:button type="button" variant="primary" class="w-full">
+                    <flux:button href="{{ route('order.cart') }}" variant="primary" class="w-full" wire:navigate>
                         {{ __('app.complete_order') }}
                     </flux:button>
                 </div>
