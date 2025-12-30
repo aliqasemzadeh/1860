@@ -149,6 +149,10 @@ abstract class BaseImageFetcher
             return new FaterImageFetcher();
         }
 
+        if (str_contains($host, 'avajang.com')) {
+            return new AvajangImageFetcher();
+        }
+
         // Default generic fetcher
         return new GenericImageFetcher();
     }
@@ -169,6 +173,7 @@ abstract class BaseImageFetcher
             'matin' => new MatinImageFetcher(),
             'green' => new GreenImageFetcher(),
             'fater' => new FaterImageFetcher(),
+            'avajang' => new AvajangImageFetcher(),
             'generic' => new GenericImageFetcher(),
             default => null,
         };

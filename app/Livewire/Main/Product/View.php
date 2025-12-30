@@ -192,6 +192,20 @@ class View extends Component
         return $images->get($index);
     }
 
+    public function delete(): void
+    {
+        if (! $this->product) {
+            Flux::toast(variant: 'danger', text: __('app.product_not_found'));
+
+            return;
+        }
+
+        $this->product->delete();
+        Flux::toast(variant: 'success', text: __('app.product_deleted'));
+
+        $this->redirect(route('panel.shop.product.index'), navigate: true);
+    }
+
     public function addToCart()
     {
         $this->dispatch('main.sidebar.basket.refresh-cart');

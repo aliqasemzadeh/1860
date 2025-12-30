@@ -2,6 +2,22 @@
     {{ $this->product->name ?? __('app.product_not_found') }}
 </x-slot>
 <div>
+    {{-- Management Modals --}}
+    @can('shop_access')
+        <livewire:panel.shop.product.edit />
+        <livewire:panel.shop.product.colors />
+        <livewire:panel.shop.product.warranties />
+        <livewire:panel.shop.product.price-fetchers />
+        <livewire:panel.shop.product.product-images />
+        <livewire:panel.shop.product.product-wizard />
+        <livewire:panel.shop.product.product-image-wizard />
+
+        <livewire:panel.shop.setting-management.category.create />
+        <livewire:panel.shop.setting-management.brand.create />
+        <livewire:panel.shop.setting-management.unit.create />
+        <livewire:panel.shop.setting-management.color.create />
+        <livewire:panel.shop.setting-management.warranty.create />
+    @endcan
     @if($this->product)
         <section class="py-8 antialiased md:py-12">
             <div class="mx-auto max-w-7xl px-4 2xl:px-0">
@@ -17,6 +33,88 @@
                     <span>/</span>
                     <span class="text-zinc-900 dark:text-zinc-100 font-medium">{{ $this->product->name }}</span>
                 </nav>
+
+                {{-- Management Buttons --}}
+                @can('shop_access')
+                    <div class="mb-6 flex flex-wrap items-center gap-2 p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-700">
+                        <div class="flex items-center gap-2 mr-auto">
+                            <svg class="w-5 h-5 text-zinc-600 dark:text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <flux:heading size="sm" class="text-zinc-900 dark:text-zinc-100">
+                                {{ __('app.options') }}
+                            </flux:heading>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <flux:button
+                                size="sm"
+                                variant="primary"
+                                wire:click="$dispatch('panel.shop.product.edit.assign-data', { id: '{{ $this->product->id }}' })"
+                            >
+                                {{ __('app.edit') }}
+                            </flux:button>
+                            <flux:button
+                                size="sm"
+                                variant="primary"
+                                color="sky"
+                                wire:click="$dispatch('panel.shop.product.colors.assign-data', { id: '{{ $this->product->id }}' })"
+                            >
+                                {{ __('app.colors') }}
+                            </flux:button>
+                            <flux:button
+                                size="sm"
+                                variant="primary"
+                                color="green"
+                                wire:click="$dispatch('panel.shop.product.warranties.assign-data', { id: '{{ $this->product->id }}' })"
+                            >
+                                {{ __('app.warranties') }}
+                            </flux:button>
+                            <flux:button
+                                size="sm"
+                                variant="primary"
+                                color="purple"
+                                wire:click="$dispatch('panel.shop.product.price-fetchers.assign-data', { id: '{{ $this->product->id }}' })"
+                            >
+                                {{ __('app.price_fetchers') }}
+                            </flux:button>
+                            <flux:button
+                                size="sm"
+                                variant="primary"
+                                color="orange"
+                                wire:click="$dispatch('panel.shop.product.images.assign-data', { id: '{{ $this->product->id }}' })"
+                            >
+                                {{ __('app.images') }}
+                            </flux:button>
+                            <flux:button
+                                size="sm"
+                                variant="primary"
+                                color="teal"
+                                href="{{ route('panel.shop.product.pricing.index', ['productId' => $this->product->id]) }}"
+                                wire:navigate
+                            >
+                                {{ __('app.pricing') }}
+                            </flux:button>
+                            <flux:button
+                                size="sm"
+                                variant="primary"
+                                color="indigo"
+                                href="{{ route('panel.shop.product.attributes.index', ['id' => $this->product->id]) }}"
+                                wire:navigate
+                            >
+                                {{ __('app.product_attributes') }}
+                            </flux:button>
+                            <flux:button
+                                size="sm"
+                                variant="danger"
+                                wire:click="delete"
+                                wire:confirm="{{ __('app.are_you_sure') }}"
+                            >
+                                {{ __('app.delete') }}
+                            </flux:button>
+                        </div>
+                    </div>
+                @endcan
 
                 {{-- Product Details --}}
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
@@ -74,9 +172,9 @@
                                 @foreach($allImages as $index => $image)
                                     <button
                                         type="button"
-                                        x-on:click="selectImage({{ $index }})"
+                                        @click="selectImage({{ $index }})"
                                         class="flex-shrink-0 relative aspect-square w-16 h-16 overflow-hidden bg-zinc-100 dark:bg-zinc-800 rounded-lg border-2 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100"
-                                        x-bind:class="selectedIndex === {{ $index }} ? 'border-zinc-900 dark:border-zinc-100 ring-2 ring-zinc-900 dark:ring-zinc-100' : 'border-zinc-300 dark:border-zinc-600 hover:border-zinc-900 dark:hover:border-zinc-100'"
+                                        :class="selectedIndex === {{ $index }} ? 'border-zinc-900 dark:border-zinc-100 ring-2 ring-zinc-900 dark:ring-zinc-100' : 'border-zinc-300 dark:border-zinc-600 hover:border-zinc-900 dark:hover:border-zinc-100'"
                                     >
                                         <img
                                             src="{{ Storage::url($image['file_path']) }}"
@@ -84,9 +182,10 @@
                                             class="w-full h-full object-cover"
                                             loading="lazy"
                                         />
-                                        <div 
-                                            class="absolute inset-0 bg-zinc-900 dark:bg-zinc-100 bg-opacity-20 dark:bg-opacity-20"
+                                        <div
+                                            class="absolute inset-0 bg-white dark:bg-zinc-950 bg-opacity-50 dark:bg-opacity-50"
                                             x-show="selectedIndex === {{ $index }}"
+                                            style="display: none;"
                                         ></div>
                                     </button>
                                 @endforeach
