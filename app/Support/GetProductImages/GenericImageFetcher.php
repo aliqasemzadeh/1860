@@ -69,3 +69,4 @@ class GenericImageFetcher extends BaseImageFetcher
     }
 }
 
+

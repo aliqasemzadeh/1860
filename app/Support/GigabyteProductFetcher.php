@@ -13,17 +13,22 @@ class GigabyteProductFetcher
         }
 
         try {
+            $proxy = collect(config('proxy.proxies'))->random();
+
             $response = Http::withHeaders([
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
                 'Accept-Language' => 'en-US,en;q=0.9',
                 'Referer' => 'https://www.gigabyte.com/',
+            ])->withOptions([
+                'proxy' => $proxy,
             ])->timeout(15)->get($url);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 if ($logger) {
                     $logger->warning("Request failed with status: {$response->status()}");
                 }
+
                 return null;
             }
 
@@ -48,7 +53,7 @@ class GigabyteProductFetcher
 
             // Extract specifications from specification tables
             $specifications = [];
-            
+
             // Try to find specification tables
             if (preg_match('/<table[^>]*class=["\'][^"\']*spec[^"\']*["\'][^>]*>(.+?)<\/table>/is', $html, $tableMatch)) {
                 $tableContent = $tableMatch[1];
@@ -56,7 +61,7 @@ class GigabyteProductFetcher
                     foreach ($specMatches as $match) {
                         $key = trim(strip_tags($match[1]));
                         $value = trim(strip_tags($match[2]));
-                        if (!empty($key) && !empty($value)) {
+                        if (! empty($key) && ! empty($value)) {
                             $specifications[$key] = $value;
                         }
                     }
@@ -68,7 +73,7 @@ class GigabyteProductFetcher
                 foreach ($divMatches as $match) {
                     $key = trim(strip_tags($match[1]));
                     $value = trim(strip_tags($match[2]));
-                    if (!empty($key) && !empty($value)) {
+                    if (! empty($key) && ! empty($value)) {
                         $specifications[$key] = $value;
                     }
                 }
@@ -103,7 +108,7 @@ class GigabyteProductFetcher
                 }
             }
 
-            if (!empty($specifications)) {
+            if (! empty($specifications)) {
                 $productInfo['specifications'] = $specifications;
             }
 
@@ -115,7 +120,7 @@ class GigabyteProductFetcher
                     if (str_starts_with($imgUrl, 'http')) {
                         $images[] = $imgUrl;
                     } elseif (str_starts_with($imgUrl, '/')) {
-                        $images[] = 'https://www.gigabyte.com' . $imgUrl;
+                        $images[] = 'https://www.gigabyte.com'.$imgUrl;
                     }
                 }
             }
@@ -125,7 +130,7 @@ class GigabyteProductFetcher
                     if (str_starts_with($imgUrl, 'http')) {
                         $images[] = $imgUrl;
                     } elseif (str_starts_with($imgUrl, '/')) {
-                        $images[] = 'https://www.gigabyte.com' . $imgUrl;
+                        $images[] = 'https://www.gigabyte.com'.$imgUrl;
                     }
                 }
             }
@@ -135,7 +140,7 @@ class GigabyteProductFetcher
                     if (str_starts_with($imgUrl, 'http')) {
                         $images[] = $imgUrl;
                     } elseif (str_starts_with($imgUrl, '/')) {
-                        $images[] = 'https://www.gigabyte.com' . $imgUrl;
+                        $images[] = 'https://www.gigabyte.com'.$imgUrl;
                     }
                 }
             }
@@ -167,7 +172,7 @@ class GigabyteProductFetcher
                             $productInfo['x_dimension'] = (float) $dimMatch[1];
                             $productInfo['y_dimension'] = (float) $dimMatch[2];
                             $productInfo['z_dimension'] = (float) $dimMatch[3];
-                            
+
                             // Convert cm to mm if needed
                             if (stripos($value, 'cm') !== false) {
                                 $productInfo['x_dimension'] *= 10;
@@ -187,16 +192,16 @@ class GigabyteProductFetcher
             }
 
             // Format specifications into description
-            if (!empty($specifications)) {
+            if (! empty($specifications)) {
                 $specText = "**Technical Specifications:**\n\n";
                 foreach ($specifications as $key => $value) {
                     $specText .= "**{$key}:** {$value}\n";
                 }
-                
+
                 if (empty($productInfo['description'])) {
                     $productInfo['description'] = $specText;
                 } else {
-                    $productInfo['description'] .= "\n\n" . $specText;
+                    $productInfo['description'] .= "\n\n".$specText;
                 }
             }
 
@@ -205,8 +210,8 @@ class GigabyteProductFetcher
             if ($logger) {
                 $logger->error("Exception while fetching product info: {$e->getMessage()}");
             }
+
             return null;
         }
     }
 }
-

@@ -21,25 +21,46 @@
                 {{-- Product Details --}}
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                     {{-- Product Image --}}
-                    <div class="flex flex-col gap-4">
+                    @php
+                        $allImages = $this->allImages;
+                        $imageUrls = $allImages->map(fn($img) => Storage::url($img['file_path']))->values()->all();
+                        $initialImage = $allImages->isNotEmpty() ? Storage::url($allImages->first()['file_path']) : Storage::url($this->product->file_path);
+                    @endphp
+                    <div class="flex flex-col gap-4" x-data="{
+                        selectedIndex: 0,
+                        loading: false,
+                        images: @js($imageUrls),
+                        currentImage: @js($initialImage),
+                        selectImage(index) {
+                            if (this.selectedIndex === index) return;
+                            this.loading = true;
+                            this.selectedIndex = index;
+                            // Lazy load the image
+                            const img = new Image();
+                            img.onload = () => {
+                                this.currentImage = this.images[index];
+                                this.loading = false;
+                            };
+                            img.onerror = () => {
+                                this.loading = false;
+                            };
+                            img.src = this.images[index];
+                        }
+                    }">
                         {{-- Main Image --}}
                         <div class="relative aspect-square w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 rounded-2xl shadow-lg">
-                            @php
-                                $currentImage = $this->currentImage;
-                            @endphp
-                            @if($currentImage)
-                                <img
-                                    src="{{ Storage::url($currentImage['file_path']) }}"
-                                    alt="{{ $this->product->name }}"
-                                    class="w-full h-full object-cover"
-                                />
-                            @else
-                                <img
-                                    src="{{ Storage::url($this->product->file_path) }}"
-                                    alt="{{ $this->product->name }}"
-                                    class="w-full h-full object-cover"
-                                />
-                            @endif
+                            <div x-show="loading" class="absolute inset-0 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 z-10">
+                                <svg class="animate-spin h-8 w-8 text-zinc-600 dark:text-zinc-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
+                            <img
+                                x-bind:src="currentImage"
+                                alt="{{ $this->product->name }}"
+                                class="w-full h-full object-cover transition-opacity duration-300"
+                                x-bind:class="{ 'opacity-50': loading }"
+                            />
                             @if($this->product->sale_price && $this->product->price && $this->product->sale_price < $this->product->price)
                                 <div class="absolute top-4 right-4 bg-red-500 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-lg">
                                     {{ __('app.discount') }}
@@ -48,25 +69,25 @@
                         </div>
 
                         {{-- Thumbnail Images --}}
-                        @php
-                            $allImages = $this->allImages;
-                        @endphp
                         @if($allImages->count() > 1)
                             <div class="flex gap-2 overflow-x-auto pb-2">
                                 @foreach($allImages as $index => $image)
                                     <button
                                         type="button"
-                                        wire:click="selectImage({{ $index }})"
-                                        class="flex-shrink-0 relative aspect-square w-16 h-16 overflow-hidden bg-zinc-100 dark:bg-zinc-800 rounded-lg border-2 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100 {{ $this->selectedImageIndex == $index ? 'border-zinc-900 dark:border-zinc-100 ring-2 ring-zinc-900 dark:ring-zinc-100' : 'border-zinc-300 dark:border-zinc-600 hover:border-zinc-900 dark:hover:border-zinc-100' }}"
+                                        x-on:click="selectImage({{ $index }})"
+                                        class="flex-shrink-0 relative aspect-square w-16 h-16 overflow-hidden bg-zinc-100 dark:bg-zinc-800 rounded-lg border-2 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100"
+                                        x-bind:class="selectedIndex === {{ $index }} ? 'border-zinc-900 dark:border-zinc-100 ring-2 ring-zinc-900 dark:ring-zinc-100' : 'border-zinc-300 dark:border-zinc-600 hover:border-zinc-900 dark:hover:border-zinc-100'"
                                     >
                                         <img
                                             src="{{ Storage::url($image['file_path']) }}"
                                             alt="{{ $this->product->name }} - {{ $index + 1 }}"
                                             class="w-full h-full object-cover"
+                                            loading="lazy"
                                         />
-                                        @if($this->selectedImageIndex == $index)
-                                            <div class="absolute inset-0 bg-zinc-900 dark:bg-zinc-100 bg-opacity-20 dark:bg-opacity-20"></div>
-                                        @endif
+                                        <div 
+                                            class="absolute inset-0 bg-zinc-900 dark:bg-zinc-100 bg-opacity-20 dark:bg-opacity-20"
+                                            x-show="selectedIndex === {{ $index }}"
+                                        ></div>
                                     </button>
                                 @endforeach
                             </div>
