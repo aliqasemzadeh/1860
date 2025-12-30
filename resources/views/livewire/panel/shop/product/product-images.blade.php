@@ -7,6 +7,15 @@
 
         @if ($product)
             <div class="space-y-4">
+                <!-- Fetch Images from URL Button -->
+                <flux:button
+                    wire:click="openWizard"
+                    variant="primary"
+                    icon="link"
+                >
+                    {{ __('app.fetch_images_from_url') }}
+                </flux:button>
+
                 <!-- Upload Images Section -->
                     <flux:field>
                         <flux:label>{{ __('app.add_images') }}</flux:label>
@@ -87,4 +96,5 @@
             </div>
         @endif
     </div>
+
 </flux:modal>

@@ -32,6 +32,22 @@ class ProductImages extends Component
         Flux::modal('panel.shop.product.images.modal')->show();
     }
 
+    #[On('panel.shop.product.images.refresh')]
+    public function refresh(): void
+    {
+        if ($this->product) {
+            $this->product->refresh();
+            $this->product->load('images');
+        }
+    }
+
+    public function openWizard(): void
+    {
+        if ($this->product) {
+            $this->dispatch('panel.shop.product.images.wizard.assign-data', id: $this->product->id);
+        }
+    }
+
     public function removeImage(int $index): void
     {
         if (isset($this->images[$index])) {

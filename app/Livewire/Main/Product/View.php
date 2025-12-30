@@ -21,6 +21,8 @@ class View extends Component
 
     public $quantity = 1;
 
+    public $selectedImageIndex = 0;
+
     public function mount($id = null, $slug = null)
     {
         // Handle route parameters - if we have both, prioritize slug
@@ -46,6 +48,7 @@ class View extends Component
                 'prices.warranty',
                 'attributeValues.attribute.attributeGroup',
                 'attributeValues.attribute.options',
+                'images',
             ]);
 
         if ($this->slug) {
@@ -138,6 +141,55 @@ class View extends Component
         if ($this->quantity > 1) {
             $this->quantity--;
         }
+    }
+
+    public function selectImage($index)
+    {
+        $this->selectedImageIndex = $index;
+    }
+
+    #[Computed]
+    public function allImages()
+    {
+        if (! $this->product) {
+            return collect();
+        }
+
+        $images = collect();
+
+        // Add main product image first
+        if ($this->product->file_path) {
+            $images->push([
+                'type' => 'main',
+                'file_path' => $this->product->file_path,
+                'file_name' => $this->product->file_name,
+            ]);
+        }
+
+        // Add additional images
+        foreach ($this->product->images as $image) {
+            $images->push([
+                'type' => 'additional',
+                'file_path' => $image->file_path,
+                'file_name' => $image->file_name,
+            ]);
+        }
+
+        return $images;
+    }
+
+    #[Computed]
+    public function currentImage()
+    {
+        $images = $this->allImages();
+        
+        if ($images->isEmpty()) {
+            return null;
+        }
+
+        $index = min($this->selectedImageIndex, $images->count() - 1);
+        
+        return $images->get($index);
     }
 
     public function addToCart()

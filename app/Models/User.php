@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -68,5 +69,22 @@ class User extends Authenticatable
                 return trim($first . ' ' . $last);
             },
         );
+    }
+
+    /**
+     * Get the shipping addresses for the user.
+     */
+    public function shippingAddresses(): HasMany
+    {
+        return $this->hasMany(\App\Models\Customer\ShippingAddress::class);
+    }
+
+    /**
+     * Get the default shipping address for the user.
+     */
+    public function defaultShippingAddress()
+    {
+        return $this->hasOne(\App\Models\Customer\ShippingAddress::class)
+            ->where('is_default', true);
     }
 }

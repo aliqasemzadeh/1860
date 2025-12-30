@@ -35,6 +35,7 @@
     <livewire:panel.shop.product.price-fetchers />
     <livewire:panel.shop.product.product-images />
     <livewire:panel.shop.product.product-wizard />
+    <livewire:panel.shop.product.product-image-wizard />
 
     <livewire:panel.shop.setting-management.category.create />
     <livewire:panel.shop.setting-management.brand.create />

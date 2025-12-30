@@ -21,19 +21,56 @@
                 {{-- Product Details --}}
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                     {{-- Product Image --}}
-                    <div class="flex flex-col">
+                    <div class="flex flex-col gap-4">
+                        {{-- Main Image --}}
                         <div class="relative aspect-square w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 rounded-2xl shadow-lg">
-                            <img
-                                src="{{ Storage::url($this->product->file_path) }}"
-                                alt="{{ $this->product->name }}"
-                                class="w-full h-full object-cover"
-                            />
+                            @php
+                                $currentImage = $this->currentImage;
+                            @endphp
+                            @if($currentImage)
+                                <img
+                                    src="{{ Storage::url($currentImage['file_path']) }}"
+                                    alt="{{ $this->product->name }}"
+                                    class="w-full h-full object-cover"
+                                />
+                            @else
+                                <img
+                                    src="{{ Storage::url($this->product->file_path) }}"
+                                    alt="{{ $this->product->name }}"
+                                    class="w-full h-full object-cover"
+                                />
+                            @endif
                             @if($this->product->sale_price && $this->product->price && $this->product->sale_price < $this->product->price)
                                 <div class="absolute top-4 right-4 bg-red-500 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-lg">
                                     {{ __('app.discount') }}
                                 </div>
                             @endif
                         </div>
+
+                        {{-- Thumbnail Images --}}
+                        @php
+                            $allImages = $this->allImages;
+                        @endphp
+                        @if($allImages->count() > 1)
+                            <div class="flex gap-2 overflow-x-auto pb-2">
+                                @foreach($allImages as $index => $image)
+                                    <button
+                                        type="button"
+                                        wire:click="selectImage({{ $index }})"
+                                        class="flex-shrink-0 relative aspect-square w-16 h-16 overflow-hidden bg-zinc-100 dark:bg-zinc-800 rounded-lg border-2 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100 {{ $this->selectedImageIndex == $index ? 'border-zinc-900 dark:border-zinc-100 ring-2 ring-zinc-900 dark:ring-zinc-100' : 'border-zinc-300 dark:border-zinc-600 hover:border-zinc-900 dark:hover:border-zinc-100' }}"
+                                    >
+                                        <img
+                                            src="{{ Storage::url($image['file_path']) }}"
+                                            alt="{{ $this->product->name }} - {{ $index + 1 }}"
+                                            class="w-full h-full object-cover"
+                                        />
+                                        @if($this->selectedImageIndex == $index)
+                                            <div class="absolute inset-0 bg-zinc-900 dark:bg-zinc-100 bg-opacity-20 dark:bg-opacity-20"></div>
+                                        @endif
+                                    </button>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
 
                     {{-- Product Info --}}
