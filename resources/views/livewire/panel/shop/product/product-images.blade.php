@@ -1,4 +1,9 @@
 <flux:modal name="panel.shop.product.images.modal" class="md:w-[600px]" flyout position="right">
+    <style>
+        [data-flux-file-item] img {
+            object-fit: cover;
+        }
+    </style>
     <div class="space-y-6">
         <div>
             <flux:heading size="lg">{{ __('app.product_images') }}</flux:heading>
@@ -61,30 +66,30 @@
                     <flux:heading size="sm" class="mb-4">{{ __('app.product_images_list') }}</flux:heading>
 
                     @if ($product->images->count() > 0)
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="mt-4 flex flex-col gap-2">
                             @foreach ($product->images as $image)
-                                <div class="relative group rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-                                    <img
-                                        src="{{ asset('storage/' . $image->file_path) }}"
-                                        alt="{{ $image->file_name }}"
-                                        class="w-full h-32 object-cover"
-
-                                    />
-                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center">
-                                        <flux:button
-                                            size="xs"
-                                            variant="danger"
-                                            wire:click="removeProductImage({{ $image->id }})"
-                                            wire:confirm="{{ __('app.are_you_sure') }}"
-                                            class="opacity-0 group-hover:opacity-100 transition-opacity"
-                                        >
-                                            {{ __('app.delete') }}
-                                        </flux:button>
-                                    </div>
-                                    <div class="p-2 bg-white dark:bg-gray-800">
-                                        <p class="text-xs text-gray-600 dark:text-gray-400 truncate" title="{{ $image->file_name }}">
-                                            {{ $image->file_name }}
-                                        </p>
+                                <div dir="ltr">
+                                    @php
+                                        $fileSize = \Illuminate\Support\Facades\Storage::disk('public')->exists($image->file_path) 
+                                            ? \Illuminate\Support\Facades\Storage::disk('public')->size($image->file_path) 
+                                            : 0;
+                                        $imageUrl = asset('storage/' . $image->file_path);
+                                    @endphp
+                                    <flux:file-item
+                                        :heading="$image->file_name"
+                                        :image="$imageUrl"
+                                        :size="$fileSize"
+                                    >
+                                        <x-slot name="actions">
+                                            <flux:file-item.remove 
+                                                wire:click="removeProductImage({{ $image->id }})"
+                                                wire:confirm="{{ __('app.are_you_sure') }}"
+                                                aria-label="{{ __('app.remove_file') }}: {{ $image->file_name }}"
+                                            />
+                                        </x-slot>
+                                    </flux:file-item>
+                                    <div dir="ltr" class="mt-1 text-xs text-gray-500 dark:text-gray-400 truncate px-2">
+                                        {{ $imageUrl }}
                                     </div>
                                 </div>
                             @endforeach

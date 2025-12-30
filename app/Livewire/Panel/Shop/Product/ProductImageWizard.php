@@ -90,7 +90,7 @@ class ProductImageWizard extends Component
                     if (empty($baseName) || ! preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $baseName)) {
                         $baseName = 'image-' . (count($this->images) + 1);
                     }
-                    
+
                     $this->images[] = [
                         'id' => Str::random(10),
                         'url' => $imageUrl,
@@ -143,11 +143,12 @@ class ProductImageWizard extends Component
 
             $successCount = 0;
             $failCount = 0;
+            $productSlug = $this->product->slug ?? 'product-' . $this->product->id;
 
             foreach ($this->images as $imageData) {
                 try {
                     // Download the image
-                    $imageResponse = Http::timeout(30)->get($imageData['url']);
+                    $imageResponse = Http::timeout(60)->get($imageData['url']);
 
                     if (! $imageResponse->successful()) {
                         $failCount++;
@@ -156,15 +157,46 @@ class ProductImageWizard extends Component
 
                     // Get file extension from URL or content type
                     $extension = $this->getFileExtension($imageData['url'], $imageResponse->header('Content-Type', ''));
-                    $fileName = Str::slug(pathinfo($imageData['name'], PATHINFO_FILENAME)) . '.' . $extension;
+                    
+                    // Get the custom name from imageData
+                    $customName = trim($imageData['name'] ?? '');
+                    
+                    // Generate filename: slug-randomnumber.extension
+                    // If custom name is provided, use it as part of the filename
+                    $randomNumber = rand(1000, 9999);
+                    
+                    if (!empty($customName)) {
+                        // Remove extension from custom name if present
+                        $baseName = pathinfo($customName, PATHINFO_FILENAME);
+                        // Use slug of custom name + random number
+                        $slugName = Str::slug($baseName);
+                        if (!empty($slugName)) {
+                            $fileName = $productSlug . '-' . $slugName . '-' . $randomNumber . '.' . $extension;
+                        } else {
+                            $fileName = $productSlug . '-' . $randomNumber . '.' . $extension;
+                        }
+                    } else {
+                        // Just use slug + random number
+                        $fileName = $productSlug . '-' . $randomNumber . '.' . $extension;
+                    }
+                    
                     $filePath = 'product-images/' . $fileName;
 
                     // Ensure unique filename
-                    $counter = 1;
                     while (Storage::disk('public')->exists($filePath)) {
-                        $fileName = Str::slug(pathinfo($imageData['name'], PATHINFO_FILENAME)) . '-' . $counter . '.' . $extension;
+                        $randomNumber = rand(1000, 9999);
+                        if (!empty($customName)) {
+                            $baseName = pathinfo($customName, PATHINFO_FILENAME);
+                            $slugName = Str::slug($baseName);
+                            if (!empty($slugName)) {
+                                $fileName = $productSlug . '-' . $slugName . '-' . $randomNumber . '.' . $extension;
+                            } else {
+                                $fileName = $productSlug . '-' . $randomNumber . '.' . $extension;
+                            }
+                        } else {
+                            $fileName = $productSlug . '-' . $randomNumber . '.' . $extension;
+                        }
                         $filePath = 'product-images/' . $fileName;
-                        $counter++;
                     }
 
                     // Store the file
@@ -183,6 +215,10 @@ class ProductImageWizard extends Component
                     }
                 } catch (\Exception $e) {
                     $failCount++;
+                    \Log::error('Failed to upload image: ' . $e->getMessage(), [
+                        'url' => $imageData['url'] ?? null,
+                        'product_id' => $this->product->id,
+                    ]);
                     // Continue with next image
                 }
             }
@@ -190,7 +226,7 @@ class ProductImageWizard extends Component
             if ($successCount > 0) {
                 $this->product->refresh();
                 Flux::toast(variant: 'success', text: __('app.images_uploaded', ['count' => $successCount]));
-                Flux::modal('panel.shop.product.images.wizard.modal')->hide();
+                Flux::modal('panel.shop.product.images.wizard.modal')->close();
                 $this->dispatch('panel.shop.product.images.refresh');
             }
 

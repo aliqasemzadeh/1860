@@ -1,4 +1,9 @@
 <flux:modal name="panel.shop.product.images.wizard.modal" class="md:w-[800px]" flyout position="right">
+    <style>
+        [data-flux-file-item] img {
+            object-fit: cover;
+        }
+    </style>
     <div class="space-y-6">
         <div>
             <flux:heading size="lg">{{ __('app.fetch_images_from_url') }}</flux:heading>
@@ -49,44 +54,35 @@
                     <div class="space-y-4">
                         <flux:heading size="sm">{{ __('app.fetched_images') }} ({{ count($images) }})</flux:heading>
                         
-                        <div class="space-y-3 max-h-[500px] overflow-y-auto">
+                        <div class="mt-4 flex flex-col gap-2 max-h-[500px] overflow-y-auto">
                             @foreach ($images as $index => $image)
-                                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-3">
-                                    <div class="flex items-start gap-4">
-                                        <!-- Image Preview -->
-                                        <flux:avatar size="xl" src="{{ $image['url'] }}" class="flex-shrink-0" />
-                                        
-                                        <div class="flex-1 space-y-3">
-                                            <!-- Image Name Input -->
-                                            <flux:field>
-                                                <flux:label>{{ __('app.image_name') }}</flux:label>
-                                                <flux:input 
-                                                    wire:model.blur="images.{{ $index }}.name"
-                                                    placeholder="{{ __('app.image_name_placeholder') }}"
-                                                />
-                                            </flux:field>
-                                            
-                                            <!-- Image URL Input (copyable) -->
-                                            <flux:field>
-                                                <flux:label>{{ __('app.image_url') }}</flux:label>
-                                                <flux:input 
-                                                    value="{{ $image['url'] }}" 
-                                                    icon="link"
-                                                    copyable
-                                                    readonly
-                                                />
-                                            </flux:field>
-                                        </div>
-                                        
-                                        <!-- Remove Button -->
-                                        <flux:button 
-                                            square
-                                            variant="ghost"
-                                            wire:click="removeImage('{{ $image['id'] }}')"
-                                            class="flex-shrink-0"
+                                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-3 space-y-2">
+                                    <div dir="ltr">
+                                        <flux:file-item
+                                            :heading="$image['name']"
+                                            :image="$image['url']"
+                                            size="0"
                                         >
-                                            <flux:icon name="x-mark" />
-                                        </flux:button>
+                                            <x-slot name="actions">
+                                                <flux:file-item.remove 
+                                                    wire:click="removeImage('{{ $image['id'] }}')"
+                                                    aria-label="{{ __('app.remove_file') }}: {{ $image['name'] }}"
+                                                />
+                                            </x-slot>
+                                        </flux:file-item>
+                                    </div>
+                                    <div dir="ltr" class="space-y-2">
+                                        <flux:field>
+                                            <flux:label class="text-xs">{{ __('app.image_name') }}</flux:label>
+                                            <flux:input 
+                                                wire:model.blur="images.{{ $index }}.name"
+                                                placeholder="{{ __('app.image_name_placeholder') }}"
+                                                class="text-sm"
+                                            />
+                                        </flux:field>
+                                        <div dir="ltr" class="text-xs text-gray-500 dark:text-gray-400 truncate px-1">
+                                            {{ $image['url'] }}
+                                        </div>
                                     </div>
                                 </div>
                             @endforeach

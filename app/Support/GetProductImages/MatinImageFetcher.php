@@ -22,6 +22,8 @@ class MatinImageFetcher extends BaseImageFetcher
         libxml_clear_errors();
 
         $xpath = new \DOMXPath($dom);
+        
+        // First priority: woocommerce-product-gallery (same as MatinFetcherCommand)
         $productGalleryQuery = "//*[contains(@class, 'woocommerce-product-gallery')]//img[@src or @data-src]";
 
         $urls = [];
@@ -31,7 +33,10 @@ class MatinImageFetcher extends BaseImageFetcher
         $nodes = $xpath->query($productGalleryQuery);
         if ($nodes) {
             foreach ($nodes as $node) {
-                /** @var \DOMElement $node */
+                if (! ($node instanceof \DOMElement)) {
+                    continue;
+                }
+
                 $src = trim($node->getAttribute('src') ?? '');
 
                 if (empty($src) || $src === 'data:image') {
@@ -59,4 +64,3 @@ class MatinImageFetcher extends BaseImageFetcher
         return array_merge($webpUrls, $otherUrls);
     }
 }
-

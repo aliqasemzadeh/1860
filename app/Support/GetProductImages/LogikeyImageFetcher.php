@@ -22,6 +22,8 @@ class LogikeyImageFetcher extends BaseImageFetcher
         libxml_clear_errors();
 
         $xpath = new \DOMXPath($dom);
+        
+        // First priority: woocommerce-product-gallery (same as LogikeyFetcherCommand)
         $productGalleryQuery = "//*[contains(@class, 'woocommerce-product-gallery')]//img[@src or @data-src]";
 
         $urls = [];
@@ -31,7 +33,10 @@ class LogikeyImageFetcher extends BaseImageFetcher
         $nodes = $xpath->query($productGalleryQuery);
         if ($nodes) {
             foreach ($nodes as $node) {
-                /** @var \DOMElement $node */
+                if (! ($node instanceof \DOMElement)) {
+                    continue;
+                }
+
                 $src = trim($node->getAttribute('src') ?? '');
 
                 if (empty($src) || $src === 'data:image') {
@@ -39,6 +44,25 @@ class LogikeyImageFetcher extends BaseImageFetcher
                 }
                 if (empty($src) || $src === 'data:image') {
                     $src = trim($node->getAttribute('data-large_image') ?? '');
+                }
+                if (empty($src) || $src === 'data:image') {
+                    $srcset = trim($node->getAttribute('data-srcset') ?? '');
+                    if ($srcset) {
+                        // Extract first URL from srcset, prefer .webp if available
+                        $srcsetUrls = preg_split('/\s*,\s*/', $srcset);
+                        foreach ($srcsetUrls as $srcsetItem) {
+                            $parts = preg_split('/\s+/', trim($srcsetItem), 2);
+                            if (!empty($parts[0])) {
+                                $candidate = $parts[0];
+                                if (str_ends_with(strtolower($candidate), '.webp')) {
+                                    $src = $candidate;
+                                    break;
+                                } elseif (empty($src) || $src === 'data:image') {
+                                    $src = $candidate;
+                                }
+                            }
+                        }
+                    }
                 }
 
                 if ($src === '' || $src === 'data:image') {
@@ -86,7 +110,17 @@ class LogikeyImageFetcher extends BaseImageFetcher
             }
         }
 
+        // Try appending .webp before query string
+        if (strpos($url, '?') !== false) {
+            $parts = explode('?', $url, 2);
+            $base = $parts[0];
+            $query = $parts[1];
+            
+            // Remove existing extension and add .webp
+            $base = preg_replace('/\.(jpg|jpeg|png|gif)$/i', '', $base);
+            return $base . '.webp?' . $query;
+        }
+
         return null;
     }
 }
-
