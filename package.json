@@ -15,7 +15,9 @@
         "vite": "^7.0.7"
     },
     "dependencies": {
+        "@imgly/background-removal-node": "^1.4.5",
         "iranianbanklogos": "^3.1.2",
+        "sharp": "^0.34.5",
         "vazirmatn": "^33.0.3"
     }
 }

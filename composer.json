@@ -10,6 +10,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-dom": "*",
+        "ext-libxml": "*",
         "binafy/laravel-cart": "^2.0",
         "denason/persian-slug": "^1.1",
         "intervention/image": "^3.11",
@@ -22,11 +24,10 @@
         "morilog/jalali": "^3.4",
         "opcodesio/log-viewer": "^3.21",
         "sadegh19b/laravel-persian-validation": "^2.0",
+        "shetabit/payment": "^6.3",
         "spatie/laravel-permission": "^6.23",
         "spatie/laravel-tags": "^4.10",
-        "tzsk/otp": "^9.0",
-        "ext-dom": "*",
-        "ext-libxml": "*"
+        "tzsk/otp": "^9.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
