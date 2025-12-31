@@ -217,3 +217,4 @@ class LogitechImageFetcher extends BaseImageFetcher
 }
 
 
+

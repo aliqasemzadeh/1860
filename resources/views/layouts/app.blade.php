@@ -12,7 +12,6 @@
     <flux:sidebar.spacer />
 
     @include('partials.panels')
-
     @include('partials.user-dropdown')
     @include('partials.theme-icon')
 
