@@ -8,6 +8,8 @@ use App\Models\Shop\Product;
 use App\Models\Shop\Unit;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
@@ -29,6 +31,8 @@ class Create extends Component
 
     #[Validate('nullable|file|max:10240')] // 10MB Max
     public $file = null;
+
+    public ?string $selectedImageUrl = null;
 
     public float $weight = 0;
 
@@ -63,7 +67,8 @@ class Create extends Component
             'description' => ['nullable', 'string'],
             'slug' => ['required', 'string', 'max:255', 'alpha_dash', 'unique:products,slug'],
             'slug_fa' => ['required', 'string', 'max:255', 'unique:products,slug_fa'],
-            'file' => ['required', 'file', 'max:10240'],
+            'file' => ['nullable', 'file', 'max:10240'],
+            'selectedImageUrl' => ['nullable', 'url'],
             'weight' => ['required', 'numeric', 'min:0'],
             'x_dimension' => ['required', 'numeric', 'min:0'],
             'y_dimension' => ['required', 'numeric', 'min:0'],
@@ -71,11 +76,61 @@ class Create extends Component
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'brand_id' => ['required', 'integer', 'exists:brands,id'],
             'unit_id' => ['required', 'integer', 'exists:units,id'],
+        ], [], [
+            'file' => __('app.file'),
+            'selectedImageUrl' => __('app.image'),
         ]);
 
-        // Store file publicly with original name
-        $filePath = $this->file->storeAs('products', $this->file->getClientOriginalName(), 'public');
-        $fileName = $this->file->getClientOriginalName();
+        // Validate that either file or selectedImageUrl is provided
+        if (! $this->file && ! $this->selectedImageUrl) {
+            Flux::toast(variant: 'warning', text: __('app.file_or_image_required'));
+            return;
+        }
+
+        $filePath = null;
+        $fileName = null;
+
+        if ($this->file) {
+            // Store file publicly with original name
+            $filePath = $this->file->storeAs('products', $this->file->getClientOriginalName(), 'public');
+            $fileName = $this->file->getClientOriginalName();
+        } elseif ($this->selectedImageUrl) {
+            // Download image from URL
+            try {
+                $imageResponse = Http::timeout(60)->get($this->selectedImageUrl);
+
+                if (! $imageResponse->successful()) {
+                    Flux::toast(variant: 'danger', text: __('app.error_downloading_image'));
+                    return;
+                }
+
+                // Get file extension from URL or content type
+                $extension = $this->getFileExtension($this->selectedImageUrl, $imageResponse->header('Content-Type', ''));
+                $baseName = basename(parse_url($this->selectedImageUrl, PHP_URL_PATH));
+                
+                if (empty($baseName) || ! preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $baseName)) {
+                    $baseName = $validated['slug'] . '.' . $extension;
+                } else {
+                    $baseName = pathinfo($baseName, PATHINFO_FILENAME) . '.' . $extension;
+                }
+
+                // Ensure unique filename
+                $fileName = $baseName;
+                $filePath = 'products/' . $fileName;
+                $counter = 1;
+                while (Storage::disk('public')->exists($filePath)) {
+                    $fileName = pathinfo($baseName, PATHINFO_FILENAME) . '-' . $counter . '.' . $extension;
+                    $filePath = 'products/' . $fileName;
+                    $counter++;
+                }
+
+                // Store the file
+                Storage::disk('public')->put($filePath, $imageResponse->body());
+            } catch (\Exception $e) {
+                Flux::toast(variant: 'danger', text: __('app.error_downloading_image') . ': ' . $e->getMessage());
+                return;
+            }
+        }
 
         Product::create([
             'name' => $validated['name'],
@@ -96,7 +151,39 @@ class Create extends Component
         Flux::modal('panel.shop.product.create.modal')->close();
         $this->dispatch('panel.shop.product.index.render');
         Flux::toast(variant: 'success', text: __('app.product_created'));
-        $this->reset(['name', 'description', 'slug', 'slug_fa', 'file', 'weight', 'x_dimension', 'y_dimension', 'z_dimension', 'category_id', 'brand_id', 'unit_id', 'category_search', 'brand_search', 'unit_search']);
+        $this->reset(['name', 'description', 'slug', 'slug_fa', 'file', 'selectedImageUrl', 'weight', 'x_dimension', 'y_dimension', 'z_dimension', 'category_id', 'brand_id', 'unit_id', 'category_search', 'brand_search', 'unit_search']);
+    }
+
+    protected function getFileExtension(string $url, string $contentType): string
+    {
+        // Try to get extension from URL
+        $path = parse_url($url, PHP_URL_PATH);
+        if ($path) {
+            $extension = pathinfo($path, PATHINFO_EXTENSION);
+            if ($extension && in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                return strtolower($extension);
+            }
+        }
+
+        // Try to get extension from content type
+        if ($contentType) {
+            $mimeToExt = [
+                'image/jpeg' => 'jpg',
+                'image/jpg' => 'jpg',
+                'image/png' => 'png',
+                'image/gif' => 'gif',
+                'image/webp' => 'webp',
+            ];
+
+            foreach ($mimeToExt as $mime => $ext) {
+                if (str_contains($contentType, $mime)) {
+                    return $ext;
+                }
+            }
+        }
+
+        // Default to jpg
+        return 'jpg';
     }
 
     public function removeFile(): void
@@ -106,6 +193,24 @@ class Create extends Component
             $this->file = null;
             Flux::toast(variant: 'success', text: __('app.file_removed'));
         }
+    }
+
+    public function removeSelectedImage(): void
+    {
+        $this->selectedImageUrl = null;
+        Flux::toast(variant: 'success', text: __('app.image_removed'));
+    }
+
+    #[On('panel.shop.product.create.image-selected')]
+    public function onImageSelected($url): void
+    {
+        // Remove existing file if any
+        if ($this->file) {
+            $this->file->delete();
+            $this->file = null;
+        }
+        
+        $this->selectedImageUrl = $url;
     }
 
     #[On('panel.shop.product.category.refresh')]

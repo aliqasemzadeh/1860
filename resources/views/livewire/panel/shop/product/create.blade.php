@@ -96,6 +96,17 @@
                         </flux:field>
 
                         <flux:field>
+                            <flux:label>{{ __('app.file_upload') }}</flux:label>
+                            <div class="flex gap-2 mb-2">
+                                <flux:button
+                                    wire:click="$dispatch('panel.shop.product.create.image-wizard.open')"
+                                    variant="primary"
+                                    icon="link"
+                                    size="sm"
+                                >
+                                    {{ __('app.select_image_from_url') }}
+                                </flux:button>
+                            </div>
                             <flux:file-upload wire:model="file" label="{{ __('app.file_upload') }}">
                                 <flux:file-upload.dropzone
                                     heading="{{ __('app.file_upload_description') }}"
@@ -116,7 +127,26 @@
                                     </flux:file-item>
                                 </div>
                             @endif
+                            @if ($selectedImageUrl)
+                                <div class="mt-3 flex flex-col gap-2">
+                                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-3">
+                                                <img src="{{ $selectedImageUrl }}" alt="{{ __('app.selected_image') }}" class="w-16 h-16 object-cover rounded" />
+                                                <div>
+                                                    <flux:text class="font-medium">{{ __('app.selected_image') }}</flux:text>
+                                                    <flux:text class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-xs">{{ $selectedImageUrl }}</flux:text>
+                                                </div>
+                                            </div>
+                                            <flux:button wire:click="removeSelectedImage" variant="ghost" size="xs" icon="x-mark">
+                                                {{ __('app.remove') }}
+                                            </flux:button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                             <flux:error name="file" />
+                            <flux:error name="selectedImageUrl" />
                         </flux:field>
 
                         <flux:field>
@@ -170,4 +200,6 @@
             </flux:button>
         </form>
     </div>
+
+    <livewire:panel.shop.product.create-product-image-wizard />
 </flux:modal>

@@ -602,6 +602,17 @@ return [
     'error_uploading_images' => 'خطا در آپلود تصاویر',
     'url' => 'آدرس',
     'select_site_type' => 'انتخاب نوع سایت',
+    'select_image_from_url' => 'انتخاب تصویر از آدرس',
+    'select_product_image_from_url' => 'انتخاب تصویر محصول از آدرس',
+    'select_product_image_description' => 'لینک صفحه محصول را وارد کنید تا تصاویر به صورت خودکار دریافت شوند. سپس یک تصویر را انتخاب کنید.',
+    'selected_image' => 'تصویر انتخاب شده',
+    'selected' => 'انتخاب شده',
+    'confirm_selection' => 'تایید انتخاب',
+    'no_image_selected' => 'هیچ تصویری انتخاب نشده است.',
+    'image_selected' => 'تصویر با موفقیت انتخاب شد.',
+    'file_or_image_required' => 'لطفاً یک فایل آپلود کنید یا تصویری از آدرس انتخاب کنید.',
+    'error_downloading_image' => 'خطا در دانلود تصویر',
+    'remove' => 'حذف',
 
     // Product Wizard
     'product_wizard' => 'ویزارد محصول',

@@ -6,12 +6,6 @@
                 <flux:subheading size="lg" class="mb-6">{{ __('app.products_description') }}</flux:subheading>
             </div>
             <div class="flex items-center gap-2">
-                <flux:modal.trigger name="panel.shop.product.product-wizard.modal">
-                    <flux:button variant="primary" color="purple">
-                        {{ __('app.product_wizard') }}
-                    </flux:button>
-                </flux:modal.trigger>
-
                 <flux:modal.trigger name="panel.shop.product.create.modal">
                     <flux:button variant="primary">{{ __('app.create_product') }}</flux:button>
                 </flux:modal.trigger>
