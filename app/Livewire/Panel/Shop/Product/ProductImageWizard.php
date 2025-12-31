@@ -37,6 +37,7 @@ class ProductImageWizard extends Component
             'matin' => 'Matin',
             'green' => 'Green',
             'fater' => 'Fater',
+            'nova' => 'Nova',
             'avajang' => 'Avajang',
             'generic' => 'سایر (عمومی)',
         ];
@@ -57,7 +58,7 @@ class ProductImageWizard extends Component
     public function fetchImages(): void
     {
         $this->validate([
-            'site_type' => 'required|string|in:logitech,logikey,gigabyte,xvision,matin,green,fater,avajang,generic',
+            'site_type' => 'required|string|in:logitech,logikey,gigabyte,xvision,matin,green,fater,avajang,generic,nova',
             'url' => 'required|url',
         ], [], [
             'site_type' => __('app.site_type'),
@@ -158,14 +159,14 @@ class ProductImageWizard extends Component
 
                     // Get file extension from URL or content type
                     $extension = $this->getFileExtension($imageData['url'], $imageResponse->header('Content-Type', ''));
-                    
+
                     // Get the custom name from imageData
                     $customName = trim($imageData['name'] ?? '');
-                    
+
                     // Generate filename: slug-randomnumber.extension
                     // If custom name is provided, use it as part of the filename
                     $randomNumber = rand(1000, 9999);
-                    
+
                     if (!empty($customName)) {
                         // Remove extension from custom name if present
                         $baseName = pathinfo($customName, PATHINFO_FILENAME);
@@ -180,7 +181,7 @@ class ProductImageWizard extends Component
                         // Just use slug + random number
                         $fileName = $productSlug . '-' . $randomNumber . '.' . $extension;
                     }
-                    
+
                     $filePath = 'product-images/' . $fileName;
 
                     // Ensure unique filename

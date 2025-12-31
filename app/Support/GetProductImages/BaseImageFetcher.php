@@ -153,6 +153,10 @@ abstract class BaseImageFetcher
             return new AvajangImageFetcher();
         }
 
+        if (str_contains($host, 'nova-tech.ir')) {
+            return new NovaImageFetcher();
+        }
+
         // Default generic fetcher
         return new GenericImageFetcher();
     }
@@ -174,6 +178,7 @@ abstract class BaseImageFetcher
             'green' => new GreenImageFetcher(),
             'fater' => new FaterImageFetcher(),
             'avajang' => new AvajangImageFetcher(),
+            'nova' => new NovaImageFetcher(),
             'generic' => new GenericImageFetcher(),
             default => null,
         };
