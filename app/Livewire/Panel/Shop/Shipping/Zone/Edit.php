@@ -56,8 +56,8 @@ class Edit extends Component
             $provinceId = (int) $provinceId;
             if (isset($citiesByProvince[$provinceId]) && is_array($citiesByProvince[$provinceId])) {
                 // Merge cities from all selected provinces
-                foreach ($citiesByProvince[$provinceId] as $cityKey => $cityName) {
-                    $cityOptions[$cityKey] = $cityName;
+                foreach ($citiesByProvince[$provinceId] as $cityKey => $cityData) {
+                    $cityOptions[$cityKey] = is_array($cityData) ? ($cityData['name'] ?? $cityKey) : $cityData;
                 }
             }
         }
@@ -65,9 +65,9 @@ class Edit extends Component
         // Sort by city name for better UX
         asort($cityOptions);
         $this->cityOptions = $cityOptions;
-        
-        // Reset cities when provinces change
-        $this->cities = [];
+
+        // Keep only selected cities that are still valid for the selected provinces
+        $this->cities = array_values(array_intersect($this->cities, array_keys($cityOptions)));
     }
 
     #[On('panel.shop.shipping.zone.edit.assign-data')]
@@ -78,7 +78,7 @@ class Edit extends Component
         $this->id = $this->zone->id;
         $this->name = (string) $this->zone->name;
         $this->countries = implode("\n", (array) $this->zone->countries);
-        
+
         // Convert states to integers (handle both old string names and new integer IDs)
         $states = (array) $this->zone->states;
         $provinces = (array) __('provinces');
@@ -97,12 +97,12 @@ class Edit extends Component
             }
         }
         $this->states = array_values($convertedStates);
-        
+
         // Convert cities: handle both old format (arrays with province_id and city_index) and new format (city keys)
         $cities = (array) $this->zone->cities;
         $convertedCities = [];
         $citiesByProvince = (array) __('cities');
-        
+
         foreach ($cities as $city) {
             if (is_array($city) && isset($city['province_id']) && isset($city['city_index'])) {
                 // Old format: [province_id, city_index] - convert to city key
@@ -143,7 +143,7 @@ class Edit extends Component
 
         // Convert states to integers (province IDs)
         $states = array_map('intval', $validated['states'] ?? []);
-        
+
         // Cities are already city keys (e.g., '100001', '100002')
         $cities = array_values(array_filter($validated['cities'] ?? []));
 

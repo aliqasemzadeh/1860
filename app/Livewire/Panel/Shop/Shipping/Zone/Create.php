@@ -11,7 +11,7 @@ class Create extends Component
 {
     public string $name = '';
 
-    public string $countries = "IR";
+    public string $countries = 'IR';
 
     /**
      * Selected provinces (استان‌ها) as an array of IDs.
@@ -51,8 +51,8 @@ class Create extends Component
             $provinceId = (int) $provinceId;
             if (isset($citiesByProvince[$provinceId]) && is_array($citiesByProvince[$provinceId])) {
                 // Merge cities from all selected provinces
-                foreach ($citiesByProvince[$provinceId] as $cityKey => $cityName) {
-                    $cityOptions[$cityKey] = $cityName;
+                foreach ($citiesByProvince[$provinceId] as $cityKey => $cityData) {
+                    $cityOptions[$cityKey] = is_array($cityData) ? ($cityData['name'] ?? $cityKey) : $cityData;
                 }
             }
         }
@@ -60,9 +60,9 @@ class Create extends Component
         // Sort by city name for better UX
         asort($cityOptions);
         $this->cityOptions = $cityOptions;
-        
-        // Reset cities when provinces change
-        $this->cities = [];
+
+        // Keep only selected cities that are still valid for the selected provinces
+        $this->cities = array_values(array_intersect($this->cities, array_keys($cityOptions)));
     }
 
     public function create(): void
@@ -77,7 +77,7 @@ class Create extends Component
 
         // Convert states to integers (province IDs)
         $states = array_map('intval', $validated['states'] ?? []);
-        
+
         // Cities are already city keys (e.g., '100001', '100002')
         $cities = array_values(array_filter($validated['cities'] ?? []));
 
@@ -94,7 +94,7 @@ class Create extends Component
         Flux::toast(variant: 'success', text: __('app.shipping_zone_created'));
 
         $this->reset(['name', 'countries', 'states', 'cities', 'areas', 'cityOptions']);
-        $this->countries = "IR";
+        $this->countries = 'IR';
     }
 
     public function render(): View

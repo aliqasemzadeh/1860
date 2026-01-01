@@ -156,19 +156,21 @@ class Shipping extends Component
             return [];
         }
 
-        $allCities = require lang_path('fa/cities.php');
+        $allCities = __('cities');
         $provinceCities = $allCities[$this->province_id] ?? [];
+
+        Log::info('Cities for province '.$this->province_id, $provinceCities);
 
         // PHP converts numeric string keys to integers when iterating with foreach
         // We need to use array_keys() to get the original string keys and preserve them
         $result = [];
         $cityKeys = array_keys($provinceCities);
-        
+
         // Iterate using the original keys from the array
         foreach ($cityKeys as $originalKey) {
             // originalKey is the string key from cities.php (e.g., '107070')
-            // We need to ensure it stays as string
-            $result[(string) $originalKey] = $provinceCities[$originalKey];
+            // We need to ensure it stays as string and get the city data
+            $result[(string) $originalKey] = $provinceCities[$originalKey]['name'] ?? $provinceCities[$originalKey];
         }
 
         return $result;
@@ -277,6 +279,12 @@ class Shipping extends Component
                     } elseif (is_string($city) && preg_match('/^\d{6}$/', $city)) {
                         // New format: city key (e.g., '100001')
                         if ($city === $cityKey) {
+                            $cityMatches = true;
+                            break;
+                        }
+                    } elseif (is_array($city) && isset($city['city_id'])) {
+                        // Very new format: ['name' => '...', 'city_id' => '...']
+                        if ($city['city_id'] === $cityKey) {
                             $cityMatches = true;
                             break;
                         }

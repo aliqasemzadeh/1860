@@ -86,11 +86,12 @@
                                         <flux:error name="province_id" />
                                     </flux:field>
 
+                                    @if($province_id)
                                     <flux:field>
                                         <flux:label>{{ __('app.city') }}</flux:label>
-                                        <flux:select wire:model="city_id" variant="combobox" :disabled="!$province_id">
+                                        <flux:select wire:model="city_id" variant="combobox">
                                             <flux:select.option value="">{{ __('app.select_city') }}</flux:select.option>
-                                            @if($province_id && count($this->cities) > 0)
+                                            @if(count($this->cities) > 0)
                                                 @php
                                                     // Ensure we iterate with string keys preserved
                                                     $citiesArray = is_array($this->cities) ? $this->cities : $this->cities->toArray();
@@ -104,6 +105,7 @@
                                         </flux:select>
                                         <flux:error name="city_id" />
                                     </flux:field>
+                                    @endif
                                 </div>
 
                                 <flux:field>

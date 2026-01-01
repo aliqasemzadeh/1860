@@ -89,7 +89,10 @@ class GenerateIranLocationsCommand extends Command
                 $cityId = $provinceId.str_pad($cityCounter, 3, '0', STR_PAD_LEFT);
                 // Escape single quotes in city names
                 $escapedName = str_replace("'", "\\'", $cityName);
-                $citiesContent .= "        '{$cityId}' => '{$escapedName}',\n";
+                $citiesContent .= "        '{$cityId}' => [\n";
+                $citiesContent .= "            'name' => '{$escapedName}',\n";
+                $citiesContent .= "            'city_id' => '{$cityId}',\n";
+                $citiesContent .= "        ],\n";
                 $cityCounter++;
             }
             $citiesContent .= "    ],\n";

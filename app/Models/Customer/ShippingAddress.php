@@ -53,6 +53,7 @@ class ShippingAddress extends Model
     public function getProvinceNameAttribute(): ?string
     {
         $provinces = require lang_path('fa/provinces.php');
+
         return $provinces[$this->province_id] ?? null;
     }
 
@@ -62,6 +63,8 @@ class ShippingAddress extends Model
     public function getCityNameAttribute(): ?string
     {
         $cities = require lang_path('fa/cities.php');
-        return $cities[$this->province_id][$this->city_id] ?? null;
+        $city = $cities[$this->province_id][$this->city_id] ?? null;
+
+        return is_array($city) ? ($city['name'] ?? null) : $city;
     }
 }

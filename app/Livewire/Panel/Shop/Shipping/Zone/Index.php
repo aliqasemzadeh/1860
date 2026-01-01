@@ -42,7 +42,7 @@ class Index extends Component
     {
         return ShippingZone::query()
             ->when($this->search, function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%');
+                $query->where('name', 'like', '%'.$this->search.'%');
             })
             ->tap(function ($query) {
                 if ($this->sortBy) {
@@ -58,6 +58,7 @@ class Index extends Component
     public function getProvinceName($provinceId): string
     {
         $provinces = (array) __('provinces');
+
         return $provinces[$provinceId] ?? (string) $provinceId;
     }
 
@@ -67,14 +68,16 @@ class Index extends Component
     public function getCityName($cityKey): string
     {
         $citiesByProvince = (array) __('cities');
-        
+
         // Search through all provinces to find the city
         foreach ($citiesByProvince as $provinceId => $cities) {
             if (is_array($cities) && isset($cities[$cityKey])) {
-                return $cities[$cityKey];
+                $cityData = $cities[$cityKey];
+
+                return is_array($cityData) ? ($cityData['name'] ?? (string) $cityKey) : (string) $cityData;
             }
         }
-        
+
         return (string) $cityKey;
     }
 

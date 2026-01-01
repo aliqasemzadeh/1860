@@ -27,7 +27,7 @@
                     <flux:pillbox
                         multiple
                         searchable
-                        wire:model="states"
+                        wire:model.live="states"
                         placeholder="{{ __('app.select_provinces') }}"
                     >
                         @foreach($provinces as $provinceId => $provinceName)
@@ -42,6 +42,7 @@
                     <flux:error name="states" />
                 </flux:field>
 
+                @if(!empty($states))
                 <flux:field>
                     <flux:label>{{ __('app.cities') }}</flux:label>
                     <flux:pillbox
@@ -61,6 +62,7 @@
                     </flux:text>
                     <flux:error name="cities" />
                 </flux:field>
+                @endif
 
                 <flux:field>
                     <flux:label>{{ __('app.areas') }}</flux:label>
