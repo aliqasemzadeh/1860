@@ -7,12 +7,11 @@ use App\Models\Customer\ShippingAddress as CustomerShippingAddress;
 use App\Models\Shop\Order;
 use App\Models\Shop\OrderItem;
 use App\Models\Shop\Product;
-use App\Models\Shop\ShippingMethod;
 use App\Models\Shop\ShippingRate;
 use App\Models\Shop\ShippingZone;
 use Binafy\LaravelCart\Models\Cart as UserCart;
-use Binafy\LaravelCart\Models\CartItem;
 use Flux\Flux;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -21,19 +20,30 @@ use Livewire\Component;
 class Shipping extends Component
 {
     public $selectedAddressId = null;
+
     public $selectedShippingRateId = null;
+
     public $shippingAddress = [];
+
     public $showNewAddressForm = false;
+
     public $customerNote = '';
 
     // New address fields
     public $name = '';
+
     public $province_id = null;
+
     public $city_id = null;
+
     public $city_search = '';
+
     public $address = '';
+
     public $postal_code = '';
+
     public $emergency_contact = '';
+
     public $is_default = false;
 
     public function mount()
@@ -44,6 +54,7 @@ class Shipping extends Component
 
         if (! $this->cart || $this->cartItems->isEmpty()) {
             Flux::toast(variant: 'warning', text: __('app.cart_is_empty'));
+
             return $this->redirect(route('order.cart'), navigate: true);
         }
 
@@ -146,15 +157,8 @@ class Shipping extends Component
         }
 
         $allCities = require lang_path('fa/cities.php');
-        $cities = $allCities[$this->province_id] ?? [];
 
-        // Convert to array with index as key for selection
-        $result = [];
-        foreach ($cities as $index => $cityName) {
-            $result[$index] = $cityName;
-        }
-
-        return $result;
+        return $allCities[$this->province_id] ?? [];
     }
 
     public function updatedProvinceId()
@@ -190,8 +194,9 @@ class Shipping extends Component
             return collect();
         }
 
-        $provinceId = $this->shippingAddress['province_id'];
-        $cityId = $this->shippingAddress['city_id'];
+        // Normalize province and city IDs to integers
+        $provinceId = (int) ($this->shippingAddress['province_id'] ?? 0);
+        $cityId = (int) ($this->shippingAddress['city_id'] ?? 0);
         $postalCode = $this->shippingAddress['postal_code'] ?? '';
 
         // Find matching zones
@@ -201,43 +206,59 @@ class Shipping extends Component
             $areas = $zone->areas ?? [];
 
             // Check province
-            if (! empty($states)) {
-                // Convert states to integers (handle both old string names and new integer IDs)
+            // If states array is not empty, province must be in the list
+            // If states array is empty, all provinces are included
+            if (! empty($states) && is_array($states)) {
                 $stateIds = [];
                 foreach ($states as $state) {
-                    if (is_numeric($state)) {
-                        $stateIds[] = (int) $state;
+                    // Convert to integer - handle both integer and string numbers
+                    $intState = (int) $state;
+                    // Only add if conversion is valid (not 0 unless original was 0 or "0")
+                    if ($intState > 0 || $state === 0 || $state === '0') {
+                        $stateIds[] = $intState;
                     }
                 }
-                if (! empty($stateIds) && ! in_array($provinceId, $stateIds)) {
-                    return false;
+
+                // If we have state IDs and province is not in the list, exclude this zone
+                if (! empty($stateIds)) {
+                    if (! in_array($provinceId, $stateIds, true)) {
+                        return false;
+                    }
                 }
             }
 
-            // Check city - handle both old format (simple integers) and new format (arrays with province_id and city_index)
+            // Check city
+            // If cities array is not empty, city must match
+            // If cities array is empty, all cities in selected provinces are included
             if (! empty($cities)) {
                 $cityMatches = false;
                 foreach ($cities as $city) {
                     if (is_array($city) && isset($city['province_id']) && isset($city['city_index'])) {
                         // New format: check if province and city index match
-                        if ((int) $city['province_id'] === $provinceId && (int) $city['city_index'] === $cityId) {
+                        $cityProvinceId = (int) ($city['province_id'] ?? 0);
+                        $cityIndex = (int) ($city['city_index'] ?? 0);
+                        if ($cityProvinceId === $provinceId && $cityIndex === $cityId) {
                             $cityMatches = true;
                             break;
                         }
                     } elseif (is_numeric($city)) {
                         // Old format: just check city index (legacy support)
+                        // Note: This is less precise as it doesn't check province
                         if ((int) $city === $cityId) {
                             $cityMatches = true;
                             break;
                         }
                     }
                 }
+                // If cities are specified but none match, exclude this zone
                 if (! $cityMatches) {
                     return false;
                 }
             }
 
             // Check postal code area (first 3 digits)
+            // If areas array is not empty and postal code is provided, postal area must match
+            // If areas array is empty, all postal areas are included
             if (! empty($areas) && $postalCode) {
                 $postalArea = substr($postalCode, 0, 3);
                 if (! in_array($postalArea, $areas)) {
@@ -245,10 +266,22 @@ class Shipping extends Component
                 }
             }
 
+            // All checks passed, this zone matches
             return true;
         });
 
         $methods = collect();
+
+        // Debug: Log matched zones
+        if (config('app.debug')) {
+            \Log::info('Matched zones for shipping', [
+                'province_id' => $provinceId,
+                'city_id' => $cityId,
+                'postal_code' => $postalCode,
+                'matched_zones_count' => $zones->count(),
+                'zone_ids' => $zones->pluck('id')->toArray(),
+            ]);
+        }
 
         foreach ($zones as $zone) {
             $rates = ShippingRate::where('shipping_zone_id', $zone->id)
@@ -297,6 +330,7 @@ class Shipping extends Component
             if ($rate->max_weight !== null && $totalWeight > $rate->max_weight) {
                 return null;
             }
+
             return $rate->amount;
         } elseif ($rateType === 'price') {
             $subtotal = $this->subtotal;
@@ -306,6 +340,7 @@ class Shipping extends Component
             if ($rate->max_price !== null && $subtotal > $rate->max_price) {
                 return null;
             }
+
             return $rate->amount;
         }
 
@@ -369,17 +404,20 @@ class Shipping extends Component
     {
         if (! $this->selectedAddressId) {
             Flux::toast(variant: 'danger', text: __('app.select_shipping_address'));
+
             return;
         }
 
         if (! $this->selectedShippingRateId) {
             Flux::toast(variant: 'danger', text: __('app.select_shipping_method'));
+
             return;
         }
 
         $address = CustomerShippingAddress::find($this->selectedAddressId);
         if (! $address || $address->user_id !== auth()->id()) {
             Flux::toast(variant: 'danger', text: __('app.invalid_address'));
+
             return;
         }
 
@@ -387,12 +425,14 @@ class Shipping extends Component
         $selectedOption = $this->availableShippingMethods->firstWhere('id', $this->selectedShippingRateId);
         if (! $selectedOption) {
             Flux::toast(variant: 'danger', text: __('app.invalid_shipping_method'));
+
             return;
         }
 
         $rate = ShippingRate::find($this->selectedShippingRateId);
         if (! $rate) {
             Flux::toast(variant: 'danger', text: __('app.invalid_shipping_rate'));
+
             return;
         }
 

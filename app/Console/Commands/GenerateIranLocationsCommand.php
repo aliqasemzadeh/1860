@@ -18,22 +18,24 @@ class GenerateIranLocationsCommand extends Command
 
         if ($provincesResponse->failed()) {
             $this->error('Failed to download provinces.json');
+
             return 1;
         }
 
         $provinces = $provincesResponse->json();
-        $this->info('Downloaded ' . count($provinces) . ' provinces');
+        $this->info('Downloaded '.count($provinces).' provinces');
 
         $this->info('Downloading cities.json...');
         $citiesResponse = Http::get('https://raw.githubusercontent.com/sajaddp/list-of-cities-in-Iran/refs/heads/main/dist/json/cities.json');
 
         if ($citiesResponse->failed()) {
             $this->error('Failed to download cities.json');
+
             return 1;
         }
 
         $cities = $citiesResponse->json();
-        $this->info('Downloaded ' . count($cities) . ' cities');
+        $this->info('Downloaded '.count($cities).' cities');
 
         // Generate provinces.php
         $this->info('Generating provinces.php...');
@@ -53,21 +55,20 @@ class GenerateIranLocationsCommand extends Command
         $this->info('Grouping cities by province...');
         $citiesByProvince = [];
         foreach ($cities as $city) {
-            if (!isset($city['province_id'], $city['name'])) {
+            if (! isset($city['province_id'], $city['name'])) {
                 continue;
             }
             $provinceId = (int) $city['province_id'];
             $cityName = $city['name'];
-            if (!isset($citiesByProvince[$provinceId])) {
+
+            if (! isset($citiesByProvince[$provinceId])) {
                 $citiesByProvince[$provinceId] = [];
             }
-            // Avoid duplicates
-            if (!in_array($cityName, $citiesByProvince[$provinceId], true)) {
-                $citiesByProvince[$provinceId][] = $cityName;
-            }
+
+            $citiesByProvince[$provinceId][] = $cityName;
         }
 
-        // Sort cities within each province
+        // Sort cities within each province by name
         foreach ($citiesByProvince as $provinceId => $cityList) {
             sort($cityList, SORT_NATURAL);
             $citiesByProvince[$provinceId] = $cityList;
@@ -76,20 +77,24 @@ class GenerateIranLocationsCommand extends Command
         // Generate cities.php
         $this->info('Generating cities.php...');
         $citiesContent = "<?php\n\nreturn [\n";
-        
+
         // Sort by province_id
         ksort($citiesByProvince);
-        
+
         foreach ($citiesByProvince as $provinceId => $cityList) {
             $citiesContent .= "    {$provinceId} => [\n";
+            $cityCounter = 1;
             foreach ($cityList as $cityName) {
+                // Generate sequential ID: ProvinceID + 3-digit counter (e.g., 100001)
+                $cityId = $provinceId.str_pad($cityCounter, 3, '0', STR_PAD_LEFT);
                 // Escape single quotes in city names
                 $escapedName = str_replace("'", "\\'", $cityName);
-                $citiesContent .= "        '{$escapedName}',\n";
+                $citiesContent .= "        '{$cityId}' => '{$escapedName}',\n";
+                $cityCounter++;
             }
             $citiesContent .= "    ],\n";
         }
-        
+
         $citiesContent .= "];\n";
 
         $citiesPath = lang_path('fa/cities.php');
@@ -97,10 +102,10 @@ class GenerateIranLocationsCommand extends Command
         $this->info("Generated: {$citiesPath}");
 
         $totalCities = array_sum(array_map('count', $citiesByProvince));
-        $this->info("Total cities grouped: {$totalCities} across " . count($citiesByProvince) . " provinces");
+        $this->info("Total cities grouped: {$totalCities} across ".count($citiesByProvince).' provinces');
 
         $this->info('Done!');
+
         return 0;
     }
 }
-
