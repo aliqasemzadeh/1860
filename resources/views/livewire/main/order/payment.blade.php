@@ -58,7 +58,7 @@
                                     wire:click="pay"
                                     variant="primary" 
                                     class="w-full"
-                                    size="lg"
+                                    size="base"
                                 >
                                     {{ __('app.pay_now') }}
                                 </flux:button>

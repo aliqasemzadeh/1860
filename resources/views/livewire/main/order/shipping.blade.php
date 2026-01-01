@@ -86,7 +86,6 @@
                                         <flux:error name="province_id" />
                                     </flux:field>
 
-                                    @if($province_id)
                                     <flux:field>
                                         <flux:label>{{ __('app.city') }}</flux:label>
                                         <flux:select wire:model="city_id" variant="combobox">
@@ -105,7 +104,6 @@
                                         </flux:select>
                                         <flux:error name="city_id" />
                                     </flux:field>
-                                    @endif
                                 </div>
 
                                 <flux:field>

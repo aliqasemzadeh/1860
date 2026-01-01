@@ -159,8 +159,6 @@ class Shipping extends Component
         $allCities = __('cities');
         $provinceCities = $allCities[$this->province_id] ?? [];
 
-        Log::info('Cities for province '.$this->province_id, $provinceCities);
-
         // PHP converts numeric string keys to integers when iterating with foreach
         // We need to use array_keys() to get the original string keys and preserve them
         $result = [];
@@ -200,7 +198,7 @@ class Shipping extends Component
             }
 
             $this->shippingAddress = [
-                'province_id' => $address->province_id,
+                'province_id' => (int) $address->province_id, // Ensure it's integer
                 'city_id' => $cityKey,
                 'postal_code' => $address->postal_code,
             ];
@@ -227,38 +225,58 @@ class Shipping extends Component
         $cityKey = (string) ($this->shippingAddress['city_id'] ?? '');
         $postalCode = $this->shippingAddress['postal_code'] ?? '';
 
+        if (config('app.debug')) {
+            \Log::info('Calculating available shipping methods', [
+                'province_id' => $provinceId,
+                'city_key' => $cityKey,
+                'subtotal' => $this->subtotal,
+                'total_weight' => $this->totalWeight,
+            ]);
+        }
+
         // Find matching zones
         $zones = ShippingZone::all()->filter(function ($zone) use ($provinceId, $cityKey, $postalCode) {
             $states = $zone->states ?? [];
             $cities = $zone->cities ?? [];
             $areas = $zone->areas ?? [];
+            $countries = $zone->countries ?? [];
 
-            // Check province
-            // If states array is not empty, province must be in the list
-            // If states array is empty, all provinces are included
-            if (! empty($states) && is_array($states)) {
-                $stateIds = [];
-                foreach ($states as $state) {
-                    // Convert to integer - handle both integer and string numbers
-                    $intState = (int) $state;
-                    // Only add if conversion is valid (not 0 unless original was 0 or "0")
-                    if ($intState > 0 || $state === 0 || $state === '0') {
-                        $stateIds[] = $intState;
-                    }
+            // Normalize arrays
+            $states = is_array($states) ? $states : [];
+            $cities = is_array($cities) ? $cities : [];
+            $areas = is_array($areas) ? $areas : [];
+            $countries = is_array($countries) ? $countries : [];
+
+            // Check Country (Default to IR for now as addresses don't have country_id)
+            if (! empty($countries) && ! in_array('IR', $countries)) {
+                if (config('app.debug')) {
+                    \Log::info("Zone {$zone->id} ({$zone->name}) excluded: IR not in countries", ['zone_countries' => $countries]);
                 }
 
-                // If we have state IDs and province is not in the list, exclude this zone
-                if (! empty($stateIds)) {
-                    if (! in_array($provinceId, $stateIds, true)) {
-                        return false;
+                return false;
+            }
+
+            // Check province
+            if (! empty($states)) {
+                $stateIds = array_map('intval', $states);
+                $stateIds = array_values(array_unique(array_filter($stateIds)));
+
+                if (! empty($stateIds) && ! in_array((int) $provinceId, $stateIds, true)) {
+                    if (config('app.debug')) {
+                        \Log::info("Zone {$zone->id} ({$zone->name}) excluded: province {$provinceId} not in states", [
+                            'zone_states' => $stateIds,
+                            'user_province_id' => $provinceId,
+                        ]);
                     }
+
+                    return false;
                 }
             }
 
             // Check city
             // If cities array is not empty, city key must match
             // If cities array is empty, all cities in selected provinces are included
-            if (! empty($cities)) {
+            if (count($cities) > 0) {
                 $cityMatches = false;
                 foreach ($cities as $city) {
                     if (is_array($city) && isset($city['province_id']) && isset($city['city_index'])) {
@@ -307,6 +325,10 @@ class Shipping extends Component
             }
 
             // All checks passed, this zone matches
+            if (config('app.debug')) {
+                \Log::info("Zone {$zone->id} ({$zone->name}) matched.");
+            }
+
             return true;
         });
 
@@ -329,13 +351,33 @@ class Shipping extends Component
                 ->with('method')
                 ->get();
 
+            if ($rates->isEmpty() && config('app.debug')) {
+                \Log::info("No active rates found for zone {$zone->id}");
+            }
+
             foreach ($rates as $rate) {
-                if (! $rate->method || ! $rate->method->is_active) {
+                if (! $rate->method) {
+                    if (config('app.debug')) {
+                        \Log::info("Rate {$rate->id} excluded: method is missing");
+                    }
+
+                    continue;
+                }
+
+                if (! $rate->method->is_active) {
+                    if (config('app.debug')) {
+                        \Log::info("Rate {$rate->id} excluded: method {$rate->method->name} is inactive");
+                    }
+
                     continue;
                 }
 
                 $cost = $this->calculateShippingCost($rate, $zone->id);
                 if ($cost === null) {
+                    if (config('app.debug')) {
+                        \Log::info("Rate {$rate->id} excluded: cost calculation returned null (check weight/price constraints)");
+                    }
+
                     continue; // Rate doesn't apply to this order
                 }
 
@@ -351,40 +393,50 @@ class Shipping extends Component
             }
         }
 
+        Log::info('Shipping methods', ['methods' => $methods]);
+
         // Group by method and zone to avoid duplicates, but keep all options
         return $methods->values();
     }
 
     protected function calculateShippingCost(ShippingRate $rate, $zoneId)
     {
-        $rateType = $rate->rate_type;
+        $totalWeight = $this->totalWeight;
+        $subtotal = $this->subtotal;
 
-        if ($rateType === 'flat') {
-            // Flat rate - always applies
-            return $rate->amount;
-        } elseif ($rateType === 'weight') {
-            $totalWeight = $this->totalWeight;
-            if ($rate->min_weight !== null && $totalWeight < $rate->min_weight) {
-                return null;
-            }
-            if ($rate->max_weight !== null && $totalWeight > $rate->max_weight) {
-                return null;
+        // Check Weight constraints regardless of rate_type if values are set
+        if ($rate->min_weight !== null && $totalWeight < $rate->min_weight) {
+            if (config('app.debug')) {
+                \Log::info("Rate {$rate->id} excluded: total weight {$totalWeight} is less than min weight {$rate->min_weight}");
             }
 
-            return $rate->amount;
-        } elseif ($rateType === 'price') {
-            $subtotal = $this->subtotal;
-            if ($rate->min_price !== null && $subtotal < $rate->min_price) {
-                return null;
-            }
-            if ($rate->max_price !== null && $subtotal > $rate->max_price) {
-                return null;
+            return null;
+        }
+        if ($rate->max_weight !== null && $totalWeight > $rate->max_weight) {
+            if (config('app.debug')) {
+                \Log::info("Rate {$rate->id} excluded: total weight {$totalWeight} is more than max weight {$rate->max_weight}");
             }
 
-            return $rate->amount;
+            return null;
         }
 
-        return null;
+        // Check Price constraints regardless of rate_type if values are set
+        if ($rate->min_price !== null && $subtotal < $rate->min_price) {
+            if (config('app.debug')) {
+                \Log::info("Rate {$rate->id} excluded: subtotal {$subtotal} is less than min price {$rate->min_price}");
+            }
+
+            return null;
+        }
+        if ($rate->max_price !== null && $subtotal > $rate->max_price) {
+            if (config('app.debug')) {
+                \Log::info("Rate {$rate->id} excluded: subtotal {$subtotal} is more than max price {$rate->max_price}");
+            }
+
+            return null;
+        }
+
+        return $rate->amount;
     }
 
     public function saveNewAddress()
