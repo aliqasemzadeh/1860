@@ -81,6 +81,16 @@
                                         :size="$fileSize"
                                     >
                                         <x-slot name="actions">
+                                            <flux:button
+                                                wire:click="removeBackground({{ $image->id }})"
+                                                wire:loading.attr="disabled"
+                                                variant="ghost"
+                                                icon="palette"
+                                                size="sm"
+                                                square
+                                                aria-label="{{ __('app.remove_background') }}: {{ $image->file_name }}"
+                                                title="{{ __('app.remove_background') }}"
+                                            />
                                             <flux:file-item.remove 
                                                 wire:click="removeProductImage({{ $image->id }})"
                                                 wire:confirm="{{ __('app.are_you_sure') }}"

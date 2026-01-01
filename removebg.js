@@ -21,9 +21,10 @@ async function removebg(inputPath, outPath) {
         const channels = info.channels; // معمولاً 4 (RGBA)
         const width = info.width;
         const height = info.height;
-        const threshold = 30; // حد آستانه برای تشخیص مشکی (0-255)
+        const threshold = 245; // حد آستانه برای تشخیص سفید (0-255)
+        const colorThreshold = 30; // حد تفاوت رنگ برای تشخیص سفید
 
-        // پردازش pixel‌ها و تبدیل مشکی به transparent
+        // پردازش pixel‌ها و تبدیل سفید به transparent
         for (let i = 0; i < data.length; i += channels) {
             const r = data[i];
             const g = data[i + 1];
@@ -33,11 +34,14 @@ async function removebg(inputPath, outPath) {
             // محاسبه روشنایی (brightness)
             const brightness = (r + g + b) / 3;
 
-            // تشخیص مشکی (brightness < threshold)
-            const isBlack = brightness < threshold;
+            // محاسبه تفاوت بین رنگ‌ها (برای تشخیص سفید خالص)
+            const colorDiff = Math.max(r, g, b) - Math.min(r, g, b);
 
-            // اگر مشکی باشد، alpha را 0 می‌کنیم (transparent)
-            if (isBlack) {
+            // تشخیص سفید: روشنایی بالا و تفاوت رنگ کم
+            const isWhite = brightness >= threshold && colorDiff <= colorThreshold;
+
+            // اگر سفید باشد، alpha را 0 می‌کنیم (transparent)
+            if (isWhite) {
                 data[i + 3] = 0; // alpha channel
             }
         }

@@ -8,6 +8,7 @@ use App\Models\Shop\Product as ProductModel;
 use App\Models\Shop\Unit;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -148,6 +149,68 @@ class Edit extends Component
             $this->file->delete();
             $this->file = null;
             Flux::toast(variant: 'success', text: __('app.file_removed'));
+        }
+    }
+
+    public function removeBackground(): void
+    {
+        if (! isset($this->product) || ! $this->product->file_path) {
+            Flux::toast(variant: 'danger', text: __('app.image_not_found'));
+            return;
+        }
+
+        $originalPath = Storage::disk('public')->path($this->product->file_path);
+
+        if (! file_exists($originalPath)) {
+            Flux::toast(variant: 'danger', text: __('app.file_not_found'));
+            return;
+        }
+
+        try {
+            // Create output path with PNG extension
+            $pathInfo = pathinfo($originalPath);
+            $outputPath = $pathInfo['dirname'] . DIRECTORY_SEPARATOR . $pathInfo['filename'] . '.png';
+
+            // Run removebg.js script
+            $scriptPath = base_path('removebg.js');
+            $result = Process::run([
+                'node',
+                $scriptPath,
+                $originalPath,
+                $outputPath,
+            ]);
+
+            if (! $result->successful()) {
+                throw new \Exception($result->errorOutput() ?: $result->output());
+            }
+
+            // Verify output file was created
+            if (! file_exists($outputPath)) {
+                throw new \Exception(__('app.output_file_not_created'));
+            }
+
+            // Delete old file if it's not PNG
+            $oldExtension = strtolower($pathInfo['extension'] ?? '');
+            if ($oldExtension !== 'png' && file_exists($originalPath)) {
+                unlink($originalPath);
+            }
+
+            // Update database with new file path and name
+            $pathInfoDb = pathinfo($this->product->file_path);
+            $newFilePath = $pathInfoDb['dirname'] . '/' . $pathInfoDb['filename'] . '.png';
+            
+            $pathInfoName = pathinfo($this->product->file_name);
+            $newFileName = $pathInfoName['filename'] . '.png';
+
+            $this->product->update([
+                'file_path' => $newFilePath,
+                'file_name' => $newFileName,
+            ]);
+
+            $this->product->refresh();
+            Flux::toast(variant: 'success', text: __('app.background_removed'));
+        } catch (\Exception $e) {
+            Flux::toast(variant: 'danger', text: __('app.error_processing_image') . ': ' . $e->getMessage());
         }
     }
 

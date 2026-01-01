@@ -45,4 +45,12 @@ return [
     'create_brand_description' => 'Fill in the following details to create a new brand.',
     'edit_brand' => 'Edit Brand',
     'edit_brand_description' => 'Update the brand details below.',
+
+    // Image processing
+    'remove_background' => 'Remove Background',
+    'background_removed' => 'Background removed successfully.',
+    'error_processing_image' => 'Error processing image',
+    'image_not_found' => 'Image not found.',
+    'file_not_found' => 'File not found.',
+    'output_file_not_created' => 'Output file was not created.',
 ];

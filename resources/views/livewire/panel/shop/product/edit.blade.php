@@ -99,8 +99,21 @@
                             @if (isset($product) && $product->file_path)
                                 <div class="mb-3">
                                     <flux:text class="text-sm text-gray-500 mb-2">{{ __('app.current_file') }}: {{ $product->file_name }}</flux:text>
-                                    <div class="mt-2">
+                                    <div class="mt-2 relative inline-block">
                                         <img src="{{ Storage::url($product->file_path) }}" alt="{{ $product->name }}" class="max-w-full h-auto rounded-lg border border-gray-200 dark:border-gray-700" style="max-height: 200px;" />
+                                        <div class="absolute top-2 right-2 flex gap-2">
+                                            <flux:button
+                                                wire:click="removeBackground"
+                                                wire:loading.attr="disabled"
+                                                variant="ghost"
+                                                icon="palette"
+                                                size="sm"
+                                                square
+                                                class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm"
+                                                aria-label="{{ __('app.remove_background') }}"
+                                                title="{{ __('app.remove_background') }}"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             @endif
