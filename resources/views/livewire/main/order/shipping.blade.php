@@ -114,7 +114,7 @@
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <flux:field>
-                                        <flux:label>{{ __('app.postal_code') }} <flux:badge variant="ghost" size="sm">{{ __('app.optional') }}</flux:badge></flux:label>
+                                        <flux:label>{{ __('app.postal_code') }}</flux:label>
                                         <flux:input wire:model="postal_code" dir="ltr" />
                                         <flux:error name="postal_code" />
                                     </flux:field>

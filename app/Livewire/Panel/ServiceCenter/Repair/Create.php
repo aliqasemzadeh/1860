@@ -20,10 +20,10 @@ class Create extends Component
 
     public ?string $warranty_type = null;
     public ?string $warranty_date = null;
-    public ?string $device_type = null;
-    public ?string $device_brand = null;
-    public ?string $device_model = null;
-    public ?string $device_serial_number = null;
+    public string $device_type = '';
+    public string $device_brand = '';
+    public string $device_model = '';
+    public string $device_serial_number = '';
 
     public ?string $device_problem = null;
     public ?string $device_accessories = null;
@@ -44,9 +44,9 @@ class Create extends Component
         'warranty_type' => ['required', 'string', 'in:yes,no'],
         'warranty_date' => ['nullable', 'date'],
         'device_type' => ['required', 'string', 'max:255'],
-        'device_brand' => ['nullable', 'string', 'max:255'],
-        'device_model' => ['nullable', 'string', 'max:255'],
-        'device_serial_number' => ['nullable', 'string', 'max:255'],
+        'device_brand' => ['required', 'string', 'max:255'],
+        'device_model' => ['required', 'string', 'max:255'],
+        'device_serial_number' => ['required', 'string', 'max:255'],
 
         'device_problem' => ['nullable', 'string'],
         'device_problem_file' => ['nullable', 'string'],

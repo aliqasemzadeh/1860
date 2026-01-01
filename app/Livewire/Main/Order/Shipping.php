@@ -446,7 +446,7 @@ class Shipping extends Component
             'province_id' => ['required', 'integer'],
             'city_id' => ['required', 'string', 'regex:/^\d{6}$/'], // City key format: 6 digits (e.g., '100001')
             'address' => ['required', 'string'],
-            'postal_code' => ['nullable', 'string', 'max:10'],
+            'postal_code' => ['required', 'string', 'max:10'],
             'emergency_contact' => ['nullable', 'string', 'max:20'],
         ]);
 
