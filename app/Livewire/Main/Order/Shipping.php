@@ -147,13 +147,13 @@ class Shipping extends Component
 
         $allCities = require lang_path('fa/cities.php');
         $cities = $allCities[$this->province_id] ?? [];
-        
+
         // Convert to array with index as key for selection
         $result = [];
         foreach ($cities as $index => $cityName) {
             $result[$index] = $cityName;
         }
-        
+
         return $result;
     }
 
