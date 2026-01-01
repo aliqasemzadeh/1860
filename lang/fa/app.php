@@ -556,6 +556,8 @@ return [
     'code_resent' => 'کد مجدد ارسال شد.',
     'verify_login' => 'تایید ورود',
     'address_saved' => 'آدرس با موفقیت ذخیره شد.',
+    'address_deleted' => 'آدرس با موفقیت حذف شد.',
+    'confirm_delete_address' => 'آیا از حذف این آدرس اطمینان دارید؟',
     'address_name' => 'نام آدرس',
     'select_province' => 'انتخاب استان',
     'select_city' => 'انتخاب شهر',

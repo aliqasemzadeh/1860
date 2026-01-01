@@ -21,9 +21,9 @@ class Create extends Component
     public array $states = [];
 
     /**
-     * Selected cities (شهرها) as an array of indices.
+     * Selected cities (شهرها) as an array of city keys (e.g., '100001', '100002').
      *
-     * @var array<int>
+     * @var array<string>
      */
     public array $cities = [];
 
@@ -35,9 +35,9 @@ class Create extends Component
 
     /**
      * City options based on selected provinces.
-     * Structure: [province_id => [city_index => city_name]]
+     * Structure: [city_key => city_name] (flattened from all selected provinces)
      *
-     * @var array<int,array<int,string>>
+     * @var array<string,string>
      */
     public array $cityOptions = [];
 
@@ -50,10 +50,15 @@ class Create extends Component
         foreach ($this->states as $provinceId) {
             $provinceId = (int) $provinceId;
             if (isset($citiesByProvince[$provinceId]) && is_array($citiesByProvince[$provinceId])) {
-                $cityOptions[$provinceId] = $citiesByProvince[$provinceId];
+                // Merge cities from all selected provinces
+                foreach ($citiesByProvince[$provinceId] as $cityKey => $cityName) {
+                    $cityOptions[$cityKey] = $cityName;
+                }
             }
         }
 
+        // Sort by city name for better UX
+        asort($cityOptions);
         $this->cityOptions = $cityOptions;
         
         // Reset cities when provinces change
@@ -73,17 +78,8 @@ class Create extends Component
         // Convert states to integers (province IDs)
         $states = array_map('intval', $validated['states'] ?? []);
         
-        // Convert cities: format is "province_id:city_index", store as array of [province_id, city_index] pairs
-        $cities = [];
-        foreach ($validated['cities'] ?? [] as $cityValue) {
-            if (str_contains($cityValue, ':')) {
-                [$provinceId, $cityIndex] = explode(':', $cityValue, 2);
-                $cities[] = [
-                    'province_id' => (int) $provinceId,
-                    'city_index' => (int) $cityIndex,
-                ];
-            }
-        }
+        // Cities are already city keys (e.g., '100001', '100002')
+        $cities = array_values(array_filter($validated['cities'] ?? []));
 
         ShippingZone::create([
             'name' => $validated['name'],

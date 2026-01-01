@@ -62,16 +62,20 @@ class Index extends Component
     }
 
     /**
-     * Get city name by province ID and city index.
+     * Get city name by city key (e.g., '100001').
      */
-    public function getCityName($provinceId, $cityIndex): string
+    public function getCityName($cityKey): string
     {
         $citiesByProvince = (array) __('cities');
-        if (isset($citiesByProvince[$provinceId]) && is_array($citiesByProvince[$provinceId])) {
-            $cities = $citiesByProvince[$provinceId];
-            return $cities[$cityIndex] ?? (string) $cityIndex;
+        
+        // Search through all provinces to find the city
+        foreach ($citiesByProvince as $provinceId => $cities) {
+            if (is_array($cities) && isset($cities[$cityKey])) {
+                return $cities[$cityKey];
+            }
         }
-        return (string) $cityIndex;
+        
+        return (string) $cityKey;
     }
 
     /**
@@ -109,13 +113,27 @@ class Index extends Component
         $names = [];
         foreach ($cities as $city) {
             if (is_array($city) && isset($city['province_id']) && isset($city['city_index'])) {
-                // New format
-                $names[] = $this->getCityName((int) $city['province_id'], (int) $city['city_index']);
-            } elseif (is_numeric($city)) {
-                // Old format: just index (can't determine province, show as-is)
-                $names[] = (string) $city;
+                // Old format: [province_id, city_index] - convert to city key first
+                $citiesByProvince = (array) __('cities');
+                $provinceId = (int) $city['province_id'];
+                $cityIndex = (int) $city['city_index'];
+                if (isset($citiesByProvince[$provinceId]) && is_array($citiesByProvince[$provinceId])) {
+                    $provinceCities = $citiesByProvince[$provinceId];
+                    $cityKeys = array_keys($provinceCities);
+                    if (isset($cityKeys[$cityIndex])) {
+                        $names[] = $this->getCityName($cityKeys[$cityIndex]);
+                    } else {
+                        $names[] = (string) $cityIndex;
+                    }
+                } else {
+                    $names[] = (string) $cityIndex;
+                }
+            } elseif (is_string($city) && preg_match('/^\d{6}$/', $city)) {
+                // New format: city key (e.g., '100001')
+                $names[] = $this->getCityName($city);
             } else {
-                $names[] = (string) $city; // Legacy: already a name
+                // Legacy: already a name or unknown format
+                $names[] = (string) $city;
             }
         }
 

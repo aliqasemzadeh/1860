@@ -157,8 +157,21 @@ class Shipping extends Component
         }
 
         $allCities = require lang_path('fa/cities.php');
+        $provinceCities = $allCities[$this->province_id] ?? [];
 
-        return $allCities[$this->province_id] ?? [];
+        // PHP converts numeric string keys to integers when iterating with foreach
+        // We need to use array_keys() to get the original string keys and preserve them
+        $result = [];
+        $cityKeys = array_keys($provinceCities);
+        
+        // Iterate using the original keys from the array
+        foreach ($cityKeys as $originalKey) {
+            // originalKey is the string key from cities.php (e.g., '107070')
+            // We need to ensure it stays as string
+            $result[(string) $originalKey] = $provinceCities[$originalKey];
+        }
+
+        return $result;
     }
 
     public function updatedProvinceId()
@@ -171,9 +184,22 @@ class Shipping extends Component
         $address = CustomerShippingAddress::find($addressId);
         if ($address && $address->user_id === auth()->id()) {
             $this->selectedAddressId = $addressId;
+
+            // Convert city_id (index) to city key if needed
+            $cityKey = $address->city_id;
+            $allCities = require lang_path('fa/cities.php');
+            if (isset($allCities[$address->province_id]) && is_array($allCities[$address->province_id])) {
+                $provinceCities = $allCities[$address->province_id];
+                $cityKeys = array_keys($provinceCities);
+                // If city_id is numeric index, convert to city key
+                if (is_numeric($address->city_id) && isset($cityKeys[(int) $address->city_id])) {
+                    $cityKey = $cityKeys[(int) $address->city_id];
+                }
+            }
+
             $this->shippingAddress = [
                 'province_id' => $address->province_id,
-                'city_id' => $address->city_id,
+                'city_id' => $cityKey,
                 'postal_code' => $address->postal_code,
             ];
             $this->selectedShippingRateId = null; // Reset shipping method
@@ -194,13 +220,13 @@ class Shipping extends Component
             return collect();
         }
 
-        // Normalize province and city IDs to integers
+        // Normalize province ID to integer and city ID to city key (string)
         $provinceId = (int) ($this->shippingAddress['province_id'] ?? 0);
-        $cityId = (int) ($this->shippingAddress['city_id'] ?? 0);
+        $cityKey = (string) ($this->shippingAddress['city_id'] ?? '');
         $postalCode = $this->shippingAddress['postal_code'] ?? '';
 
         // Find matching zones
-        $zones = ShippingZone::all()->filter(function ($zone) use ($provinceId, $cityId, $postalCode) {
+        $zones = ShippingZone::all()->filter(function ($zone) use ($provinceId, $cityKey, $postalCode) {
             $states = $zone->states ?? [];
             $cities = $zone->cities ?? [];
             $areas = $zone->areas ?? [];
@@ -228,23 +254,29 @@ class Shipping extends Component
             }
 
             // Check city
-            // If cities array is not empty, city must match
+            // If cities array is not empty, city key must match
             // If cities array is empty, all cities in selected provinces are included
             if (! empty($cities)) {
                 $cityMatches = false;
                 foreach ($cities as $city) {
                     if (is_array($city) && isset($city['province_id']) && isset($city['city_index'])) {
-                        // New format: check if province and city index match
+                        // Old format: [province_id, city_index] - convert to city key
                         $cityProvinceId = (int) ($city['province_id'] ?? 0);
                         $cityIndex = (int) ($city['city_index'] ?? 0);
-                        if ($cityProvinceId === $provinceId && $cityIndex === $cityId) {
-                            $cityMatches = true;
-                            break;
+                        if ($cityProvinceId === $provinceId) {
+                            $allCities = require lang_path('fa/cities.php');
+                            if (isset($allCities[$cityProvinceId]) && is_array($allCities[$cityProvinceId])) {
+                                $provinceCities = $allCities[$cityProvinceId];
+                                $cityKeys = array_keys($provinceCities);
+                                if (isset($cityKeys[$cityIndex]) && $cityKeys[$cityIndex] === $cityKey) {
+                                    $cityMatches = true;
+                                    break;
+                                }
+                            }
                         }
-                    } elseif (is_numeric($city)) {
-                        // Old format: just check city index (legacy support)
-                        // Note: This is less precise as it doesn't check province
-                        if ((int) $city === $cityId) {
+                    } elseif (is_string($city) && preg_match('/^\d{6}$/', $city)) {
+                        // New format: city key (e.g., '100001')
+                        if ($city === $cityKey) {
                             $cityMatches = true;
                             break;
                         }
@@ -276,7 +308,7 @@ class Shipping extends Component
         if (config('app.debug')) {
             \Log::info('Matched zones for shipping', [
                 'province_id' => $provinceId,
-                'city_id' => $cityId,
+                'city_key' => $cityKey,
                 'postal_code' => $postalCode,
                 'matched_zones_count' => $zones->count(),
                 'zone_ids' => $zones->pluck('id')->toArray(),
@@ -352,7 +384,7 @@ class Shipping extends Component
         $this->validate([
             'name' => ['nullable', 'string', 'max:255'],
             'province_id' => ['required', 'integer'],
-            'city_id' => ['required', 'integer'],
+            'city_id' => ['required', 'string', 'regex:/^\d{6}$/'], // City key format: 6 digits (e.g., '100001')
             'address' => ['required', 'string'],
             'postal_code' => ['nullable', 'string', 'max:10'],
             'emergency_contact' => ['nullable', 'string', 'max:20'],
@@ -363,10 +395,11 @@ class Shipping extends Component
             auth()->user()->shippingAddresses()->update(['is_default' => false]);
         }
 
+        // city_id is already city key (e.g., '100001') from the select
         $newAddress = auth()->user()->shippingAddresses()->create([
             'name' => $this->name,
             'province_id' => $this->province_id,
-            'city_id' => $this->city_id,
+            'city_id' => $this->city_id, // This is now city key (string)
             'address' => $this->address,
             'postal_code' => $this->postal_code,
             'emergency_contact' => $this->emergency_contact,
@@ -390,6 +423,23 @@ class Shipping extends Component
         $this->postal_code = '';
         $this->emergency_contact = '';
         $this->is_default = false;
+    }
+
+    public function deleteAddress($addressId)
+    {
+        $address = CustomerShippingAddress::find($addressId);
+        if ($address && $address->user_id === auth()->id()) {
+            $address->delete();
+
+            // If deleted address was selected, clear selection
+            if ($this->selectedAddressId == $addressId) {
+                $this->selectedAddressId = null;
+                $this->shippingAddress = [];
+                $this->selectedShippingRateId = null;
+            }
+
+            Flux::toast(variant: 'success', text: __('app.address_deleted'));
+        }
     }
 
     public function toggleNewAddressForm()

@@ -34,24 +34,34 @@
                         @if($this->addresses->count() > 0 && !$showNewAddressForm)
                             <div class="space-y-4 mb-4">
                                 @foreach($this->addresses as $addr)
-                                    <label class="flex items-start gap-4 p-4 border border-zinc-200 dark:border-zinc-700 rounded-lg cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors {{ $selectedAddressId == $addr->id ? 'ring-2 ring-primary-500 border-primary-500' : '' }}">
-                                        <input type="radio" wire:model.live="selectedAddressId" value="{{ $addr->id }}" class="mt-1" />
-                                        <div class="flex-1">
-                                            <div class="font-medium text-zinc-900 dark:text-zinc-100 mb-1">
-                                                {{ $addr->name ?: __('app.address') }} {{ $addr->is_default ? '('.__('app.default').')' : '' }}
+                                    <div class="flex items-start gap-4 p-4 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors {{ $selectedAddressId == $addr->id ? 'ring-2 ring-primary-500 border-primary-500' : '' }}">
+                                        <label class="flex items-start gap-4 flex-1 cursor-pointer">
+                                            <input type="radio" wire:model.live="selectedAddressId" value="{{ $addr->id }}" class="mt-1" />
+                                            <div class="flex-1">
+                                                <div class="font-medium text-zinc-900 dark:text-zinc-100 mb-1">
+                                                    {{ $addr->name ?: __('app.address') }} {{ $addr->is_default ? '('.__('app.default').')' : '' }}
+                                                </div>
+                                                <div class="text-sm text-zinc-600 dark:text-zinc-400">
+                                                    {{ $addr->province_name }}, {{ $addr->city_name }}<br>
+                                                    {{ $addr->address }}<br>
+                                                    @if($addr->postal_code)
+                                                        {{ __('app.postal_code') }}: {{ $addr->postal_code }}<br>
+                                                    @endif
+                                                    @if($addr->emergency_contact)
+                                                        {{ __('app.emergency_contact') }}: {{ $addr->emergency_contact }}
+                                                    @endif
+                                                </div>
                                             </div>
-                                            <div class="text-sm text-zinc-600 dark:text-zinc-400">
-                                                {{ $addr->province_name }}, {{ $addr->city_name }}<br>
-                                                {{ $addr->address }}<br>
-                                                @if($addr->postal_code)
-                                                    {{ __('app.postal_code') }}: {{ $addr->postal_code }}<br>
-                                                @endif
-                                                @if($addr->emergency_contact)
-                                                    {{ __('app.emergency_contact') }}: {{ $addr->emergency_contact }}
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </label>
+                                        </label>
+                                        <flux:button
+                                            size="xs"
+                                            variant="danger"
+                                            wire:click="deleteAddress({{ $addr->id }})"
+                                            wire:confirm="{{ __('app.confirm_delete_address') }}"
+                                        >
+                                            {{ __('app.delete') }}
+                                        </flux:button>
+                                    </div>
                                 @endforeach
                             </div>
                         @endif
@@ -81,8 +91,14 @@
                                         <flux:select wire:model="city_id" variant="combobox" :disabled="!$province_id">
                                             <flux:select.option value="">{{ __('app.select_city') }}</flux:select.option>
                                             @if($province_id && count($this->cities) > 0)
-                                                @foreach($this->cities as $index => $city)
-                                                    <flux:select.option value="{{ $index }}">{{ $city }}</flux:select.option>
+                                                @php
+                                                    // Ensure we iterate with string keys preserved
+                                                    $citiesArray = is_array($this->cities) ? $this->cities : $this->cities->toArray();
+                                                    // Use array_keys to preserve original string keys
+                                                    $cityKeys = array_keys($citiesArray);
+                                                @endphp
+                                                @foreach($cityKeys as $cityKey)
+                                                    <flux:select.option value="{{ $cityKey }}">{{ $citiesArray[$cityKey] }}</flux:select.option>
                                                 @endforeach
                                             @endif
                                         </flux:select>
@@ -222,9 +238,9 @@
                             </div>
                         </div>
 
-                        <flux:button 
+                        <flux:button
                             wire:click="createOrder"
-                            variant="primary" 
+                            variant="primary"
                             class="w-full"
                             :disabled="!$selectedAddressId || !$selectedShippingRateId"
                         >

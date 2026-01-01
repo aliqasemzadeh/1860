@@ -26,9 +26,9 @@ class Edit extends Component
     public array $states = [];
 
     /**
-     * Selected cities (شهرها) as an array of indices.
+     * Selected cities (شهرها) as an array of city keys (e.g., '100001', '100002').
      *
-     * @var array<int>
+     * @var array<string>
      */
     public array $cities = [];
 
@@ -40,9 +40,9 @@ class Edit extends Component
 
     /**
      * City options based on selected provinces.
-     * Structure: [province_id => [city_index => city_name]]
+     * Structure: [city_key => city_name] (flattened from all selected provinces)
      *
-     * @var array<int,array<int,string>>
+     * @var array<string,string>
      */
     public array $cityOptions = [];
 
@@ -55,10 +55,15 @@ class Edit extends Component
         foreach ($this->states as $provinceId) {
             $provinceId = (int) $provinceId;
             if (isset($citiesByProvince[$provinceId]) && is_array($citiesByProvince[$provinceId])) {
-                $cityOptions[$provinceId] = $citiesByProvince[$provinceId];
+                // Merge cities from all selected provinces
+                foreach ($citiesByProvince[$provinceId] as $cityKey => $cityName) {
+                    $cityOptions[$cityKey] = $cityName;
+                }
             }
         }
 
+        // Sort by city name for better UX
+        asort($cityOptions);
         $this->cityOptions = $cityOptions;
         
         // Reset cities when provinces change
@@ -93,19 +98,29 @@ class Edit extends Component
         }
         $this->states = array_values($convertedStates);
         
-        // Convert cities: handle both old format (integers) and new format (arrays with province_id and city_index)
+        // Convert cities: handle both old format (arrays with province_id and city_index) and new format (city keys)
         $cities = (array) $this->zone->cities;
         $convertedCities = [];
+        $citiesByProvince = (array) __('cities');
+        
         foreach ($cities as $city) {
             if (is_array($city) && isset($city['province_id']) && isset($city['city_index'])) {
-                // New format: [province_id, city_index]
-                $convertedCities[] = $city['province_id'] . ':' . $city['city_index'];
-            } elseif (is_numeric($city)) {
-                // Old format: just integer (legacy, will need province context - skip for now)
-                // This is problematic, but we'll skip legacy integer cities
+                // Old format: [province_id, city_index] - convert to city key
+                $provinceId = (int) $city['province_id'];
+                $cityIndex = (int) $city['city_index'];
+                if (isset($citiesByProvince[$provinceId]) && is_array($citiesByProvince[$provinceId])) {
+                    $provinceCities = $citiesByProvince[$provinceId];
+                    $cityKeys = array_keys($provinceCities);
+                    if (isset($cityKeys[$cityIndex])) {
+                        $convertedCities[] = $cityKeys[$cityIndex];
+                    }
+                }
+            } elseif (is_string($city) && preg_match('/^\d{6}$/', $city)) {
+                // New format: city key (e.g., '100001')
+                $convertedCities[] = $city;
             }
         }
-        $this->cities = $convertedCities;
+        $this->cities = array_values($convertedCities);
         $this->areas = implode("\n", (array) $this->zone->areas);
         $this->updatedStates();
 
@@ -129,17 +144,8 @@ class Edit extends Component
         // Convert states to integers (province IDs)
         $states = array_map('intval', $validated['states'] ?? []);
         
-        // Convert cities: format is "province_id:city_index", store as array of [province_id, city_index] pairs
-        $cities = [];
-        foreach ($validated['cities'] ?? [] as $cityValue) {
-            if (str_contains($cityValue, ':')) {
-                [$provinceId, $cityIndex] = explode(':', $cityValue, 2);
-                $cities[] = [
-                    'province_id' => (int) $provinceId,
-                    'city_index' => (int) $cityIndex,
-                ];
-            }
-        }
+        // Cities are already city keys (e.g., '100001', '100002')
+        $cities = array_values(array_filter($validated['cities'] ?? []));
 
         $this->zone->update([
             'name' => $validated['name'],

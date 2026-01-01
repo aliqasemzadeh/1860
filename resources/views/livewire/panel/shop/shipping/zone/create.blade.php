@@ -50,12 +50,10 @@
                         wire:model="cities"
                         placeholder="{{ __('app.select_cities') }}"
                     >
-                        @foreach($cityOptions as $provinceId => $provinceCities)
-                            @foreach($provinceCities as $cityIndex => $cityName)
-                                <flux:pillbox.option value="{{ $provinceId }}:{{ $cityIndex }}">
-                                    {{ $cityName }} ({{ $provinces[$provinceId] ?? '' }})
-                                </flux:pillbox.option>
-                            @endforeach
+                        @foreach($cityOptions as $cityKey => $cityName)
+                            <flux:pillbox.option value="{{ $cityKey }}">
+                                {{ $cityName }}
+                            </flux:pillbox.option>
                         @endforeach
                     </flux:pillbox>
                     <flux:text class="mt-1 text-xs text-gray-500">
