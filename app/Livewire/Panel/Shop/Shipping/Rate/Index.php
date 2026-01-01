@@ -43,10 +43,22 @@ class Index extends Component
         return ShippingRate::query()
             ->with(['method', 'zone'])
             ->when($this->search, function ($query) {
-                $query->whereHas('method', function ($q) {
-                    $q->where('name', 'like', '%' . $this->search . '%');
-                })->orWhereHas('zone', function ($q) {
-                    $q->where('name', 'like', '%' . $this->search . '%');
+                $search = '%' . $this->search . '%';
+                $query->where(function ($q) use ($search) {
+                    $q->whereHas('method', function ($subQ) use ($search) {
+                        $subQ->where('name', 'like', $search);
+                    })
+                    ->orWhereHas('zone', function ($subQ) use ($search) {
+                        $subQ->where('name', 'like', $search);
+                    })
+                    ->orWhere('rate_type', 'like', $search)
+                    ->orWhere('amount', 'like', $search)
+                    ->orWhere('estimated_days', 'like', $search)
+                    ->orWhere('id', 'like', $search)
+                    ->orWhere('min_weight', 'like', $search)
+                    ->orWhere('max_weight', 'like', $search)
+                    ->orWhere('min_price', 'like', $search)
+                    ->orWhere('max_price', 'like', $search);
                 });
             })
             ->tap(function ($query) {

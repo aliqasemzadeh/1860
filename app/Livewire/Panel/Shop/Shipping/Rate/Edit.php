@@ -46,10 +46,10 @@ class Edit extends Component
         $this->shipping_zone_id = $this->rate->shipping_zone_id;
         $this->rate_type = (string) $this->rate->rate_type;
         $this->amount = (float) $this->rate->amount;
-        $this->min_weight = $this->rate->min_weight?->toFloat() ?? null;
-        $this->max_weight = $this->rate->max_weight?->toFloat() ?? null;
-        $this->min_price = $this->rate->min_price?->toFloat() ?? null;
-        $this->max_price = $this->rate->max_price?->toFloat() ?? null;
+        $this->min_weight = $this->rate->min_weight !== null ? (float) $this->rate->min_weight : null;
+        $this->max_weight = $this->rate->max_weight !== null ? (float) $this->rate->max_weight : null;
+        $this->min_price = $this->rate->min_price !== null ? (float) $this->rate->min_price : null;
+        $this->max_price = $this->rate->max_price !== null ? (float) $this->rate->max_price : null;
         $this->estimated_days = $this->rate->estimated_days;
         $this->is_active = (bool) $this->rate->is_active;
 
