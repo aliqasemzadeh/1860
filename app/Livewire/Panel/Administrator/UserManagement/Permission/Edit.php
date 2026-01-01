@@ -23,7 +23,7 @@ class Edit extends Component
         $this->guard_name = $this->permission->guard_name;
     }
 
-    #[On('administrator.user-management.permission.edit.assign-data')]
+    #[On('panel.administrator.user-management.permission.edit.assign-data')]
     public function assignData(int $id): void
     {
         $this->permission = Permission::findById($id);

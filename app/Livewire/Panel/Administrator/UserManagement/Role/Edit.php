@@ -23,7 +23,7 @@ class Edit extends Component
         $this->guard_name = $this->role->guard_name;
     }
 
-    #[On('administrator.user-management.role.edit.assign-data')]
+    #[On('panel.administrator.user-management.role.edit.assign-data')]
     public function assignData(int $id): void
     {
         $this->role = Role::findById($id);

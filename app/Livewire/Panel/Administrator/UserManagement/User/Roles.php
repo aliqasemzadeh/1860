@@ -17,7 +17,7 @@ class Roles extends Component
 
     public $search;
 
-    #[On('administrator.user-management.user.roles.assign-data')]
+    #[On('panel.administrator.user-management.user.roles.assign-data')]
     public function assignData($id): void
     {
         $this->user = User::findOrFail($id);
@@ -32,7 +32,7 @@ class Roles extends Component
             return;
         }
         $this->user->assignRole($role->name);
-        $this->dispatch('administrator.user-management.user.roles');
+        $this->dispatch('panel.administrator.user-management.user.roles');
     }
 
     public function delete(Role $role): void
@@ -43,10 +43,10 @@ class Roles extends Component
             return;
         }
         $this->user->removeRole($role->name);
-        $this->dispatch('administrator.user-management.user.roles');
+        $this->dispatch('panel.administrator.user-management.user.roles');
     }
 
-    #[On('administrator.user-management.user.roles.render')]
+    #[On('panel.administrator.user-management.user.roles.render')]
     public function render()
     {
         $this->authorize('administrator_user_management_roles');

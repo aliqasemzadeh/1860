@@ -157,6 +157,10 @@ abstract class BaseImageFetcher
             return new NovaImageFetcher();
         }
 
+        if (str_contains($host, 'fafait.net')) {
+            return new FafaitImageFetcher();
+        }
+
         // Default generic fetcher
         return new GenericImageFetcher();
     }
@@ -179,6 +183,7 @@ abstract class BaseImageFetcher
             'fater' => new FaterImageFetcher(),
             'avajang' => new AvajangImageFetcher(),
             'nova' => new NovaImageFetcher(),
+            'fafait' => new FafaitImageFetcher(),
             'generic' => new GenericImageFetcher(),
             default => null,
         };

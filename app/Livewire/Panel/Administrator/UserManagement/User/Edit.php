@@ -28,7 +28,7 @@ class Edit extends Component
 
     public string $password_confirmation = '';
 
-    #[On('administrator.user-management.user.edit.assign-data')]
+    #[On('panel.administrator.user-management.user.edit.assign-data')]
     public function assignData($id): void
     {
         $this->user = User::findOrFail($id);
@@ -76,7 +76,7 @@ class Edit extends Component
 
         $this->user->save();
 
-        $this->dispatch('administrator.user-management.user.index.render');
+        $this->dispatch('panel.administrator.user-management.user.index.render');
         Flux::modal('panel.administrator.user-management.user.edit.modal')->close();
     }
 

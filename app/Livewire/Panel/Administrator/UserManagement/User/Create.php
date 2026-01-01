@@ -20,7 +20,7 @@ class Create extends Component
 
         User::firstOrCreate($validated);
 
-        $this->dispatch('administrator.user-management.user.index.render');
+        $this->dispatch('panel.administrator.user-management.user.index.render');
         Flux::modal('panel.administrator.user-management.user.create.modal')->close();
     }
 

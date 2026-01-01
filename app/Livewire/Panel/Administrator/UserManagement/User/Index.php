@@ -55,7 +55,7 @@ class Index extends Component
     }
 
     #[Layout('layouts.panels.administrator')]
-    #[On('administrator.user-management.user.index.render')]
+    #[On('panel.administrator.user-management.user.index.render')]
     public function render()
     {
         $this->authorize('administrator_user_management_index');

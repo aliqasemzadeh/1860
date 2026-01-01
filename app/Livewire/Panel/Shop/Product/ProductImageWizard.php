@@ -39,6 +39,7 @@ class ProductImageWizard extends Component
             'fater' => 'Fater',
             'nova' => 'Nova',
             'avajang' => 'Avajang',
+            'fafait' => 'Fafait',
             'generic' => 'سایر (عمومی)',
         ];
     }
@@ -58,7 +59,7 @@ class ProductImageWizard extends Component
     public function fetchImages(): void
     {
         $this->validate([
-            'site_type' => 'required|string|in:logitech,logikey,gigabyte,xvision,matin,green,fater,avajang,generic,nova',
+            'site_type' => 'required|string|in:logitech,logikey,gigabyte,xvision,matin,green,fater,avajang,generic,nova,fafait',
             'url' => 'required|url',
         ], [], [
             'site_type' => __('app.site_type'),

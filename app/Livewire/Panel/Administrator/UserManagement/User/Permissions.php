@@ -17,7 +17,7 @@ class Permissions extends Component
 
     public $search;
 
-    #[On('administrator.user-management.user.permissions.assign-data')]
+    #[On('panel.administrator.user-management.user.permissions.assign-data')]
     public function assignData($id): void
     {
         $this->user = User::findOrFail($id);
@@ -32,7 +32,7 @@ class Permissions extends Component
             return;
         }
         $this->user->givePermissionTo($permission->name);
-        $this->dispatch('administrator.user-management.user.permissions');
+        $this->dispatch('panel.administrator.user-management.user.permissions');
     }
 
     public function delete(Permission $permission): void
@@ -43,10 +43,10 @@ class Permissions extends Component
             return;
         }
         $this->user->revokePermissionTo($permission->name);
-        $this->dispatch('administrator.user-management.user.permissions');
+        $this->dispatch('panel.administrator.user-management.user.permissions');
     }
 
-    #[On('administrator.user-management.user.permissions.render')]
+    #[On('panel.administrator.user-management.user.permissions.render')]
     public function render()
     {
         $this->authorize('administrator_user_management_permissions');
