@@ -37,6 +37,15 @@
                                 </flux:text>
                             </div>
                             <div class="flex gap-3">
+                                @if(!$this->order->paid_at)
+                                    <flux:button 
+                                        href="{{ route('order.payment', ['id' => $this->order->id]) }}" 
+                                        variant="primary"
+                                        wire:navigate
+                                    >
+                                        {{ __('app.pay_order') }}
+                                    </flux:button>
+                                @endif
                                 <flux:button 
                                     href="{{ route('order.index') }}" 
                                     variant="ghost"

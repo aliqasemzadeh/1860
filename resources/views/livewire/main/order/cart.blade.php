@@ -172,12 +172,12 @@
                                 </div>
 
                                 <flux:button 
-                                    href="{{ route('home') }}" 
+                                    href="{{ route('order.checkout') }}" 
                                     variant="primary" 
                                     class="w-full"
                                     wire:navigate
                                 >
-                                    {{ __('app.complete_order') }}
+                                    {{ __('app.proceed_to_checkout') }}
                                 </flux:button>
 
                                 <flux:button 

@@ -80,6 +80,15 @@
                                                 class="text-sm"
                                             />
                                         </flux:field>
+                                        <flux:field>
+                                            <flux:checkbox 
+                                                wire:model.live="images.{{ $index }}.optimize"
+                                                label="{{ __('app.optimize_image_remove_background') }}"
+                                            />
+                                            <flux:description class="text-xs">
+                                                {{ __('app.optimize_image_description') }}
+                                            </flux:description>
+                                        </flux:field>
                                         <div dir="ltr" class="text-xs text-gray-500 dark:text-gray-400 truncate px-1">
                                             {{ $image['url'] }}
                                         </div>

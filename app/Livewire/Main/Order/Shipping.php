@@ -2,10 +2,453 @@
 
 namespace App\Livewire\Main\Order;
 
+use App\Jobs\Notification\SendSmsMessageJob;
+use App\Models\Customer\ShippingAddress as CustomerShippingAddress;
+use App\Models\Shop\Order;
+use App\Models\Shop\OrderItem;
+use App\Models\Shop\Product;
+use App\Models\Shop\ShippingMethod;
+use App\Models\Shop\ShippingRate;
+use App\Models\Shop\ShippingZone;
+use Binafy\LaravelCart\Models\Cart as UserCart;
+use Binafy\LaravelCart\Models\CartItem;
+use Flux\Flux;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+#[Layout('layouts.app')]
 class Shipping extends Component
 {
+    public $selectedAddressId = null;
+    public $selectedShippingRateId = null;
+    public $shippingAddress = [];
+    public $showNewAddressForm = false;
+    public $customerNote = '';
+
+    // New address fields
+    public $name = '';
+    public $province_id = null;
+    public $city_id = null;
+    public $city_search = '';
+    public $address = '';
+    public $postal_code = '';
+    public $emergency_contact = '';
+    public $is_default = false;
+
+    public function mount()
+    {
+        if (! auth()->check()) {
+            return $this->redirect(route('order.checkout'), navigate: true);
+        }
+
+        if (! $this->cart || $this->cartItems->isEmpty()) {
+            Flux::toast(variant: 'warning', text: __('app.cart_is_empty'));
+            return $this->redirect(route('order.cart'), navigate: true);
+        }
+
+        // Set default address if available
+        $defaultAddress = auth()->user()->defaultShippingAddress;
+        if ($defaultAddress) {
+            $this->selectedAddressId = $defaultAddress->id;
+            $this->loadAddress($defaultAddress->id);
+        }
+    }
+
+    #[Computed]
+    public function cart()
+    {
+        if (! auth()->check()) {
+            return null;
+        }
+
+        return UserCart::query()
+            ->with(['items.itemable'])
+            ->where('user_id', auth()->id())
+            ->first();
+    }
+
+    #[Computed]
+    public function cartItems()
+    {
+        if (! $this->cart) {
+            return collect();
+        }
+
+        return $this->cart->items;
+    }
+
+    #[Computed]
+    public function subtotal()
+    {
+        if (! $this->cart) {
+            return 0;
+        }
+
+        $total = 0;
+        foreach ($this->cart->items as $item) {
+            $price = $item->itemable->getPrice();
+            $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
+            $priceId = $options['price_id'] ?? null;
+            if ($priceId) {
+                $priceRecord = \App\Models\Shop\ProductPrice::find($priceId);
+                if ($priceRecord) {
+                    $price = $priceRecord->sale_price && $priceRecord->sale_price < $priceRecord->price
+                        ? $priceRecord->sale_price
+                        : $priceRecord->price;
+                }
+            }
+            $total += $price * $item->quantity;
+        }
+
+        return $total;
+    }
+
+    #[Computed]
+    public function totalWeight()
+    {
+        if (! $this->cart) {
+            return 0;
+        }
+
+        $weight = 0;
+        foreach ($this->cart->items as $item) {
+            if ($item->itemable instanceof Product) {
+                $productWeight = $item->itemable->weight ?? 0;
+                $weight += $productWeight * $item->quantity;
+            }
+        }
+
+        return $weight;
+    }
+
+    #[Computed]
+    public function addresses()
+    {
+        if (! auth()->check()) {
+            return collect();
+        }
+
+        return auth()->user()->shippingAddresses()->orderBy('is_default', 'desc')->orderBy('created_at', 'desc')->get();
+    }
+
+    #[Computed]
+    public function provinces()
+    {
+        return require lang_path('fa/provinces.php');
+    }
+
+    #[Computed]
+    public function cities()
+    {
+        if (! $this->province_id) {
+            return [];
+        }
+
+        $allCities = require lang_path('fa/cities.php');
+        $cities = $allCities[$this->province_id] ?? [];
+        
+        // Convert to array with index as key for selection
+        $result = [];
+        foreach ($cities as $index => $cityName) {
+            $result[$index] = $cityName;
+        }
+        
+        return $result;
+    }
+
+    public function updatedProvinceId()
+    {
+        $this->city_id = null; // Reset city when province changes
+    }
+
+    public function loadAddress($addressId)
+    {
+        $address = CustomerShippingAddress::find($addressId);
+        if ($address && $address->user_id === auth()->id()) {
+            $this->selectedAddressId = $addressId;
+            $this->shippingAddress = [
+                'province_id' => $address->province_id,
+                'city_id' => $address->city_id,
+                'postal_code' => $address->postal_code,
+            ];
+            $this->selectedShippingRateId = null; // Reset shipping method
+            $this->calculateShippingOptions();
+        }
+    }
+
+    public function calculateShippingOptions()
+    {
+        // This will trigger the computed property
+        $this->dispatch('$refresh');
+    }
+
+    #[Computed]
+    public function availableShippingMethods()
+    {
+        if (! $this->selectedAddressId || ! isset($this->shippingAddress['province_id']) || ! isset($this->shippingAddress['city_id'])) {
+            return collect();
+        }
+
+        $provinceId = $this->shippingAddress['province_id'];
+        $cityId = $this->shippingAddress['city_id'];
+        $postalCode = $this->shippingAddress['postal_code'] ?? '';
+
+        // Find matching zones
+        $zones = ShippingZone::all()->filter(function ($zone) use ($provinceId, $cityId, $postalCode) {
+            $states = $zone->states ?? [];
+            $cities = $zone->cities ?? [];
+            $areas = $zone->areas ?? [];
+
+            // Check province
+            if (! empty($states) && ! in_array($provinceId, $states)) {
+                return false;
+            }
+
+            // Check city
+            if (! empty($cities) && ! in_array($cityId, $cities)) {
+                return false;
+            }
+
+            // Check postal code area (first 3 digits)
+            if (! empty($areas) && $postalCode) {
+                $postalArea = substr($postalCode, 0, 3);
+                if (! in_array($postalArea, $areas)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        $methods = collect();
+
+        foreach ($zones as $zone) {
+            $rates = ShippingRate::where('shipping_zone_id', $zone->id)
+                ->where('is_active', true)
+                ->with('method')
+                ->get();
+
+            foreach ($rates as $rate) {
+                if (! $rate->method || ! $rate->method->is_active) {
+                    continue;
+                }
+
+                $cost = $this->calculateShippingCost($rate, $zone->id);
+                if ($cost === null) {
+                    continue; // Rate doesn't apply to this order
+                }
+
+                $methods->push([
+                    'id' => $rate->id,
+                    'method_id' => $rate->shipping_method_id,
+                    'method_name' => $rate->method->name,
+                    'zone_id' => $zone->id,
+                    'cost' => $cost,
+                    'estimated_days' => $rate->estimated_days,
+                    'rate' => $rate,
+                ]);
+            }
+        }
+
+        // Group by method and zone to avoid duplicates, but keep all options
+        return $methods->values();
+    }
+
+    protected function calculateShippingCost(ShippingRate $rate, $zoneId)
+    {
+        $rateType = $rate->rate_type;
+
+        if ($rateType === 'flat') {
+            // Flat rate - always applies
+            return $rate->amount;
+        } elseif ($rateType === 'weight') {
+            $totalWeight = $this->totalWeight;
+            if ($rate->min_weight !== null && $totalWeight < $rate->min_weight) {
+                return null;
+            }
+            if ($rate->max_weight !== null && $totalWeight > $rate->max_weight) {
+                return null;
+            }
+            return $rate->amount;
+        } elseif ($rateType === 'price') {
+            $subtotal = $this->subtotal;
+            if ($rate->min_price !== null && $subtotal < $rate->min_price) {
+                return null;
+            }
+            if ($rate->max_price !== null && $subtotal > $rate->max_price) {
+                return null;
+            }
+            return $rate->amount;
+        }
+
+        return null;
+    }
+
+    public function saveNewAddress()
+    {
+        $this->validate([
+            'name' => ['nullable', 'string', 'max:255'],
+            'province_id' => ['required', 'integer'],
+            'city_id' => ['required', 'integer'],
+            'address' => ['required', 'string'],
+            'postal_code' => ['nullable', 'string', 'max:10'],
+            'emergency_contact' => ['nullable', 'string', 'max:20'],
+        ]);
+
+        // If this is set as default, unset other defaults
+        if ($this->is_default) {
+            auth()->user()->shippingAddresses()->update(['is_default' => false]);
+        }
+
+        $newAddress = auth()->user()->shippingAddresses()->create([
+            'name' => $this->name,
+            'province_id' => $this->province_id,
+            'city_id' => $this->city_id,
+            'address' => $this->address,
+            'postal_code' => $this->postal_code,
+            'emergency_contact' => $this->emergency_contact,
+            'is_default' => $this->is_default,
+        ]);
+
+        $this->selectedAddressId = $newAddress->id;
+        $this->loadAddress($newAddress->id);
+        $this->showNewAddressForm = false;
+        $this->resetNewAddressFields();
+
+        Flux::toast(variant: 'success', text: __('app.address_saved'));
+    }
+
+    protected function resetNewAddressFields()
+    {
+        $this->name = '';
+        $this->province_id = null;
+        $this->city_id = null;
+        $this->address = '';
+        $this->postal_code = '';
+        $this->emergency_contact = '';
+        $this->is_default = false;
+    }
+
+    public function toggleNewAddressForm()
+    {
+        $this->showNewAddressForm = ! $this->showNewAddressForm;
+        if (! $this->showNewAddressForm) {
+            $this->resetNewAddressFields();
+        }
+    }
+
+    public function createOrder()
+    {
+        if (! $this->selectedAddressId) {
+            Flux::toast(variant: 'danger', text: __('app.select_shipping_address'));
+            return;
+        }
+
+        if (! $this->selectedShippingRateId) {
+            Flux::toast(variant: 'danger', text: __('app.select_shipping_method'));
+            return;
+        }
+
+        $address = CustomerShippingAddress::find($this->selectedAddressId);
+        if (! $address || $address->user_id !== auth()->id()) {
+            Flux::toast(variant: 'danger', text: __('app.invalid_address'));
+            return;
+        }
+
+        // Find the selected shipping option
+        $selectedOption = $this->availableShippingMethods->firstWhere('id', $this->selectedShippingRateId);
+        if (! $selectedOption) {
+            Flux::toast(variant: 'danger', text: __('app.invalid_shipping_method'));
+            return;
+        }
+
+        $rate = ShippingRate::find($this->selectedShippingRateId);
+        if (! $rate) {
+            Flux::toast(variant: 'danger', text: __('app.invalid_shipping_rate'));
+            return;
+        }
+
+        // Calculate totals
+        $subtotal = $this->subtotal;
+        $shippingAmount = $selectedOption['cost'];
+        $discountAmount = 0; // Can be calculated later
+        $taxAmount = 0; // Can be calculated later
+        $total = $subtotal + $shippingAmount + $taxAmount - $discountAmount;
+
+        // Create order
+        $order = Order::create([
+            'user_id' => auth()->id(),
+            'order_number' => Order::generateOrderNumber(),
+            'status' => 'pending',
+            'currency' => 'IRT',
+            'subtotal_amount' => $subtotal,
+            'discount_amount' => $discountAmount,
+            'tax_amount' => $taxAmount,
+            'shipping_method_id' => $rate->shipping_method_id,
+            'shipping_zone_id' => $rate->shipping_zone_id,
+            'shipping_amount' => $shippingAmount,
+            'shipping_estimated_days' => $rate->estimated_days,
+            'total_amount' => $total,
+            'shipping_address' => [
+                'name' => $address->name,
+                'address' => $address->address,
+                'province_id' => $address->province_id,
+                'city_id' => $address->city_id,
+                'postal_code' => $address->postal_code,
+                'emergency_contact' => $address->emergency_contact,
+            ],
+            'customer_note' => $this->customerNote,
+        ]);
+
+        // Create order items
+        foreach ($this->cart->items as $cartItem) {
+            if (! $cartItem->itemable instanceof Product) {
+                continue;
+            }
+
+            $price = $cartItem->itemable->getPrice();
+            $options = is_string($cartItem->options) ? json_decode($cartItem->options, true) : $cartItem->options;
+            $priceId = $options['price_id'] ?? null;
+            $colorId = $options['color']['id'] ?? null;
+            $warrantyId = $options['warranty']['id'] ?? null;
+
+            if ($priceId) {
+                $priceRecord = \App\Models\Shop\ProductPrice::find($priceId);
+                if ($priceRecord) {
+                    $price = $priceRecord->sale_price && $priceRecord->sale_price < $priceRecord->price
+                        ? $priceRecord->sale_price
+                        : $priceRecord->price;
+                }
+            }
+
+            OrderItem::create([
+                'order_id' => $order->id,
+                'sku' => $cartItem->itemable->sku ?? null,
+                'name' => $cartItem->itemable->name,
+                'warranty_id' => $warrantyId,
+                'color_id' => $colorId,
+                'quantity' => $cartItem->quantity,
+                'unit_price_amount' => $price,
+                'discount_amount' => 0,
+                'tax_amount' => 0,
+                'total_amount' => $price * $cartItem->quantity,
+                'meta' => $cartItem->options,
+            ]);
+        }
+
+        // Clear cart
+        $this->cart->items()->delete();
+        $this->cart->delete();
+
+        // Send SMS notification
+        $smsMessage = __('app.order_created_sms', ['order_number' => $order->order_number]);
+        dispatch(new SendSmsMessageJob(auth()->user()->mobile, $smsMessage));
+
+        Flux::toast(variant: 'success', text: __('app.order_created'));
+        $this->redirect(route('order.view', ['id' => $order->id]), navigate: true);
+    }
+
     public function render()
     {
         return view('livewire.main.order.shipping');

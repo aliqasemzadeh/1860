@@ -9,8 +9,11 @@ Route::get('/product/id/{id}', \App\Livewire\Main\Product\View::class)->name('pr
 Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/cart', \App\Livewire\Main\Order\Cart::class)->name('order.cart');
+    Route::get('/checkout', \App\Livewire\Main\Order\Checkout::class)->name('order.checkout');
+    Route::get('/shipping', \App\Livewire\Main\Order\Shipping::class)->name('order.shipping');
     Route::get('/orders', \App\Livewire\Main\Order\Index::class)->name('order.index');
     Route::get('/orders/{id}', \App\Livewire\Main\Order\View::class)->name('order.view');
+    Route::get('/orders/{id}/payment', \App\Livewire\Main\Order\Payment::class)->name('order.payment');
 
 
     Route::get('/panel/service-center/dashboard/index', \App\Livewire\Panel\ServiceCenter\Dashboard\Index::class)->name('panel.service-center.dashboard');
@@ -67,3 +70,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 Route::get('/login', \App\Livewire\Auth\Login::class)->name('login')->middleware('guest');
 Route::get('/logout', \App\Livewire\Auth\Logout::class)->name('logout')->middleware('auth');
+
+// Payment callback (no auth required, handled by payment gateway)
+Route::post('/payment/callback', [\App\Http\Controllers\PaymentController::class, 'callback'])->name('payment.callback');
+Route::get('/payment/callback', [\App\Http\Controllers\PaymentController::class, 'callback'])->name('payment.callback');

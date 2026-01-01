@@ -97,6 +97,7 @@ class ProductImageWizard extends Component
                         'id' => Str::random(10),
                         'url' => $imageUrl,
                         'name' => $baseName,
+                        'optimize' => false, // بهینه‌سازی پیش‌فرض غیرفعال
                     ];
                 }
             }
@@ -206,11 +207,17 @@ class ProductImageWizard extends Component
 
                     if ($saved) {
                         // Create ProductImage record
-                        ProductImage::create([
+                        $productImage = ProductImage::create([
                             'product_id' => $this->product->id,
                             'file_path' => $filePath,
                             'file_name' => $fileName,
                         ]);
+
+                        // اگر بهینه‌سازی فعال باشد، Job را dispatch کن
+                        if (!empty($imageData['optimize']) && $imageData['optimize']) {
+                            \App\Jobs\Shop\ProductImageOptimizeJob::dispatch($productImage->id);
+                        }
+
                         $successCount++;
                     } else {
                         $failCount++;
