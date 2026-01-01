@@ -201,13 +201,40 @@ class Shipping extends Component
             $areas = $zone->areas ?? [];
 
             // Check province
-            if (! empty($states) && ! in_array($provinceId, $states)) {
-                return false;
+            if (! empty($states)) {
+                // Convert states to integers (handle both old string names and new integer IDs)
+                $stateIds = [];
+                foreach ($states as $state) {
+                    if (is_numeric($state)) {
+                        $stateIds[] = (int) $state;
+                    }
+                }
+                if (! empty($stateIds) && ! in_array($provinceId, $stateIds)) {
+                    return false;
+                }
             }
 
-            // Check city
-            if (! empty($cities) && ! in_array($cityId, $cities)) {
-                return false;
+            // Check city - handle both old format (simple integers) and new format (arrays with province_id and city_index)
+            if (! empty($cities)) {
+                $cityMatches = false;
+                foreach ($cities as $city) {
+                    if (is_array($city) && isset($city['province_id']) && isset($city['city_index'])) {
+                        // New format: check if province and city index match
+                        if ((int) $city['province_id'] === $provinceId && (int) $city['city_index'] === $cityId) {
+                            $cityMatches = true;
+                            break;
+                        }
+                    } elseif (is_numeric($city)) {
+                        // Old format: just check city index (legacy support)
+                        if ((int) $city === $cityId) {
+                            $cityMatches = true;
+                            break;
+                        }
+                    }
+                }
+                if (! $cityMatches) {
+                    return false;
+                }
             }
 
             // Check postal code area (first 3 digits)

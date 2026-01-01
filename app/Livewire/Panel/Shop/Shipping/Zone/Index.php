@@ -52,6 +52,76 @@ class Index extends Component
             ->paginate(10);
     }
 
+    /**
+     * Get province name by ID.
+     */
+    public function getProvinceName($provinceId): string
+    {
+        $provinces = (array) __('provinces');
+        return $provinces[$provinceId] ?? (string) $provinceId;
+    }
+
+    /**
+     * Get city name by province ID and city index.
+     */
+    public function getCityName($provinceId, $cityIndex): string
+    {
+        $citiesByProvince = (array) __('cities');
+        if (isset($citiesByProvince[$provinceId]) && is_array($citiesByProvince[$provinceId])) {
+            $cities = $citiesByProvince[$provinceId];
+            return $cities[$cityIndex] ?? (string) $cityIndex;
+        }
+        return (string) $cityIndex;
+    }
+
+    /**
+     * Format states for display.
+     */
+    public function formatStates($zone): string
+    {
+        $states = (array) $zone->states;
+        if (empty($states)) {
+            return __('app.all');
+        }
+
+        $names = [];
+        foreach ($states as $state) {
+            if (is_numeric($state)) {
+                $names[] = $this->getProvinceName((int) $state);
+            } else {
+                $names[] = $state; // Legacy: already a name
+            }
+        }
+
+        return implode(', ', $names);
+    }
+
+    /**
+     * Format cities for display.
+     */
+    public function formatCities($zone): string
+    {
+        $cities = (array) $zone->cities;
+        if (empty($cities)) {
+            return __('app.all');
+        }
+
+        $names = [];
+        foreach ($cities as $city) {
+            if (is_array($city) && isset($city['province_id']) && isset($city['city_index'])) {
+                // New format
+                $names[] = $this->getCityName((int) $city['province_id'], (int) $city['city_index']);
+            } elseif (is_numeric($city)) {
+                // Old format: just index (can't determine province, show as-is)
+                $names[] = (string) $city;
+            } else {
+                $names[] = (string) $city; // Legacy: already a name
+            }
+        }
+
+        return implode(', ', $names);
+    }
+
     #[Layout('layouts.panels.shop')]
     public function render()
     {

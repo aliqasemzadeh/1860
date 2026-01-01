@@ -52,10 +52,10 @@
                         {{ implode(', ', (array) $zone->countries) }}
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap text-xs">
-                        {{ implode(', ', (array) $zone->states) }}
+                        {{ $this->formatStates($zone) }}
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap text-xs">
-                        {{ implode(', ', (array) $zone->cities) }}
+                        {{ $this->formatCities($zone) }}
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap text-xs">
                         {{ implode(', ', (array) $zone->areas) }}

@@ -687,6 +687,8 @@ return [
     'no_results' => 'نتیجه‌ای یافت نشد',
     'select' => 'انتخاب',
     'all' => 'همه',
+    'all_provinces' => 'همه استان‌ها',
+    'all_cities' => 'همه شهرها',
     'actions' => 'عملیات',
     'submit' => 'ارسال',
     'reset' => 'بازنشانی',

@@ -32,9 +32,9 @@
                         wire:model="states"
                         placeholder="{{ __('app.select_provinces') }}"
                     >
-                        @foreach($provinces as $province)
-                            <flux:pillbox.option value="{{ $province }}">
-                                {{ $province }}
+                        @foreach($provinces as $provinceId => $provinceName)
+                            <flux:pillbox.option value="{{ $provinceId }}">
+                                {{ $provinceName }}
                             </flux:pillbox.option>
                         @endforeach
                     </flux:pillbox>
@@ -52,10 +52,12 @@
                         wire:model="cities"
                         placeholder="{{ __('app.select_cities') }}"
                     >
-                        @foreach($cityOptions as $city)
-                            <flux:pillbox.option value="{{ $city }}">
-                                {{ $city }}
-                            </flux:pillbox.option>
+                        @foreach($cityOptions as $provinceId => $provinceCities)
+                            @foreach($provinceCities as $cityIndex => $cityName)
+                                <flux:pillbox.option value="{{ $provinceId }}:{{ $cityIndex }}">
+                                    {{ $cityName }} ({{ $provinces[$provinceId] ?? '' }})
+                                </flux:pillbox.option>
+                            @endforeach
                         @endforeach
                     </flux:pillbox>
                     <flux:text class="mt-1 text-xs text-gray-500">

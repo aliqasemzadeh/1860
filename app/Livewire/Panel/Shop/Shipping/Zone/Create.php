@@ -14,16 +14,16 @@ class Create extends Component
     public string $countries = "IR";
 
     /**
-     * Selected provinces (استان‌ها) as an array of names.
+     * Selected provinces (استان‌ها) as an array of IDs.
      *
-     * @var array<int,string>
+     * @var array<int>
      */
     public array $states = [];
 
     /**
-     * Selected cities (شهرها) as an array of names.
+     * Selected cities (شهرها) as an array of indices.
      *
-     * @var array<int,string>
+     * @var array<int>
      */
     public array $cities = [];
 
@@ -35,36 +35,29 @@ class Create extends Component
 
     /**
      * City options based on selected provinces.
+     * Structure: [province_id => [city_index => city_name]]
      *
-     * @var array<int,string>
+     * @var array<int,array<int,string>>
      */
     public array $cityOptions = [];
 
     public function updatedStates(): void
     {
-        $provinces = (array) __('provinces');
         $citiesByProvince = (array) __('cities');
 
-        // پیدا کردن کد استان‌ها بر اساس نام انتخاب‌شده
-        $selectedProvinceIds = [];
-        foreach ($provinces as $id => $name) {
-            if (in_array($name, $this->states, true)) {
-                $selectedProvinceIds[] = (int) $id;
-            }
-        }
-
-        // جمع‌آوری شهرها بر اساس کد استان‌ها
-        $cities = [];
-        foreach ($selectedProvinceIds as $provinceId) {
+        // جمع‌آوری شهرها بر اساس کد استان‌های انتخاب شده
+        $cityOptions = [];
+        foreach ($this->states as $provinceId) {
+            $provinceId = (int) $provinceId;
             if (isset($citiesByProvince[$provinceId]) && is_array($citiesByProvince[$provinceId])) {
-                $cities = array_merge($cities, $citiesByProvince[$provinceId]);
+                $cityOptions[$provinceId] = $citiesByProvince[$provinceId];
             }
         }
 
-        $cities = array_values(array_unique($cities));
-        sort($cities, SORT_NATURAL);
-
-        $this->cityOptions = $cities;
+        $this->cityOptions = $cityOptions;
+        
+        // Reset cities when provinces change
+        $this->cities = [];
     }
 
     public function create(): void
@@ -77,11 +70,26 @@ class Create extends Component
             'areas' => ['nullable', 'string'],
         ]);
 
+        // Convert states to integers (province IDs)
+        $states = array_map('intval', $validated['states'] ?? []);
+        
+        // Convert cities: format is "province_id:city_index", store as array of [province_id, city_index] pairs
+        $cities = [];
+        foreach ($validated['cities'] ?? [] as $cityValue) {
+            if (str_contains($cityValue, ':')) {
+                [$provinceId, $cityIndex] = explode(':', $cityValue, 2);
+                $cities[] = [
+                    'province_id' => (int) $provinceId,
+                    'city_index' => (int) $cityIndex,
+                ];
+            }
+        }
+
         ShippingZone::create([
             'name' => $validated['name'],
             'countries' => array_filter(array_map('trim', explode("\n", $validated['countries']))),
-            'states' => array_values($validated['states'] ?? []),
-            'cities' => array_values($validated['cities'] ?? []),
+            'states' => array_values($states),
+            'cities' => $cities,
             'areas' => array_filter(array_map('trim', explode("\n", (string) ($validated['areas'] ?? '')))),
         ]);
 
@@ -95,7 +103,7 @@ class Create extends Component
 
     public function render(): View
     {
-        $provinces = array_values((array) __('provinces'));
+        $provinces = (array) __('provinces'); // Keep as [id => name] for display
 
         return view('livewire.panel.shop.shipping.zone.create', compact('provinces'));
     }

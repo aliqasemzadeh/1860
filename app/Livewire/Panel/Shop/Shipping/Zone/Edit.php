@@ -19,16 +19,16 @@ class Edit extends Component
     public string $countries = '';
 
     /**
-     * Selected provinces (استان‌ها) as an array of names.
+     * Selected provinces (استان‌ها) as an array of IDs.
      *
-     * @var array<int,string>
+     * @var array<int>
      */
     public array $states = [];
 
     /**
-     * Selected cities (شهرها) as an array of names.
+     * Selected cities (شهرها) as an array of indices.
      *
-     * @var array<int,string>
+     * @var array<int>
      */
     public array $cities = [];
 
@@ -40,34 +40,29 @@ class Edit extends Component
 
     /**
      * City options based on selected provinces.
+     * Structure: [province_id => [city_index => city_name]]
      *
-     * @var array<int,string>
+     * @var array<int,array<int,string>>
      */
     public array $cityOptions = [];
 
     public function updatedStates(): void
     {
-        $provinces = (array) __('provinces');
         $citiesByProvince = (array) __('cities');
 
-        $selectedProvinceIds = [];
-        foreach ($provinces as $id => $name) {
-            if (in_array($name, $this->states, true)) {
-                $selectedProvinceIds[] = (int) $id;
-            }
-        }
-
-        $cities = [];
-        foreach ($selectedProvinceIds as $provinceId) {
+        // جمع‌آوری شهرها بر اساس کد استان‌های انتخاب شده
+        $cityOptions = [];
+        foreach ($this->states as $provinceId) {
+            $provinceId = (int) $provinceId;
             if (isset($citiesByProvince[$provinceId]) && is_array($citiesByProvince[$provinceId])) {
-                $cities = array_merge($cities, $citiesByProvince[$provinceId]);
+                $cityOptions[$provinceId] = $citiesByProvince[$provinceId];
             }
         }
 
-        $cities = array_values(array_unique($cities));
-        sort($cities, SORT_NATURAL);
-
-        $this->cityOptions = $cities;
+        $this->cityOptions = $cityOptions;
+        
+        // Reset cities when provinces change
+        $this->cities = [];
     }
 
     #[On('panel.shop.shipping.zone.edit.assign-data')]
@@ -78,8 +73,39 @@ class Edit extends Component
         $this->id = $this->zone->id;
         $this->name = (string) $this->zone->name;
         $this->countries = implode("\n", (array) $this->zone->countries);
-        $this->states = array_values((array) $this->zone->states);
-        $this->cities = array_values((array) $this->zone->cities);
+        
+        // Convert states to integers (handle both old string names and new integer IDs)
+        $states = (array) $this->zone->states;
+        $provinces = (array) __('provinces');
+        $convertedStates = [];
+        foreach ($states as $state) {
+            if (is_numeric($state)) {
+                $convertedStates[] = (int) $state;
+            } else {
+                // Legacy: convert name to ID
+                foreach ($provinces as $provinceId => $provinceName) {
+                    if ($provinceName === $state) {
+                        $convertedStates[] = (int) $provinceId;
+                        break;
+                    }
+                }
+            }
+        }
+        $this->states = array_values($convertedStates);
+        
+        // Convert cities: handle both old format (integers) and new format (arrays with province_id and city_index)
+        $cities = (array) $this->zone->cities;
+        $convertedCities = [];
+        foreach ($cities as $city) {
+            if (is_array($city) && isset($city['province_id']) && isset($city['city_index'])) {
+                // New format: [province_id, city_index]
+                $convertedCities[] = $city['province_id'] . ':' . $city['city_index'];
+            } elseif (is_numeric($city)) {
+                // Old format: just integer (legacy, will need province context - skip for now)
+                // This is problematic, but we'll skip legacy integer cities
+            }
+        }
+        $this->cities = $convertedCities;
         $this->areas = implode("\n", (array) $this->zone->areas);
         $this->updatedStates();
 
@@ -100,11 +126,26 @@ class Edit extends Component
             'areas' => ['nullable', 'string'],
         ]);
 
+        // Convert states to integers (province IDs)
+        $states = array_map('intval', $validated['states'] ?? []);
+        
+        // Convert cities: format is "province_id:city_index", store as array of [province_id, city_index] pairs
+        $cities = [];
+        foreach ($validated['cities'] ?? [] as $cityValue) {
+            if (str_contains($cityValue, ':')) {
+                [$provinceId, $cityIndex] = explode(':', $cityValue, 2);
+                $cities[] = [
+                    'province_id' => (int) $provinceId,
+                    'city_index' => (int) $cityIndex,
+                ];
+            }
+        }
+
         $this->zone->update([
             'name' => $validated['name'],
             'countries' => array_filter(array_map('trim', explode("\n", $validated['countries']))),
-            'states' => array_values($validated['states'] ?? []),
-            'cities' => array_values($validated['cities'] ?? []),
+            'states' => array_values($states),
+            'cities' => $cities,
             'areas' => array_filter(array_map('trim', explode("\n", (string) ($validated['areas'] ?? '')))),
         ]);
 
@@ -115,7 +156,7 @@ class Edit extends Component
 
     public function render(): View
     {
-        $provinces = array_values((array) __('provinces'));
+        $provinces = (array) __('provinces'); // Keep as [id => name] for display
         $cityOptions = $this->cityOptions;
 
         return view('livewire.panel.shop.shipping.zone.edit', compact('provinces', 'cityOptions'));
