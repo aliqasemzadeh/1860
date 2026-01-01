@@ -10,7 +10,7 @@ return [
     | You can switch to a different driver at runtime.
     |
     */
-    'default' => 'zarinpal',
+    'default' => 'behpardakht',
 
     /*
     |--------------------------------------------------------------------------
@@ -74,9 +74,9 @@ return [
             'apiPurchaseUrl' => 'https://bpm.shaparak.ir/pgwchannel/services/pgw?wsdl',
             'apiPaymentUrl' => 'https://bpm.shaparak.ir/pgwchannel/startpay.mellat',
             'apiVerificationUrl' => 'https://bpm.shaparak.ir/pgwchannel/services/pgw?wsdl',
-            'terminalId' => '',
-            'username' => '',
-            'password' => '',
+            'terminalId' => '134758812',
+            'username' => 'user134758812',
+            'password' => '54524758',
             'callbackUrl' => 'http://yoursite.com/path/to',
             'description' => 'payment using behpardakht',
             'currency' => 'T', //Can be R, T (Rial, Toman)

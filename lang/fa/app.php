@@ -780,4 +780,13 @@ return [
     'search_in_products' => 'جستجو در محصولات',
     'optimize_image_remove_background' => 'بهینه‌سازی تصویر (حذف پس‌زمینه)',
     'optimize_image_description' => 'پس‌زمینه سفید یا مشکی را transparent کرده و تصویر را به PNG تبدیل می‌کند',
+
+    // Category View
+    'sort_by' => 'مرتب‌سازی بر اساس',
+    'sort_newest' => 'جدیدترین',
+    'sort_name' => 'نام',
+    'sort_price_low_high' => 'قیمت: کم به زیاد',
+    'sort_price_high_low' => 'قیمت: زیاد به کم',
+    'min_price' => 'حداقل قیمت',
+    'max_price' => 'حداکثر قیمت',
 ];
