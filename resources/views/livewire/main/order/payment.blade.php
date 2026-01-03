@@ -3,6 +3,16 @@
 </x-slot>
 
 <div>
+    @if ($paymentHtml)
+        <div id="payment-form-container" x-data="{ submitForm() { this.$nextTick(() => { const form = this.$el.querySelector('form'); if (form) { form.submit(); } else { const scripts = this.$el.querySelectorAll('script'); scripts.forEach(script => { const newScript = document.createElement('script'); Array.from(script.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value)); newScript.appendChild(document.createTextNode(script.innerHTML)); script.parentNode.replaceChild(newScript, script); }); } }); } }" x-init="submitForm()">
+            <div class="fixed inset-0 bg-white dark:bg-zinc-950 z-50 flex flex-col items-center justify-center">
+                <flux:heading size="xl" class="mb-4">{{ __('app.redirecting_to_gateway') }}</flux:heading>
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-zinc-900 dark:border-white"></div>
+            </div>
+            {!! $paymentHtml !!}
+        </div>
+    @endif
+
     @auth
         @if($this->order)
             <section class="py-8 antialiased md:py-12">
@@ -54,18 +64,18 @@
 
                             {{-- Payment Button --}}
                             <div class="space-y-4">
-                                <flux:button 
+                                <flux:button
                                     wire:click="pay"
-                                    variant="primary" 
+                                    variant="primary"
                                     class="w-full"
                                     size="base"
                                 >
                                     {{ __('app.pay_now') }}
                                 </flux:button>
 
-                                <flux:button 
-                                    href="{{ route('order.view', ['id' => $this->order->id]) }}" 
-                                    variant="ghost" 
+                                <flux:button
+                                    href="{{ route('order.view', ['id' => $this->order->id]) }}"
+                                    variant="ghost"
                                     class="w-full"
                                     wire:navigate
                                 >

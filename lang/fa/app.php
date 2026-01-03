@@ -584,6 +584,7 @@ return [
     'payment_failed' => 'پرداخت ناموفق بود',
     'order_already_paid' => 'این سفارش قبلاً پرداخت شده است.',
     'order_not_found' => 'سفارش یافت نشد.',
+    'redirecting_to_gateway' => 'در حال انتقال به درگاه پرداخت...',
 
     // Price Fetchers
     'price_fetchers' => 'دریافت‌کننده‌های قیمت',

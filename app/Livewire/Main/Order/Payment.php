@@ -4,6 +4,7 @@ namespace App\Livewire\Main\Order;
 
 use App\Models\Shop\Order;
 use Flux\Flux;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Shetabit\Multipay\Exceptions\InvalidPaymentException;
@@ -14,6 +15,7 @@ use Shetabit\Payment\Facade\Payment as GatewayPayment;
 class Payment extends Component
 {
     public $orderId;
+    public $paymentHtml;
 
     public function mount($id)
     {
@@ -65,10 +67,14 @@ class Payment extends Component
                     $meta = $order->meta ?? [];
                     $meta['payment_transaction_id'] = $transactionId;
                     $order->update(['meta' => $meta]);
+
+                    Log::info('meta updated', ['meta' => $meta]);
                 });
 
-            // Pay and redirect to gateway
-            return $payment->pay()->render();
+            Log::info('Payment created', ['payment' => $payment]);
+
+            // Set payment HTML for rendering in view
+            $this->paymentHtml = $payment->pay()->render();
 
         } catch (\Exception $e) {
             Flux::toast(variant: 'danger', text: __('app.payment_error').': '.$e->getMessage());
