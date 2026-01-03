@@ -71,9 +71,11 @@ return [
             'description' => 'payment using asanpardakht',
         ],
         'behpardakht' => [
-            'apiPurchaseUrl' => 'https://bpm.shaparak.ir/pgwchannel/services/pgw?wsdl',
+            'apiPurchaseUrl' => 'https://sandbox.banktest.ir/mellat/bpm.shaparak.ir/pgwchannel/services/pgw?wsdl',
+            //'apiPurchaseUrl' => 'https://bpm.shaparak.ir/pgwchannel/services/pgw?wsdl',
             'apiPaymentUrl' => 'https://bpm.shaparak.ir/pgwchannel/startpay.mellat',
-            'apiVerificationUrl' => 'https://bpm.shaparak.ir/pgwchannel/services/pgw?wsdl',
+            //'apiPaymentUrl' => 'https://bpm.shaparak.ir/pgwchannel/startpay.mellat',
+            'apiVerificationUrl' => 'https://sandbox.banktest.ir/mellat/bpm.shaparak.ir/pgwchannel/startpay.mellat',
             'terminalId' => '134758812',
             'username' => 'user134758812',
             'password' => '54524758',
