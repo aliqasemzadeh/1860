@@ -53,12 +53,23 @@ class Index extends Component
             ->groupBy('status')
             ->pluck('total', 'status');
 
-        return collect(StatusEnum::cases())->map(fn (StatusEnum $status) => [
+        $allCount = $counts->sum();
+
+        $stats = collect(StatusEnum::cases())->map(fn (StatusEnum $status) => [
             'label' => $status->label(),
             'value' => $counts->get($status->value, 0),
             'color' => $status->color(),
             'status' => $status->value,
         ]);
+
+        $stats->prepend([
+            'label' => __('app.all'),
+            'value' => $allCount,
+            'color' => 'zinc',
+            'status' => '',
+        ]);
+
+        return $stats;
     }
 
     #[Computed]
