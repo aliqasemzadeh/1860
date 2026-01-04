@@ -4,6 +4,7 @@ namespace App\Livewire\Panel\ServiceCenter\Repair;
 
 use App\Enums\StatusEnum;
 use App\Models\ServiceCenter\Repair;
+use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
@@ -42,6 +43,22 @@ class Index extends Component
             $this->sortDirection = 'asc';
         }
         $this->resetPage();
+    }
+
+    #[Computed]
+    public function stats(): Collection
+    {
+        $counts = Repair::query()
+            ->selectRaw('status, count(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        return collect(StatusEnum::cases())->map(fn (StatusEnum $status) => [
+            'label' => $status->label(),
+            'value' => $counts->get($status->value, 0),
+            'color' => $status->color(),
+            'status' => $status->value,
+        ]);
     }
 
     #[Computed]

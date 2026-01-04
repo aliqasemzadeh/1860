@@ -1,5 +1,5 @@
 <x-slot name="title">
-    {{ "ستارگان رز جنوب" }}
+    {{ config('app.name') }}
 </x-slot>
 <div>
     <section class="py-8 antialiased md:py-12">

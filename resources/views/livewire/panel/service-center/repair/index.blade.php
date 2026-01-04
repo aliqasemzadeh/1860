@@ -35,6 +35,23 @@
         <livewire:panel.service-center.repair.edit />
     @endcan
 
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+        @foreach ($this->stats as $stat)
+            <div
+                wire:click="$set('statusFilter', '{{ $stat['status'] }}')"
+                class="relative cursor-pointer rounded-xl border border-zinc-200 dark:border-zinc-700 p-4 bg-white dark:bg-zinc-800 shadow-sm hover:border-{{ $stat['color'] }}-500 transition-colors {{ $statusFilter === $stat['status'] ? 'ring-2 ring-'.$stat['color'].'-500' : '' }}"
+            >
+                <flux:subheading size="sm" class="uppercase tracking-wider">{{ $stat['label'] }}</flux:subheading>
+                <div class="flex items-end justify-between mt-2">
+                    <flux:heading size="xl" class="leading-none">{{ $stat['value'] }}</flux:heading>
+                    <div class="p-2 rounded-lg bg-{{ $stat['color'] }}-100 dark:bg-{{ $stat['color'] }}-900/30">
+                        <flux:icon icon="wrench-screwdriver" variant="micro" class="text-{{ $stat['color'] }}-600 dark:text-{{ $stat['color'] }}-400" />
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+
     <flux:table :paginate="$this->repairs">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
             <flux:table.column colspan="8" class="bg-white dark:bg-zinc-900">
