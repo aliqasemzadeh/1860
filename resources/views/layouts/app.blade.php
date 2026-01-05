@@ -19,18 +19,20 @@
 
 <flux:header sticky class="bg-white lg:bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
     <flux:navbar class="w-full flex flex-row">
-        <flux:sidebar.toggle class="lg:hidden" icon="bars-3" inset="left" />
+        <flux:sidebar.toggle class="lg:hidden" icon="bars-3" inset="left"/>
 
-        <livewire:main.header.search />
+        <livewire:main.header.search/>
 
-        <livewire:main.sidebar.basket />
+        <flux:spacer/>
+
+        <livewire:main.sidebar.basket/>
 
         @auth
-        <flux:button icon="user" href="{{ route('logout') }}" square variant="ghost" />
+            <flux:button icon="user" href="{{ route('logout') }}" square variant="ghost"/>
         @endauth
 
         @guest
-        <flux:button icon="user" href="{{ route('login') }}" square variant="ghost" />
+            <flux:button icon="user" href="{{ route('login') }}" square variant="ghost"/>
         @endguest
 
     </flux:navbar>
