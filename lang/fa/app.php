@@ -650,7 +650,6 @@ return [
     'some_images_failed' => ':count تصویر با خطا مواجه شد.',
     'error_uploading_images' => 'خطا در آپلود تصاویر',
     'url' => 'آدرس',
-    'select_site_type' => 'انتخاب نوع سایت',
     'select_image_from_url' => 'انتخاب تصویر از آدرس',
     'select_product_image_from_url' => 'انتخاب تصویر محصول از آدرس',
     'select_product_image_description' => 'لینک صفحه محصول را وارد کنید تا تصاویر به صورت خودکار دریافت شوند. سپس یک تصویر را انتخاب کنید.',
@@ -818,4 +817,5 @@ return [
     'order_status_delivered' => 'تحویل شده',
     'order_status_cancelled' => 'لغو شده',
     'order_status_paid' => 'پرداخت شده',
+    'service_center_dashboard' => 'داشبرد خدمات',
 ];
