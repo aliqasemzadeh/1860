@@ -2,6 +2,7 @@
 
 namespace App\Models\ServiceCenter;
 
+use App\Enums\StatusEnum;
 use App\Jobs\Notification\SendSmsMessageJob;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -130,5 +131,27 @@ class Repair extends Model
         $this->admission_code = sprintf('%d%02d%03d', $year, $month, $admissionCounter);
 
         $this->saveQuietly();
+    }
+
+    /**
+     * Get the device name by combining brand, type, and model.
+     */
+    public function getDeviceNameAttribute(): string
+    {
+        $parts = array_filter([
+            $this->device_brand,
+            $this->device_type,
+            $this->device_model,
+        ]);
+
+        return !empty($parts) ? implode(' ', $parts) : __('app.unknown_device');
+    }
+
+    /**
+     * Get the status enum instance.
+     */
+    public function getStatusEnumAttribute(): StatusEnum
+    {
+        return StatusEnum::tryFromSafe($this->status);
     }
 }
