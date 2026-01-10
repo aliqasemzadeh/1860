@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Jobs\Spidar;
+namespace App\Jobs\Sepidar;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-class SaveBankAccountDataJob implements ShouldQueue
+class SaveInvoiceDataJob implements ShouldQueue
 {
     use Queueable;
 

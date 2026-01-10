@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\Spidar\SaveBankAccountDataJob;
-use App\Jobs\Spidar\SaveInvoiceDataJob;
+use App\Jobs\Sepidar\SaveBankAccountDataJob;
+use App\Jobs\Sepidar\SaveInvoiceDataJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class SpidarController extends Controller
+class SepidarController extends Controller
 {
     public function invoices(Request $request)
     {
-        Log::channel('spidar')->info('Invoice POST data received', $request->all());
+        Log::channel('sepidar')->info('Invoice POST data received', $request->all());
 
         SaveInvoiceDataJob::dispatch($request->all());
 

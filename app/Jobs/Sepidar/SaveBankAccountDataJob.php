@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Jobs\Spidar;
+namespace App\Jobs\Sepidar;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Cache;
 
-class SaveInvoiceDataJob implements ShouldQueue
+class SaveBankAccountDataJob implements ShouldQueue
 {
     use Queueable;
 
@@ -14,7 +15,7 @@ class SaveInvoiceDataJob implements ShouldQueue
      */
     public function __construct(public array $data)
     {
-        //
+
     }
 
     /**
@@ -22,6 +23,6 @@ class SaveInvoiceDataJob implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        Cache::store('file')->put('sepidar_bank_data', $this->data);
     }
 }

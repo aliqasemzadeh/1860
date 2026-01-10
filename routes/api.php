@@ -2,5 +2,5 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::post('/spidar/invoices', [\App\Http\Controllers\SpidarController::class, 'invoices'])->name('spidar.invoices');
-Route::post('/spidar/bank-accounts', [\App\Http\Controllers\SpidarController::class, 'bank_accounts'])->name('spidar.bank-accounts');
+Route::post('/sepidar/invoices', [\App\Http\Controllers\SepidarController::class, 'invoices'])->name('sepidar.invoices');
+Route::post('/sepidar/bank-accounts', [\App\Http\Controllers\SepidarController::class, 'bank_accounts'])->name('sepidar.bank-accounts');
