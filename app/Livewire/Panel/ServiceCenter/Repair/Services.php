@@ -17,6 +17,7 @@ class Services extends Component
     public int $id;
 
     public string $description = '';
+    public string $service_type = '';
     public string $price = '';
 
     #[On('panel.service-center.repair.services.assign-data')]
@@ -53,9 +54,11 @@ class Services extends Component
     {
         $this->validate([
             'description' => ['required', 'string', 'min:3'],
+            'service_type' => ['required', 'string'],
             'price' => ['required', 'string', 'regex:/^[\d,]+(\.\d+)?$/'],
         ], [], [
             'description' => __('app.service_description'),
+            'service_type' => __('app.service_type'),
             'price' => __('app.service_price'),
         ]);
 
@@ -63,6 +66,7 @@ class Services extends Component
             'repair_id' => $this->repair->id,
             'technician_user_id' => (string) Auth::id(),
             'description' => $this->description,
+            'service_type' => $this->service_type,
             'price' => (float) preg_replace('/[^0-9.]/', '', $this->price),
         ]);
 

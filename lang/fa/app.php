@@ -373,7 +373,7 @@ return [
     'all_statuses' => 'همه وضعیت‌ها',
     'reject_remittance' => 'رد کردن حواله',
     'reject' => 'رد',
-    'account_balance' => 'مانده حساب',
+    'service_type' => 'نوع خدمت',
     'invalid_date' => 'تاریخ وارد شده نامعتبر است.',
 
     // Accounting / Cheques
@@ -448,7 +448,10 @@ return [
     'shipping_rate_updated' => 'نرخ حمل‌ونقل با موفقیت به‌روزرسانی شد.',
     'shipping_method' => 'روش حمل‌ونقل',
     'shipping_zone' => 'زون حمل‌ونقل',
-    'select_shipping_method' => 'انتخاب روش حمل‌ونقل',
+    'service_type_service' => 'سرویس/خدمات/تعمیرات',
+    'service_type_part' => 'قطعه',
+    'service_type_select' => 'انتخاب نوع هزینه',
+    'select_service_type' => 'نوع هزینه',
     'select_shipping_zone' => 'انتخاب زون حمل‌ونقل',
     'rate_type' => 'نوع نرخ',
     'rate_type_flat' => 'ثابت (برای هر سفارش)',

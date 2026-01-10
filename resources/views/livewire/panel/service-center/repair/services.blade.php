@@ -36,6 +36,15 @@
                     <flux:error name="price" />
                 </flux:field>
 
+                <flux:field>
+                    <flux:label>{{ __('app.service_type') }}</flux:label>
+                    <flux:select wire:model="service_type" placeholder="{{ __('app.select_service_type') }}" size="sm">
+                        <flux:select.option value="service">{{ __('app.service_type_service') }}</flux:select.option>
+                        <flux:select.option value="part">{{ __('app.service_type_part') }}</flux:select.option>
+                    </flux:select>
+                    <flux:error name="service_type" />
+                </flux:field>
+
                 <flux:button type="submit" variant="primary" class="w-full">
                     {{ __('app.add_service') }}
                 </flux:button>
