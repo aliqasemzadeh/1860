@@ -23,6 +23,6 @@ class SaveBankAccountDataJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Cache::store('file')->put('sepidar_bank_data', $this->data);
+        Cache::put('sepidar_bank_data', $this->data);
     }
 }

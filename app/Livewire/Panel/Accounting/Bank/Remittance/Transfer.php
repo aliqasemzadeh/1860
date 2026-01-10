@@ -17,12 +17,12 @@ class Transfer extends Component
 
     public int $id;
 
-    #[On('accounting.bank.remittance.transfer.assign-data')]
+    #[On('panel.accounting.bank.remittance.transfer.assign-data')]
     public function assignData($id): void
     {
         $this->remittance = BankRemittance::findOrFail($id);
         $this->id = $this->remittance->id;
-        Flux::modal('accounting.bank.remittance.transfer.modal')->show();
+        Flux::modal('panel.accounting.bank.remittance.transfer.modal')->show();
     }
 
     public function transfer(): void
@@ -56,8 +56,8 @@ class Transfer extends Component
         });
 
         Flux::toast(__('app.remittance_transferred'));
-        $this->dispatch('accounting.bank.remittance.index.render');
-        Flux::modal('accounting.bank.remittance.transfer.modal')->close();
+        $this->dispatch('panel.accounting.bank.remittance.index.render');
+        Flux::modal('panel.accounting.bank.remittance.transfer.modal')->close();
     }
 
     public function render(): View

@@ -20,7 +20,7 @@ class SepidarController extends Controller
 
     public function bank_accounts(Request $request)
     {
-        Log::channel('spidar')->info('Bank Account POST data received', $request->all());
+        Log::channel('sepidar')->info('Bank Account POST data received', $request->all());
 
         SaveBankAccountDataJob::dispatch($request->all());
 

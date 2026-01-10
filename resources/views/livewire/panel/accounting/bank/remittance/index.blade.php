@@ -79,17 +79,17 @@
                     <flux:table.cell class="whitespace-nowrap">
                         @if (!$remittance->checked_at && $remittance->status !== 'transferred' && $remittance->status !== 'rejected')
                             @can('accounting_bank_remittance_edit')
-                                <flux:button size="xs" variant="primary" wire:click="$dispatch('accounting.bank.remittance.edit.assign-data', { id: '{{ $remittance->id }}' })">{{ __('app.edit') }}</flux:button>
+                                <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.accounting.bank.remittance.edit.assign-data', { id: '{{ $remittance->id }}' })">{{ __('app.edit') }}</flux:button>
                             @endcan
                         @endif
                         @if (!$remittance->checked_at && $remittance->status !== 'transferred' && $remittance->status !== 'rejected')
                             @can('accounting_bank_remittance_check')
-                                <flux:button size="xs" variant="primary" color="green" wire:click="$dispatch('accounting.bank.remittance.check.assign-data', { id: '{{ $remittance->id }}' })">{{ __('app.check_remittance_button') }}</flux:button>
+                                <flux:button size="xs" variant="primary" color="green" wire:click="$dispatch('panel.accounting.bank.remittance.check.assign-data', { id: '{{ $remittance->id }}' })">{{ __('app.check_remittance_button') }}</flux:button>
                             @endcan
                         @endif
                         @if ($remittance->checked_at && !$remittance->transfer_at && $remittance->status !== 'rejected')
                             @can('accounting_bank_remittance_transfer')
-                                <flux:button size="xs" variant="primary" color="blue" wire:click="$dispatch('accounting.bank.remittance.transfer.assign-data', { id: '{{ $remittance->id }}' })">{{ __('app.transfer_remittance_button') }}</flux:button>
+                                <flux:button size="xs" variant="primary" color="blue" wire:click="$dispatch('panel.accounting.bank.remittance.transfer.assign-data', { id: '{{ $remittance->id }}' })">{{ __('app.transfer_remittance_button') }}</flux:button>
                             @endcan
                         @endif
                         @if ($remittance->status !== 'transferred' && $remittance->status !== 'rejected')

@@ -61,12 +61,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/panel/shop/shipping/rate/index', \App\Livewire\Panel\Shop\Shipping\Rate\Index::class)->name('panel.shop.shipping.rate.index');
 
 
-    Route::get('/accounting/dashboard/index', \App\Livewire\Panel\Accounting\Dashboard\Index::class)->name('accounting.dashboard.index');
-    Route::get('/accounting/bank/index', \App\Livewire\Panel\Accounting\Bank\Index::class)->name('accounting.bank.index');
-    Route::get('/accounting/bank/remittance/index', \App\Livewire\Panel\Accounting\Bank\Remittance\Index::class)->name('accounting.bank.remittance.index');
-    Route::get('/accounting/bank/transaction/index', \App\Livewire\Panel\Accounting\Bank\Transaction\Index::class)->name('accounting.bank.transaction.index');
-    Route::get('/accounting/remittance/index', \App\Livewire\Panel\Accounting\Remittance\Index::class)->name('accounting.remittance.index');
-    Route::get('/accounting/cheque/index', \App\Livewire\Panel\Accounting\Cheque\Index::class)->name('accounting.cheque.index');
+    Route::get('/panel/accounting/dashboard/index', \App\Livewire\Panel\Accounting\Dashboard\Index::class)->name('panel.accounting.dashboard.index');
+    Route::get('/panel/accounting/bank/index', \App\Livewire\Panel\Accounting\Bank\Index::class)->name('panel.accounting.bank.index');
+    Route::get('/panel/accounting/bank/remittance/index', \App\Livewire\Panel\Accounting\Bank\Remittance\Index::class)->name('panel.accounting.bank.remittance.index');
+    Route::get('/panel/accounting/bank/transaction/index', \App\Livewire\Panel\Accounting\Bank\Transaction\Index::class)->name('panel.accounting.bank.transaction.index');
+    Route::get('/panel/accounting/remittance/index', \App\Livewire\Panel\Accounting\Remittance\Index::class)->name('panel.accounting.remittance.index');
+    Route::get('/panel/accounting/cheque/index', \App\Livewire\Panel\Accounting\Cheque\Index::class)->name('panel.accounting.cheque.index');
+
+    Route::get('/panel/accounting/sepidar/bank/index', \App\Livewire\Panel\Accounting\Sepidar\Bank\Index::class)->name('panel.accounting.sepidar.bank.index');
 
 });
 

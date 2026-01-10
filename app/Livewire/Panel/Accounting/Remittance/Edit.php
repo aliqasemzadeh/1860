@@ -20,7 +20,7 @@ class Edit extends Component
 
     public string $payment = '0';
 
-    #[On('accounting.remittance.edit.assign-data')]
+    #[On('panel.accounting.remittance.edit.assign-data')]
     public function assignData($id): void
     {
         $this->remittance = Remittance::findOrFail($id);
@@ -30,7 +30,7 @@ class Edit extends Component
         $this->account_balance = (string) $this->remittance->account_balance;
         $this->payment = (string) $this->remittance->payment;
 
-        Flux::modal('accounting.remittance.edit.modal')->show();
+        Flux::modal('panel.accounting.remittance.edit.modal')->show();
     }
 
     public function edit(): void
@@ -59,8 +59,8 @@ class Edit extends Component
         ]);
 
         Flux::toast(variant: 'success', text: __('app.remittance_updated'));
-        $this->dispatch('accounting.remittance.index.render');
-        Flux::modal('accounting.remittance.edit.modal')->close();
+        $this->dispatch('panel.accounting.remittance.index.render');
+        Flux::modal('panel.accounting.remittance.edit.modal')->close();
     }
 
     public function render()

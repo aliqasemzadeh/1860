@@ -10,10 +10,10 @@
     <flux:sidebar.search placeholder="{{ __('app.search_placeholder') }}" />
 
     <flux:sidebar.nav>
-        <flux:sidebar.item icon="home" href="{{ route('accounting.dashboard.index') }}" wire:navigate>{{ __('app.dashboard') }}</flux:sidebar.item>
-        <flux:sidebar.item icon="landmark" href="{{ route('accounting.bank.index') }}" wire:navigate>{{ __('app.banks') }}</flux:sidebar.item>
-        <flux:sidebar.item icon="scale" href="{{ route('accounting.remittance.index') }}" wire:navigate>{{ __('app.remittances') }}</flux:sidebar.item>
-        <flux:sidebar.item icon="banknote-arrow-up" href="{{ route('accounting.cheque.index') }}" wire:navigate>{{ __('app.cheques') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="home" href="{{ route('panel.accounting.dashboard.index') }}" wire:navigate>{{ __('app.dashboard') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="landmark" href="{{ route('panel.accounting.bank.index') }}" wire:navigate>{{ __('app.banks') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="scale" href="{{ route('panel.accounting.remittance.index') }}" wire:navigate>{{ __('app.remittances') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="banknote-arrow-up" href="{{ route('panel.accounting.cheque.index') }}" wire:navigate>{{ __('app.cheques') }}</flux:sidebar.item>
     </flux:sidebar.nav>
 
     <flux:sidebar.spacer />

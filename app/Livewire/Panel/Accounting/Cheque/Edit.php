@@ -23,7 +23,7 @@ class Edit extends Component
      */
     public string $due_at = '';
 
-    #[On('accounting.cheque.edit.assign-data')]
+    #[On('panel.accounting.cheque.edit.assign-data')]
     public function assignData($id): void
     {
         $this->cheque = Cheque::findOrFail($id);
@@ -33,7 +33,7 @@ class Edit extends Component
         $this->amount = (string) $this->cheque->amount;
         $this->due_at = Jalalian::fromCarbon($this->cheque->due_at)->format('Y/m/d');
 
-        Flux::modal('accounting.cheque.edit.modal')->show();
+        Flux::modal('panel.accounting.cheque.edit.modal')->show();
     }
 
     public function edit(): void
@@ -68,8 +68,8 @@ class Edit extends Component
         ]);
 
         Flux::toast(variant: 'success', text: __('app.cheque_updated'));
-        $this->dispatch('accounting.cheque.index.render');
-        Flux::modal('accounting.cheque.edit.modal')->close();
+        $this->dispatch('panel.accounting.cheque.index.render');
+        Flux::modal('panel.accounting.cheque.edit.modal')->close();
     }
 
     public function render()

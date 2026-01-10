@@ -30,7 +30,7 @@ class Edit extends Component
 
     public string $init_balance = '0';
 
-    #[On('accounting.bank.edit.assign-data')]
+    #[On('panel.accounting.bank.edit.assign-data')]
     public function assignData($id): void
     {
         $this->bank = Bank::findOrFail($id);
@@ -43,7 +43,7 @@ class Edit extends Component
         $this->description = $this->bank->description;
         $this->sort_order = $this->bank->sort_order;
         $this->init_balance = (string) $this->bank->init_balance;
-        Flux::modal('accounting.bank.edit.modal')->show();
+        Flux::modal('panel.accounting.bank.edit.modal')->show();
     }
 
     public function edit(): void
@@ -81,8 +81,8 @@ class Edit extends Component
         $this->bank->updateBalance();
 
         Flux::toast(variant: 'success', text: __('app.bank_updated'));
-        $this->dispatch('accounting.bank.index.render');
-        Flux::modal('accounting.bank.edit.modal')->close();
+        $this->dispatch('panel.accounting.bank.index.render');
+        Flux::modal('panel.accounting.bank.edit.modal')->close();
     }
 
     public function render(): View

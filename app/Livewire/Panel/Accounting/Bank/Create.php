@@ -54,8 +54,8 @@ class Create extends Component
         ]);
 
         Flux::toast(variant: 'success', text: __('app.bank_created'));
-        $this->dispatch('accounting.bank.index.render');
-        Flux::modal('accounting.bank.create.modal')->close();
+        $this->dispatch('panel.accounting.bank.index.render');
+        Flux::modal('panel.accounting.bank.create.modal')->close();
 
         $this->reset(['name', 'code', 'number', 'iban', 'card_number', 'description', 'sort_order', 'init_balance']);
     }

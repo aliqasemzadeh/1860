@@ -41,8 +41,8 @@ class Create extends Component
 
         $this->reset(['description', 'account_balance', 'payment']);
 
-        $this->dispatch('accounting.remittance.index.render');
-        Flux::modal('accounting.remittance.create.modal')->close();
+        $this->dispatch('panel.accounting.remittance.index.render');
+        Flux::modal('panel.accounting.remittance.create.modal')->close();
     }
 
     public function render()

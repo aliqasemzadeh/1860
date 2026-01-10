@@ -50,8 +50,8 @@ class Create extends Component
         Flux::toast(variant: 'success', text: __('app.cheque_created'));
 
         $this->reset(['description', 'amount', 'due_at']);
-        $this->dispatch('accounting.cheque.index.render');
-        Flux::modal('accounting.cheque.create.modal')->close();
+        $this->dispatch('panel.accounting.cheque.index.render');
+        Flux::modal('panel.accounting.cheque.create.modal')->close();
     }
 
     public function render()

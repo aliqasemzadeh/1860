@@ -85,7 +85,7 @@
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         @can('accounting_cheque_edit')
-                            <flux:button size="xs" variant="primary" wire:click="$dispatch('accounting.cheque.edit.assign-data', { id: '{{ $cheque->id }}' })">
+                            <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.accounting.cheque.edit.assign-data', { id: '{{ $cheque->id }}' })">
                                 {{ __('app.edit') }}
                             </flux:button>
                         @endcan

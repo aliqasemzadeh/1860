@@ -16,13 +16,13 @@ class Check extends Component
 
     public string $final_amount = '0';
 
-    #[On('accounting.bank.remittance.check.assign-data')]
+    #[On('panel.accounting.bank.remittance.check.assign-data')]
     public function assignData($id): void
     {
         $this->remittance = BankRemittance::findOrFail($id);
         $this->id = $this->remittance->id;
         $this->final_amount = (string) $this->remittance->final_amount;
-        Flux::modal('accounting.bank.remittance.check.modal')->show();
+        Flux::modal('panel.accounting.bank.remittance.check.modal')->show();
     }
 
     public function check(): void
@@ -44,8 +44,8 @@ class Check extends Component
         ]);
 
         Flux::toast(__('app.remittance_checked'));
-        $this->dispatch('accounting.bank.remittance.index.render');
-        Flux::modal('accounting.bank.remittance.check.modal')->close();
+        $this->dispatch('panel.accounting.bank.remittance.index.render');
+        Flux::modal('panel.accounting.bank.remittance.check.modal')->close();
     }
 
     public function reject(): void
@@ -62,8 +62,8 @@ class Check extends Component
         ]);
 
         Flux::toast(__('app.remittance_rejected'));
-        $this->dispatch('accounting.bank.remittance.index.render');
-        Flux::modal('accounting.bank.remittance.check.modal')->close();
+        $this->dispatch('panel.accounting.bank.remittance.index.render');
+        Flux::modal('panel.accounting.bank.remittance.check.modal')->close();
     }
 
     public function render(): View

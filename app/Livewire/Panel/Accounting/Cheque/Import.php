@@ -32,8 +32,8 @@ class Import extends Component
         Flux::toast(variant: 'success', text: __('app.cheques_imported'));
 
         $this->reset('file');
-        $this->dispatch('accounting.cheque.index.render');
-        Flux::modal('accounting.cheque.import.modal')->close();
+        $this->dispatch('panel.accounting.cheque.index.render');
+        Flux::modal('panel.accounting.cheque.import.modal')->close();
     }
 
     public function render()

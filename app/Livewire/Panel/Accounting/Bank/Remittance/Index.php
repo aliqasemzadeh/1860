@@ -84,11 +84,11 @@ class Index extends Component
         $remittance->delete();
 
         Flux::toast(variant: 'success', text: __('app.remittance_deleted'));
-        $this->dispatch('accounting.bank.remittance.index.render');
+        $this->dispatch('panel.accounting.bank.remittance.index.render');
     }
 
     #[Layout('layouts.panels.accounting')]
-    #[On('accounting.bank.remittance.index.render')]
+    #[On('panel.accounting.bank.remittance.index.render')]
     public function render()
     {
         $this->authorize('accounting_bank_remittance_index');

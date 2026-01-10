@@ -70,7 +70,7 @@
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         @can('accounting_bank_edit')
-                            <flux:button size="xs" variant="primary" wire:click="$dispatch('accounting.bank.edit.assign-data', { id: '{{ $bank->id }}' })">{{ __('app.edit') }}</flux:button>
+                            <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.accounting.bank.edit.assign-data', { id: '{{ $bank->id }}' })">{{ __('app.edit') }}</flux:button>
                         @endcan
                         @can('accounting_bank_delete')
                             <flux:button size="xs" variant="danger" color="red" wire:click="delete({{ $bank->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>

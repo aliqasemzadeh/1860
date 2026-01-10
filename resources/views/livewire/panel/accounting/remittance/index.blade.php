@@ -92,7 +92,7 @@
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         @can('accounting_remittance_edit')
-                            <flux:button size="xs" variant="primary" wire:click="$dispatch('accounting.remittance.edit.assign-data', { id: '{{ $remittance->id }}' })">{{ __('app.edit') }}</flux:button>
+                            <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.accounting.remittance.edit.assign-data', { id: '{{ $remittance->id }}' })">{{ __('app.edit') }}</flux:button>
                         @endcan
                         @can('accounting_remittance_delete')
                             <flux:button size="xs" variant="danger" color="red" wire:click="delete({{ $remittance->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>

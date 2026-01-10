@@ -42,8 +42,8 @@ class Create extends Component
         ]);
 
         Flux::toast(variant: 'success', text: __('app.remittance_created'));
-        $this->dispatch('accounting.bank.remittance.index.render');
-        Flux::modal('accounting.bank.remittance.create.modal')->close();
+        $this->dispatch('panel.accounting.bank.remittance.index.render');
+        Flux::modal('panel.accounting.bank.remittance.create.modal')->close();
 
         $this->reset(['bank_id', 'description', 'draft_amount']);
     }

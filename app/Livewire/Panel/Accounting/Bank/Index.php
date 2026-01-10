@@ -71,11 +71,11 @@ class Index extends Component
         $bank->delete();
 
         Flux::toast(variant: 'success', text: __('app.bank_deleted'));
-        $this->dispatch('accounting.bank.index.render');
+        $this->dispatch('panel.accounting.bank.index.render');
     }
 
     #[Layout('layouts.panels.accounting')]
-    #[On('accounting.bank.index.render')]
+    #[On('panel.accounting.bank.index.render')]
     public function render()
     {
         $this->authorize('accounting_bank_index');

@@ -123,7 +123,7 @@ class Index extends Component
         $remittance->delete();
 
         Flux::toast(variant: 'success', text: __('app.remittance_deleted'));
-        $this->dispatch('accounting.remittance.index.render');
+        $this->dispatch('panel.accounting.remittance.index.render');
     }
 
     public function savePayment($id): void
@@ -146,11 +146,11 @@ class Index extends Component
         ]);
 
         Flux::toast(variant: 'success', text: __('app.remittance_updated'));
-        $this->dispatch('accounting.remittance.index.render');
+        $this->dispatch('panel.accounting.remittance.index.render');
     }
 
     #[Layout('layouts.panels.accounting')]
-    #[On('accounting.remittance.index.render')]
+    #[On('panel.accounting.remittance.index.render')]
     public function render()
     {
         $this->authorize('accounting_remittance_index');

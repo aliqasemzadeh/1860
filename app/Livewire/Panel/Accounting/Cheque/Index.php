@@ -108,11 +108,11 @@ class Index extends Component
         $cheque->delete();
 
         Flux::toast(variant: 'success', text: __('app.cheque_deleted'));
-        $this->dispatch('accounting.cheque.index.render');
+        $this->dispatch('panel.accounting.cheque.index.render');
     }
 
     #[Layout('layouts.panels.accounting')]
-    #[On('accounting.cheque.index.render')]
+    #[On('panel.accounting.cheque.index.render')]
     public function render()
     {
         $this->authorize('accounting_cheque_index');

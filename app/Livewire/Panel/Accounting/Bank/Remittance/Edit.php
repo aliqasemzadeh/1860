@@ -27,7 +27,7 @@ class Edit extends Component
         return Bank::orderBy('sort_order')->get();
     }
 
-    #[On('accounting.bank.remittance.edit.assign-data')]
+    #[On('panel.accounting.bank.remittance.edit.assign-data')]
     public function assignData($id): void
     {
         $this->remittance = BankRemittance::findOrFail($id);
@@ -40,7 +40,7 @@ class Edit extends Component
         $this->bank_id = $this->remittance->bank_id;
         $this->description = $this->remittance->description;
         $this->draft_amount = (string) $this->remittance->draft_amount;
-        Flux::modal('accounting.bank.remittance.edit.modal')->show();
+        Flux::modal('panel.accounting.bank.remittance.edit.modal')->show();
     }
 
     public function edit(): void
@@ -69,8 +69,8 @@ class Edit extends Component
         ]);
 
         Flux::toast(variant: 'success', text: __('app.remittance_updated'));
-        $this->dispatch('accounting.bank.remittance.index.render');
-        Flux::modal('accounting.bank.remittance.edit.modal')->close();
+        $this->dispatch('panel.accounting.bank.remittance.index.render');
+        Flux::modal('panel.accounting.bank.remittance.edit.modal')->close();
     }
 
     public function render(): View
