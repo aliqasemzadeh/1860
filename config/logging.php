@@ -127,9 +127,9 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
-        'spidar' => [
+        'sepidar' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/spidar.log'),
+            'path' => storage_path('logs/sepidar.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => env('LOG_DAILY_DAYS', 14),
             'replace_placeholders' => true,
