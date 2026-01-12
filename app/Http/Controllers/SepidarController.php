@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\Sepidar\SaveBankAccountDataJob;
 use App\Jobs\Sepidar\SaveInvoiceDataJob;
+use App\Jobs\Sepidar\SaveItemDataJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -23,6 +24,15 @@ class SepidarController extends Controller
         Log::channel('sepidar')->info('Bank Account POST data received', $request->all());
 
         SaveBankAccountDataJob::dispatch($request->all());
+
+        return response()->json(['message' => 'Bank account data received and queued for processing']);
+    }
+
+    public function items(Request $request)
+    {
+        Log::channel('sepidar')->info('Items POST data received', $request->all());
+
+        SaveItemDataJob::dispatch($request->all());
 
         return response()->json(['message' => 'Bank account data received and queued for processing']);
     }
