@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('groupings', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('GroupingID')->unique();
-            $table->string('EntityType')->nullable();
+            $table->string('EntityType')->nullable()->index();
             $table->string('Code')->nullable();
             $table->string('FullCode')->nullable();
             $table->string('Title')->nullable();
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('LastModifier')->nullable();
             $table->datetime('LastModificationDate')->nullable();
             $table->bigInteger('CalculationFormulaRef')->nullable();
-            $table->bigInteger('ParentGroupRef')->nullable();
+            $table->bigInteger('ParentGroupRef')->nullable()->index();
             $table->timestamps();
         });
     }
