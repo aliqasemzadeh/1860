@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('model');
-            $table->bigIncrements('model_id');
+            $table->bigInteger('model_id');
+            $table->bigInteger('project_id')->nullable();
             $table->string('description')->nullable();
             $table->dateTime('start_at')->nullable();
             $table->dateTime('finish_at')->nullable();

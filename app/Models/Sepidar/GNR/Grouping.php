@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Grouping extends Model
 {
-    //
+    public $fillable = ['GroupingID'];
 }
