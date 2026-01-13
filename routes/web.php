@@ -61,6 +61,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/panel/shop/shipping/rate/index', \App\Livewire\Panel\Shop\Shipping\Rate\Index::class)->name('panel.shop.shipping.rate.index');
 
 
+    Route::get('/panel/shop/sepidar/grouping/index', \App\Livewire\Panel\Shop\Sepidar\Grouping\Index::class)->name('panel.shop.sepidar.grouping.index');
+
+
+
     Route::get('/panel/accounting/dashboard/index', \App\Livewire\Panel\Accounting\Dashboard\Index::class)->name('panel.accounting.dashboard.index');
     Route::get('/panel/accounting/bank/index', \App\Livewire\Panel\Accounting\Bank\Index::class)->name('panel.accounting.bank.index');
     Route::get('/panel/accounting/bank/remittance/index', \App\Livewire\Panel\Accounting\Bank\Remittance\Index::class)->name('panel.accounting.bank.remittance.index');
