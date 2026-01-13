@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('BarCode')->nullable();
             $table->bigInteger('UnitRef')->nullable();
             $table->bigInteger('SecondaryUnitRef')->nullable();
+            $table->bigInteger('SaleUnitRef')->nullable();
             $table->string('IsUnitRatioConstant')->nullable();
             $table->string('UnitsRatio')->nullable();
             $table->string('MinimumAmount')->nullable();
@@ -45,7 +46,7 @@ return new class extends Migration
             $table->bigInteger('AccountSLRef')->nullable();
             $table->string('TaxRate')->nullable();
             $table->string('DutyRate')->nullable();
-            $table->bigInteger('CodingGroupRef')->nullable();
+            $table->bigInteger('CodingGroupRef')->nullable()->index();
             $table->string('SerialTracking')->nullable();
             $table->string('Weight')->nullable();
             $table->string('Volume')->nullable();
