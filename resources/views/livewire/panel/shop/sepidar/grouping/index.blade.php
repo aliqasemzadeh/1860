@@ -14,7 +14,7 @@
                 @endphp
                 <div class="p-4">
                     @foreach($items as $item)
-                        {{ $item->Title }}
+                        {{ $item->Title }} ({{ $item->ItemID }})
                         <br />
                     @endforeach
                 </div>
