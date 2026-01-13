@@ -5,6 +5,7 @@ namespace App\Jobs\Sepidar;
 use App\Models\Sepidar\GNR\Grouping;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Schema;
 
 class SaveGroupingDataJob implements ShouldQueue
 {
@@ -23,8 +24,11 @@ class SaveGroupingDataJob implements ShouldQueue
      */
     public function handle(): void
     {
+        Schema::disableForeignKeyConstraints();
+        Grouping::truncate();
         foreach ($this->data as $grouping) {
-            Grouping::firstOrCreate(['GroupingID' => $grouping['GroupingID']], $grouping);
+            Grouping::unguard();
+            Grouping::firstOrCreate($grouping);
         }
     }
 }
