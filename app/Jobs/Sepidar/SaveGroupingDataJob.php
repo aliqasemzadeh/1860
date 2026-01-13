@@ -12,7 +12,7 @@ class SaveGroupingDataJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct()
+    public function __construct(public array $data)
     {
         //
     }
@@ -22,6 +22,6 @@ class SaveGroupingDataJob implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+
     }
 }

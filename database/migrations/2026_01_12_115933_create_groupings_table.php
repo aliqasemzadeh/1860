@@ -13,6 +13,22 @@ return new class extends Migration
     {
         Schema::create('groupings', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('GroupingID')->unique();
+            $table->string('EntityType')->nullable();
+            $table->string('Code')->nullable();
+            $table->string('FullCode')->nullable();
+            $table->string('Title')->nullable();
+            $table->string('TitleEn')->nullable();
+            $table->string('MaximumCredit')->nullable();
+            $table->string('HasCredit')->nullable();
+            $table->string('CreditCheckingType')->nullable();
+            $table->string('Version')->nullable();
+            $table->string('Creator')->nullable();
+            $table->datetime('CreationDate')->nullable();
+            $table->string('LastModifier')->nullable();
+            $table->datetime('LastModificationDate')->nullable();
+            $table->bigInteger('CalculationFormulaRef')->nullable();
+            $table->bigInteger('ParentGroupRef')->nullable();
             $table->timestamps();
         });
     }
