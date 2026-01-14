@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Jobs\Sepidar\SaveBankDataJob;
 use App\Jobs\Sepidar\SaveBankAccountDataJob;
 use App\Jobs\Sepidar\SaveBankAccountBalanceDataJob;
+use App\Jobs\Sepidar\SaveInventoryReceiptDataJob;
+use App\Jobs\Sepidar\SaveInventoryReceiptItemDataJob;
 use App\Jobs\Sepidar\SaveInvoiceDataJob;
 use App\Jobs\Sepidar\SaveItemDataJob;
 use App\Jobs\Sepidar\SaveItemStockSummaryDataJob;
@@ -78,5 +80,23 @@ class SepidarController extends Controller
         SaveGroupingDataJob::dispatch($request->all());
 
         return response()->json(['message' => 'Grouping data received and queued for processing']);
+    }
+
+    public function inventory_receipts(Request $request)
+    {
+        Log::channel('sepidar')->info('Inventory Receipt POST data received', $request->all());
+
+        SaveInventoryReceiptDataJob::dispatch($request->all());
+
+        return response()->json(['message' => 'Inventory Receipt data received and queued for processing']);
+    }
+
+    public function inventory_receipt_items(Request $request)
+    {
+        Log::channel('sepidar')->info('Inventory Receipt Items POST data received', $request->all());
+
+        SaveInventoryReceiptItemDataJob::dispatch($request->all());
+
+        return response()->json(['message' => 'Inventory Receipt Items data received and queued for processing']);
     }
 }
