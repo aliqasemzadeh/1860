@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('party_phones', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('PartyPhoneId')->unique();
+            $table->bigInteger('PartyRef')->nullable();
+            $table->string('IsMain')->nullable();
+            $table->string('Type')->nullable();
+		    $table->string('Phone')->nullable();
+		    $table->string('Version')->nullable();
             $table->timestamps();
         });
     }
