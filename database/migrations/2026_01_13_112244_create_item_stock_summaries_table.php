@@ -13,6 +13,19 @@ return new class extends Migration
     {
         Schema::create('item_stock_summaries', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('ItemStockSummaryID')->unique();
+            $table->bigInteger('StockRef')->nullable();
+            $table->bigInteger('ItemRef')->nullable();
+            $table->bigInteger('TracingRef')->nullable();
+            $table->string('Order')->nullable();
+            $table->bigInteger('UnitRef')->nullable();
+            $table->string('InputQuantity')->nullable();
+            $table->string('OutputQuantity')->nullable();
+            $table->string('Quantity')->nullable();
+            $table->string('SaleQuantity')->nullable();
+            $table->string('SaleWithReserveQuantity')->nullable();
+            $table->bigInteger('FiscalYearRef')->nullable();
+            $table->string('FeedFromClosingOperation')->nullable();
             $table->timestamps();
         });
     }

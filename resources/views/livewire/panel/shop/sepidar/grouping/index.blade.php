@@ -14,8 +14,15 @@
                 @endphp
                 <div class="p-4">
                     @foreach($items as $item)
-                        {{ $item->Title }} ({{ $item->ItemID }})
+
+                        @php
+                            $lastStockSummary = \App\Models\Sepidar\INV\ItemStockSummary::where('ItemRef', $item->ItemID)->get();
+                        @endphp
+
+                        {{ $item->Title }} ({{ $item->ItemID }}) / {{ $lastStockSummary->Quantity }}
                         <br />
+
+
                     @endforeach
                 </div>
             @endforeach
