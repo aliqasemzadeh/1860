@@ -20,11 +20,30 @@ class SepidarController extends Controller
         return response()->json(['message' => 'Invoice data received and queued for processing']);
     }
 
+    public function banks(Request $request)
+    {
+        Log::channel('sepidar')->info('Bank POST data received', $request->all());
+
+        SaveBankDataJob::dispatch($request->all());
+
+        return response()->json(['message' => 'Bank account data received and queued for processing']);
+    }
+
+
     public function bank_accounts(Request $request)
     {
         Log::channel('sepidar')->info('Bank Account POST data received', $request->all());
 
         SaveBankAccountDataJob::dispatch($request->all());
+
+        return response()->json(['message' => 'Bank account data received and queued for processing']);
+    }
+
+    public function bank_account_balances(Request $request)
+    {
+        Log::channel('sepidar')->info('Bank Account Balances POST data received', $request->all());
+
+        SaveBankAccountBalanceDataJob::dispatch($request->all());
 
         return response()->json(['message' => 'Bank account data received and queued for processing']);
     }

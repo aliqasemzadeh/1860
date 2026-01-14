@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('banks', function (Blueprint $table) {
             $table->id();
+			$table->bigInteger('BankId')->unique();
+			$table->string('Title')->nullable();
+			$table->string('Title_En')->nullable();
+			$table->string('Version')->nullable();
+			$table->string('Creator')->nullable();
+			$table->dateTime('CreationDate')->nullable();
+			$table->string('LastModifier')->nullable();
+			$table->dateTime('LastModificationDate')->nullable();
+			$table->string('TaxFileCode')->nullable();
             $table->timestamps();
         });
     }

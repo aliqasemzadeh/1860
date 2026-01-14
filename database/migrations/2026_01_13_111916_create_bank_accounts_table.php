@@ -13,6 +13,27 @@ return new class extends Migration
     {
         Schema::create('bank_accounts', function (Blueprint $table) {
             $table->id();
+			$table->bigInteger('BankAccountId')->unique();
+			$table->bigInteger('BankBranchRef')->nullable();
+			$table->string('AccountNo')->nullable();
+			$table->bigInteger('AccountTypeRef')->nullable();
+			$table->bigInteger('CurrencyRef')->nullable();
+			$table->string('Rate')->nullable();
+			$table->string('FirstAmount')->nullable();
+			$table->dateTime('FirstDate')->nullable();
+			$table->string('Creator')->nullable();
+			$table->dateTime('CreationDate')->nullable();
+			$table->string('LastModifier')->nullable();
+			$table->dateTime('LastModificationDate')->nullable();
+			$table->string('Balance')->nullable();
+			$table->string('BillFirstAmount')->nullable();
+			$table->string('BlockedAmount')->nullable();
+			$table->string('BlockedAmount')->nullable();
+			$table->string('Owner')->nullable();
+			$table->string('Owner_En')->nullable();
+			$table->string('ShowBankFeeSeparately')->nullable();
+			$table->string('CreditCardNumber')->nullable();
+			$table->string('ShebaNumber')->nullable();
             $table->timestamps();
         });
     }

@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bank_account_balances', function (Blueprint $table) {
+        Schema::create('parties', function (Blueprint $table) {
             $table->id();
-			$table->bigInteger('BankAccountBalanceId')->unique();
-			$table->string('Balance')->nullable();
-			$table->bigInteger('FiscalYearRef')->nullable();
-			$table->bigInteger('BankAccountRef')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bank_account_balances');
+        Schema::dropIfExists('parties');
     }
 };
