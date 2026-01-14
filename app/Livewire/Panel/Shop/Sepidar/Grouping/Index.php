@@ -7,6 +7,11 @@ use Livewire\Component;
 
 class Index extends Component
 {
+    public Grouping $grouping;
+    public function mount(int $groupingId = 1): void
+    {
+        $this->grouping = Grouping::where('id', $groupingId)->firstOrFail();
+    }
     public function render()
     {
         $mainGrouping = Grouping::where('ParentGroupRef', null)->get();
