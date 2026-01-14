@@ -28,7 +28,6 @@ return new class extends Migration
 			$table->string('Balance')->nullable();
 			$table->string('BillFirstAmount')->nullable();
 			$table->string('BlockedAmount')->nullable();
-			$table->string('BlockedAmount')->nullable();
 			$table->string('Owner')->nullable();
 			$table->string('Owner_En')->nullable();
 			$table->string('ShowBankFeeSeparately')->nullable();
