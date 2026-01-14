@@ -62,6 +62,15 @@ class SepidarController extends Controller
         return response()->json(['message' => 'Items data received and queued for processing']);
     }
 
+    public function item_stock_summaries(Request $request)
+    {
+        Log::channel('sepidar')->info('Item Stock Summary POST data received', $request->all());
+
+        SaveItemStockSummaryDataJob::dispatch($request->all());
+
+        return response()->json(['message' => 'Item Stock Summary data received and queued for processing']);
+    }
+
     public function grouping(Request $request)
     {
         Log::channel('sepidar')->info('Grouping POST data received', $request->all());
