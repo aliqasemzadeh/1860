@@ -821,4 +821,5 @@ return [
     'order_status_cancelled' => 'لغو شده',
     'order_status_paid' => 'پرداخت شده',
     'service_center_dashboard' => 'داشبرد خدمات',
+    'balance' => 'موجودی',
 ];
