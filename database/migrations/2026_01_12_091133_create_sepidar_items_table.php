@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('UnitsRatio')->nullable();
             $table->string('MinimumAmount')->nullable();
             $table->string('MaximumAmount')->nullable();
+            $table->string('ConsumerFee')->nullable();
             $table->string('CanHaveTracing')->nullable();
             $table->bigInteger('TracingCategoryRef')->nullable();
             $table->string('IsPricingBasedOnTracing')->nullable();
