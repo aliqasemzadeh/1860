@@ -14,6 +14,7 @@
         <flux:table.columns>
             <flux:table.column>{{ __('app.name') }}</flux:table.column>
             <flux:table.column>{{ __('app.balance') }}</flux:table.column>
+            <flux:table.column>{{ __('app.action') }}</flux:table.column>
         </flux:table.columns>
         <flux:table.rows>
             @foreach($this->items as $item)
@@ -27,6 +28,9 @@
                         @else
                             0
                         @endif
+                    </flux:table.cell>
+                    <flux:table.cell>
+                        <flux:button size="xs" variant="primary" color="sky" wire:click="$dispatch('panel.shop.sepidar.grouping.item.invoice.assign-data', { id: '{{ $item->ItemID }}' })">{{ __('app.invoices') }}</flux:button>
                     </flux:table.cell>
                 </flux:table.row>
             @endforeach

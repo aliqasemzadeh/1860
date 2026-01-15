@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::post('/sepidar/invoices', [\App\Http\Controllers\SepidarController::class, 'invoices'])->name('sepidar.invoices');
+Route::post('/sepidar/invoice-items', [\App\Http\Controllers\SepidarController::class, 'invoice_items'])->name('sepidar.invoice-items');
 
 Route::post('/sepidar/banks', [\App\Http\Controllers\SepidarController::class, 'banks'])->name('sepidar.banks');
 Route::post('/sepidar/bank-accounts', [\App\Http\Controllers\SepidarController::class, 'bank_accounts'])->name('sepidar.bank-accounts');
