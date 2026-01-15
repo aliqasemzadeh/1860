@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('Number')->nullable();
             $table->dateTime('Date')->nullable();
             $table->bigInteger('AccountingVoucherRef')->nullable();
+            $table->bigInteger('PaymentHeaderRef')->nullable();
             $table->bigInteger('TransportBrokerSLAccountRef')->nullable();
             $table->bigInteger('TransporterDLRef')->nullable();
             $table->string('TotalPrice')->nullable();
