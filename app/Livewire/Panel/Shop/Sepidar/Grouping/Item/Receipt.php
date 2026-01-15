@@ -22,7 +22,7 @@ class Receipt extends Component
     #[Computed]
     public function buys()
     {
-        return InventoryReceiptItem::with(['receipt'])
+        return InventoryReceiptItem::with(['receipt', 'receipt.dl'])
             ->where('ItemRef', $this->ItemId)
             ->latest('InventoryReceiptItemId')
             ->get();

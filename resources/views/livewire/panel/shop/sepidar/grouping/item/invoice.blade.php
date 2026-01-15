@@ -38,3 +38,4 @@
         </flux:table>
     </div>
 </flux:modal>
+
