@@ -24,8 +24,6 @@ class SaveInventoryReceiptItemDataJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Schema::disableForeignKeyConstraints();
-        InventoryReceiptItem::truncate();
         foreach ($this->data as $grouping) {
             InventoryReceiptItem::unguard();
             InventoryReceiptItem::firstOrCreate($grouping);

@@ -24,8 +24,6 @@ class SaveGroupingDataJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Schema::disableForeignKeyConstraints();
-        Grouping::truncate();
         foreach ($this->data as $grouping) {
             Grouping::unguard();
             Grouping::firstOrCreate($grouping);

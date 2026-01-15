@@ -24,8 +24,6 @@ class SaveInvoiceDataJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Schema::disableForeignKeyConstraints();
-        Invoice::truncate();
         foreach ($this->data as $item) {
             Invoice::unguard();
             Invoice::firstOrCreate($item);

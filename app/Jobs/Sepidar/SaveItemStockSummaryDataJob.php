@@ -24,8 +24,6 @@ class SaveItemStockSummaryDataJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Schema::disableForeignKeyConstraints();
-        ItemStockSummary::truncate();
         foreach ($this->data as $item) {
             ItemStockSummary::unguard();
             ItemStockSummary::firstOrCreate($item);

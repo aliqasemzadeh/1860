@@ -2,6 +2,8 @@
 
 namespace App\Jobs\Sepidar;
 
+use App\Models\Sepidar\ACC\DL;
+use App\Models\Sepidar\RPA\BankAccountBalance;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -22,6 +24,9 @@ class SaveBankAccountBalanceDataJob implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        foreach ($this->data as $item) {
+            BankAccountBalance::unguard();
+            BankAccountBalance::firstOrCreate($item);
+        }
     }
 }

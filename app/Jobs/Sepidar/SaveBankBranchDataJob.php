@@ -2,6 +2,8 @@
 
 namespace App\Jobs\Sepidar;
 
+use App\Models\Sepidar\RPA\BankAccount;
+use App\Models\Sepidar\RPA\BankBranch;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -22,6 +24,9 @@ class SaveBankBranchDataJob implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        foreach ($this->data as $item) {
+            BankBranch::unguard();
+            BankBranch::firstOrCreate($item);
+        }
     }
 }

@@ -21,8 +21,6 @@ class SaveDLDataJob implements ShouldQueue
 
     public function handle(): void
     {
-        Schema::disableForeignKeyConstraints();
-        DL::truncate();
         foreach ($this->data as $item) {
             DL::unguard();
             DL::firstOrCreate($item);

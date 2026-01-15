@@ -25,13 +25,9 @@ class SaveItemDataJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Schema::disableForeignKeyConstraints();
-        Item::truncate();
-        Log::info("Running SaveItemDataJob");
         foreach ($this->data as $item) {
             Item::unguard();
             Item::firstOrCreate($item);
         }
-        Log::info("Done SaveItemDataJob");
     }
 }
