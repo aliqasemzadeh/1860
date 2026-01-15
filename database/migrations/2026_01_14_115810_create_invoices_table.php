@@ -42,6 +42,7 @@ return new class extends Migration
             $table->string('AdditionFactor_VatIneffective')->nullable();
             $table->string('AdditionFactorInBaseCurrency_VatIneffective')->nullable();
             $table->string('NetPriceInBaseCurrency')->nullable();
+            $table->bigInteger('SignatureRef')->nullable();
             $table->string('Rate')->nullable();
             $table->string('Version')->nullable();
             $table->string('Creator')->nullable();

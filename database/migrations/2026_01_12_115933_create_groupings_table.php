@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('CreditCheckingType')->nullable();
             $table->string('Version')->nullable();
             $table->string('Creator')->nullable();
+            $table->string('MaximumQuantityCredit')->nullable();
             $table->datetime('CreationDate')->nullable();
             $table->string('LastModifier')->nullable();
             $table->datetime('LastModificationDate')->nullable();

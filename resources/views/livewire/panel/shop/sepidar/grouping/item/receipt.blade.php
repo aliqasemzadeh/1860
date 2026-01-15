@@ -25,7 +25,7 @@
                             {{ number_format($buy->Quantity) }}
                         </flux:table.cell>
 
-                        <flux:table.cell>
+                        <flux:table.cellL
                             {{ number_format($buy->Price) }}
                         </flux:table.cell>
 

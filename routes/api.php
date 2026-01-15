@@ -16,3 +16,5 @@ Route::post('/sepidar/inventory-receipts', [\App\Http\Controllers\SepidarControl
 Route::post('/sepidar/inventory-receipt-items', [\App\Http\Controllers\SepidarController::class, 'inventory_receipt_items'])->name('sepidar.inventory-receipt-items');
 
 Route::post('/sepidar/grouping', [\App\Http\Controllers\SepidarController::class, 'grouping'])->name('sepidar.grouping');
+
+Route::post('/sepidar/dls', [\App\Http\Controllers\SepidarController::class, 'dls'])->name('sepidar.dls');
