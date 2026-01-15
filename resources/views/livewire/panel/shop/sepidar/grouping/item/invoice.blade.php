@@ -5,18 +5,7 @@
             <flux:text class="mt-2">{{ __('app.invoices_description') }}</flux:text>
         </div>
         <flux:table>
-            <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
-                <flux:table.column colspan="5" class="bg-white dark:bg-zinc-900">
-                    <div class="flex flex-col gap-1 pe-2 items-end">
-                        <flux:input
-                            size="sm"
-                            placeholder="{{ __('app.search_placeholder') }}"
-                            wire:model.live="search"
-                        />
-                    </div>
-                </flux:table.column>
-            </flux:table.columns>
-            <flux:table.columns>
+            <flux:table.columns class="bg-white dark:bg-zinc-900">
                 <flux:table.column>{{ __('app.customer') }}</flux:table.column>
                 <flux:table.column>{{ __('app.fee') }}</flux:table.column>
                 <flux:table.column>{{ __('app.quantity') }}</flux:table.column>

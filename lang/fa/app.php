@@ -823,6 +823,9 @@ return [
     'service_center_dashboard' => 'داشبرد خدمات',
     'balance' => 'موجودی',
     'invoices' => 'فاکتورها',
+    'invoices_description' => 'فاکتورها',
     'receipts' => 'رسید ها',
+    'receipts_description' => 'رسید ها',
     'action' => 'اقدام ها',
+    'fee' => 'فی',
 ];
