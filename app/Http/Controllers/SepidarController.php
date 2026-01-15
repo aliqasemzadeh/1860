@@ -22,7 +22,7 @@ class SepidarController extends Controller
 {
     public function invoices(Request $request)
     {
-        Log::channel('sepidar')->info('Invoice POST data received', $request->all());
+        //Log::channel('sepidar')->info('Invoice POST data received', $request->all());
 
         SaveInvoiceDataJob::dispatch($request->all());
 
@@ -31,7 +31,7 @@ class SepidarController extends Controller
 
     public function invoice_items(Request $request)
     {
-        Log::channel('sepidar')->info('Invoice Items POST data received', $request->all());
+        //Log::channel('sepidar')->info('Invoice Items POST data received', $request->all());
 
         SaveInvoiceItemDataJob::dispatch($request->all());
 
@@ -40,7 +40,7 @@ class SepidarController extends Controller
 
     public function banks(Request $request)
     {
-        Log::channel('sepidar')->info('Bank POST data received', $request->all());
+        //Log::channel('sepidar')->info('Bank POST data received', $request->all());
 
         SaveBankDataJob::dispatch($request->all());
 
@@ -50,7 +50,7 @@ class SepidarController extends Controller
 
     public function bank_accounts(Request $request)
     {
-        Log::channel('sepidar')->info('Bank Account POST data received', $request->all());
+        //Log::channel('sepidar')->info('Bank Account POST data received', $request->all());
 
         SaveBankAccountDataJob::dispatch($request->all());
 
@@ -59,7 +59,7 @@ class SepidarController extends Controller
 
     public function bank_account_balances(Request $request)
     {
-        Log::channel('sepidar')->info('Bank Account Balances POST data received', $request->all());
+        //Log::channel('sepidar')->info('Bank Account Balances POST data received', $request->all());
 
         SaveBankAccountBalanceDataJob::dispatch($request->all());
 
@@ -68,7 +68,7 @@ class SepidarController extends Controller
 
     public function items(Request $request)
     {
-        Log::channel('sepidar')->info('Items POST data received', $request->all());
+        //Log::channel('sepidar')->info('Items POST data received', $request->all());
 
         SaveItemDataJob::dispatch($request->all());
 
@@ -77,7 +77,7 @@ class SepidarController extends Controller
 
     public function item_stock_summaries(Request $request)
     {
-        Log::channel('sepidar')->info('Item Stock Summary POST data received', $request->all());
+        //Log::channel('sepidar')->info('Item Stock Summary POST data received', $request->all());
 
         SaveItemStockSummaryDataJob::dispatch($request->all());
 
@@ -86,7 +86,7 @@ class SepidarController extends Controller
 
     public function grouping(Request $request)
     {
-        Log::channel('sepidar')->info('Grouping POST data received', $request->all());
+        //Log::channel('sepidar')->info('Grouping POST data received', $request->all());
 
         SaveGroupingDataJob::dispatch($request->all());
 
@@ -95,7 +95,7 @@ class SepidarController extends Controller
 
     public function inventory_receipts(Request $request)
     {
-        Log::channel('sepidar')->info('Inventory Receipt POST data received', $request->all());
+        //Log::channel('sepidar')->info('Inventory Receipt POST data received', $request->all());
 
         SaveInventoryReceiptDataJob::dispatch($request->all());
 
@@ -104,7 +104,7 @@ class SepidarController extends Controller
 
     public function inventory_receipt_items(Request $request)
     {
-        Log::channel('sepidar')->info('Inventory Receipt Items POST data received', $request->all());
+        //Log::channel('sepidar')->info('Inventory Receipt Items POST data received', $request->all());
 
         SaveInventoryReceiptItemDataJob::dispatch($request->all());
 
@@ -113,7 +113,7 @@ class SepidarController extends Controller
 
     public function dls(Request $request)
     {
-        Log::channel('sepidar')->info('DLs POST data received', $request->all());
+        //Log::channel('sepidar')->info('DLs POST data received', $request->all());
 
         SaveDLDataJob::dispatch($request->all());
 
