@@ -11,6 +11,7 @@ Route::post('/sepidar/bank-account-balances', [\App\Http\Controllers\SepidarCont
 Route::post('/sepidar/bank-branches', [\App\Http\Controllers\SepidarController::class, 'bank_branches'])->name('sepidar.bank-branches');
 
 Route::post('/sepidar/items', [\App\Http\Controllers\SepidarController::class, 'items'])->name('sepidar.items');
+Route::post('/sepidar/item-images', [\App\Http\Controllers\SepidarController::class, 'item_images'])->name('sepidar.item-images');
 Route::post('/sepidar/item-stock-summaries', [\App\Http\Controllers\SepidarController::class, 'item_stock_summaries'])->name('sepidar.item-stock-summaries');
 
 Route::post('/sepidar/inventory-receipts', [\App\Http\Controllers\SepidarController::class, 'inventory_receipts'])->name('sepidar.inventory-receipts');
