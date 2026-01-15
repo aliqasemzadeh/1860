@@ -5,6 +5,7 @@ namespace App\Jobs\Sepidar;
 use App\Models\Sepidar\INV\Item;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 class SaveItemDataJob implements ShouldQueue
@@ -26,9 +27,11 @@ class SaveItemDataJob implements ShouldQueue
     {
         Schema::disableForeignKeyConstraints();
         Item::truncate();
+        Log::info("Running SaveItemDataJob");
         foreach ($this->data as $item) {
             Item::unguard();
             Item::firstOrCreate($item);
         }
+        Log::info("Done SaveItemDataJob");
     }
 }

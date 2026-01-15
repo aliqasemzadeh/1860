@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\Sepidar\SaveBankDataJob;
 use App\Jobs\Sepidar\SaveBankAccountDataJob;
 use App\Jobs\Sepidar\SaveBankAccountBalanceDataJob;
+use App\Jobs\Sepidar\SaveBankBranchDataJob;
 use App\Jobs\Sepidar\SaveDLDataJob;
 use App\Jobs\Sepidar\SaveInventoryReceiptDataJob;
 use App\Jobs\Sepidar\SaveInventoryReceiptItemDataJob;
@@ -66,9 +67,18 @@ class SepidarController extends Controller
         return response()->json(['message' => 'Bank account data received and queued for processing']);
     }
 
+    public function bank_branches(Request $request)
+    {
+        //Log::channel('sepidar')->info('Bank Account Balances POST data received', $request->all());
+
+        SaveBankBranchDataJob::dispatch($request->all());
+
+        return response()->json(['message' => 'Bank Branch data received and queued for processing']);
+    }
+
     public function items(Request $request)
     {
-        //Log::channel('sepidar')->info('Items POST data received', $request->all());
+        Log::channel('sepidar')->info('Items POST data received', $request->all());
 
         SaveItemDataJob::dispatch($request->all());
 
@@ -118,5 +128,23 @@ class SepidarController extends Controller
         SaveDLDataJob::dispatch($request->all());
 
         return response()->json(['message' => 'DLs data received and queued for processing']);
+    }
+
+    public function parties(Request $request)
+    {
+        //Log::channel('sepidar')->info('Party POST data received', $request->all());
+
+        SavePartyDataJob::dispatch($request->all());
+
+        return response()->json(['message' => 'Party data received and queued for processing']);
+    }
+
+    public function party_phones(Request $request)
+    {
+        //Log::channel('sepidar')->info('Party Phone POST data received', $request->all());
+
+        SavePartyPhoneDataJob::dispatch($request->all());
+
+        return response()->json(['message' => 'Party Phone data received and queued for processing']);
     }
 }
