@@ -31,6 +31,5 @@ class SaveInvoiceItemDataJob implements ShouldQueue
             InvoiceItem::unguard();
             InvoiceItem::firstOrCreate($item);
         }
-
     }
 }
