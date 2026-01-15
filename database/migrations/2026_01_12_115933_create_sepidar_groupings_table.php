@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('Code')->nullable();
             $table->string('FullCode')->nullable();
             $table->string('Title')->nullable();
-            $table->string('TitleEn')->nullable();
+            $table->string('Title_En')->nullable();
+            $table->string('HasQuantityCredit')->nullable();
+            $table->string('QuantityCreditCheckingType')->nullable();
             $table->string('MaximumCredit')->nullable();
             $table->string('HasCredit')->nullable();
             $table->string('CreditCheckingType')->nullable();
