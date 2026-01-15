@@ -10,6 +10,6 @@ class InventoryReceiptItem extends Model
 {
     public function receipt(): BelongsTo
     {
-        return $this->belongsTo(InventoryReceipt::class, 'InventoryReceiptID', 'InventoryReceiptRef');
+        return $this->belongsTo(InventoryReceipt::class, 'InventoryReceiptRef', 'InventoryReceiptID');
     }
 }

@@ -31,6 +31,7 @@
                     </flux:table.cell>
                     <flux:table.cell>
                         <flux:button size="xs" variant="primary" color="sky" wire:click="$dispatch('panel.shop.sepidar.grouping.item.invoice.assign-data', { id: '{{ $item->ItemID }}' })">{{ __('app.invoices') }}</flux:button>
+                        <flux:button size="xs" variant="primary" color="green" wire:click="$dispatch('panel.shop.sepidar.grouping.item.receipt.assign-data', { id: '{{ $item->ItemID }}' })">{{ __('app.receipts') }}</flux:button>
                     </flux:table.cell>
                 </flux:table.row>
             @endforeach

@@ -822,4 +822,7 @@ return [
     'order_status_paid' => 'پرداخت شده',
     'service_center_dashboard' => 'داشبرد خدمات',
     'balance' => 'موجودی',
+    'invoices' => 'فاکتورها',
+    'receipts' => 'رسید ها',
+    'action' => 'اقدام ها',
 ];

@@ -6,9 +6,8 @@
         </div>
 
         @foreach($this->sales as $sale)
-            {{ number_format($sale->Price) }} - {{ \Morilog\Jalali\Jalalian::fromDateTime($sale->invoice->CreationDate) }}
+            {{ number_format($sale->Fee) }} - {{ \Morilog\Jalali\Jalalian::fromDateTime($sale->invoice->CreationDate) }}
             <br />
         @endforeach
-
     </div>
 </flux:modal>

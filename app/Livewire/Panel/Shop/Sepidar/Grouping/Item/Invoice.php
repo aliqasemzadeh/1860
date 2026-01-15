@@ -12,7 +12,6 @@ class Invoice extends Component
 {
     public $ItemId;
 
-
     #[On('panel.shop.sepidar.grouping.item.invoice.assign-data')]
     public function assignData($id): void
     {
