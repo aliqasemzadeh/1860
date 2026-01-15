@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('sepidar_banks', function (Blueprint $table) {
             $table->id();
 			$table->bigInteger('BankId')->unique();
+            $table->bigInteger('DlRef')->nullable();
 			$table->string('Title')->nullable();
 			$table->string('Title_En')->nullable();
 			$table->string('Version')->nullable();

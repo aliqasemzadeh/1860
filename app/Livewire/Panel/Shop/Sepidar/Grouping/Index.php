@@ -14,11 +14,12 @@ class Index extends Component
         $this->grouping = Grouping::where('id', $groupingId)->firstOrFail();
     }
 
-    #[Computed(cache: true)]
+    #[Computed]
     public function groupings()
     {
         return Grouping::query()
             ->where('ParentGroupRef', null)
+            ->where('EntityType', 'SG.Inventory.ItemManagement.Common.ItemCodingGroup')
             ->get();
     }
     public function render()
