@@ -18,3 +18,6 @@ Route::post('/sepidar/inventory-receipt-items', [\App\Http\Controllers\SepidarCo
 Route::post('/sepidar/grouping', [\App\Http\Controllers\SepidarController::class, 'grouping'])->name('sepidar.grouping');
 
 Route::post('/sepidar/dls', [\App\Http\Controllers\SepidarController::class, 'dls'])->name('sepidar.dls');
+
+Route::post('/sepidar/parties', [\App\Http\Controllers\SepidarController::class, 'parties'])->name('sepidar.parties');
+Route::post('/sepidar/party_phones', [\App\Http\Controllers\SepidarController::class, 'party_phones'])->name('sepidar.party-phones');
