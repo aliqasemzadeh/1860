@@ -8,6 +8,7 @@ Route::post('/sepidar/invoice-items', [\App\Http\Controllers\SepidarController::
 Route::post('/sepidar/banks', [\App\Http\Controllers\SepidarController::class, 'banks'])->name('sepidar.banks');
 Route::post('/sepidar/bank-accounts', [\App\Http\Controllers\SepidarController::class, 'bank_accounts'])->name('sepidar.bank-accounts');
 Route::post('/sepidar/bank-account-balances', [\App\Http\Controllers\SepidarController::class, 'bank_account_balances'])->name('sepidar.bank-account-balances');
+Route::post('/sepidar/bank-branches', [\App\Http\Controllers\SepidarController::class, 'bank_branches'])->name('sepidar.bank-branches');
 
 Route::post('/sepidar/items', [\App\Http\Controllers\SepidarController::class, 'items'])->name('sepidar.items');
 Route::post('/sepidar/item-stock-summaries', [\App\Http\Controllers\SepidarController::class, 'item_stock_summaries'])->name('sepidar.item-stock-summaries');
@@ -20,4 +21,4 @@ Route::post('/sepidar/grouping', [\App\Http\Controllers\SepidarController::class
 Route::post('/sepidar/dls', [\App\Http\Controllers\SepidarController::class, 'dls'])->name('sepidar.dls');
 
 Route::post('/sepidar/parties', [\App\Http\Controllers\SepidarController::class, 'parties'])->name('sepidar.parties');
-Route::post('/sepidar/party_phones', [\App\Http\Controllers\SepidarController::class, 'party_phones'])->name('sepidar.party-phones');
+Route::post('/sepidar/party-phones', [\App\Http\Controllers\SepidarController::class, 'party_phones'])->name('sepidar.party-phones');
