@@ -11,6 +11,17 @@ use Livewire\Component;
 class Invoice extends Component
 {
     public $ItemId;
+    public $average = 0;
+    public $summation = 0;
+    public $quantity = 0;
+
+    #[On('panel.shop.sepidar.grouping.item.invoice.update-data')]
+    public function updateData($summation, $quantity)
+    {
+        $this->summation = $summation;
+        $this->quantity = $quantity;
+        $this->average = $summation / $quantity;
+    }
 
     #[On('panel.shop.sepidar.grouping.item.invoice.assign-data')]
     public function assignData($id): void
