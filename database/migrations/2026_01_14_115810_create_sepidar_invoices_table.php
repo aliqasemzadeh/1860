@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('invoices', function (Blueprint $table) {
+        Schema::create('sepidar_invoices', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('InvoiceId')->unique();
             $table->bigInteger('QuotationRef')->nullable();

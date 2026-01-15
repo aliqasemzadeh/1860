@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('party_phones', function (Blueprint $table) {
+        Schema::create('sepidar_party_phones', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('PartyPhoneId')->unique();
             $table->bigInteger('PartyRef')->nullable();

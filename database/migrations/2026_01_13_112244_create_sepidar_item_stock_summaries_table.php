@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('item_stock_summaries', function (Blueprint $table) {
+        Schema::create('sepidar_item_stock_summaries', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('ItemStockSummaryID')->unique();
             $table->bigInteger('StockRef')->nullable();

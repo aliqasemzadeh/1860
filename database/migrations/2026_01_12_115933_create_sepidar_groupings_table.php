@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('groupings', function (Blueprint $table) {
+        Schema::create('sepidar_groupings', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('GroupingID')->unique();
             $table->string('EntityType')->nullable()->index();

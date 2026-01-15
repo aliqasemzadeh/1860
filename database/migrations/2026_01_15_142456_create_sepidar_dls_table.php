@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('d_l_s', function (Blueprint $table) {
+        Schema::create('sepidar_dl_s', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('DLId')->unique();
             $table->string('Code')->nullable();

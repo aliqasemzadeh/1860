@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bank_accounts', function (Blueprint $table) {
+        Schema::create('sepidar_bank_accounts', function (Blueprint $table) {
             $table->id();
 			$table->bigInteger('BankAccountId')->unique();
 			$table->bigInteger('BankBranchRef')->nullable();

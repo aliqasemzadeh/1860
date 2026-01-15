@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class InventoryReceiptItem extends Model
 {
+    public $table = 'sepidar_inventory_receipt_items';
     public function receipt(): BelongsTo
     {
         return $this->belongsTo(InventoryReceipt::class, 'InventoryReceiptRef', 'InventoryReceiptID');

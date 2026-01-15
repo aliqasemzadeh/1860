@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class InventoryReceipt extends Model
 {
+    public $table = 'sepidar_inventory_receipts';
     public function dl(): BelongsTo
     {
-        return $this->belongsTo(DL::class, 'DLRef', 'DLID');
+        return $this->belongsTo(DL::class, 'DelivererDLRef', 'DLId');
     }
 }

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventory_receipts', function (Blueprint $table) {
+        Schema::create('sepidar_inventory_receipts', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('InventoryReceiptID')->unique();
             $table->string('IsReturn')->nullable();

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('item_images', function (Blueprint $table) {
+        Schema::create('sepidar_item_images', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('ItemImageID')->unique();
             $table->bigInteger('ItemRef')->nullable();
