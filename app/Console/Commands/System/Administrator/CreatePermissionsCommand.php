@@ -104,7 +104,10 @@ class CreatePermissionsCommand extends Command
         foreach ($permissions_accounting as $permission => $translate) {
             $accounting->givePermissionTo($permission);
         }
-
+        $items = \Illuminate\Support\Facades\DB::connection('sqlsrv')
+            ->table($table['name'])
+            ->where($table['row_id'], '>', $tableUpdater->last_row_id)
+            ->get();
 
     }
 }
