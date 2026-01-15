@@ -36,6 +36,5 @@
                 @endforeach
             </flux:table.rows>
         </flux:table>
-
     </div>
 </flux:modal>
