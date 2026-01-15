@@ -8,6 +8,7 @@ use App\Jobs\Sepidar\SaveBankAccountBalanceDataJob;
 use App\Jobs\Sepidar\SaveInventoryReceiptDataJob;
 use App\Jobs\Sepidar\SaveInventoryReceiptItemDataJob;
 use App\Jobs\Sepidar\SaveInvoiceDataJob;
+use App\Jobs\Sepidar\SaveInvoiceItemDataJob;
 use App\Jobs\Sepidar\SaveItemDataJob;
 use App\Jobs\Sepidar\SaveItemStockSummaryDataJob;
 use App\Jobs\Sepidar\SavePartyDataJob;
@@ -23,6 +24,15 @@ class SepidarController extends Controller
         Log::channel('sepidar')->info('Invoice POST data received', $request->all());
 
         SaveInvoiceDataJob::dispatch($request->all());
+
+        return response()->json(['message' => 'Invoice data received and queued for processing']);
+    }
+
+    public function invoice_items(Request $request)
+    {
+        Log::channel('sepidar')->info('Invoice Items POST data received', $request->all());
+
+        SaveInvoiceItemDataJob::dispatch($request->all());
 
         return response()->json(['message' => 'Invoice data received and queued for processing']);
     }

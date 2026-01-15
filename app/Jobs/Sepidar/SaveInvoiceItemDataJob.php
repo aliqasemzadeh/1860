@@ -2,12 +2,13 @@
 
 namespace App\Jobs\Sepidar;
 
-use App\Models\Sepidar\SLS\Invoice;
+use App\Models\Sepidar\INV\Item;
+use App\Models\Sepidar\SLS\InvoiceItem;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Schema;
 
-class SaveInvoiceDataJob implements ShouldQueue
+class SaveInvoiceItemDataJob implements ShouldQueue
 {
     use Queueable;
 
@@ -25,10 +26,10 @@ class SaveInvoiceDataJob implements ShouldQueue
     public function handle(): void
     {
         Schema::disableForeignKeyConstraints();
-        Invoice::truncate();
+        InvoiceItem::truncate();
         foreach ($this->data as $item) {
-            Invoice::unguard();
-            Invoice::firstOrCreate($item);
+            InvoiceItem::unguard();
+            InvoiceItem::firstOrCreate($item);
         }
     }
 }
