@@ -16,7 +16,7 @@
                 @foreach($this->buys as $buy)
                     <flux:table.row>
                         <flux:table.cell>
-                            {{ $buy->receipt->dl->Title }}
+                            {{ $buy->receipt->dl->Title ?? $buy->receipt->DelivererDLRef ?? "" }}
                         </flux:table.cell>
                         <flux:table.cell>
                             {{ number_format($buy->Fee) }}
