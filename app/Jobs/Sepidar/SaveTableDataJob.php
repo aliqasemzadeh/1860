@@ -2,11 +2,10 @@
 
 namespace App\Jobs\Sepidar;
 
-use App\Models\Sepidar\GNR\Party;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use Spatie\Permission\Models\Role;
 
 class SaveTableDataJob implements ShouldQueue
 {
@@ -25,14 +24,18 @@ class SaveTableDataJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $model =
+        Log::channel('sepidar')->info('Queue Start...', ['table' => $this->table]);
+        $model = config('sepidar_invoices.tables.' . $this->table . '.model');
         if($this->clean) {
+            Log::channel('sepidar')->info('Queue Clean.', ['table' => $this->table]);
             Schema::disableForeignKeyConstraints();
-            Role::truncate();
+            $model::truncate();
         }
+
         foreach ($this->data as $item) {
-            Party::unguard();
-            Party::firstOrCreate($item);
+            $model::unguard();
+            $model::firstOrCreate($item);
         }
+        Log::channel('sepidar')->info('Queue Done.', ['table' => $this->table]);
     }
 }

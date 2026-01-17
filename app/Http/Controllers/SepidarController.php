@@ -16,11 +16,24 @@ use App\Jobs\Sepidar\SaveItemStockSummaryDataJob;
 use App\Jobs\Sepidar\SavePartyDataJob;
 use App\Jobs\Sepidar\SavePartyPhoneDataJob;
 use App\Jobs\Sepidar\SaveGroupingDataJob;
+use App\Jobs\Sepidar\SaveTableDataJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class SepidarController extends Controller
 {
+    public function __invoke(Request $request)
+    {
+        Log::channel('sepidar')->info('Remote Data: ', [
+            'table' => $request->table,
+            'data' => sizeof($request->data),
+            'clean' => $request->clean,
+        ]);
+
+        SaveTableDataJob::dispatch($request->data, $request->table, $request->clean);
+        return response()->json(['message' => 'Data received and queued for processing.']);
+
+    }
     public function invoices(Request $request)
     {
         //Log::channel('sepidar')->info('Invoice POST data received', $request->all());
