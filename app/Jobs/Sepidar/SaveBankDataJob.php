@@ -2,8 +2,7 @@
 
 namespace App\Jobs\Sepidar;
 
-use App\Models\Accounting\Bank;
-use App\Models\Sepidar\RPA\BankBranch;
+use App\Models\Sepidar\RPA\Bank;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 

@@ -17,6 +17,8 @@ return new class extends Migration
 			$table->bigInteger('BankBranchRef')->nullable();
 			$table->bigInteger('DlRef')->nullable();
 			$table->string('AccountNo')->nullable();
+			$table->string('Version')->nullable();
+			$table->string('ClearFormatName')->nullable();
 			$table->bigInteger('AccountTypeRef')->nullable();
 			$table->bigInteger('CurrencyRef')->nullable();
 			$table->string('Rate')->nullable();

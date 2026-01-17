@@ -3,10 +3,8 @@
 namespace App\Jobs\Sepidar;
 
 use App\Models\Sepidar\RPA\BankAccount;
-use App\Models\Sepidar\RPA\BankAccountBalance;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Support\Facades\Cache;
 
 class SaveBankAccountDataJob implements ShouldQueue
 {
