@@ -36,6 +36,7 @@ class SaveTableDataJob implements ShouldQueue
             $model::unguard();
             $model::firstOrCreate($item);
         }
+
         Log::channel('sepidar')->info('Queue Done.', ['table' => $this->table]);
     }
 }
