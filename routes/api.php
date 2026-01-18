@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::post('/sepidar', \App\Http\Controllers\SepidarController::class)->name('sepidar.invoices');
+
 Route::post('/sepidar/invoices', [\App\Http\Controllers\SepidarController::class, 'invoices'])->name('sepidar.invoices');
 Route::post('/sepidar/invoice-items', [\App\Http\Controllers\SepidarController::class, 'invoice_items'])->name('sepidar.invoice-items');
 

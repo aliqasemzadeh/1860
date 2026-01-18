@@ -24,6 +24,12 @@ class SepidarController extends Controller
 {
     public function __invoke(Request $request)
     {
+        $request->validate([
+            'table' => 'required|string',
+            'data' => 'required|array',
+            'clean' => 'required|boolean',
+        ]);
+
         Log::channel('sepidar')->info('Remote Data: ', [
             'table' => $request->table,
             'data' => sizeof($request->data),
