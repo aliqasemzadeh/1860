@@ -37,25 +37,18 @@ class Index extends Component
     #[\Livewire\Attributes\Computed]
     public function banks()
     {
-        return Bank::query()
-            ->when($this->search, function ($query) {
-                $search = '%'.$this->search.'%';
-                $query->where(function ($q) use ($search) {
-                    $q->where('id', 'like', $search)
-                        ->orWhere('name', 'like', $search)
-                        ->orWhere('description', 'like', $search);
-                });
-            })
-            ->tap(fn ($query) => $this->sortBy ? $query->orderBy($this->sortBy, $this->sortDirection) : $query)
+        return \App\Models\Sepidar\RPA\BankAccountBalance::query()
+            ->with(['bankAccount', 'bankAccount.bankBranch', 'bankAccount.bankBranch.bank'])
+            ->where('FiscalYearRef', config('sepidar.FiscalYearRef'))
             ->paginate(100);
     }
 
     #[\Livewire\Attributes\Computed]
     public function totalBalance()
     {
-        return Bank::query()
+        return \App\Models\Sepidar\RPA\BankAccountBalance::query()
             ->get()
-            ->sum(fn ($bank) => $bank->calculateBalance());
+            ->sum('Balance');
     }
 
     public function updatingSearch(): void

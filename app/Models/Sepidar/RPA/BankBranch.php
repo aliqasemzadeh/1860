@@ -11,6 +11,6 @@ class BankBranch extends Model
 
     public function bank(): BelongsTo
     {
-        return $this->belongsTo(BankBranch::class, 'BankRef', 'BankId');
+        return $this->belongsTo(Bank::class, 'BankRef', 'BankId');
     }
 }

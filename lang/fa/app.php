@@ -828,4 +828,7 @@ return [
     'receipts_description' => 'رسید ها',
     'action' => 'اقدام ها',
     'fee' => 'فی',
+    'rial' => 'ریال',
+    'branch' => 'شعبه',
+    'account_number' => 'شماره حساب',
 ];
