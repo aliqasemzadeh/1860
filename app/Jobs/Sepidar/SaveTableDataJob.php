@@ -28,13 +28,27 @@ class SaveTableDataJob implements ShouldQueue
         $model = config('sepidar_invoices.tables.' . $this->table . '.model');
         if($this->clean) {
             Log::channel('sepidar')->info('Queue Clean.', ['table' => $this->table]);
-            Schema::disableForeignKeyConstraints();
-            $model::truncate();
+            try {
+                $model::truncate();
+            } catch (\Exception $exception) {
+                Log::channel('sepidar')->error('Truncate Error:', [
+                    'table' => $this->table,
+                    'exception' => $exception->getMessage(),
+                ]);
+            }
         }
 
         foreach ($this->data as $item) {
             $model::unguard();
-            $model::firstOrCreate($item);
+            try {
+                $model::firstOrCreate($item);
+            } catch (\Exception $exception) {
+                Log::channel('sepidar')->error('Create Item Error:', [
+                    'table' => $this->table,
+                    'exception' => $exception->getMessage(),
+                ]);
+            }
+
         }
 
         Log::channel('sepidar')->info('Queue Done.', ['table' => $this->table]);

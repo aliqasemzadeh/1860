@@ -72,5 +72,6 @@ return [
             'endpoint' => 'inventory-receipt-items',
             'row_id' => 'InventoryReceiptItemID',
         ],
+
     ]
 ];
