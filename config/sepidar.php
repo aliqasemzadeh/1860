@@ -4,71 +4,71 @@ return [
     'FiscalYearRef' => 3,
     'tables' => [
         'banks' => [
-            'model' => \App\Models\Sepidar\RPA\Bank::class,
+            'model' => "\App\Models\Sepidar\RPA\Bank",
             'endpoint' => 'banks',
             'row_id' => 'BankId',
         ],
-        'bank-accounts' => [
-            'model' => \App\Models\Sepidar\RPA\BankAccount::class,
+        'bank_accounts' => [
+            'model' => "\App\Models\Sepidar\RPA\BankAccount",
             'endpoint' => 'bank-accounts',
             'row_id' => 'BankAccountId',
         ],
-        'bank-account-balances' => [
-            'model' => \App\Models\Sepidar\RPA\BankAccountBalance::class,
+        'bank_account_balances' => [
+            'model' => "\App\Models\Sepidar\RPA\BankAccountBalance",
             'endpoint' => 'bank-account-balances',
             'row_id' => 'BankAccountBalanceId',
         ],
-        'bank-branches' => [
-            'model' => \App\Models\Sepidar\RPA\BankBranch::class,
+        'bank_branches' => [
+            'model' => "\App\Models\Sepidar\RPA\BankBranch",
             'endpoint' => 'bank-branches',
             'row_id' => 'BankBranchId',
         ],
 
         'dls' => [
-            'model' => \App\Models\Sepidar\ACC\DL::class,
+            'model' => "\App\Models\Sepidar\ACC\DL",
             'endpoint' => 'dls',
             'row_id' => 'DLId',
         ],
 
-        'item-stock-summaries' => [
-            'model' => \App\Models\Sepidar\INV\ItemStockSummary::class,
+        'item_stock_summaries' => [
+            'model' => "\App\Models\Sepidar\INV\ItemStockSummary",
             'endpoint' => 'item-stock-summaries',
             'row_id' => 'ItemStockSummaryID',
         ],
 
         'items' => [
-            'model' => \App\Models\Sepidar\INV\Item::class,
+            'model' => "\App\Models\Sepidar\INV\Item",
             'endpoint' => 'items',
             'row_id' => 'ItemID',
         ],
 
 
         'grouping' => [
-            'model' => \App\Models\Sepidar\GNR\Grouping::class,
+            'model' => "\App\Models\Sepidar\GNR\Grouping",
             'endpoint' => 'grouping',
             'row_id' => 'GroupingID',
         ],
 
         'invoices' => [
-            'model' => \App\Models\Sepidar\SLS\Invoice::class,
+            'model' => "\App\Models\Sepidar\SLS\Invoice",
             'endpoint' => 'invoices',
             'row_id' => 'InvoiceId',
         ],
 
-        'invoice-items' => [
-            'model' => \App\Models\Sepidar\SLS\InvoiceItem::class,
+        'invoice_items' => [
+            'model' => "\App\Models\Sepidar\SLS\InvoiceItem",
             'endpoint' => 'invoice-items',
             'row_id' => 'InvoiceItemID',
         ],
 
-        'inventory-receipts' => [
-            'model' => \App\Models\Sepidar\INV\InventoryReceipt::class,
+        'inventory_receipts' => [
+            'model' => "\App\Models\Sepidar\INV\InventoryReceipt",
             'endpoint' => 'inventory-receipts',
             'row_id' => 'InventoryReceiptID',
         ],
 
-        'inventory-receipt-items' => [
-            'model' => \App\Models\Sepidar\INV\InventoryReceiptItem::class,
+        'inventory_receipt_items' => [
+            'model' => "\App\Models\Sepidar\INV\InventoryReceiptItem",
             'endpoint' => 'inventory-receipt-items',
             'row_id' => 'InventoryReceiptItemID',
         ],
