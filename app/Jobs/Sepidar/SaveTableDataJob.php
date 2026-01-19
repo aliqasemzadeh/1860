@@ -24,10 +24,11 @@ class SaveTableDataJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Log::channel('sepidar')->info('Queue Start...', ['table' => $this->table]);
-        $model = config('sepidar_invoices.tables.' . $this->table . '.model');
+        Log::channel('sepidar')->info('Queue Start:'.$this->table);
+        $model = config('sepidar.tables.' . $this->table . '.model');
+        Log::channel('sepidar')->info('Model:'. $model);
         if($this->clean) {
-            Log::channel('sepidar')->info('Queue Clean.', ['table' => $this->table]);
+            Log::channel('sepidar')->info('Queue Clean:'. $this->table);
             try {
                 $model::truncate();
             } catch (\Exception $exception) {
@@ -51,6 +52,6 @@ class SaveTableDataJob implements ShouldQueue
 
         }
 
-        Log::channel('sepidar')->info('Queue Done.', ['table' => $this->table]);
+        Log::channel('sepidar')->info('Queue Done:'.$this->table);
     }
 }
