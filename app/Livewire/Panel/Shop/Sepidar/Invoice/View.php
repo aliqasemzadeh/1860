@@ -13,7 +13,7 @@ class View extends Component
     #[On('panel.shop.sepidar.invoice.view.assign-data')]
     public function assignData($id): void
     {
-        $this->invoice = Invoice::findOrFail($id);
+        $this->invoice = Invoice::with(['items', 'items.item', 'items.last_receipt'])->findOrFail($id);
     }
     public function render()
     {

@@ -15,24 +15,24 @@
                 <flux:table.column>{{ __('app.profit') }}</flux:table.column>
             </flux:table.columns>
             <flux:table.rows>
-                @foreach($this->items as $item)
+                @foreach($invoice->items as $item)
                     <flux:table.row>
                         <flux:table.cell>
-                            {{ $item->receipt->dl->Title ?? $buy->receipt->DelivererDLRef ?? "" }}
+                            {{ $item->item->Title }}
                         </flux:table.cell>
                         <flux:table.cell>
-                            {{ number_format($buy->Fee) }}
+
                         </flux:table.cell>
                         <flux:table.cell>
-                            {{ number_format($buy->Quantity) }}
+
                         </flux:table.cell>
 
                         <flux:table.cell>
-                            {{ number_format($buy->Price) }}
+
                         </flux:table.cell>
 
                         <flux:table.cell>
-                            {{ \Morilog\Jalali\Jalalian::fromDateTime($buy->receipt->CreationDate) }}
+
                         </flux:table.cell>
                     </flux:table.row>
                 @endforeach
