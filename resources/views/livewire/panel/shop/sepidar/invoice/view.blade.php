@@ -37,6 +37,7 @@
                     @endphp
                     <flux:table.row>
                         <flux:table.cell>
+                            {{ $item->ItemRef }}
                             {{ $item->item->Title }}
                         </flux:table.cell>
 
