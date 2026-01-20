@@ -53,6 +53,7 @@ return new class extends Migration
             $table->string('CustomerRemaining')->nullable();
             $table->string('PassportNumber')->nullable();
             $table->string('IsPurchasingAgent')->nullable();
+            $table->string('IsCustomer')->nullable();
             $table->timestamps();
         });
     }
