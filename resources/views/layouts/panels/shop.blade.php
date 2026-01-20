@@ -30,7 +30,11 @@
             <flux:sidebar.item href="{{ route('panel.shop.shipping.rate.index') }}" wire:navigate>{{ __('app.shipping_rates') }}</flux:sidebar.item>
         </flux:sidebar.group>
 
-        <flux:sidebar.item icon="bring-to-front" href="{{ route('panel.shop.sepidar.grouping.index') }}" wire:navigate>{{ __('app.inventory') }}</flux:sidebar.item>
+        <flux:sidebar.group expandable heading="{{ __('app.accounting') }}" class="grid" :expanded="request()->routeIs('panel.shop.sepidar.*')">
+            <flux:sidebar.item href="{{ route('panel.shop.sepidar.grouping.index') }}" wire:navigate>{{ __('app.inventory') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('panel.shop.sepidar.invoice.index') }}" wire:navigate>{{ __('app.invoices') }}</flux:sidebar.item>
+        </flux:sidebar.group>
+
     </flux:sidebar.nav>
 
     <flux:sidebar.spacer />

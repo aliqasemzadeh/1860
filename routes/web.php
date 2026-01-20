@@ -62,6 +62,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     Route::get('/panel/shop/sepidar/grouping/index/{groupingId?}', \App\Livewire\Panel\Shop\Sepidar\Grouping\Index::class)->name('panel.shop.sepidar.grouping.index');
+    Route::get('/panel/shop/sepidar/invoice/index/{groupingId?}', \App\Livewire\Panel\Shop\Sepidar\Invoice\Index::class)->name('panel.shop.sepidar.invoice.index');
 
 
 
