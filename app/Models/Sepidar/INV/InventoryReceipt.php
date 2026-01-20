@@ -36,8 +36,7 @@ class InventoryReceipt extends Model
                     InventoryReceiptItem::class,
                     'InventoryReceiptRef',
                     'InventoryReceiptID'
-                )->orderByDesc('Fee')
-            ->orderByDesc('InventoryReceiptItemID');
+                )->orderByDesc('Fee');
     }
 
     public function maxFeeItem(): HasOne
@@ -46,7 +45,6 @@ class InventoryReceipt extends Model
                     InventoryReceiptItem::class,
                     'InventoryReceiptRef',
                     'InventoryReceiptID'
-                )->orderByDesc('Fee')
-            ->orderByDesc('InventoryReceiptItemID'); // برای رفع تساوی
+                )->orderByDesc('Fee'); // برای رفع تساوی
     }
 }

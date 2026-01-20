@@ -24,19 +24,14 @@
             <flux:table.rows>
                 @foreach($invoice->items as $item)
                     @php
-                        $lastReceipt = \App\Models\Sepidar\INV\InventoryReceipt::query()
-                            ->whereHas('items', function ($q) use ($item) {
-                                $q->where('ItemRef', $item->ItemRef);
-                            })
-                            ->with(['maxFeeItem' => function ($q) use ($item) {
-                                $q->where('ItemRef', $item->ItemRef);
-                            }])
-                            ->latest('CreationDate')
+                        $maxFeeItem = \App\Models\Sepidar\INV\InventoryReceiptItem::query()
+                            ->where('ItemRef', $item->ItemRef)
+                            ->orderByDesc('Fee')
+                            ->with('receipt')
                             ->first();
                     @endphp
                     <flux:table.row>
                         <flux:table.cell>
-
                             {{ $item->item->Title }}
                         </flux:table.cell>
 
@@ -54,17 +49,17 @@
                         </flux:table.cell>
 
                         <flux:table.cell>
-                            {{ number_format($lastReceipt?->maxFeeItem?->Fee) }}
+                            {{ number_format($maxFeeItem?->Fee) }}
                         </flux:table.cell>
 
                         <flux:table.cell>
-                            {{ number_format($lastReceipt?->maxFeeItem?->Fee * $item->Quantity) }}
+                            {{ number_format($maxFeeItem?->Fee * $item->Quantity) }}
                         </flux:table.cell>
 
                         <flux:table.cell>
-                            {{ number_format($item->NetPrice - $lastReceipt?->maxFeeItem?->Fee * $item->Quantity) }}
+                            {{ number_format($item->NetPrice - $maxFeeItem?->Fee * $item->Quantity) }}
                             @php
-                                $profit += $item->NetPrice - $lastReceipt?->maxFeeItem?->Fee * $item->Quantity;
+                                $profit += $item->NetPrice - $maxFeeItem?->Fee * $item->Quantity;
                             @endphp
                         </flux:table.cell>
                     </flux:table.row>

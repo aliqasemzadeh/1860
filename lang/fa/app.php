@@ -840,4 +840,5 @@ return [
     'profit' => 'سود',
     'invoice_items' => 'سود',
     'invoice_items_description' => 'سود',
+    'search_in_invoices' => 'جستجوی فاکتور...',
 ];
