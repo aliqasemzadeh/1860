@@ -73,5 +73,23 @@ return [
             'row_id' => 'InventoryReceiptItemID',
         ],
 
+        'parties' => [
+            'model' => "\App\Models\Sepidar\GNR\Party",
+            'endpoint' => 'parties',
+            'row_id' => 'PartyId',
+        ],
+
+        'party_phones' => [
+            'model' => "\App\Models\Sepidar\GNR\PartyPhone",
+            'endpoint' => 'party-phones',
+            'row_id' => 'PartyPhoneId',
+        ],
+
+        'party_phones' => [
+            'model' => "\App\Models\Sepidar\GNR\PartyPhone",
+            'endpoint' => 'party-phones',
+            'row_id' => 'PartyPhoneId',
+        ],
+
     ]
 ];
