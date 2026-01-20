@@ -26,12 +26,12 @@
                     @php
                         $maxFeeItem = \App\Models\Sepidar\INV\InventoryReceiptItem::query()
                             ->where('ItemRef', $item->ItemRef)
-                                ->whereHas('receipt', function ($q) {
-                                    $q->where('CreationDate', '<=', $invoice->CreationDate);
-                                })
-                                ->with(['receipt' => function ($q) {
-                                    $q->where('CreationDate', '<=', $invoice->CreationDate);
-                                }])
+                            ->whereHas('receipt', function ($q) use ($invoice) {
+                                $q->where('CreationDate', '<', $invoice->CreationDate);
+                            })
+                            ->with(['receipt' => function ($q) use ($invoice) {
+                                $q->where('CreationDate', '<', $invoice->CreationDate);
+                            }])
                             ->orderByDesc('Fee')
                             ->first();
                     @endphp
