@@ -835,4 +835,9 @@ return [
     'inventory_rial_balance' => 'موجودی ریالی انبار',
     'inventory' => 'انبار',
     'number' => 'شماره',
+    'last_buy_fee' => 'آخرین فی',
+    'last_buy_price' => 'آخرین قیمت',
+    'profit' => 'سود',
+    'invoice_items' => 'سود',
+    'invoice_items_description' => 'سود',
 ];
