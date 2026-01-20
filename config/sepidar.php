@@ -43,7 +43,7 @@ return [
         ],
 
 
-        'grouping' => [
+        'groupings' => [
             'model' => "\App\Models\Sepidar\GNR\Grouping",
             'endpoint' => 'grouping',
             'row_id' => 'GroupingID',
