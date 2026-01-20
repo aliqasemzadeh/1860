@@ -36,7 +36,7 @@ class InventoryReceipt extends Model
                     InventoryReceiptItem::class,
                     'InventoryReceiptRef',
                     'InventoryReceiptID'
-                )->orderByDesc('Fee')
+                )->orderByDesc('Price')
             ->orderByDesc('InventoryReceiptItemID');
     }
 
