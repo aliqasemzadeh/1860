@@ -5,6 +5,7 @@ namespace App\Livewire\Panel\Shop\Sepidar\Invoice;
 use App\Models\Sepidar\GNR\Grouping;
 use App\Models\Sepidar\SLS\Invoice;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -45,6 +46,7 @@ class Index extends Component
             ->paginate(10);
     }
 
+    #[Layout('layouts.panels.shop')]
     public function render()
     {
         return view('livewire.panel.shop.sepidar.invoice.index');
