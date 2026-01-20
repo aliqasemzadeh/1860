@@ -79,16 +79,16 @@ return [
             'row_id' => 'PartyId',
         ],
 
-        'party_phones' => [
-            'model' => "\App\Models\Sepidar\GNR\PartyPhone",
-            'endpoint' => 'party-phones',
-            'row_id' => 'PartyPhoneId',
+        'payment_cheques' => [
+            'model' => "\App\Models\Sepidar\RPA\PaymentCheque",
+            'endpoint' => 'payment-cheques',
+            'row_id' => 'PaymentChequeId',
         ],
 
-        'party_phones' => [
-            'model' => "\App\Models\Sepidar\GNR\PartyPhone",
-            'endpoint' => 'party-phones',
-            'row_id' => 'PartyPhoneId',
+        'payment_headers' => [
+            'model' => "\App\Models\Sepidar\RPA\PaymentHeader",
+            'endpoint' => 'payment-headers',
+            'row_id' => 'PaymentHeaderId',
         ],
 
     ]
