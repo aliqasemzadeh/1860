@@ -32,7 +32,7 @@
                                 ->with(['receipt' => function ($q) {
                                     $q->where('CreationDate', '<=', $invoice->CreationDate);
                                 }])
-                                                            ->orderByDesc('Fee')
+                            ->orderByDesc('Fee')
                             ->first();
                     @endphp
                     <flux:table.row>
