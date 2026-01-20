@@ -7,8 +7,9 @@
         <flux:table>
             <flux:table.columns class="bg-white dark:bg-zinc-900">
                 <flux:table.column>{{ __('app.name') }}</flux:table.column>
-                <flux:table.column>{{ __('app.fee') }}</flux:table.column>
+
                 <flux:table.column>{{ __('app.quantity') }}</flux:table.column>
+                <flux:table.column>{{ __('app.fee') }}</flux:table.column>
                 <flux:table.column>{{ __('app.price') }}</flux:table.column>
                 <flux:table.column>{{ __('app.last_buy_fee') }}</flux:table.column>
                 <flux:table.column>{{ __('app.last_buy_price') }}</flux:table.column>
@@ -16,38 +17,62 @@
             </flux:table.columns>
             @if(isset($invoice))
 
+                @php
+                    $profit = 0;
+                @endphp
+
             <flux:table.rows>
                 @foreach($invoice->items as $item)
                     @php
-                        $lastReceipt = \App\Models\Sepidar\INV\InventoryReceiptItem::query()
-                            ->joinWhere('sepidar_inventory_receipts', 'InventoryReceiptRef', '=', 'InventoryReceiptID')
-                            ->where('ItemRef', $item->ItemId)
+                        $lastReceipt = \App\Models\Sepidar\INV\InventoryReceipt::query()
+                            ->whereHas('items', function ($q) use ($item) {
+                                $q->where('ItemRef', $item->ItemRef);
+                            })
+                            ->with(['maxFeeItem' => function ($q) use ($item) {
+                                $q->where('ItemRef', $item->ItemRef);
+                            }])
                             ->latest('CreationDate')
                             ->first();
                     @endphp
                     <flux:table.row>
                         <flux:table.cell>
+
                             {{ $item->item->Title }}
-                            {{ dd($lastReceipt) }}
                         </flux:table.cell>
-                        <flux:table.cell>
-                            {{ number_format($item->Fee) }}
-                        </flux:table.cell>
+
                         <flux:table.cell>
                             {{ number_format($item->Quantity) }}
                         </flux:table.cell>
 
                         <flux:table.cell>
-                            {{ number_format($item->Price) }}
+                            {{ number_format($item->Fee) }}
+                        </flux:table.cell>
+
+
+                        <flux:table.cell>
+                            {{ number_format($item->NetPrice) }}
                         </flux:table.cell>
 
                         <flux:table.cell>
+                            {{ number_format($lastReceipt?->maxFeeItem?->Fee) }}
+                        </flux:table.cell>
 
+                        <flux:table.cell>
+                            {{ number_format($lastReceipt?->maxFeeItem?->Fee * $item->Quantity) }}
+                        </flux:table.cell>
+
+                        <flux:table.cell>
+                            {{ number_format($item->NetPrice - $lastReceipt?->maxFeeItem?->Fee * $item->Quantity) }}
+                            @php
+                                $profit += $item->NetPrice - $lastReceipt?->maxFeeItem?->Fee * $item->Quantity;
+                            @endphp
                         </flux:table.cell>
                     </flux:table.row>
                 @endforeach
             </flux:table.rows>
                 @endif
         </flux:table>
+        سود نهایی:
+        {{ number_format($profit ?? 0) }}
     </div>
 </flux:modal>
