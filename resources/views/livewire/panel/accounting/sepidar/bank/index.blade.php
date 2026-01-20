@@ -65,4 +65,8 @@
             @endforeach
         </flux:table.rows>
     </flux:table>
+
+    <flux:card>
+        <livewire:panel.administrator.dashboard.groupings />
+    </flux:card>
 </div>

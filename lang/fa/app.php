@@ -831,4 +831,7 @@ return [
     'rial' => 'ریال',
     'branch' => 'شعبه',
     'account_number' => 'شماره حساب',
+    'administrator_description' => 'خلاصه وضعیت شرکت',
+    'inventory_rial_balance' => 'موجودی ریالی انبار',
+    'inventory' => 'انبار',
 ];

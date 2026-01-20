@@ -23,7 +23,7 @@
                         {{ $item->Title }}
                     </flux:table.cell>
                     <flux:table.cell>
-                        @if($lastStockSummary = \App\Models\Sepidar\INV\ItemStockSummary::where('ItemRef', $item->ItemID)->where('FiscalYearRef',3)->first())
+                        @if($lastStockSummary = \App\Models\Sepidar\INV\ItemStockSummary::where('ItemRef', $item->ItemID)->where('FiscalYearRef', config('sepidar.FiscalYearRef'))->first())
                             {{ number_format($lastStockSummary->Quantity) }}
                         @else
                             0
