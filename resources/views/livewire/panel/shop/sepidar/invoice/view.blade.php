@@ -26,8 +26,13 @@
                     @php
                         $maxFeeItem = \App\Models\Sepidar\INV\InventoryReceiptItem::query()
                             ->where('ItemRef', $item->ItemRef)
-                            ->orderByDesc('Fee')
-                            ->with('receipt')
+                                ->whereHas('receipt', function ($q) {
+                                    $q->where('CreationDate', '<=', $invoice->CreationDate);
+                                })
+                                ->with(['receipt' => function ($q) {
+                                    $q->where('CreationDate', '<=', $invoice->CreationDate);
+                                }])
+                                                            ->orderByDesc('Fee')
                             ->first();
                     @endphp
                     <flux:table.row>
