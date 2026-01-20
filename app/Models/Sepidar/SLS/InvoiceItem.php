@@ -17,11 +17,7 @@ class InvoiceItem extends Model
 
     public function item(): BelongsTo
     {
-        return $this->belongsTo(Item::class, 'ItemRef', 'ItemId');
+        return $this->belongsTo(Item::class, 'ItemRef', 'ItemID');
     }
 
-    public function last_receipt(): BelongsTo
-    {
-        return $this->belongsTo(InventoryReceiptItem::class, 'ItemRef', 'ItemId')->latest('CreationDate')->first();
-    }
 }

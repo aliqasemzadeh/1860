@@ -17,6 +17,6 @@ class InventoryReceiptItem extends Model
 
     public function item(): BelongsTo
     {
-        return $this->belongsTo(InvoiceItem::class, 'InventoryReceiptItemRef', 'ItemID');
+        return $this->belongsTo(Item::class, 'ItemRef', 'ItemID');
     }
 }

@@ -18,6 +18,9 @@
     </div>
 
 
+    <livewire:panel.shop.sepidar.invoice.view />
+
+
     <flux:table :paginate="$this->invoices">
         <flux:table.columns>
             <flux:table.column>{{ __('app.number') }}</flux:table.column>
@@ -53,7 +56,7 @@
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex items-center gap-2">
-
+                        <flux:button size="xs" variant="primary" color="sky" wire:click="$dispatch('panel.shop.sepidar.invoice.view.assign-data', { id: '{{ $invoice->id }}' })">{{ __('app.view') }}</flux:button>
                     </div>
                 </flux:table.cell>
             </flux:table.row>

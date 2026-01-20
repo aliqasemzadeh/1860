@@ -14,21 +14,31 @@
                 <flux:table.column>{{ __('app.last_buy_price') }}</flux:table.column>
                 <flux:table.column>{{ __('app.profit') }}</flux:table.column>
             </flux:table.columns>
+            @if(isset($invoice))
+
             <flux:table.rows>
                 @foreach($invoice->items as $item)
+                    @php
+                        $lastReceipt = \App\Models\Sepidar\INV\InventoryReceiptItem::query()
+                            ->joinWhere('sepidar_inventory_receipts', 'InventoryReceiptRef', '=', 'InventoryReceiptID')
+                            ->where('ItemRef', $item->ItemId)
+                            ->latest('CreationDate')
+                            ->first();
+                    @endphp
                     <flux:table.row>
                         <flux:table.cell>
                             {{ $item->item->Title }}
+                            {{ dd($lastReceipt) }}
                         </flux:table.cell>
                         <flux:table.cell>
-
+                            {{ number_format($item->Fee) }}
                         </flux:table.cell>
                         <flux:table.cell>
-
+                            {{ number_format($item->Quantity) }}
                         </flux:table.cell>
 
                         <flux:table.cell>
-
+                            {{ number_format($item->Price) }}
                         </flux:table.cell>
 
                         <flux:table.cell>
@@ -37,6 +47,7 @@
                     </flux:table.row>
                 @endforeach
             </flux:table.rows>
+                @endif
         </flux:table>
     </div>
 </flux:modal>

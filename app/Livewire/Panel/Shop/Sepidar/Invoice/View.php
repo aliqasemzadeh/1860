@@ -4,6 +4,7 @@ namespace App\Livewire\Panel\Shop\Sepidar\Invoice;
 
 use App\Models\Sepidar\INV\InventoryReceiptItem;
 use App\Models\Sepidar\SLS\Invoice;
+use Flux\Flux;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -13,7 +14,8 @@ class View extends Component
     #[On('panel.shop.sepidar.invoice.view.assign-data')]
     public function assignData($id): void
     {
-        $this->invoice = Invoice::with(['items', 'items.item', 'items.last_receipt'])->findOrFail($id);
+        $this->invoice = Invoice::with(['items', 'items.item'])->findOrFail($id);
+        Flux::modal('panel.shop.sepidar.invoice.view.modal')->show();
     }
     public function render()
     {
