@@ -834,4 +834,5 @@ return [
     'administrator_description' => 'خلاصه وضعیت شرکت',
     'inventory_rial_balance' => 'موجودی ریالی انبار',
     'inventory' => 'انبار',
+    'number' => 'شماره',
 ];

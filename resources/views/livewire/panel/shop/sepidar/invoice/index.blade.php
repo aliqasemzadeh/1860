@@ -23,7 +23,7 @@
             <flux:table.column>{{ __('app.number') }}</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'CustomerRealName'" :direction="$sortDirection" wire:click="sort('CustomerRealName')">{{ __('app.name') }}</flux:table.column>
             <flux:table.column>{{ __('app.category') }}</flux:table.column>
-            <flux:table.column>{{ __('app.brand') }}</flux:table.column>
+            <flux:table.column>{{ __('app.price') }}</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'Date'" :direction="$sortDirection" wire:click="sort('Date')">{{ __('app.date') }}</flux:table.column>
             <flux:table.column>{{ __('app.options') }}</flux:table.column>
         </flux:table.columns>
@@ -39,10 +39,14 @@
                     </div>
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
-                    {{ $invoice->Number }}
+                    @if($invoice->SaleTypeRef == 1)
+                        رسمی
+                    @else
+                        غیر رسمی
+                    @endif
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
-                    {{ '-' }}
+                    {{ number_format($invoice->Price) }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     {{ $invoice->Date ? \Morilog\Jalali\Jalalian::fromDateTime($invoice->Date)->format('%Y-%m-%d') : '-' }}
