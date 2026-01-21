@@ -838,7 +838,7 @@ return [
     'last_buy_fee' => 'آخرین فی',
     'last_buy_price' => 'آخرین قیمت',
     'profit' => 'سود',
-    'invoice_items' => 'سود',
-    'invoice_items_description' => 'سود',
+    'invoice_items' => 'جزئیات فاکتور',
+    'invoice_items_description' => 'اقلامی که در فاکتور ثبت شده است قابل مشاهده است.',
     'search_in_invoices' => 'جستجوی فاکتور...',
 ];

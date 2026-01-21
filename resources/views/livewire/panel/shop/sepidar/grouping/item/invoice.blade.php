@@ -16,6 +16,7 @@
                 @foreach($this->sales as $sale)
                     <flux:table.row>
                         <flux:table.cell>
+                            <flux:button size="xs" variant="primary" color="sky" wire:click="$dispatch('panel.shop.sepidar.invoice.view.assign-data', { id: '{{ $sale->invoice->id }}' })">{{ __('app.view') }}</flux:button>
                             {{ $sale->invoice->CustomerRealName }}
                         </flux:table.cell>
                         <flux:table.cell>

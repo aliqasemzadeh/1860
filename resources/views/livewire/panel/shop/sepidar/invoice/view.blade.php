@@ -13,7 +13,9 @@
                 <flux:table.column>{{ __('app.price') }}</flux:table.column>
                 <flux:table.column>{{ __('app.last_buy_fee') }}</flux:table.column>
                 <flux:table.column>{{ __('app.last_buy_price') }}</flux:table.column>
+                @can('administrator_access')
                 <flux:table.column>{{ __('app.profit') }}</flux:table.column>
+                @endcan
             </flux:table.columns>
             @if(isset($invoice))
 
@@ -62,18 +64,22 @@
                             {{ number_format($maxFeeItem?->Fee * $item->Quantity) }}
                         </flux:table.cell>
 
+                        @can('administrator_access')
                         <flux:table.cell>
                             {{ number_format($item->NetPrice - $maxFeeItem?->Fee * $item->Quantity) }}
                             @php
                                 $profit += $item->NetPrice - $maxFeeItem?->Fee * $item->Quantity;
                             @endphp
                         </flux:table.cell>
+                        @endcan
                     </flux:table.row>
                 @endforeach
             </flux:table.rows>
                 @endif
         </flux:table>
+        @can('administrator_access')
         سود نهایی:
         {{ number_format($profit ?? 0) }}
+        @endcan
     </div>
 </flux:modal>

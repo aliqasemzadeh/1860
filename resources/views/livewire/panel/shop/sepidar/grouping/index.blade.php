@@ -1,6 +1,7 @@
 <div>
     <livewire:panel.shop.sepidar.grouping.item.invoice />
     <livewire:panel.shop.sepidar.grouping.item.receipt />
+    <livewire:panel.shop.sepidar.invoice.view />
 
     @foreach($this->groupings as $groupingItem)
         <flux:button variant="primary" wire:navigate href="{{ route('panel.shop.sepidar.grouping.index', ['groupingId' => $groupingItem->id]) }}">{{ $groupingItem->Title }}</flux:button>
