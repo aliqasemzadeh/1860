@@ -26,13 +26,15 @@
             <flux:table.rows>
                 @foreach($invoice->items as $item)
                     @php
+                        $cutoff =  \Carbon\Carbon::parse($invoice->CreationDate)->startOfDay();
+
                         $maxFeeItem = \App\Models\Sepidar\INV\InventoryReceiptItem::query()
                             ->where('ItemRef', $item->ItemRef)
-                            ->whereHas('receipt', function ($q) use ($invoice) {
-                                $q->where('CreationDate', '<', $invoice->CreationDate);
+                            ->whereHas('receipt', function ($q) use ($cutoff) {
+                                $q->where('CreationDate', '<', $cutoff);
                             })
-                            ->with(['receipt' => function ($q) use ($invoice) {
-                                $q->where('CreationDate', '<', $invoice->CreationDate);
+                            ->with(['receipt' => function ($q) use ($cutoff) {
+                                $q->where('CreationDate', '<', $cutoff);
                             }])
                             ->orderByDesc('Fee')
                             ->first();
