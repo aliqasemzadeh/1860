@@ -12,16 +12,38 @@
             <livewire:panel.shop.sepidar.grouping.items :grouping-id="$grouping->GroupingID" />
         @else
             @php
-                $grouings = \App\Models\Sepidar\GNR\Grouping::where('ParentGroupRef', $grouping->GroupingID)->get();
+                $groupings = \Illuminate\Support\Facades\Cache::remember(
+                    "groupings_parent_{$grouping->GroupingID}",
+                    now()->addHours(6),
+                    fn () => \App\Models\Sepidar\GNR\Grouping::where(
+                        'ParentGroupRef',
+                        $grouping->GroupingID
+                    )->get()
+                );
             @endphp
             <flux:accordion>
-                @foreach($grouings as $sub_grouping)
+                @foreach($groupings as $sub_grouping)
                     @if(\App\Models\Sepidar\GNR\Grouping::where('ParentGroupRef', $sub_grouping->GroupingID)->count() > 0)
-                        @foreach(\App\Models\Sepidar\GNR\Grouping::where('ParentGroupRef', $sub_grouping->GroupingID)->get() as $sub_grouping_item)
+                        @php
+                            $subGroupings = \Illuminate\Support\Facades\Cache::remember(
+                                "groupings_parent_{$sub_grouping->GroupingID}",
+                                now()->addHours(6),
+                                fn () => \App\Models\Sepidar\GNR\Grouping::where(
+                                    'ParentGroupRef',
+                                    $sub_grouping->GroupingID
+                                )->get()
+                            );
+                        @endphp
+
+                        @foreach($subGroupings as $sub_grouping_item)
                             <flux:accordion.item>
-                                <flux:accordion.heading>{{ $sub_grouping_item->Title }} - {{ $sub_grouping_item->GroupingID }}</flux:accordion.heading>
+                                <flux:accordion.heading>
+                                    {{ $sub_grouping_item->Title }} - {{ $sub_grouping_item->GroupingID }}
+                                </flux:accordion.heading>
                                 <flux:accordion.content>
-                                    <livewire:panel.shop.sepidar.grouping.items :grouping-id="$sub_grouping_item->GroupingID" />
+                                    <livewire:panel.shop.sepidar.grouping.items
+                                        :grouping-id="$sub_grouping_item->GroupingID"
+                                    />
                                 </flux:accordion.content>
                             </flux:accordion.item>
                         @endforeach

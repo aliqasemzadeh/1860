@@ -6,6 +6,7 @@ use App\Models\Sepidar\GNR\Grouping;
 use App\Models\Sepidar\INV\Item;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
+use Illuminate\Support\Facades\Cache;
 
 class Items extends Component
 {
@@ -20,14 +21,21 @@ class Items extends Component
     #[Computed]
     public function items()
     {
-        return Item::query()
-            ->when($this->search, function ($query) {
-                $query->where(function ($q) {
-                    $q->where('Title', 'like', '%' . $this->search . '%');
-                });
-            })
-            ->where('CodingGroupRef', $this->grouping->GroupingID)
-            ->get();
+        $groupingId = $this->grouping->GroupingID;
+
+        if (!blank($this->search)) {
+            return Item::query()
+                ->where('CodingGroupRef', $groupingId)
+                ->where('Title', 'like', '%' . $this->search . '%')
+                ->get();
+        }
+
+        $cacheKey = "items_by_grouping_{$groupingId}";
+        return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($groupingId) {
+            return Item::query()
+                ->where('CodingGroupRef', $groupingId)
+                ->get();
+        });
     }
 
     public function render()

@@ -21,7 +21,8 @@
         </flux:field>
     </div>
 
-
+    <livewire:panel.shop.sepidar.grouping.item.invoice />
+    <livewire:panel.shop.sepidar.grouping.item.receipt />
     <livewire:panel.shop.sepidar.invoice.view />
 
 
