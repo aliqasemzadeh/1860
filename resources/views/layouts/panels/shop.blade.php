@@ -33,6 +33,7 @@
         <flux:sidebar.group expandable heading="{{ __('app.accounting') }}" class="grid" :expanded="request()->routeIs('panel.shop.sepidar.*')">
             <flux:sidebar.item href="{{ route('panel.shop.sepidar.grouping.index') }}" wire:navigate>{{ __('app.inventory') }}</flux:sidebar.item>
             <flux:sidebar.item href="{{ route('panel.shop.sepidar.invoice.index') }}" wire:navigate>{{ __('app.invoices') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('panel.shop.sepidar.party.index') }}" wire:navigate>{{ __('app.customers') }}</flux:sidebar.item>
         </flux:sidebar.group>
 
     </flux:sidebar.nav>

@@ -841,4 +841,8 @@ return [
     'invoice_items' => 'جزئیات فاکتور',
     'invoice_items_description' => 'اقلامی که در فاکتور ثبت شده است قابل مشاهده است.',
     'search_in_invoices' => 'جستجوی فاکتور...',
+    'search_in_customers' => 'جستجوی فاکتور...',
+    'customers' => 'مشتریان',
+    'customers_description' => 'شما می توانید اطلاعات مشتریان را ببینید.',
+    'phones' => 'تلفن ها',
 ];

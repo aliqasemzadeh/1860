@@ -97,5 +97,11 @@ return [
             'row_id' => 'PaymentHeaderId',
         ],
 
+        'party_addresses' => [
+            'model' => "\App\Models\Sepidar\GNR\PartyAddress",
+            'endpoint' => 'party-addresses',
+            'row_id' => 'PartyAddressId',
+        ],
+
     ]
 ];
