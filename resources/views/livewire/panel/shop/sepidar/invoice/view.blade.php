@@ -7,7 +7,6 @@
         <flux:table>
             <flux:table.columns class="bg-white dark:bg-zinc-900">
                 <flux:table.column>{{ __('app.name') }}</flux:table.column>
-
                 <flux:table.column>{{ __('app.quantity') }}</flux:table.column>
                 <flux:table.column>{{ __('app.fee') }}</flux:table.column>
                 <flux:table.column>{{ __('app.price') }}</flux:table.column>
