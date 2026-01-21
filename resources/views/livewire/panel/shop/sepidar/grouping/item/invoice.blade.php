@@ -6,6 +6,7 @@
         </div>
         <flux:table>
             <flux:table.columns class="bg-white dark:bg-zinc-900">
+                <flux:table.column class="w-1 whitespace-nowrap"></flux:table.column>
                 <flux:table.column>{{ __('app.customer') }}</flux:table.column>
                 <flux:table.column>{{ __('app.fee') }}</flux:table.column>
                 <flux:table.column>{{ __('app.quantity') }}</flux:table.column>
@@ -17,6 +18,8 @@
                     <flux:table.row>
                         <flux:table.cell>
                             <flux:button size="xs" variant="primary" color="sky" wire:click="$dispatch('panel.shop.sepidar.invoice.view.assign-data', { id: '{{ $sale->invoice->id }}' })">{{ __('app.view') }}</flux:button>
+                        </flux:table.cell>
+                        <flux:table.cell>
                             {{ $sale->invoice->CustomerRealName }}
                         </flux:table.cell>
                         <flux:table.cell>

@@ -28,16 +28,22 @@
 
     <flux:table :paginate="$this->invoices">
         <flux:table.columns>
+            <flux:table.column class="w-1 whitespace-nowrap">{{ __('app.options') }}</flux:table.column>
             <flux:table.column>{{ __('app.number') }}</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'CustomerRealName'" :direction="$sortDirection" wire:click="sort('CustomerRealName')">{{ __('app.name') }}</flux:table.column>
             <flux:table.column>{{ __('app.category') }}</flux:table.column>
             <flux:table.column>{{ __('app.price') }}</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'Date'" :direction="$sortDirection" wire:click="sort('Date')">{{ __('app.date') }}</flux:table.column>
-            <flux:table.column>{{ __('app.options') }}</flux:table.column>
+
         </flux:table.columns>
 
         @foreach ($this->invoices as $invoice)
             <flux:table.row :key="$invoice->id">
+                <flux:table.cell class="w-1 whitespace-nowrap">
+                    <div class="flex items-center gap-2">
+                        <flux:button size="xs" variant="primary" color="sky" wire:click="$dispatch('panel.shop.sepidar.invoice.view.assign-data', { id: '{{ $invoice->id }}' })">{{ __('app.view') }}</flux:button>
+                    </div>
+                </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     {{ $invoice->Number }}
                 </flux:table.cell>
@@ -59,11 +65,7 @@
                 <flux:table.cell class="whitespace-nowrap">
                     {{ $invoice->Date ? \Morilog\Jalali\Jalalian::fromDateTime($invoice->Date)->format('%Y-%m-%d') : '-' }}
                 </flux:table.cell>
-                <flux:table.cell class="whitespace-nowrap">
-                    <div class="flex items-center gap-2">
-                        <flux:button size="xs" variant="primary" color="sky" wire:click="$dispatch('panel.shop.sepidar.invoice.view.assign-data', { id: '{{ $invoice->id }}' })">{{ __('app.view') }}</flux:button>
-                    </div>
-                </flux:table.cell>
+
             </flux:table.row>
         @endforeach
     </flux:table>

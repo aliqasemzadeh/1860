@@ -849,4 +849,6 @@ return [
     'phone' => 'تلفن',
     'addresses' => 'آدرس ها',
     'addresses_description' => 'آدرس های مشتری',
+    'economic_code' => 'کد اقتصادی',
+    'identification_code' => 'شناسه',
 ];

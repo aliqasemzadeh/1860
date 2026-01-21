@@ -30,10 +30,10 @@
                         $maxFeeItem = \App\Models\Sepidar\INV\InventoryReceiptItem::query()
                             ->where('ItemRef', $item->ItemRef)
                             ->whereHas('receipt', function ($q) use ($cutoff) {
-                                $q->where('CreationDate', '<', $cutoff);
+                                $q->where('Date', '<', $cutoff);
                             })
                             ->with(['receipt' => function ($q) use ($cutoff) {
-                                $q->where('CreationDate', '<', $cutoff);
+                                $q->where('Date', '<', $cutoff);
                             }])
                             ->orderByDesc('Fee')
                             ->first();
