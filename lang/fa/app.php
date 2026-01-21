@@ -845,4 +845,6 @@ return [
     'customers' => 'مشتریان',
     'customers_description' => 'شما می توانید اطلاعات مشتریان را ببینید.',
     'phones' => 'تلفن ها',
+    'phones_description' => 'تلفن ها مشتری',
+    'phone' => 'تلفن',
 ];
