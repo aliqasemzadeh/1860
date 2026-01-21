@@ -847,4 +847,6 @@ return [
     'phones' => 'تلفن ها',
     'phones_description' => 'تلفن ها مشتری',
     'phone' => 'تلفن',
+    'addresses' => 'آدرس ها',
+    'addresses_description' => 'آدرس های مشتری',
 ];
