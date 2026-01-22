@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('Address')->nullable();
             $table->bigInteger('LocationRef')->nullable();
             $table->string('ZipCode')->nullable();
-            $table->string('Address_En')->nullable();
+            $table->string('Adress_En')->nullable();
             $table->string('Title')->nullable();
             $table->string('Latitude')->nullable();
             $table->string('Longitude')->nullable();
