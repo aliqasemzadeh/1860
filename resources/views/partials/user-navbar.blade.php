@@ -9,7 +9,7 @@
         @endauth
 
         @guest
-                <flux:profile avatar="https://fluxui.dev/img/demo/user.png" />
+                <flux:profile  />
         @endguest
 
 

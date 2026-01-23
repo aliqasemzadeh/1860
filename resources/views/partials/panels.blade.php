@@ -1,4 +1,7 @@
 <flux:sidebar.nav>
+    @can('user_access')
+        <flux:sidebar.item icon="user" href="{{ route('panel.user.dashboard.index') }}">{{ __('app.user_panel') }}</flux:sidebar.item>
+    @endcan
     @can('service_center_access')
     <flux:sidebar.item icon="cpu" href="{{ route('panel.service-center.dashboard.index') }}">{{ __('app.service_center') }}</flux:sidebar.item>
     @endcan

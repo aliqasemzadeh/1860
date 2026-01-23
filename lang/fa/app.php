@@ -851,4 +851,6 @@ return [
     'addresses_description' => 'آدرس های مشتری',
     'economic_code' => 'کد اقتصادی',
     'identification_code' => 'شناسه',
+    'user' => 'کاربر',
+    'user_panel' => 'کاربر',
 ];
