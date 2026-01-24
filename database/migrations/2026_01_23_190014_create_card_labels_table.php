@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('card_labels', function (Blueprint $table) {
+        Schema::create('kanban_card_labels', function (Blueprint $table) {
             $table->id();
 
             $table->bigInteger('card_id');

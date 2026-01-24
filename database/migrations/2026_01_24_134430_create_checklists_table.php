@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('checklists', function (Blueprint $table) {
+        Schema::create('kanban_checklists', function (Blueprint $table) {
             $table->id();
 
             $table->bigInteger('card_id');

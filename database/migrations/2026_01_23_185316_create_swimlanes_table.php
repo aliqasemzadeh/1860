@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('swimlanes', function (Blueprint $table) {
+        Schema::create('kanban_swimlanes', function (Blueprint $table) {
             $table->id();
 
             $table->bigInteger('board_id');

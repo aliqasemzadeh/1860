@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('boards', function (Blueprint $table) {
+        Schema::create('kanban_boards', function (Blueprint $table) {
             $table->id();
 
             $table->bigInteger('workspace_id');

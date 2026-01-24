@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('kanban_comments', function (Blueprint $table) {
             $table->id();
 
             $table->bigInteger('card_id');

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cards', function (Blueprint $table) {
+        Schema::create('kanban_cards', function (Blueprint $table) {
             $table->id();
 
             // Relations
