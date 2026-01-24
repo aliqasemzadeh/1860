@@ -24,7 +24,7 @@ return new class extends Migration
             // public: عمومی (اگر بعداً خواستی)
             $table->string('visibility')->default('workspace');
 
-            $table->foreignId('creator_user_id');
+            $table->bigInteger('creator_user_id');
 
             // Board-level settings (مثلاً WIP پیش‌فرض، انواع ستون‌ها، نمایش swimlane و...)
             $table->json('settings')->nullable();
