@@ -21,6 +21,7 @@ return new class extends Migration
 
             // Optional: if you implement swimlanes later
             $table->bigInteger('swimlane_id')->nullable();
+            $table->bigInteger('project_id')->nullable();
 
             // Content
             $table->string('title');
@@ -55,10 +56,12 @@ return new class extends Migration
             // Indexes (performance-critical)
             $table->index(['board_id', 'archived_at']);
             $table->index(['column_id', 'archived_at']);
+            $table->index(['project_id', 'archived_at']);
             $table->index(['board_id', 'column_id', 'position']);
             $table->index('due_at');
             $table->index('priority');
             $table->index('completed_at');
+
         });
     }
 

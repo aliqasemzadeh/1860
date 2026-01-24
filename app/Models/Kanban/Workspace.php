@@ -45,4 +45,9 @@ class Workspace extends Model
     {
         return $this->hasMany(Label::class);
     }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class);
+    }
 }

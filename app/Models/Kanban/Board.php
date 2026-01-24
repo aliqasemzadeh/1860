@@ -41,6 +41,11 @@ class Board extends Model
         return $this->hasMany(Column::class)->orderBy('position');
     }
 
+    public function members()
+    {
+        return $this->hasMany(BoardMember::class, 'board_id');
+    }
+
     public function swimlanes(): HasMany
     {
         return $this->hasMany(Swimlane::class)->orderBy('position');

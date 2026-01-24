@@ -16,6 +16,7 @@ class Card extends Model
         'board_id',
         'column_id',
         'swimlane_id',
+        'project_id',
         'title',
         'description',
         'position',
@@ -51,6 +52,11 @@ class Card extends Model
     public function swimlane(): BelongsTo
     {
         return $this->belongsTo(Swimlane::class);
+    }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class, 'project_id');
     }
 
     public function creator(): BelongsTo
