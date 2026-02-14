@@ -21,11 +21,12 @@ class FaterPriceFetcher
             if ($logger) {
                 $logger->info("Price found via HTML scraping: {$price}");
             }
+
             return $price;
         }
 
         if ($logger) {
-            $logger->warn('All methods failed to fetch price');
+            $logger->warning('All methods failed to fetch price');
         }
 
         return null;
@@ -153,39 +154,41 @@ class FaterPriceFetcher
                 $uniqueCandidates = [];
                 foreach ($candidates as $candidate) {
                     $price = $candidate['price'];
-                    if (!isset($uniqueCandidates[$price]) || $uniqueCandidates[$price]['priority'] < $candidate['priority']) {
+                    if (! isset($uniqueCandidates[$price]) || $uniqueCandidates[$price]['priority'] < $candidate['priority']) {
                         $uniqueCandidates[$price] = $candidate;
                     }
                 }
 
-                if (!empty($uniqueCandidates)) {
+                if (! empty($uniqueCandidates)) {
                     // Sort by priority (descending) and return the highest priority price
-                    usort($uniqueCandidates, function($a, $b) {
+                    usort($uniqueCandidates, function ($a, $b) {
                         if ($a['priority'] == $b['priority']) {
                             return $a['price'] <=> $b['price'];
                         }
+
                         return $b['priority'] <=> $a['priority'];
                     });
 
                     $bestCandidate = $uniqueCandidates[0];
                     if ($logger) {
-                        $logger->info("Found price candidates: " . count($uniqueCandidates));
+                        $logger->info('Found price candidates: '.count($uniqueCandidates));
                         $logger->info("Selected price: {$bestCandidate['price']} from source: {$bestCandidate['source']}");
                     }
+
                     return $bestCandidate['price'];
                 }
 
                 if ($logger) {
-                    $logger->warn('Could not find price in HTML content');
+                    $logger->warning('Could not find price in HTML content');
                 }
             } else {
                 if ($logger) {
-                    $logger->warn("HTML request failed with status: {$response->status()}");
+                    $logger->warning("HTML request failed with status: {$response->status()}");
                 }
             }
         } catch (\Exception $e) {
             if ($logger) {
-                $logger->warn("HTML scraping exception: {$e->getMessage()}");
+                $logger->warning("HTML scraping exception: {$e->getMessage()}");
             }
         }
 
@@ -201,7 +204,7 @@ class FaterPriceFetcher
         $value = $array;
 
         foreach ($keys as $key) {
-            if (!isset($value[$key])) {
+            if (! isset($value[$key])) {
                 return null;
             }
             $value = $value[$key];
@@ -210,4 +213,3 @@ class FaterPriceFetcher
         return $value;
     }
 }
-

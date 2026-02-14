@@ -28,7 +28,7 @@ class SetareganPriceFetcher
         }
 
         if ($logger) {
-            $logger->warn('All methods failed to fetch price');
+            $logger->warning('All methods failed to fetch price');
         }
 
         return null;
@@ -46,7 +46,7 @@ class SetareganPriceFetcher
 
             if (! $response->successful()) {
                 if ($logger) {
-                    $logger->warn("HTML request failed with status: {$response->status()}");
+                    $logger->warning("HTML request failed with status: {$response->status()}");
                 }
 
                 return null;
@@ -135,7 +135,7 @@ class SetareganPriceFetcher
 
             if (empty($candidates)) {
                 if ($logger) {
-                    $logger->warn('Could not find price in HTML content');
+                    $logger->warning('Could not find price in HTML content');
                 }
 
                 return null;
@@ -169,7 +169,7 @@ class SetareganPriceFetcher
             return $best['price'];
         } catch (\Exception $e) {
             if ($logger) {
-                $logger->warn("HTML scraping exception: {$e->getMessage()}");
+                $logger->warning("HTML scraping exception: {$e->getMessage()}");
             }
 
             return null;
@@ -216,5 +216,3 @@ class SetareganPriceFetcher
         return $value;
     }
 }
-
-

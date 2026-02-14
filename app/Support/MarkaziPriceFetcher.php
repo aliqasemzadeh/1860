@@ -21,11 +21,12 @@ class MarkaziPriceFetcher
             if ($logger) {
                 $logger->info("Price found via HTML scraping: {$price}");
             }
+
             return $price;
         }
 
         if ($logger) {
-            $logger->warn('All methods failed to fetch price');
+            $logger->warning('All methods failed to fetch price');
         }
 
         return null;
@@ -66,6 +67,7 @@ class MarkaziPriceFetcher
                                 if ($logger) {
                                     $logger->info("Found price via pattern {$pattern}: {$price}");
                                 }
+
                                 return $price;
                             }
                         }
@@ -74,12 +76,13 @@ class MarkaziPriceFetcher
 
                 // Method 2: Extract prices from HTML elements
                 $prices = self::extractPricesFromHtml($html, $logger);
-                if (!empty($prices)) {
+                if (! empty($prices)) {
                     // Return the minimum price (lowest available price)
                     $minPrice = min($prices);
                     if ($logger) {
-                        $logger->info("Found " . count($prices) . " prices, returning minimum: {$minPrice}");
+                        $logger->info('Found '.count($prices)." prices, returning minimum: {$minPrice}");
                     }
+
                     return $minPrice;
                 }
 
@@ -95,6 +98,7 @@ class MarkaziPriceFetcher
                                     if ($logger) {
                                         $logger->info("Found price in JSON: {$price}");
                                     }
+
                                     return $price;
                                 }
                             }
@@ -103,12 +107,12 @@ class MarkaziPriceFetcher
                 }
             } else {
                 if ($logger) {
-                    $logger->warn("HTML request failed with status: {$response->status()}");
+                    $logger->warning("HTML request failed with status: {$response->status()}");
                 }
             }
         } catch (\Exception $e) {
             if ($logger) {
-                $logger->warn("HTML scraping exception: {$e->getMessage()}");
+                $logger->warning("HTML scraping exception: {$e->getMessage()}");
             }
         }
 
@@ -141,7 +145,7 @@ class MarkaziPriceFetcher
                 foreach ($matches as $match) {
                     $priceText = trim($match[1]);
                     $price = self::parsePersianPrice($priceText);
-                    if ($price && $price >= 1000 && $price <= 100000000 && !in_array($price, $prices)) {
+                    if ($price && $price >= 1000 && $price <= 100000000 && ! in_array($price, $prices)) {
                         $prices[] = $price;
                         if ($logger) {
                             $logger->info("Found price from HTML: {$priceText} -> {$price}");
@@ -154,7 +158,7 @@ class MarkaziPriceFetcher
         // Also look for prices in meta tags
         if (preg_match('/<meta[^>]*property=["\']product:price:amount["\'][^>]*content=["\'](\d+)["\']/i', $html, $metaMatch)) {
             $price = (int) $metaMatch[1];
-            if ($price >= 1000 && $price <= 100000000 && !in_array($price, $prices)) {
+            if ($price >= 1000 && $price <= 100000000 && ! in_array($price, $prices)) {
                 $prices[] = $price;
                 if ($logger) {
                     $logger->info("Found price in meta tag: {$price}");
@@ -185,10 +189,10 @@ class MarkaziPriceFetcher
         // Extract only digits
         if (preg_match('/(\d+)/', $normalized, $matches)) {
             $price = (int) $matches[1];
+
             return $price;
         }
 
         return null;
     }
 }
-
