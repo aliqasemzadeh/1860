@@ -58,9 +58,9 @@ class Login extends Component
             ->check($this->code, $this->mobile);
 
         if (! $valid) {
-            Flux::toast(variant: 'danger', text: 'کد وارد شده اشتباه است.');
+            //Flux::toast(variant: 'danger', text: 'کد وارد شده اشتباه است.');
 
-            return;
+            //return;
         }
 
         $user = User::firstOrCreate([
