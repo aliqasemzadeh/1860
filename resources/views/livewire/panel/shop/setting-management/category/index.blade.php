@@ -59,6 +59,25 @@
                         <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>
                     </flux:table.cell>
                 </flux:table.row>
+
+                @foreach ($child->children as $grandchild)
+                    <flux:table.row :key="'grandchild-'.$grandchild->id">
+                        <flux:table.cell class="flex items-center gap-3 pl-16 ms-10">
+                           <flux:icon.corner-down-left /> {{ $grandchild->name }}
+                        </flux:table.cell>
+                        <flux:table.cell class="whitespace-nowrap">
+                            {{ $grandchild->slug }}
+                        </flux:table.cell>
+                        <flux:table.cell class="whitespace-nowrap">
+                            {{ $grandchild->slug_fa }}
+                        </flux:table.cell>
+                        <flux:table.cell class="whitespace-nowrap">
+                            <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.category.edit.assign-data', { id: '{{ $grandchild->id }}' })">{{ __('app.edit') }}</flux:button>
+                            <flux:button size="xs" variant="primary" color="purple" href="{{ route('panel.shop.setting-management.category.attributes', ['id' => $grandchild->id]) }}" wire:navigate>{{ __('app.attributes') }}</flux:button>
+                            <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>
+                        </flux:table.cell>
+                    </flux:table.row>
+                @endforeach
             @endforeach
         @endforeach
     </flux:table>

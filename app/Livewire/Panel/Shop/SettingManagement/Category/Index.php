@@ -41,7 +41,9 @@ class Index extends Component
         return Category::query()
             ->where('main_category_id', 0)
             ->with(['children' => function ($query) {
-                $query->orderBy('sort_order', 'asc')->orderBy('name', 'asc');
+                $query->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->with(['children' => function ($query) {
+                    $query->orderBy('sort_order', 'asc')->orderBy('name', 'asc');
+                }]);
             }])
             ->tap(function ($query) {
                 if ($this->sortBy) {
