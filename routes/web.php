@@ -20,14 +20,6 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/panel/user/dashboard/index', \App\Livewire\Panel\User\Dashboard\Index::class)->name('panel.user.dashboard.index');
 
-    Route::get('/panel/service-center/dashboard/index', \App\Livewire\Panel\ServiceCenter\Dashboard\Index::class)->name('panel.service-center.dashboard.index');
-
-    Route::get('/panel/service-center/dashboard/index', \App\Livewire\Panel\ServiceCenter\Dashboard\Index::class)->name('panel.service-center.dashboard.index');
-    Route::get('/panel/service-center/assembly/index', \App\Livewire\Panel\ServiceCenter\Assembly\Index::class)->name('panel.service-center.assembly.index');
-    Route::get('/panel/service-center/repair/index', \App\Livewire\Panel\ServiceCenter\Repair\Index::class)->name('panel.service-center.repair.index');
-
-    Route::get('/panel/crm/dashboard/index', \App\Livewire\Panel\Crm\Dashboard\Index::class)->name('panel.crm.dashboard.index');
-
     Route::get('/panel/administrator/dashboard/index', \App\Livewire\Panel\Administrator\Dashboard\Index::class)->name('panel.administrator.dashboard.index');
     Route::get('/panel/administrator/user-management/user/index', \App\Livewire\Panel\Administrator\UserManagement\User\Index::class)->name('panel.administrator.user-management.user.index');
     Route::get('/panel/administrator/user-management/role/index', \App\Livewire\Panel\Administrator\UserManagement\Role\Index::class)->name('panel.administrator.user-management.role.index');
@@ -63,21 +55,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/panel/shop/shipping/method/index', \App\Livewire\Panel\Shop\Shipping\Method\Index::class)->name('panel.shop.shipping.method.index');
     Route::get('/panel/shop/shipping/zone/index', \App\Livewire\Panel\Shop\Shipping\Zone\Index::class)->name('panel.shop.shipping.zone.index');
     Route::get('/panel/shop/shipping/rate/index', \App\Livewire\Panel\Shop\Shipping\Rate\Index::class)->name('panel.shop.shipping.rate.index');
-
-
-    Route::get('/panel/shop/sepidar/grouping/index/{groupingId?}', \App\Livewire\Panel\Shop\Sepidar\Grouping\Index::class)->name('panel.shop.sepidar.grouping.index');
-    Route::get('/panel/shop/sepidar/invoice/index', \App\Livewire\Panel\Shop\Sepidar\Invoice\Index::class)->name('panel.shop.sepidar.invoice.index');
-    Route::get('/panel/shop/sepidar/part/index', \App\Livewire\Panel\Shop\Sepidar\Party\Index::class)->name('panel.shop.sepidar.party.index');
-
-
-    Route::get('/panel/accounting/dashboard/index', \App\Livewire\Panel\Accounting\Dashboard\Index::class)->name('panel.accounting.dashboard.index');
-    Route::get('/panel/accounting/bank/index', \App\Livewire\Panel\Accounting\Bank\Index::class)->name('panel.accounting.bank.index');
-    Route::get('/panel/accounting/bank/remittance/index', \App\Livewire\Panel\Accounting\Bank\Remittance\Index::class)->name('panel.accounting.bank.remittance.index');
-    Route::get('/panel/accounting/bank/transaction/index', \App\Livewire\Panel\Accounting\Bank\Transaction\Index::class)->name('panel.accounting.bank.transaction.index');
-    Route::get('/panel/accounting/remittance/index', \App\Livewire\Panel\Accounting\Remittance\Index::class)->name('panel.accounting.remittance.index');
-    Route::get('/panel/accounting/cheque/index', \App\Livewire\Panel\Accounting\Cheque\Index::class)->name('panel.accounting.cheque.index');
-
-    Route::get('/panel/accounting/sepidar/bank/index', \App\Livewire\Panel\Accounting\Sepidar\Bank\Index::class)->name('panel.accounting.sepidar.bank.index');
 
 });
 
