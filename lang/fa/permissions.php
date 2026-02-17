@@ -80,56 +80,7 @@ return [
         'administrator_api_faq_search' => 'جستجوی پرسش‌های متداول (API)',
     ],
 
-    'crm' => [
-        'crm_access' => 'دسترسی CRM',
-    ],
-
-    'service_center' => [
-        'service_center_access' => 'مرکز خدمات',
-
-        'service_center_dashboard_index' => 'داشبرد مرکز خدمات',
-        'service_center_assembly_index' => 'اسمبل مرکز خدمات',
-        'service_center_repair_index' => 'تعمیرات مرکز خدمات',
-        'service_center_repair_create' => 'پذیرش تعمیرات مرکز خدمات',
-        'service_center_repair_services' => 'خدمات (هزینه ها) تعمیرات مرکز خدمات',
-        'service_center_repair_logs' => 'تغییرات Logs تعمیرات مرکز خدمات',
-        'service_center_repair_edit' => 'ویرایش پذیرش مرکز خدمات',
-        'service_center_repair_view' => 'مشاهده پذیرش مرکز خدمات',
-    ],
-
     'shop' => [
         'shop_access' => 'فروشگاه',
-    ],
-
-    'accounting' => [
-        'accounting_access' => 'دسترسی حساب داری',
-        'accounting_bank_index' => 'فهرست حساب‌های بانکی',
-        'accounting_bank_create' => 'ایجاد حساب بانکی',
-        'accounting_bank_edit' => 'ویرایش حساب بانکی',
-        'accounting_bank_delete' => 'حذف حساب بانکی',
-
-        'accounting_bank_remittance_index' => 'فهرست حواله‌ها',
-        'accounting_bank_remittance_create' => 'ایجاد حواله',
-        'accounting_bank_remittance_edit' => 'ویرایش حواله',
-        'accounting_bank_remittance_delete' => 'حذف حواله',
-        'accounting_bank_remittance_check' => 'بررسی حواله',
-        'accounting_bank_remittance_request' => 'درخواست حواله',
-        'accounting_bank_remittance_transfer' => 'پرداخت حواله',
-
-        'accounting_bank_transaction_index' => 'فهرست تراکنش‌ها',
-        'accounting_bank_transaction_create' => 'ایجاد تراکنش',
-        'accounting_bank_transaction_edit' => 'ویرایش تراکنش',
-        'accounting_bank_transaction_delete' => 'حذف تراکنش',
-
-        'accounting_remittance_index' => 'فهرست تراکنش‌ها',
-        'accounting_remittance_create' => 'ایجاد تراکنش',
-        'accounting_remittance_edit' => 'ویرایش تراکنش',
-        'accounting_remittance_delete' => 'حذف تراکنش',
-
-        'accounting_cheque_index' => 'فهرست تراکنش‌ها',
-        'accounting_cheque_create' => 'ایجاد تراکنش',
-        'accounting_cheque_edit' => 'ویرایش تراکنش',
-        'accounting_cheque_delete' => 'حذف تراکنش',
-        'accounting_cheque_import' => 'حذف تراکنش',
     ],
 ];
