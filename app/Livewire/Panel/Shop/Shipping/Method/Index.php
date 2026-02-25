@@ -6,6 +6,7 @@ use App\Models\Shop\ShippingMethod;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -54,6 +55,7 @@ class Index extends Component
     }
 
     #[Layout('layouts.panels.shop')]
+    #[On('panel.shop.shipping.method.index.render')]
     public function render()
     {
         return view('livewire.panel.shop.shipping.method.index');
