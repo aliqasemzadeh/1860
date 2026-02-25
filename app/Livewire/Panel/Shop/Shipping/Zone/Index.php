@@ -83,13 +83,15 @@ class Index extends Component
     }
 
     /**
-     * Format states for display.
+     * Get state names for a zone.
+     *
+     * @return array<int, string>
      */
-    public function formatStates($zone): string
+    public function getStateNames(ShippingZone $zone): array
     {
         $states = (array) $zone->states;
         if (empty($states)) {
-            return __('app.all');
+            return [];
         }
 
         $names = [];
@@ -97,8 +99,22 @@ class Index extends Component
             if (is_numeric($state)) {
                 $names[] = $this->getProvinceName((int) $state);
             } else {
-                $names[] = $state; // Legacy: already a name
+                $names[] = (string) $state;
             }
+        }
+
+        return $names;
+    }
+
+    /**
+     * Format states for display.
+     */
+    public function formatStates($zone): string
+    {
+        $names = $this->getStateNames($zone);
+
+        if (empty($names)) {
+            return __('app.all');
         }
 
         return implode(', ', $names);

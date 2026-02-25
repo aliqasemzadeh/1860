@@ -22,7 +22,7 @@
 
     <flux:table :paginate="$this->zones">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
-            <flux:table.column colspan="3" class="bg-white dark:bg-zinc-900">
+            <flux:table.column colspan="6" class="bg-white dark:bg-zinc-900">
                 <div class="flex flex-col gap-1 pe-2 items-end">
                     <flux:input
                         size="sm"
@@ -52,7 +52,23 @@
                         {{ implode(', ', (array) $zone->countries) }}
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap text-xs">
-                        {{ $this->formatStates($zone) }}
+                        @php
+                            $stateNames = $this->getStateNames($zone);
+                        @endphp
+
+                        @if (count($stateNames) > 3)
+                            <flux:heading class="flex items-center gap-2">
+                                {{ __('app.x_provinces', ['count' => count($stateNames)]) }}
+                                <flux:tooltip toggleable>
+                                    <flux:button icon="information-circle" size="sm" variant="ghost" />
+                                    <flux:tooltip.content class="max-w-[20rem] space-y-2">
+                                        {{ implode(', ', $stateNames) }}
+                                    </flux:tooltip.content>
+                                </flux:tooltip>
+                            </flux:heading>
+                        @else
+                            {{ empty($stateNames) ? __('app.all') : implode(', ', $stateNames) }}
+                        @endif
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap text-xs">
                         {{ $this->formatCities($zone) }}

@@ -22,7 +22,7 @@
 
     <flux:table :paginate="$this->rates">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
-            <flux:table.column colspan="3" class="bg-white dark:bg-zinc-900">
+            <flux:table.column colspan="8" class="bg-white dark:bg-zinc-900">
                 <div class="flex flex-col gap-1 pe-2 items-end">
                     <flux:input
                         size="sm"
@@ -37,6 +37,8 @@
             <flux:table.column>{{ __('app.shipping_method') }}</flux:table.column>
             <flux:table.column>{{ __('app.shipping_zone') }}</flux:table.column>
             <flux:table.column>{{ __('app.rate_type') }}</flux:table.column>
+            <flux:table.column>{{ __('app.min') }}</flux:table.column>
+            <flux:table.column>{{ __('app.max') }}</flux:table.column>
             <flux:table.column>{{ __('app.amount') }}</flux:table.column>
             <flux:table.column>{{ __('app.status') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.date') }}</flux:table.column>
@@ -54,6 +56,33 @@
                     <flux:table.cell class="whitespace-nowrap text-xs">
                         {{ __('app.rate_type_'.$rate->rate_type) }}
                     </flux:table.cell>
+
+                    @if($rate->rate_type === 'weight')
+                    <flux:table.cell class="whitespace-nowrap text-xs">
+                        {{ $rate->min_weight }}
+                    </flux:table.cell>
+
+                    <flux:table.cell class="whitespace-nowrap text-xs">
+                        {{ $rate->max_weight }}
+                    </flux:table.cell>
+                    @elseif($rate->rate_type === 'price')
+                        <flux:table.cell class="whitespace-nowrap text-xs">
+                            {{ $rate->min_price }}
+                        </flux:table.cell>
+
+                        <flux:table.cell class="whitespace-nowrap text-xs">
+                            {{ $rate->max_price }}
+                        </flux:table.cell>
+                    @else
+                        <flux:table.cell class="whitespace-nowrap text-xs">
+                            -
+                        </flux:table.cell>
+
+                        <flux:table.cell class="whitespace-nowrap text-xs">
+                            -
+                        </flux:table.cell>
+                    @endif
+
                     <flux:table.cell class="whitespace-nowrap">
                         {{ number_format($rate->amount, 0) }} {{ __('app.toman') }}
                     </flux:table.cell>

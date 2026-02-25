@@ -22,7 +22,7 @@
 
     <flux:table :paginate="$this->methods">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
-            <flux:table.column colspan="3" class="bg-white dark:bg-zinc-900">
+            <flux:table.column colspan="4" class="bg-white dark:bg-zinc-900">
                 <div class="flex flex-col gap-1 pe-2 items-end">
                     <flux:input
                         size="sm"
