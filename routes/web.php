@@ -60,6 +60,3 @@ Route::group(['middleware' => ['auth']], function () {
 Route::get('/login', \App\Livewire\Auth\Login::class)->name('login')->middleware('guest');
 Route::get('/logout', \App\Livewire\Auth\Logout::class)->name('logout')->middleware('auth');
 
-// Payment callback (no auth required, handled by payment gateway)
-Route::post('/payment/callback', [\App\Http\Controllers\PaymentController::class, 'callback'])->name('payment.callback');
-Route::get('/payment/callback', [\App\Http\Controllers\PaymentController::class, 'callback'])->name('payment.callback');
