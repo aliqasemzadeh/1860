@@ -8,6 +8,7 @@ use App\Support\FafaitPriceFetcher;
 use App\Support\FaterPriceFetcher;
 use App\Support\MarkaziPriceFetcher;
 use App\Support\SetareganPriceFetcher;
+use App\Support\TechnolifePriceFetcher;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
@@ -32,13 +33,14 @@ class FetchPriceJob implements ShouldQueue
     {
         try {
             $logger = Log::channel('single');
-            
+
             $price = match ($this->priceFetcher->type) {
                 'digikala' => DigikalaPriceFetcher::fetchPrice($this->priceFetcher->url, $logger),
                 'fafait' => FafaitPriceFetcher::fetchPrice($this->priceFetcher->url, $logger),
                 'markazi' => MarkaziPriceFetcher::fetchPrice($this->priceFetcher->url, $logger),
                 'fater' => FaterPriceFetcher::fetchPrice($this->priceFetcher->url, $logger),
                 'setaregan' => SetareganPriceFetcher::fetchPrice($this->priceFetcher->url, $logger),
+                'technolife' => TechnolifePriceFetcher::fetchPrice($this->priceFetcher->url, $logger),
                 default => null,
             };
 
@@ -57,7 +59,7 @@ class FetchPriceJob implements ShouldQueue
             }
         } catch (\Exception $e) {
             Log::error("Error fetching price for price fetcher {$this->priceFetcher->id}: {$e->getMessage()}");
-            Log::error("Stack trace: " . $e->getTraceAsString());
+            Log::error('Stack trace: '.$e->getTraceAsString());
         }
     }
 }

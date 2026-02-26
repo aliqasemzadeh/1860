@@ -20,6 +20,7 @@
                                     <flux:select.option value="markazi">{{ __('app.price_fetcher_type_markazi') }}</flux:select.option>
                                     <flux:select.option value="fater">{{ __('app.price_fetcher_type_fater') }}</flux:select.option>
                                     <flux:select.option value="setaregan">{{ __('app.price_fetcher_type_setaregan') }}</flux:select.option>
+                                    <flux:select.option value="technolife">{{ __('app.price_fetcher_type_technolife') }}</flux:select.option>
                                 </flux:select>
                                 <flux:error name="type" />
                             </flux:field>

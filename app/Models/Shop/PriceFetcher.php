@@ -43,7 +43,7 @@ class PriceFetcher extends Model
      */
     public function getTypeLabelAttribute(): string
     {
-        if (!$this->type) {
+        if (! $this->type) {
             return '';
         }
 
@@ -53,6 +53,7 @@ class PriceFetcher extends Model
             'markazi' => __('app.price_fetcher_type_markazi'),
             'fater' => __('app.price_fetcher_type_fater'),
             'setaregan' => __('app.price_fetcher_type_setaregan'),
+            'technolife' => __('app.price_fetcher_type_technolife'),
             default => $this->type,
         };
     }

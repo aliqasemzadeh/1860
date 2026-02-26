@@ -15,6 +15,7 @@
                             <flux:select.option value="fater">{{ __('app.price_fetcher_type_fater') }}</flux:select.option>
                             <flux:select.option value="gigabyte">{{ __('app.price_fetcher_type_gigabyte') }}</flux:select.option>
                             <flux:select.option value="setaregan">{{ __('app.price_fetcher_type_setaregan') }}</flux:select.option>
+                            <flux:select.option value="technolife">{{ __('app.price_fetcher_type_technolife') }}</flux:select.option>
                         </flux:select>
                         <flux:error name="site_type" />
                     </flux:field>
