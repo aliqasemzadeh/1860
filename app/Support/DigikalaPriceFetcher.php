@@ -33,7 +33,7 @@ class DigikalaPriceFetcher
                 $logger->info("Price found via API method: {$price} Toman");
             }
 
-            return self::convertTomanToRial($price);
+            return $price;
         }
 
         if ($logger) {
@@ -45,7 +45,7 @@ class DigikalaPriceFetcher
                 $logger->info("Price found via web API method: {$price} Toman");
             }
 
-            return self::convertTomanToRial($price);
+            return $price;
         }
 
         if ($logger) {
@@ -57,7 +57,7 @@ class DigikalaPriceFetcher
                 $logger->info("Price found via HTML scraping: {$price} Toman");
             }
 
-            return self::convertTomanToRial($price);
+            return $price;
         }
 
         if ($logger) {
@@ -92,7 +92,7 @@ class DigikalaPriceFetcher
                     foreach ($paths as $path) {
                         $price = self::getNestedValue($data, $path);
                         if ($price && is_numeric($price)) {
-                            return (int) $price;
+                            return (int) ($price / 10);
                         }
                     }
                 } else {
@@ -145,7 +145,7 @@ class DigikalaPriceFetcher
                         foreach ($paths as $path) {
                             $price = self::getNestedValue($data, $path);
                             if ($price && is_numeric($price)) {
-                                return (int) $price;
+                                return (int) ($price / 10);
                             }
                         }
                     } else {

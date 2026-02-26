@@ -22,7 +22,7 @@ class TechnolifePriceFetcher
                 $logger->info("Price found via HTML scraping: {$price} Toman");
             }
 
-            return self::convertTomanToRial($price);
+            return $price;
         }
 
         if ($logger) {

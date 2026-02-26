@@ -37,6 +37,11 @@ class OrderItem extends Model
         return $this->belongsTo(Order::class);
     }
 
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class, 'sku', 'sku');
+    }
+
     public function warranty(): BelongsTo
     {
         return $this->belongsTo(Warranty::class);

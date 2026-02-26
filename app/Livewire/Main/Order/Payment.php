@@ -7,7 +7,6 @@ use Flux\Flux;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Shetabit\Multipay\Exceptions\InvalidPaymentException;
 use Shetabit\Multipay\Invoice;
 use Shetabit\Payment\Facade\Payment as GatewayPayment;
 
@@ -15,6 +14,7 @@ use Shetabit\Payment\Facade\Payment as GatewayPayment;
 class Payment extends Component
 {
     public $orderId;
+
     public $paymentHtml;
 
     public function mount($id)
@@ -40,11 +40,13 @@ class Payment extends Component
 
         if (! $order) {
             Flux::toast(variant: 'danger', text: __('app.order_not_found'));
+
             return $this->redirect(route('order.index'), navigate: true);
         }
 
         if ($order->paid_at) {
             Flux::toast(variant: 'info', text: __('app.order_already_paid'));
+
             return $this->redirect(route('order.view', ['id' => $order->id]), navigate: true);
         }
 
@@ -60,7 +62,7 @@ class Payment extends Component
             session(['payment_order_id' => $order->id]);
 
             // Create payment with callback URL
-            $callbackUrl = route('payment.callback');
+            $callbackUrl = route('payment.callback', ['orderId' => $order->id]);
             $payment = GatewayPayment::callbackUrl($callbackUrl)
                 ->purchase($invoice, function ($driver, $transactionId) use ($order) {
                     // Store transaction ID in order meta
@@ -78,6 +80,7 @@ class Payment extends Component
 
         } catch (\Exception $e) {
             Flux::toast(variant: 'danger', text: __('app.payment_error').': '.$e->getMessage());
+
             return $this->redirect(route('order.view', ['id' => $order->id]), navigate: true);
         }
     }

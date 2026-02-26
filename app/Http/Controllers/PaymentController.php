@@ -3,30 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\Shop\Order;
+use App\Models\Shop\ProductPrice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Shetabit\Multipay\Exceptions\InvalidPaymentException;
 use Shetabit\Payment\Facade\Payment;
-use Flux\Flux;
 
 class PaymentController extends Controller
 {
-    public function callback(Request $request)
+    public function callback(Request $request, $orderId)
     {
-        try {
-            // Get order ID from session
-            $orderId = session('payment_order_id');
-            if (! $orderId) {
-                return redirect()->route('order.index')->with('error', __('app.payment_error'));
-            }
+        Log::info('Payment callback received', [
+            'order_id' => $orderId,
+            'request_data' => $request->all(),
+        ]);
 
-            $order = Order::find($orderId);
+        try {
+            $order = Order::with('items')->find($orderId);
             if (! $order) {
                 return redirect()->route('order.index')->with('error', __('app.order_not_found'));
             }
 
             // Get transaction ID from request (different gateways use different parameters)
-            $transactionId = $request->get('transactionId') 
-                ?? $request->get('Authority') 
+            $transactionId = $request->get('transactionId')
+                ?? $request->get('Authority')
                 ?? $request->get('RefNum')
                 ?? $request->get('token')
                 ?? $request->get('id');
@@ -53,6 +53,23 @@ class PaymentController extends Controller
                 'status' => 'processing',
             ]);
 
+            // Deduct inventory
+            foreach ($order->items as $item) {
+                $productPrice = ProductPrice::where('product_id', function ($query) use ($item) {
+                    $query->select('id')
+                        ->from('products')
+                        ->where('sku', $item->sku)
+                        ->limit(1);
+                })
+                    ->where('color_id', $item->color_id)
+                    ->where('warranty_id', $item->warranty_id)
+                    ->first();
+
+                if ($productPrice) {
+                    $productPrice->decrement('quantity', $item->quantity);
+                }
+            }
+
             // Update meta with receipt
             $meta = $order->meta ?? [];
             $meta['payment_receipt'] = $receipt;
@@ -67,15 +84,22 @@ class PaymentController extends Controller
 
         } catch (InvalidPaymentException $exception) {
             // Payment failed
-            $orderId = session('payment_order_id');
-            session()->forget('payment_order_id');
-            return redirect()->route('order.view', ['id' => $orderId ?? 0])
+            Log::error('Payment verification failed', [
+                'order_id' => $orderId,
+                'message' => $exception->getMessage(),
+            ]);
+
+            return redirect()->route('order.view', ['id' => $orderId])
                 ->with('error', __('app.payment_failed').': '.$exception->getMessage());
         } catch (\Exception $e) {
-            session()->forget('payment_order_id');
+            Log::error('Payment callback error', [
+                'order_id' => $orderId,
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('order.index')
                 ->with('error', __('app.payment_error').': '.$e->getMessage());
         }
     }
 }
-
