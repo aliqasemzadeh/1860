@@ -26,8 +26,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/panel/administrator/user-management/role/index', \App\Livewire\Panel\Administrator\UserManagement\Role\Index::class)->name('panel.administrator.user-management.role.index');
     Route::get('/panel/administrator/user-management/permission/index', \App\Livewire\Panel\Administrator\UserManagement\Permission\Index::class)->name('panel.administrator.user-management.permission.index');
 
-    Route::get('/panel/administrator/kanban-management/workspace/index', \App\Livewire\Panel\Administrator\KanbanManagement\Workspace\Index::class)->name('panel.administrator.kanban-management.workspace.index');
-
     Route::get('/panel/administrator/setting-management/function/index', \App\Livewire\Panel\Administrator\SettingManagement\Function\Index::class)->name('panel.administrator.setting-management.function.index');
     Route::get('/panel/administrator/setting-management/option/index', \App\Livewire\Panel\Administrator\SettingManagement\Option\Index::class)->name('panel.administrator.setting-management.option.index');
 

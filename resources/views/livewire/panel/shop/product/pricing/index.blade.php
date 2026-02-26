@@ -21,6 +21,7 @@
         <flux:separator variant="subtle" />
     </div>
     <livewire:panel.shop.product.pricing.create :productId="$productId" />
+    <livewire:panel.shop.product.pricing.edit />
     <livewire:panel.shop.product.pricing.history :productId="$productId" />
 
     @if ($this->latestPrices->isEmpty())
