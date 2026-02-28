@@ -1,6 +1,23 @@
 <x-slot name="title">
     {{ $this->product->name ?? __('app.product_not_found') }}
 </x-slot>
+<x-slot name="head">
+    @php
+        $selectedPrice = $this->selectedPrice;
+    @endphp
+    <meta name="product_id" content="{{ $this->product->id }}">
+    <meta name="product_name" content="{{ $this->product->name }}">
+    <meta property="og:image" content="{{ config('app.url') }}{{ Storage::url($this->product->file_path) }}">
+    @if($this->selectedPrice && $this->selectedPrice->quantity > 0)
+        <meta name="product_price" content="{{ $selectedPrice->price }}">
+        <meta name="product_old_price" content="{{ $selectedPrice->sale_price }}">
+        <meta name="availability" content="instock">
+        <meta name="guarantee" content="{{ $selectedPrice->warranty->title }}">
+    @elseif($this->selectedPrice && $this->selectedPrice->quantity <= 0)
+        <meta name="availability" content="outofstock">
+    @endif
+
+</x-slot>
 <div>
     {{-- Management Modals --}}
     @can('shop_access')
