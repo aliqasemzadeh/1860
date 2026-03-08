@@ -12,7 +12,7 @@
         <meta name="product_price" content="{{ $selectedPrice->price }}">
         <meta name="product_old_price" content="{{ $selectedPrice->sale_price }}">
         <meta name="availability" content="instock">
-        <meta name="guarantee" content="{{ $selectedPrice->warranty->title }}">
+        <meta name="guarantee" content="{{ $selectedPrice->warranty->title ?? "" }}">
     @elseif($this->selectedPrice && $this->selectedPrice->quantity <= 0)
         <meta name="availability" content="outofstock">
     @endif
