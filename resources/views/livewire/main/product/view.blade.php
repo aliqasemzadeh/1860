@@ -12,16 +12,13 @@
 </x-slot>
 <x-slot name="head">
     @php
-        use Illuminate\Support\Facades\Storage;
-        use Illuminate\Support\Str;
-
         $selectedPrice = $this->selectedPrice;
         $product = $this->product;
         $canonicalUrl = $product->url;
         $imageUrl = $product->file_path
-            ? url(Storage::url($product->file_path))
+            ? url(\Illuminate\Support\Facades\Storage::url($product->file_path))
             : null;
-        $description = Str::limit(
+        $description = \Illuminate\Support\Str::limit(
             trim(preg_replace('/\s+/', ' ', strip_tags((string) ($product->description ?: $product->name)))),
             160,
             '...'
