@@ -4,10 +4,18 @@ return [
     'user' => [
         'user_access' => 'دسترسی کاربر',
         'user_dashboard' => 'داشبورد کاربر',
+        'user_profile_update' => 'ویرایش پروفایل کاربر',
         'user_settings' => 'تنظیمات کاربر',
         'user_support' => 'پشتیبانی کاربر',
         'user_support_ticket_index' => 'فهرست تیکت‌های پشتیبانی کاربر',
         'user_support_ticket_create' => 'ایجاد تیکت پشتیبانی کاربر',
+        'user_order_index' => 'فهرست سفارش‌های کاربر',
+        'user_order_view' => 'مشاهده سفارش کاربر',
+        'user_order_pay' => 'پرداخت سفارش کاربر',
+        'user_address_index' => 'فهرست آدرس‌های کاربر',
+        'user_address_create' => 'ایجاد آدرس کاربر',
+        'user_address_edit' => 'ویرایش آدرس کاربر',
+        'user_address_delete' => 'حذف آدرس کاربر',
     ],
     'administrator' => [
         'administrator_access' => 'دسترسی مدیر',

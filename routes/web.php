@@ -18,8 +18,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/orders/{id}', \App\Livewire\Main\Order\View::class)->name('order.view');
     Route::get('/orders/{id}/payment', \App\Livewire\Main\Order\Payment::class)->name('order.payment');
 
-
     Route::get('/panel/user/dashboard/index', \App\Livewire\Panel\User\Dashboard\Index::class)->name('panel.user.dashboard.index');
+    Route::get('/panel/user/order/index', \App\Livewire\Panel\User\Order\Index::class)->name('panel.user.order.index');
+    Route::get('/panel/user/address/index', \App\Livewire\Panel\User\Address\Index::class)->name('panel.user.address.index');
 
     Route::get('/panel/administrator/dashboard/index', \App\Livewire\Panel\Administrator\Dashboard\Index::class)->name('panel.administrator.dashboard.index');
     Route::get('/panel/administrator/user-management/user/index', \App\Livewire\Panel\Administrator\UserManagement\User\Index::class)->name('panel.administrator.user-management.user.index');
@@ -60,4 +61,3 @@ Route::group(['middleware' => ['auth']], function () {
 
 Route::get('/login', \App\Livewire\Auth\Login::class)->name('login')->middleware('guest');
 Route::get('/logout', \App\Livewire\Auth\Logout::class)->name('logout')->middleware('auth');
-

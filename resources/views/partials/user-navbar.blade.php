@@ -5,22 +5,19 @@
 
     <flux:dropdown position="top" align="start">
         @auth
-            <flux:sidebar.profile name="{{ \Illuminate\Support\Facades\Auth::user()->name ?? \Illuminate\Support\Facades\Auth::mobile() }}" />
+            <flux:sidebar.profile name="{{ Auth::user()->name ?: Auth::user()->mobile }}" />
         @endauth
 
         @guest
                 <flux:profile  />
         @endguest
 
-
         <flux:menu>
-            <flux:menu.radio.group>
-
-            </flux:menu.radio.group>
-
-            <flux:menu.separator />
-
-            <flux:menu.item icon="arrow-right-start-on-rectangle" href="{{ route('logout') }}">{{ __('app.logout.title') }}</flux:menu.item>
+            @auth
+                <flux:menu.item icon="user" href="{{ route('panel.user.dashboard.index') }}" wire:navigate>{{ __('app.profile') }}</flux:menu.item>
+                <flux:menu.separator />
+                <flux:menu.item icon="arrow-right-start-on-rectangle" href="{{ route('logout') }}">{{ __('app.logout.title') }}</flux:menu.item>
+            @endauth
         </flux:menu>
     </flux:dropdown>
 </flux:navbar>
