@@ -34,7 +34,7 @@
         <livewire:main.sidebar.basket/>
 
         @auth
-            <flux:button icon="user" href="{{ route('logout') }}" square variant="ghost"/>
+            <flux:button icon="user" href="{{ route('panel.user.dashboard.index') }}" square variant="ghost"/>
         @endauth
 
         @guest
