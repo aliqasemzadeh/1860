@@ -22,7 +22,7 @@
                         <div class="flex items-center space-x-4 rtl:space-x-reverse">
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                    {{ $permission->name }}
+                                    {{ \App\Support\PermissionLabel::for($permission->name) }}
                                 </p>
                                 <p class="text-sm text-gray-500 truncate dark:text-gray-400">
 
@@ -48,7 +48,7 @@
                         <div class="flex items-center space-x-4 rtl:space-x-reverse">
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                    {{ $permission->name }}
+                                    {{ \App\Support\PermissionLabel::for($permission->name) }}
                                 </p>
                                 <p class="text-sm text-gray-500 truncate dark:text-gray-400">
 

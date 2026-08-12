@@ -33,7 +33,7 @@
 
         @foreach ($this->roles as $role)
             <flux:table.row :key="$role->id">
-                <flux:table.cell class="whitespace-nowrap">{{ $role->name }}</flux:table.cell>
+                <flux:table.cell class="whitespace-nowrap">{{ \App\Support\PermissionLabel::role($role->name) }}</flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">{{ $role->guard_name }}</flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">{{ $role->created_at?->format('Y-m-d H:i') }}</flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
@@ -44,7 +44,7 @@
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('administrator.user-management.role.users.assign-data', { id: '{{ $role->id }}' })">{{ __('app.users') }}</flux:button>
                     @endcan
                     @can('administrator_user_management_role_permissions')
-                        <flux:button size="xs" variant="primary" wire:click="$dispatch('administrator.user-management.role.permissions.assign-data', { id: '{{ $role->id }}' })">{{ __('app.permissions') }}</flux:button>
+                        <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.administrator.user-management.role.permissions.assign-data', { id: '{{ $role->id }}' })">{{ __('app.permissions') }}</flux:button>
                     @endcan
                     @can('administrator_user_management_role_delete')
                         <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>

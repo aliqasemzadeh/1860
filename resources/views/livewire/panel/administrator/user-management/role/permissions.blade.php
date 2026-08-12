@@ -1,14 +1,14 @@
-<flux:modal name="administrator.user-management.role.permissions.modal" class="min-w-full min-h-full">
+<flux:modal name="panel.administrator.user-management.role.permissions.modal" class="min-w-full min-h-full">
     <div class="space-y-6">
         <div>
-            <flux:heading size="lg">{{ __('jetadmin.permissions') }}: {{ $role->name }}</flux:heading>
-            <flux:text class="mt-2">{{ __('jetadmin.role_permissions_description') }}</flux:text>
+            <flux:heading size="lg">{{ __('app.permissions') }}: {{ \App\Support\PermissionLabel::role($role->name) }}</flux:heading>
+            <flux:text class="mt-2">{{ __('app.permissions_description') }}</flux:text>
         </div>
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <flux:field>
                     <flux:field>
-                        <flux:label>{{ __('jetadmin.search') }}</flux:label>
+                        <flux:label>{{ __('app.search') }}</flux:label>
                         <flux:input wire:model.live="search" type="text" />
                         <flux:error name="search" />
                     </flux:field>
@@ -20,23 +20,18 @@
                             <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                        {{ $permission->name }}
-                                    </p>
-                                    <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-
+                                        {{ \App\Support\PermissionLabel::for($permission->name) }}
                                     </p>
                                 </div>
                                 <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
                                     @can('administrator_user_management_role_permissions')
-                                        <flux:button wire:click="assign({{ $permission->id }})" wire:confirm="{{ __('jetadmin.are_you_sure') }}"><flux:icon.plus-circle /></flux:button>
+                                        <flux:button wire:click="assign({{ $permission->id }})" wire:confirm="{{ __('app.are_you_sure') }}"><flux:icon.plus-circle /></flux:button>
                                     @endcan
                                 </div>
                             </div>
                         </li>
                     @endforeach
                 </ul>
-
-
             </div>
 
             <div>
@@ -46,15 +41,12 @@
                             <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                        {{ $permission->name }}
-                                    </p>
-                                    <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-
+                                        {{ \App\Support\PermissionLabel::for($permission->name) }}
                                     </p>
                                 </div>
                                 <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
                                     @can('administrator_user_management_role_permissions')
-                                        <flux:button wire:click="delete({{ $permission->id }})" wire:confirm="{{ __('jetadmin.are_you_sure') }}"><flux:icon.trash /></flux:button>
+                                        <flux:button wire:click="delete({{ $permission->id }})" wire:confirm="{{ __('app.are_you_sure') }}"><flux:icon.trash /></flux:button>
                                     @endcan
                                 </div>
                             </div>
@@ -63,6 +55,5 @@
                 </ul>
             </div>
         </div>
-
     </div>
 </flux:modal>
