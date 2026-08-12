@@ -73,9 +73,9 @@ return [
         'behpardakht' => [
             'apiPurchaseUrl' => 'https://bpm.shaparak.ir/pgwchannel/services/pgw?wsdl',
             'apiPaymentUrl' => 'https://bpm.shaparak.ir/pgwchannel/startpay.mellat',
-            'terminalId' => '9080316',
-            'username' => '9080316',
-            'password' => '46636837',
+            'terminalId' => env('PAYMENT_MELLAT_TERMINAL_ID'),
+            'username' => env('PAYMENT_MELLAT_USERNAME'),
+            'password' => env('PAYMENT_MELLAT_PASSWORD'),
             'callbackUrl' => 'https://1860.ai',
             'description' => 'payment using behpardakht',
             'currency' => 'T', //Can be R, T (Rial, Toman)

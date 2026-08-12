@@ -5,6 +5,7 @@ namespace App\Console\Commands\System\Administrator;
 use Illuminate\Console\Command;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Throwable;
 
 class CreatePermissionsCommand extends Command
 {
@@ -20,90 +21,57 @@ class CreatePermissionsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Create and sync panel permissions from language files';
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
-        $user = Role::findByName('user');
-        $permissions_user = __('permissions.user');
+        $groups = [
+            'user' => 'user',
+            'administrator' => 'panel.administrator',
+            'crm' => 'crm',
+            'shop' => 'shop',
+            'service_center' => 'service_center',
+            'accounting' => 'accounting',
+        ];
 
-        foreach ($permissions_user as $permission => $translate) {
-            Permission::firstOrCreate(
-                ['name' => $permission]
-            );
+        foreach ($groups as $permissionGroup => $roleName) {
+            $this->syncGroup($permissionGroup, $roleName);
         }
 
-        foreach ($permissions_user as $permission => $translate) {
-            $user->givePermissionTo($permission);
+        $this->info('Permissions synced.');
+
+        return self::SUCCESS;
+    }
+
+    protected function syncGroup(string $permissionGroup, string $roleName): void
+    {
+        $permissions = __('permissions.'.$permissionGroup);
+
+        if (! is_array($permissions) || $permissions === []) {
+            $this->warn("No permissions found for group [{$permissionGroup}].");
+
+            return;
         }
 
-        $administrator = Role::findByname('panel.administrator');
-        $permissions_administrator = __('permissions.administrator');
-
-        foreach ($permissions_administrator as $permission => $translate) {
-            Permission::firstOrCreate(
-                ['name' => $permission]
-            );
+        foreach ($permissions as $permission => $translate) {
+            Permission::firstOrCreate(['name' => $permission]);
         }
 
-        foreach ($permissions_administrator as $permission => $translate) {
-            $administrator->givePermissionTo($permission);
+        try {
+            $role = Role::findByName($roleName);
+        } catch (Throwable) {
+            $this->warn("Role [{$roleName}] not found; permissions for [{$permissionGroup}] were created but not assigned.");
+
+            return;
         }
 
-        $crm = Role::findByName('crm');
-        $permissions_crm = __('permissions.crm');
-
-        foreach ($permissions_crm as $permission => $translate) {
-            Permission::firstOrCreate(
-                ['name' => $permission]
-            );
+        foreach ($permissions as $permission => $translate) {
+            $role->givePermissionTo($permission);
         }
 
-        foreach ($permissions_crm as $permission => $translate) {
-            $crm->givePermissionTo($permission);
-        }
-
-        $shop = Role::findByName('shop');
-        $permissions_shop = __('permissions.shop');
-
-        foreach ($permissions_shop as $permission => $translate) {
-            Permission::firstOrCreate(
-                ['name' => $permission]
-            );
-        }
-
-        foreach ($permissions_shop as $permission => $translate) {
-            $shop->givePermissionTo($permission);
-        }
-
-        $service_center = Role::findByName('service_center');
-        $permissions_service_center = __('permissions.service_center');
-
-        foreach ($permissions_service_center as $permission => $translate) {
-            Permission::firstOrCreate(
-                ['name' => $permission]
-            );
-        }
-
-        foreach ($permissions_service_center as $permission => $translate) {
-            $service_center->givePermissionTo($permission);
-        }
-
-        $accounting = Role::findByName('accounting');
-        $permissions_accounting = __('permissions.accounting');
-
-        foreach ($permissions_accounting as $permission => $translate) {
-            Permission::firstOrCreate(
-                ['name' => $permission]
-            );
-        }
-
-        foreach ($permissions_accounting as $permission => $translate) {
-            $accounting->givePermissionTo($permission);
-        }
-
+        $this->info("Synced [{$permissionGroup}] permissions to role [{$roleName}].");
     }
 }

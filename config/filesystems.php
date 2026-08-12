@@ -60,6 +60,19 @@ return [
             'report' => false,
         ],
 
+        'backup_remote' => [
+            'driver' => 's3',
+            'key' => env('BACKUP_REMOTE_KEY'),
+            'secret' => env('BACKUP_REMOTE_SECRET'),
+            'region' => env('BACKUP_REMOTE_REGION'),
+            'bucket' => env('BACKUP_REMOTE_BUCKET'),
+            'url' => env('BACKUP_REMOTE_URL'),
+            'endpoint' => env('BACKUP_REMOTE_ENDPOINT'),
+            'use_path_style_endpoint' => env('BACKUP_REMOTE_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => false,
+            'report' => false,
+        ],
+
     ],
 
     /*

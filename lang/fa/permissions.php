@@ -58,6 +58,14 @@ return [
 
         'administrator_setting_management' => 'مدیریت تنظیمات',
 
+        'administrator_setting_function_index' => 'مشاهده صفحه توابع سیستم',
+        'administrator_setting_function_update' => 'به‌روزرسانی پروژه',
+
+        'administrator_setting_backup_index' => 'فهرست پشتیبان‌ها',
+        'administrator_setting_backup_create' => 'ایجاد پشتیبان',
+        'administrator_setting_backup_download' => 'دانلود پشتیبان',
+        'administrator_setting_backup_delete' => 'حذف پشتیبان',
+
         'administrator_setting_category_index' => 'فهرست دسته‌بندی‌های تنظیمات',
         'administrator_setting_category_create' => 'ایجاد دسته‌بندی تنظیمات',
         'administrator_setting_category_edit' => 'ویرایش دسته‌بندی تنظیمات',

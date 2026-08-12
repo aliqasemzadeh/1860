@@ -38,7 +38,10 @@ return [
                 'exclude' => [
                     base_path('vendor'),
                     base_path('node_modules'),
+                    base_path('.git'),
                     storage_path('framework'),
+                    storage_path('app/private'),
+                    storage_path('app/backup-temp'),
                 ],
 
                 /*
@@ -165,6 +168,7 @@ return [
              */
             'disks' => [
                 'local',
+                'backup_remote',
             ],
 
             /*
@@ -297,7 +301,7 @@ return [
     'monitor_backups' => [
         [
             'name' => env('APP_NAME', 'laravel-backup'),
-            'disks' => ['local'],
+            'disks' => ['local', 'backup_remote'],
             'health_checks' => [
                 MaximumAgeInDays::class => 1,
                 MaximumStorageInMegabytes::class => 5000,

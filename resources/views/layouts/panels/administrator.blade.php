@@ -16,8 +16,9 @@
             <flux:sidebar.item href="{{ route('panel.administrator.user-management.role.index') }}" wire:navigate>{{ __('app.roles') }}</flux:sidebar.item>
             <flux:sidebar.item href="{{ route('panel.administrator.user-management.permission.index') }}" wire:navigate>{{ __('app.permissions') }}</flux:sidebar.item>
         </flux:sidebar.group>
-        <flux:sidebar.group expandable heading="{{ __('app.setting_management') }}" class="grid" :expanded="request()->routeIs('administrator.setting-management.*')">
+        <flux:sidebar.group expandable heading="{{ __('app.setting_management') }}" class="grid" :expanded="request()->routeIs('panel.administrator.setting-management.*')">
             <flux:sidebar.item href="{{ route('panel.administrator.setting-management.function.index') }}" wire:navigate>{{ __('app.functions') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('panel.administrator.setting-management.backup.index') }}" wire:navigate>{{ __('app.backups') }}</flux:sidebar.item>
             <flux:sidebar.item href="{{ route('panel.administrator.setting-management.option.index') }}" wire:navigate>{{ __('app.options') }}</flux:sidebar.item>
         </flux:sidebar.group>
     </flux:sidebar.nav>
