@@ -4,19 +4,19 @@ namespace App\Livewire\Main\Order;
 
 use App\Jobs\Otp\SendOtpJob;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
+use Flux\Flux;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Tzsk\Otp\Facades\Otp;
-use Flux\Flux;
 
 #[Layout('layouts.app')]
 class Checkout extends Component
 {
     public string $mobile = '';
+
     public string $code = '';
+
     public int $step = 1;
+
     public ?\Carbon\Carbon $canResendAt = null;
 
     public function mount()
@@ -33,16 +33,17 @@ class Checkout extends Component
             'mobile' => ['required', 'string', 'ir_mobile'],
         ]);
 
-        // Generate OTP
-        $digits = (int) Config::get('otp.digits', 6);
-        $expiry = (int) Config::get('otp.expiry', 2);
+        $user = User::firstOrCreate([
+            'mobile' => $this->mobile,
+        ]);
 
-        $otp = Otp::digits($digits)->expiry($expiry)->generate($this->mobile);
-        dispatch(new SendOtpJob($this->mobile, $otp));
+        $otp = $user->createOneTimePassword();
+
+        dispatch(new SendOtpJob($this->mobile, $otp->password));
 
         $this->code = '';
         $this->step = 2;
-        $this->canResendAt = now()->addMinutes($expiry);
+        $this->canResendAt = now()->addMinutes((int) config('one-time-passwords.default_expires_in_minutes'));
         Flux::toast(variant: 'success', text: __('app.code_sent'));
     }
 
@@ -50,23 +51,25 @@ class Checkout extends Component
     {
         $this->validate([
             'mobile' => ['required', 'string'],
-            'code' => ['required', 'string', 'size:'.(string) Config::get('otp.digits', 6)],
+            'code' => ['required', 'string', 'size:'.(string) config('one-time-passwords.password_length', 6)],
         ]);
 
-        $valid = Otp::digits((int) Config::get('otp.digits', 6))
-            ->expiry((int) Config::get('otp.expiry', 2))
-            ->check($this->code, $this->mobile);
+        $user = User::where('mobile', $this->mobile)->first();
 
-        if (! $valid) {
+        if (! $user) {
             Flux::toast(variant: 'danger', text: __('app.invalid_code'));
+
             return;
         }
 
-        $user = User::firstOrCreate([
-            'mobile' => $this->mobile,
-        ]);
+        $result = $user->attemptLoginUsingOneTimePassword($this->code, true);
 
-        Auth::login($user, true);
+        if (! $result->isOk()) {
+            Flux::toast(variant: 'danger', text: __('app.invalid_code'));
+
+            return;
+        }
+
         request()->session()->regenerate();
 
         Flux::toast(variant: 'success', text: __('app.login_successful'));
@@ -75,24 +78,28 @@ class Checkout extends Component
 
     public function resend(): void
     {
-        $expiry = (int) Config::get('otp.expiry', 2);
+        $expiry = (int) config('one-time-passwords.default_expires_in_minutes');
 
         if ($this->canResendAt && now()->lt($this->canResendAt)) {
             Flux::toast(variant: 'danger', text: __('app.wait_before_resend'));
+
             return;
         }
 
         if (! $this->mobile) {
             $this->step = 1;
             Flux::toast(variant: 'danger', text: __('app.enter_mobile'));
+
             return;
         }
 
-        $otp = Otp::digits((int) Config::get('otp.digits', 6))
-            ->expiry($expiry)
-            ->generate($this->mobile);
+        $user = User::firstOrCreate([
+            'mobile' => $this->mobile,
+        ]);
 
-        dispatch(new SendOtpJob($this->mobile, $otp));
+        $otp = $user->createOneTimePassword();
+
+        dispatch(new SendOtpJob($this->mobile, $otp->password));
         Flux::toast(variant: 'success', text: __('app.code_resent'));
 
         $this->canResendAt = now()->addMinutes($expiry);

@@ -3,17 +3,18 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\OneTimePasswords\Models\Concerns\HasOneTimePasswords;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, HasRoles, Notifiable;
+    use HasFactory, HasOneTimePasswords, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -66,7 +67,7 @@ class User extends Authenticatable
                 $first = (string) ($this->first_name ?? '');
                 $last = (string) ($this->last_name ?? '');
 
-                return trim($first . ' ' . $last);
+                return trim($first.' '.$last);
             },
         );
     }
