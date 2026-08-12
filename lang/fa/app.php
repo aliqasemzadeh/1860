@@ -118,6 +118,7 @@ return [
     'products' => 'محصولات',
     'categories' => 'دسته ها',
     'categories_description' => 'مدیریت و مشاهده دسته‌ها.',
+    'category_seo_description' => 'خرید و مشاهده محصولات دسته :name با بهترین قیمت.',
     'create_category' => 'ایجاد دسته',
     'create_category_description' => 'برای ایجاد دسته جدید، اطلاعات زیر را تکمیل کنید.',
     'edit_category' => 'ویرایش دسته',

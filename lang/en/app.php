@@ -38,6 +38,7 @@ return [
     // Common fields
     'slug' => 'Slug (EN)',
     'slug_fa' => 'Slug (FA)',
+    'category_seo_description' => 'Browse and buy :name products at the best price.',
 
     // Brands
     'brands' => 'Brands',

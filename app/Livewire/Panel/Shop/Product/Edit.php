@@ -60,7 +60,7 @@ class Edit extends Component
     public function updatedName(string $value): void
     {
         $this->slug = Str::slug($value);
-        $this->slug_fa = slug_fa( $value);
+        $this->slug_fa = slug_fa($value);
     }
 
     #[On('panel.shop.product.edit.assign-data')]
