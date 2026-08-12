@@ -43,16 +43,12 @@ class SitemapService
     protected function build(): array
     {
         $categories = Category::query()
-            ->select(['id', 'slug', 'updated_at'])
-            ->whereNotNull('slug')
-            ->where('slug', '!=', '')
+            ->select(['id', 'slug', 'slug_fa', 'updated_at'])
             ->orderBy('id')
             ->get();
 
         $products = Product::query()
-            ->select(['id', 'slug', 'updated_at'])
-            ->whereNotNull('slug')
-            ->where('slug', '!=', '')
+            ->select(['id', 'slug', 'slug_fa', 'updated_at'])
             ->orderBy('id')
             ->get();
 
@@ -77,7 +73,7 @@ class SitemapService
 
         foreach ($categories as $category) {
             $urls[] = [
-                'loc' => route('category.view', $category->slug),
+                'loc' => $category->url,
                 'lastmod' => $category->updated_at,
                 'changefreq' => 'weekly',
                 'priority' => '0.8',
@@ -86,7 +82,7 @@ class SitemapService
 
         foreach ($products as $product) {
             $urls[] = [
-                'loc' => route('product.view', $product->slug),
+                'loc' => $product->url,
                 'lastmod' => $product->updated_at,
                 'changefreq' => 'weekly',
                 'priority' => '0.6',
