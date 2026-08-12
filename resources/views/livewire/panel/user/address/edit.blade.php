@@ -16,7 +16,7 @@
 
                     <flux:field>
                         <flux:label>{{ __('app.province') }}</flux:label>
-                        <flux:select wire:model.live="form.province_id" variant="combobox" searchable>
+                        <flux:select wire:model.live="form.province_id" variant="combobox">
                             <flux:select.option value="">{{ __('app.select_province') }}</flux:select.option>
                             @foreach ($this->provinces as $id => $province)
                                 <flux:select.option value="{{ $id }}">{{ $province }}</flux:select.option>
@@ -27,7 +27,7 @@
 
                     <flux:field>
                         <flux:label>{{ __('app.city') }}</flux:label>
-                        <flux:select wire:model="form.city_id" variant="combobox" searchable>
+                        <flux:select wire:model="form.city_id" variant="combobox">
                             <flux:select.option value="">{{ __('app.select_city') }}</flux:select.option>
                             @foreach ($this->cities as $cityKey => $cityName)
                                 <flux:select.option value="{{ $cityKey }}">{{ $cityName }}</flux:select.option>
