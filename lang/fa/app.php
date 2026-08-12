@@ -48,6 +48,7 @@ return [
 
     // General / Navigation
     'dashboard' => 'داشبورد',
+    'home' => 'خانه',
     'user_management' => 'مدیریت کاربران',
     'users' => 'کاربران',
     'users_description' => 'مدیریت و مشاهده کاربران سیستم.',
