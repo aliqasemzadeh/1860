@@ -26,29 +26,21 @@ class View extends Component
 
     public function mount($id = null, $slug = null)
     {
-        if ($slug) {
-            $this->slug = $slug;
-        } elseif ($id) {
-            $this->id = $id;
-        }
+        $this->id = $id;
+        $this->slug = $slug;
     }
 
     #[Computed]
     public function category()
     {
-        $query = Category::query();
-
-        if ($this->slug) {
-            $query->where(function ($q) {
-                $q->where('slug', $this->slug)->orWhere('slug_fa', $this->slug);
-            });
-        } elseif ($this->id) {
-            $query->where('id', $this->id);
-        } else {
+        if (! $this->id) {
             return null;
         }
 
-        return $query->with(['children'])->first();
+        return Category::query()
+            ->with(['children'])
+            ->where('id', $this->id)
+            ->first();
     }
 
     #[Computed]
@@ -181,6 +173,11 @@ class View extends Component
     {
         if (! $this->category) {
             abort(404);
+        }
+
+        $canonicalSlug = $this->category->slug_fa ?: $this->category->slug;
+        if ($this->slug === null || $this->slug !== $canonicalSlug) {
+            return redirect()->to($this->category->url, 301);
         }
 
         return view('livewire.main.category.view');
