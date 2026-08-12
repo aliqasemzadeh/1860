@@ -2,7 +2,11 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" dir="rtl">
 <head>
     @include('partials.head')
-    {{ $head ?? "" }}
+    @isset($head)
+        {{ $head }}
+    @else
+        <x-seo :title="$title ?? null" />
+    @endisset
 </head>
 <body class="min-h-screen bg-white dark:bg-zinc-800 antialiased">
 <flux:sidebar sticky collapsible="mobile" class="bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700">

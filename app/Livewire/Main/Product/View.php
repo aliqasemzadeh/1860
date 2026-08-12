@@ -4,6 +4,7 @@ namespace App\Livewire\Main\Product;
 
 use App\Models\Shop\Product;
 use App\Models\Shop\ProductPrice;
+use App\Support\Seo\Seo;
 use Binafy\LaravelCart\Models\Cart;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
@@ -177,6 +178,12 @@ class View extends Component
         }
 
         return $images;
+    }
+
+    #[Computed]
+    public function seo(): Seo
+    {
+        return Seo::product($this->product, $this->selectedPrice, $this->allImages);
     }
 
     #[Computed]

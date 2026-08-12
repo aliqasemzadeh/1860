@@ -5,15 +5,17 @@ namespace App\Services\Shop;
 use App\Models\Shop\Category;
 use App\Models\Shop\Product;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class SitemapService
 {
-    public const CACHE_KEY = 'sitemap.urls.v1';
+    public const CACHE_KEY = 'sitemap.urls.v2';
 
     public const CACHE_TTL_HOURS = 12;
 
     /**
-     * @return list<array{loc: string, lastmod: \Illuminate\Support\Carbon|\Carbon\CarbonInterface, changefreq: string, priority: string}>
+     * @return list<array{loc: string, lastmod: \Illuminate\Support\Carbon|\Carbon\CarbonInterface, changefreq: string, priority: string, images?: list<string>}>
      */
     public function urls(): array
     {
@@ -21,7 +23,7 @@ class SitemapService
     }
 
     /**
-     * @return list<array{loc: string, lastmod: \Illuminate\Support\Carbon|\Carbon\CarbonInterface, changefreq: string, priority: string}>
+     * @return list<array{loc: string, lastmod: \Illuminate\Support\Carbon|\Carbon\CarbonInterface, changefreq: string, priority: string, images?: list<string>}>
      */
     public function refresh(): array
     {
@@ -38,7 +40,7 @@ class SitemapService
     }
 
     /**
-     * @return list<array{loc: string, lastmod: \Illuminate\Support\Carbon|\Carbon\CarbonInterface, changefreq: string, priority: string}>
+     * @return list<array{loc: string, lastmod: \Illuminate\Support\Carbon|\Carbon\CarbonInterface, changefreq: string, priority: string, images?: list<string>}>
      */
     protected function build(): array
     {
@@ -48,13 +50,21 @@ class SitemapService
             ->get();
 
         $products = Product::query()
-            ->select(['id', 'slug', 'slug_fa', 'updated_at'])
+            ->select(['id', 'slug', 'slug_fa', 'file_path', 'updated_at'])
             ->orderBy('id')
             ->get();
 
         $latestUpdate = collect([$categories->max('updated_at'), $products->max('updated_at')])
             ->filter()
             ->max();
+
+        $settingsUpdatedAt = null;
+        try {
+            $raw = DB::table('settings')->max('updated_at');
+            $settingsUpdatedAt = $raw ? \Illuminate\Support\Carbon::parse($raw) : null;
+        } catch (\Throwable) {
+            // settings table may not exist in some environments
+        }
 
         $urls = [
             [
@@ -65,7 +75,7 @@ class SitemapService
             ],
             [
                 'loc' => route('contact.index'),
-                'lastmod' => now(),
+                'lastmod' => $settingsUpdatedAt ?? $latestUpdate ?? now(),
                 'changefreq' => 'yearly',
                 'priority' => '0.5',
             ],
@@ -81,12 +91,18 @@ class SitemapService
         }
 
         foreach ($products as $product) {
-            $urls[] = [
+            $entry = [
                 'loc' => $product->url,
                 'lastmod' => $product->updated_at,
                 'changefreq' => 'weekly',
                 'priority' => '0.6',
             ];
+
+            if (filled($product->file_path)) {
+                $entry['images'] = [url(Storage::url($product->file_path))];
+            }
+
+            $urls[] = $entry;
         }
 
         return $urls;

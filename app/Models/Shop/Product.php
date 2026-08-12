@@ -5,12 +5,15 @@ namespace App\Models\Shop;
 use App\Models\Shop\PriceFetcher;
 use App\Services\Shop\SitemapService;
 use Binafy\LaravelCart\Cartable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class Product extends Model implements Cartable
 {
@@ -126,6 +129,73 @@ class Product extends Model implements Cartable
     public static function defaultPriceCacheKey(int $productId): string
     {
         return "product:{$productId}:default-price";
+    }
+
+    /**
+     * Correlated subquery selecting a column from the product's default price row.
+     */
+    protected function defaultPriceColumnSubquery(string $column): QueryBuilder
+    {
+        return DB::table('product_prices')
+            ->select($column)
+            ->whereColumn('product_prices.product_id', 'products.id')
+            ->whereNull('product_prices.deleted_at')
+            ->orderByDesc('is_default')
+            ->orderByDesc('created_at')
+            ->limit(1);
+    }
+
+    /**
+     * Select effective selling price (sale_price when set and lower, else price).
+     */
+    public function scopeWithEffectivePrice(Builder $query): Builder
+    {
+        $sub = $this->defaultPriceColumnSubquery(
+            DB::raw('COALESCE(NULLIF(sale_price, 0), price)')
+        );
+
+        return $query->addSelect(['effective_price' => $sub]);
+    }
+
+    public function scopeOrderByEffectivePrice(Builder $query, string $direction = 'asc'): Builder
+    {
+        $direction = strtolower($direction) === 'desc' ? 'desc' : 'asc';
+
+        return $query->orderBy('effective_price', $direction);
+    }
+
+    public function scopeWhereEffectivePriceBetween(Builder $query, ?float $min, ?float $max): Builder
+    {
+        $sub = $this->defaultPriceColumnSubquery(
+            DB::raw('COALESCE(NULLIF(sale_price, 0), price)')
+        );
+
+        if ($min !== null) {
+            $query->whereRaw('('.$sub->toSql().') >= ?', [...$sub->getBindings(), $min]);
+        }
+
+        if ($max !== null) {
+            $query->whereRaw('('.$sub->toSql().') <= ?', [...$sub->getBindings(), $max]);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Filter by default-price availability (quantity > 0 on the preferred price row).
+     */
+    public function scopeWhereAvailability(Builder $query, bool $available): Builder
+    {
+        $sub = $this->defaultPriceColumnSubquery('quantity');
+
+        if ($available) {
+            return $query->whereRaw('('.$sub->toSql().') > 0', $sub->getBindings());
+        }
+
+        return $query->where(function (Builder $outer) use ($sub): void {
+            $outer->whereRaw('('.$sub->toSql().') IS NULL', $sub->getBindings())
+                ->orWhereRaw('('.$sub->toSql().') <= 0', $sub->getBindings());
+        });
     }
 
     /**
