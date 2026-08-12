@@ -5,6 +5,7 @@ namespace App\Livewire\Main\Category;
 use App\Models\Shop\Brand;
 use App\Models\Shop\Category;
 use App\Models\Shop\Product;
+use App\Support\Seo\Seo;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -178,6 +179,20 @@ class View extends Component
         $this->maxPrice = null;
         $this->sortBy = 'created_at';
         $this->sortDirection = 'desc';
+    }
+
+    #[Computed]
+    public function seo(): Seo
+    {
+        $filtered = filled($this->brandId)
+            || $this->minPrice !== null
+            || $this->maxPrice !== null;
+
+        return Seo::category(
+            $this->category,
+            $this->products,
+            filtered: $filtered,
+        );
     }
 
     public function render()

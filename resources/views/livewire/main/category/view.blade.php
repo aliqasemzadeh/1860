@@ -1,81 +1,9 @@
 @php
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 @endphp
 
-<x-slot name="title">
-    {{ $this->category->name ?? __('app.categories') }}
-</x-slot>
-
 <x-slot name="head">
-    @php
-        $category = $this->category;
-        $canonicalUrl = $category->url;
-        $description = Str::limit(
-            __('app.category_seo_description', ['name' => $category->name]),
-            160,
-            '...'
-        );
-        $seoTitle = $category->name . ' | ' . config('app.name');
-
-        $itemList = [];
-        foreach ($this->products->take(20) as $index => $product) {
-            $itemList[] = [
-                '@type' => 'ListItem',
-                'position' => $index + 1,
-                'url' => $product->url,
-                'name' => $product->name,
-            ];
-        }
-
-        $collectionSchema = [
-            '@context' => 'https://schema.org',
-            '@type' => 'CollectionPage',
-            'name' => $category->name,
-            'description' => $description,
-            'url' => $canonicalUrl,
-            'mainEntity' => [
-                '@type' => 'ItemList',
-                'itemListElement' => $itemList,
-            ],
-        ];
-
-        $breadcrumbSchema = [
-            '@context' => 'https://schema.org',
-            '@type' => 'BreadcrumbList',
-            'itemListElement' => [
-                [
-                    '@type' => 'ListItem',
-                    'position' => 1,
-                    'name' => __('app.home'),
-                    'item' => route('home'),
-                ],
-                [
-                    '@type' => 'ListItem',
-                    'position' => 2,
-                    'name' => $category->name,
-                    'item' => $canonicalUrl,
-                ],
-            ],
-        ];
-    @endphp
-
-    <meta name="description" content="{{ $description }}">
-    <link rel="canonical" href="{{ $canonicalUrl }}">
-
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="{{ $seoTitle }}">
-    <meta property="og:description" content="{{ $description }}">
-    <meta property="og:url" content="{{ $canonicalUrl }}">
-    <meta property="og:locale" content="fa_IR">
-    <meta property="og:site_name" content="{{ config('app.name') }}">
-
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="{{ $seoTitle }}">
-    <meta name="twitter:description" content="{{ $description }}">
-
-    <script type="application/ld+json">{!! json_encode($collectionSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
-    <script type="application/ld+json">{!! json_encode($breadcrumbSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+    <x-seo :seo="$this->seo" />
 </x-slot>
 
 <div>
