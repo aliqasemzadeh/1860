@@ -27,6 +27,17 @@ class View extends Component
     {
         $this->id = $id;
         $this->slug = $slug;
+
+        if (! $this->product) {
+            abort(404);
+        }
+
+        $canonicalSlug = $this->product->slug_fa ?: $this->product->slug;
+        if ($this->slug === null || $this->slug !== $canonicalSlug) {
+            $this->redirect($this->product->url, navigate: false);
+            // Force a 301 for SEO when slug is missing/wrong
+            abort(redirect()->to($this->product->url, 301));
+        }
     }
 
     #[Computed]
