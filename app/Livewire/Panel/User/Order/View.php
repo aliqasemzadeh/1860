@@ -4,7 +4,6 @@ namespace App\Livewire\Panel\User\Order;
 
 use App\Models\Shop\Order;
 use Flux\Flux;
-use Illuminate\Contracts\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -27,7 +26,7 @@ class View extends Component
         Flux::modal('panel.user.order.view.modal')->show();
     }
 
-    public function render(): View
+    public function render()
     {
         return view('livewire.panel.user.order.view');
     }
