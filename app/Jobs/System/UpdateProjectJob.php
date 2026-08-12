@@ -14,7 +14,8 @@ class UpdateProjectJob implements ShouldQueue
     use Queueable;
 
     public function __construct(
-        public bool $runComposer = true,
+        public bool $runComposer = false,
+        public bool $runNpmBuild = false,
     ) {}
 
     public function handle(): void
@@ -31,7 +32,11 @@ class UpdateProjectJob implements ShouldQueue
         $this->clearCache();
         $this->clearRoute();
         $this->clearView();
-        $this->addTheme();
+
+        if ($this->runNpmBuild) {
+            $this->addTheme();
+        }
+
         $this->restartQueue();
     }
 
@@ -56,7 +61,7 @@ class UpdateProjectJob implements ShouldQueue
 
     protected function runMigrations(): void
     {
-        $this->runArtisan('migrate');
+        $this->runArtisan('migrate', ['--force' => true]);
     }
 
     protected function runComposerUpdate(): void

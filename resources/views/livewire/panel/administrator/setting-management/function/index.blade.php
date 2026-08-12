@@ -1,15 +1,39 @@
-<div xmlns:flux="http://www.w3.org/1999/html">
+<div>
     <div class="relative mb-6 w-full">
-        <x-slot name="title">
-            {{ __('app.function') }}
-        </x-slot>
         <flux:heading size="xl" level="1">{{ __('app.function') }}</flux:heading>
         <flux:subheading size="lg" class="mb-6">{{ __('app.function_description') }}</flux:subheading>
         <flux:separator variant="subtle" />
 
-        <div class="space-y-4">
-            <flux:button wire:click="updatePermissions" class="w-full">{{ __('app.update_permissions') }}</flux:button>
-            <flux:button wire:click="clearCache" class="w-full">{{ __('app.clear_cache') }}</flux:button>
+        <div class="mt-6 space-y-4">
+            <flux:button wire:click="updatePermissions" variant="primary" color="indigo" class="w-full">
+                {{ __('app.update_permissions') }}
+            </flux:button>
+
+            <flux:button wire:click="clearCache" variant="primary" color="zinc" class="w-full">
+                {{ __('app.clear_cache') }}
+            </flux:button>
+
+            <flux:separator variant="subtle" />
+
+            <flux:button
+                wire:click="updateQuick"
+                wire:confirm="{{ __('app.are_you_sure') }}"
+                variant="primary"
+                color="teal"
+                class="w-full"
+            >
+                {{ __('app.quick_update') }}
+            </flux:button>
+
+            <flux:button
+                wire:click="updateFull"
+                wire:confirm="{{ __('app.are_you_sure') }}"
+                variant="primary"
+                color="orange"
+                class="w-full"
+            >
+                {{ __('app.full_update') }}
+            </flux:button>
         </div>
     </div>
 </div>
