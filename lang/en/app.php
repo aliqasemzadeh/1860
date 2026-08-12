@@ -42,7 +42,7 @@ return [
     'seo_home_title' => ':name',
     'seo_home_description' => 'Shop online at :name with the best prices and fast delivery.',
     'seo_page' => 'Page :page',
-    'seo_contact_title' => 'Contact Us | :name',
+    'seo_contact_title' => 'Contact Us',
 
     // Brands
     'brands' => 'Brands',

@@ -40,6 +40,32 @@ class Index extends Component
         Flux::toast(__('app.sitemap_rebuilt', ['count' => count($urls)]));
     }
 
+    public function addWatermarks(): void
+    {
+        $this->authorize('administrator_setting_function_index');
+
+        Artisan::call('app:add-water-mark-to-images-command');
+        $output = Artisan::output();
+
+        if (preg_match(
+            '/RESULT products_marked=(\d+) products_skipped=(\d+) product_images_marked=(\d+) product_images_skipped=(\d+)/',
+            $output,
+            $matches
+        )) {
+            $marked = (int) $matches[1] + (int) $matches[3];
+            $skipped = (int) $matches[2] + (int) $matches[4];
+
+            Flux::toast(__('app.watermarks_added', [
+                'marked' => $marked,
+                'skipped' => $skipped,
+            ]));
+
+            return;
+        }
+
+        Flux::toast(__('app.watermarks_added_generic'));
+    }
+
     public function updateQuick(): void
     {
         $this->authorize('administrator_setting_function_update');

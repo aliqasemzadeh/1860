@@ -17,6 +17,10 @@
                 {{ __('app.rebuild_sitemap') }}
             </flux:button>
 
+            <flux:button wire:click="addWatermarks" variant="primary" color="cyan" class="w-full">
+                {{ __('app.add_watermarks') }}
+            </flux:button>
+
             <flux:separator variant="subtle" />
 
             <flux:button

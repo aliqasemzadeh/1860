@@ -13,6 +13,9 @@ return [
     'quick_update' => 'به‌روزرسانی سریع',
     'full_update' => 'به‌روزرسانی کامل',
     'update_dispatched' => 'عملیات به‌روزرسانی در صف قرار گرفت.',
+    'add_watermarks' => 'افزودن واترمارک به تصاویر',
+    'watermarks_added' => ':marked تصویر واترمارک شد، :skipped مورد رد شد.',
+    'watermarks_added_generic' => 'عملیات واترمارک انجام شد.',
 
     // Settings / Backup
     'backup' => 'پشتیبان‌گیری',
@@ -124,7 +127,7 @@ return [
     'seo_home_title' => ':name',
     'seo_home_description' => 'خرید آنلاین از :name با بهترین قیمت و ارسال سریع.',
     'seo_page' => 'صفحه :page',
-    'seo_contact_title' => 'تماس با ما | :name',
+    'seo_contact_title' => 'تماس با ما',
     'create_category' => 'ایجاد دسته',
     'create_category_description' => 'برای ایجاد دسته جدید، اطلاعات زیر را تکمیل کنید.',
     'edit_category' => 'ویرایش دسته',

@@ -10,11 +10,12 @@
     /** @var Seo $seo */
     $seo ??= Seo::site(title: $title, noindex: (bool) ($noindex ?? false));
     $resolvedTitle = $title ?: $seo->title;
+    $documentTitle = Seo::documentTitle($resolvedTitle);
     $resolvedNoindex = $noindex ?? ($seo->noindex || Seo::shouldNoindex(request()));
-    $siteName = app(\App\Settings\GeneralSettings::class)->title ?: config('app.name');
+    $siteName = Seo::siteName();
 @endphp
 
-<title>{{ $resolvedTitle }}</title>
+<title>{{ $documentTitle }}</title>
 
 @if (filled($seo->description))
     <meta name="description" content="{{ $seo->description }}">
@@ -41,7 +42,7 @@
 @endif
 
 <meta property="og:type" content="{{ $seo->type }}">
-<meta property="og:title" content="{{ $resolvedTitle }}">
+<meta property="og:title" content="{{ $documentTitle }}">
 @if (filled($seo->description))
     <meta property="og:description" content="{{ $seo->description }}">
 @endif
@@ -50,13 +51,13 @@
 @endif
 @if (filled($seo->image))
     <meta property="og:image" content="{{ $seo->image }}">
-    <meta property="og:image:alt" content="{{ $resolvedTitle }}">
+    <meta property="og:image:alt" content="{{ $documentTitle }}">
 @endif
 <meta property="og:locale" content="{{ config('seo.locale', 'fa_IR') }}">
 <meta property="og:site_name" content="{{ $siteName }}">
 
 <meta name="twitter:card" content="{{ filled($seo->image) ? 'summary_large_image' : 'summary' }}">
-<meta name="twitter:title" content="{{ $resolvedTitle }}">
+<meta name="twitter:title" content="{{ $documentTitle }}">
 @if (filled($seo->description))
     <meta name="twitter:description" content="{{ $seo->description }}">
 @endif

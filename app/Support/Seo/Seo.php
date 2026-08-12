@@ -48,12 +48,29 @@ class Seo
         return false;
     }
 
+    public static function siteName(): string
+    {
+        return app(GeneralSettings::class)->title ?: config('app.name');
+    }
+
+    public static function documentTitle(?string $pageTitle): string
+    {
+        $siteName = self::siteName();
+        $pageTitle = filled($pageTitle) ? trim($pageTitle) : '';
+
+        if ($pageTitle === '' || $pageTitle === $siteName) {
+            return $siteName;
+        }
+
+        return $pageTitle.' | '.$siteName;
+    }
+
     public static function site(?string $title = null, bool $noindex = false): self
     {
         $general = app(GeneralSettings::class);
 
         return new self(
-            title: $title ?: ($general->title ?: config('app.name')),
+            title: $title ?: self::siteName(),
             description: filled($general->description) ? $general->description : null,
             keywords: filled($general->keywords) ? $general->keywords : null,
             canonical: route('home'),
@@ -66,12 +83,11 @@ class Seo
     public static function home(int $page = 1, int $lastPage = 1): self
     {
         $general = app(GeneralSettings::class);
-        $siteTitle = $general->title ?: config('app.name');
+        $siteTitle = self::siteName();
 
-        $title = __('app.seo_home_title', ['name' => $siteTitle]);
-        if ($page > 1) {
-            $title .= ' | '.__('app.seo_page', ['page' => $page]);
-        }
+        $title = $page > 1
+            ? __('app.seo_page', ['page' => $page])
+            : __('app.seo_home_title', ['name' => $siteTitle]);
 
         $description = filled($general->description)
             ? $general->description
@@ -98,10 +114,9 @@ class Seo
     public static function contact(): self
     {
         $general = app(GeneralSettings::class);
-        $siteTitle = $general->title ?: config('app.name');
 
         return new self(
-            title: __('app.seo_contact_title', ['name' => $siteTitle]),
+            title: __('app.seo_contact_title'),
             description: self::clean(__('app.contact_description')),
             keywords: filled($general->keywords) ? $general->keywords : null,
             canonical: route('contact.index'),
@@ -121,13 +136,11 @@ class Seo
      */
     public static function product(Product $product, ?ProductPrice $price, iterable $images): self
     {
-        $title = $product->name;
-        if ($product->brand) {
-            $title .= ' - '.$product->brand->name;
-        }
-        if ($product->category) {
-            $title .= ' | '.$product->category->name;
-        }
+        $title = implode(' - ', array_filter([
+            $product->name,
+            $product->category?->name,
+            $product->brand?->name,
+        ]));
 
         $description = self::clean(
             strip_tags((string) ($product->description ?: $product->name)),
@@ -205,9 +218,8 @@ class Seo
         bool $filtered = false,
     ): self {
         $general = app(GeneralSettings::class);
-        $siteTitle = $general->title ?: config('app.name');
 
-        $title = $category->name.' | '.$siteTitle;
+        $title = $category->name;
         if ($page > 1 && ! $filtered) {
             $title .= ' | '.__('app.seo_page', ['page' => $page]);
         }
