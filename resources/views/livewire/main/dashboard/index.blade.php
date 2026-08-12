@@ -8,17 +8,17 @@ use Illuminate\Support\Facades\Storage;
 <div>
     <section class="py-8 antialiased md:py-12">
         <div class="mx-auto max-w-7xl px-4 2xl:px-0">
-            <flux:card class="mb-6 p-4">
-                <flux:select
-                    label="{{ __('app.stock_filter') }}"
+            <div class="mb-6">
+                <flux:radio.group
                     wire:model.live="stockFilter"
-                    class="max-w-xs"
+                    label="{{ __('app.stock_filter') }}"
+                    variant="segmented"
                 >
-                    <option value="available">{{ __('app.stock_filter_available') }}</option>
-                    <option value="unavailable">{{ __('app.stock_filter_unavailable') }}</option>
-                    <option value="all">{{ __('app.stock_filter_all') }}</option>
-                </flux:select>
-            </flux:card>
+                    <flux:radio value="available" label="{{ __('app.stock_filter_available') }}" />
+                    <flux:radio value="unavailable" label="{{ __('app.stock_filter_unavailable') }}" />
+                    <flux:radio value="all" label="{{ __('app.stock_filter_all') }}" />
+                </flux:radio.group>
+            </div>
 
             @if($this->products->isEmpty())
                 <div class="flex flex-col items-center justify-center py-16">
