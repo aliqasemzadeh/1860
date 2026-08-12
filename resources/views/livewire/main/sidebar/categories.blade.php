@@ -13,7 +13,7 @@
                             @foreach ($category->children as $child)
                                 <flux:command.item 
                                     wire:key="command-{{ $category->slug }}:item-{{ $child->slug }}"
-                                    href="{{ $child->slug ? route('category.view', $child->slug) : route('category.view.id', $child->id) }}"
+                                    href="{{ $child->url }}"
                                     wire:navigate
                                 >
                                     {{ $child->name }}
@@ -25,7 +25,7 @@
             @else
                 <flux:sidebar.item 
                     :icon="$category->icon" 
-                    href="{{ $category->slug ? route('category.view', $category->slug) : route('category.view.id', $category->id) }}"
+                    href="{{ $category->url }}"
                     wire:navigate
                 >
                     {{ $category->name }}

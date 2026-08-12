@@ -9,7 +9,7 @@
                 @forelse($this->products as $product)
                     <flux:command.item 
                         wire:key="product-{{ $product->id }}"
-                        href="{{ $product->slug ? route('product.view', $product->slug) : route('product.view.id', $product->id) }}"
+                        href="{{ $product->url }}"
                         wire:navigate
                     >
                         <div class="flex items-center gap-3 w-full">

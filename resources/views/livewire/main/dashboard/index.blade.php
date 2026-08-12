@@ -36,7 +36,7 @@ use Illuminate\Support\Facades\Storage;
                             $isAvailable = ($product->default_price['available'] ?? false) === true;
                         @endphp
                         <a
-                            href="{{ $product->slug ? route('product.view', $product->slug) : route('product.view.id', $product->id) }}"
+                            href="{{ $product->url }}"
                             wire:navigate
                             wire:key="product-{{ $product->id }}"
                             class="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col h-full"

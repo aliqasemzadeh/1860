@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Storage;
                             <div class="flex flex-wrap gap-2 mt-2">
                                 @foreach($this->category->children as $child)
                                     <a 
-                                        href="{{ $child->slug ? route('category.view', $child->slug) : route('category.view.id', $child->id) }}"
+                                        href="{{ $child->url }}"
                                         wire:navigate
                                         class="px-3 py-1 text-sm bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full transition-colors"
                                     >
@@ -131,7 +131,7 @@ use Illuminate\Support\Facades\Storage;
                 <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2">
                     @foreach($this->products as $product)
                         <a
-                            href="{{ $product->slug ? route('product.view', $product->slug) : route('product.view.id', $product->id) }}"
+                            href="{{ $product->url }}"
                             class="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col h-full"
                         >
                             <flux:card class="h-full flex flex-col p-1">

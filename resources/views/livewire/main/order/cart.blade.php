@@ -31,7 +31,7 @@
                                         {{-- Product Image --}}
                                         @if(method_exists($item->itemable, 'file_path') && $item->itemable->file_path)
                                             <div class="flex-shrink-0">
-                                                <a href="{{ route('product.view.id', ['id' => $item->itemable->id]) }}">
+                                                <a href="{{ $item->itemable->url }}">
                                                     <img
                                                         src="{{ \Illuminate\Support\Facades\Storage::url($item->itemable->file_path) }}"
                                                         alt="{{ $item->itemable->name ?? '' }}"
