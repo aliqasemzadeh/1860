@@ -13,6 +13,10 @@
                 {{ __('app.clear_cache') }}
             </flux:button>
 
+            <flux:button wire:click="rebuildSitemap" variant="primary" color="sky" class="w-full">
+                {{ __('app.rebuild_sitemap') }}
+            </flux:button>
+
             <flux:separator variant="subtle" />
 
             <flux:button

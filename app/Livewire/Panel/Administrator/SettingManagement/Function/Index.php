@@ -3,6 +3,7 @@
 namespace App\Livewire\Panel\Administrator\SettingManagement\Function;
 
 use App\Jobs\System\UpdateProjectJob;
+use App\Services\Shop\SitemapService;
 use Flux\Flux;
 use Illuminate\Support\Facades\Artisan;
 use Livewire\Attributes\Layout;
@@ -29,6 +30,14 @@ class Index extends Component
 
         Artisan::call('cache:clear');
         Flux::toast(__('app.cache_cleared'));
+    }
+
+    public function rebuildSitemap(): void
+    {
+        $this->authorize('administrator_setting_function_index');
+
+        $urls = app(SitemapService::class)->refresh();
+        Flux::toast(__('app.sitemap_rebuilt', ['count' => count($urls)]));
     }
 
     public function updateQuick(): void
