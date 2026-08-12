@@ -25,18 +25,18 @@ class View extends Component
 
     public function mount($id = null, $slug = null)
     {
-        // Handle route parameters - if we have both, prioritize slug
-        if ($slug) {
-            $this->slug = $slug;
-        } elseif ($id) {
-            $this->id = $id;
-        }
+        $this->id = $id;
+        $this->slug = $slug;
     }
 
     #[Computed]
     public function product()
     {
-        $query = Product::query()
+        if (! $this->id) {
+            return null;
+        }
+
+        return Product::query()
             ->with([
                 'category.attributes.attributeGroup',
                 'category.attributes.options',
@@ -49,19 +49,9 @@ class View extends Component
                 'attributeValues.attribute.attributeGroup',
                 'attributeValues.attribute.options',
                 'images',
-            ]);
-
-        if ($this->slug) {
-            $query->where(function ($q) {
-                $q->where('slug', $this->slug)->orWhere('slug_fa', $this->slug);
-            });
-        } elseif ($this->id) {
-            $query->where('id', $this->id);
-        } else {
-            return null;
-        }
-
-        return $query->first();
+            ])
+            ->where('id', $this->id)
+            ->first();
     }
 
     #[Computed]
@@ -300,6 +290,11 @@ class View extends Component
     {
         if (! $this->product) {
             abort(404);
+        }
+
+        $canonicalSlug = $this->product->slug_fa ?: $this->product->slug;
+        if ($this->slug === null || $this->slug !== $canonicalSlug) {
+            return redirect()->to($this->product->url, 301);
         }
 
         return view('livewire.main.product.view');

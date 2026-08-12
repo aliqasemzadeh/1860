@@ -221,4 +221,15 @@ class Product extends Model implements Cartable
 
         return $regularPrice ? (float) $regularPrice : 0.0;
     }
+
+    /**
+     * Canonical public URL: /product/{id}/{slug_fa}.
+     */
+    public function getUrlAttribute(): string
+    {
+        return route('product.view', [
+            'id' => $this->id,
+            'slug' => $this->slug_fa ?: $this->slug,
+        ]);
+    }
 }

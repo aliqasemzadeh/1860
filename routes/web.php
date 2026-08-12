@@ -3,10 +3,45 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', \App\Livewire\Main\Dashboard\Index::class)->name('home');
-Route::get('/category/{slug}', \App\Livewire\Main\Category\View::class)->name('category.view');
-Route::get('/category/id/{id}', \App\Livewire\Main\Category\View::class)->name('category.view.id');
-Route::get('/product/{slug}', \App\Livewire\Main\Product\View::class)->name('product.view');
-Route::get('/product/id/{id}', \App\Livewire\Main\Product\View::class)->name('product.view.id');
+
+Route::get('/category/{id}/{slug?}', \App\Livewire\Main\Category\View::class)
+    ->whereNumber('id')
+    ->name('category.view');
+Route::get('/product/{id}/{slug?}', \App\Livewire\Main\Product\View::class)
+    ->whereNumber('id')
+    ->name('product.view');
+
+// Legacy redirects (301) for old product/category URLs
+Route::get('/category/id/{id}', function (int $id) {
+    $category = \App\Models\Shop\Category::query()->findOrFail($id);
+
+    return redirect()->to($category->url, 301);
+})->whereNumber('id')->name('category.view.id');
+
+Route::get('/product/id/{id}', function (int $id) {
+    $product = \App\Models\Shop\Product::query()->findOrFail($id);
+
+    return redirect()->to($product->url, 301);
+})->whereNumber('id')->name('product.view.id');
+
+Route::get('/category/{slug}', function (string $slug) {
+    $category = \App\Models\Shop\Category::query()
+        ->where('slug', $slug)
+        ->orWhere('slug_fa', $slug)
+        ->firstOrFail();
+
+    return redirect()->to($category->url, 301);
+})->where('slug', '^(?!id$)[^/]+$')->name('category.view.legacy');
+
+Route::get('/product/{slug}', function (string $slug) {
+    $product = \App\Models\Shop\Product::query()
+        ->where('slug', $slug)
+        ->orWhere('slug_fa', $slug)
+        ->firstOrFail();
+
+    return redirect()->to($product->url, 301);
+})->where('slug', '^(?!id$)[^/]+$')->name('product.view.legacy');
+
 Route::get('/contact', \App\Livewire\Main\Contact\Index::class)->name('contact.index');
 
 Route::group(['middleware' => ['auth']], function () {

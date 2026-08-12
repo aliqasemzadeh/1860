@@ -44,4 +44,15 @@ class Category extends Model
             'sort_order' => 'integer',
         ];
     }
+
+    /**
+     * Canonical public URL: /category/{id}/{slug_fa}.
+     */
+    public function getUrlAttribute(): string
+    {
+        return route('category.view', [
+            'id' => $this->id,
+            'slug' => $this->slug_fa ?: $this->slug,
+        ]);
+    }
 }
