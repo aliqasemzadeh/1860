@@ -25,6 +25,23 @@
 
                 <flux:separator />
 
+                @if ($order->tracking_code || $order->shipped_at || $order->delivered_at)
+                    <div class="space-y-2">
+                        <flux:heading size="sm">{{ __('app.shipping_info') }}</flux:heading>
+                        @if ($order->tracking_code)
+                            <flux:text><strong>{{ __('app.tracking_code') }}:</strong> {{ $order->tracking_code }}</flux:text>
+                        @endif
+                        @if ($order->shipped_at)
+                            <flux:text><strong>{{ __('app.shipped_at') }}:</strong> {{ jalali($order->shipped_at) }}</flux:text>
+                        @endif
+                        @if ($order->delivered_at)
+                            <flux:text><strong>{{ __('app.delivered_at') }}:</strong> {{ jalali($order->delivered_at) }}</flux:text>
+                        @endif
+                    </div>
+
+                    <flux:separator />
+                @endif
+
                 <div class="space-y-4">
                     <flux:heading size="sm">{{ __('app.order_items') }}</flux:heading>
                     <flux:table>

@@ -19,6 +19,8 @@ class Ship extends Component
     #[On('panel.shop.order.ship.assign-data')]
     public function assignData(int $id): void
     {
+        $this->authorize('shop_order_ship');
+
         $this->order = Order::query()->find($id);
 
         if (! $this->order) {
@@ -39,6 +41,8 @@ class Ship extends Component
 
     public function ship(OrderStatusService $orderStatusService): void
     {
+        $this->authorize('shop_order_ship');
+
         if (! $this->order) {
             return;
         }
