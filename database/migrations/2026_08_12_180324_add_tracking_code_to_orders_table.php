@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            //
+            $table->string('tracking_code')->nullable()->after('shipping_estimated_days');
         });
     }
 

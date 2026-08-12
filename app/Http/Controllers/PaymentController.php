@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Shop\Order;
-use App\Models\Shop\ProductPrice;
+use App\Services\Shop\OrderStatusService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Shetabit\Multipay\Exceptions\InvalidPaymentException;
@@ -11,7 +11,7 @@ use Shetabit\Payment\Facade\Payment;
 
 class PaymentController extends Controller
 {
-    public function callback(Request $request, $orderId)
+    public function callback(Request $request, $orderId, OrderStatusService $orderStatusService)
     {
         Log::info('Payment callback received', [
             'order_id' => $orderId,
@@ -22,6 +22,13 @@ class PaymentController extends Controller
             $order = Order::with('items')->find($orderId);
             if (! $order) {
                 return redirect()->route('order.index')->with('error', __('app.order_not_found'));
+            }
+
+            if ($order->paid_at !== null) {
+                session()->forget('payment_order_id');
+
+                return redirect()->route('order.view', ['id' => $order->id])
+                    ->with('success', __('app.payment_successful'));
             }
 
             // Get transaction ID from request (different gateways use different parameters)
@@ -47,28 +54,7 @@ class PaymentController extends Controller
                 ->transactionId($transactionId)
                 ->verify();
 
-            // Update order
-            $order->update([
-                'paid_at' => now(),
-                'status' => 'processing',
-            ]);
-
-            // Deduct inventory
-            foreach ($order->items as $item) {
-                $productPrice = ProductPrice::where('product_id', function ($query) use ($item) {
-                    $query->select('id')
-                        ->from('products')
-                        ->where('sku', $item->sku)
-                        ->limit(1);
-                })
-                    ->where('color_id', $item->color_id)
-                    ->where('warranty_id', $item->warranty_id)
-                    ->first();
-
-                if ($productPrice) {
-                    $productPrice->decrement('quantity', $item->quantity);
-                }
-            }
+            $orderStatusService->markAsPaid($order);
 
             // Update meta with receipt
             $meta = $order->meta ?? [];

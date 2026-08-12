@@ -21,6 +21,7 @@ class Order extends Model
         'shipping_zone_id',
         'shipping_amount',
         'shipping_estimated_days',
+        'tracking_code',
         'total_amount',
         'shipping_address',
         'billing_address',
