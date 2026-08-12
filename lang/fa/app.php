@@ -920,6 +920,8 @@ return [
     'user_dashboard_description' => 'خلاصه حساب و اطلاعات شخصی شما.',
     'options' => 'گزینه‌ها',
 
-    'available_products' => 'محصولات موجود',
-    'available_products_description' => 'کالاهایی که هم‌اکنون قابل خرید هستند',
+    'stock_filter' => 'وضعیت موجودی',
+    'stock_filter_available' => 'فقط موجود',
+    'stock_filter_unavailable' => 'فقط ناموجود',
+    'stock_filter_all' => 'همه',
 ];

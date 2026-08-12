@@ -9,6 +9,8 @@ use Livewire\Component;
 
 class Index extends Component
 {
+    public string $stockFilter = 'available';
+
     #[Computed]
     public function categories()
     {
@@ -24,7 +26,12 @@ class Index extends Component
             ->with(['category'])
             ->orderByDesc('created_at')
             ->get()
-            ->filter(fn ($product) => ($product->default_price['available'] ?? false) === true)
+            ->when($this->stockFilter === 'available', fn ($products) => $products->filter(
+                fn ($product) => ($product->default_price['available'] ?? false) === true
+            ))
+            ->when($this->stockFilter === 'unavailable', fn ($products) => $products->filter(
+                fn ($product) => ($product->default_price['available'] ?? false) !== true
+            ))
             ->values();
     }
 
