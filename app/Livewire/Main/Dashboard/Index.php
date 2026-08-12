@@ -21,9 +21,11 @@ class Index extends Component
     public function products()
     {
         return Product::query()
-            ->with(['colors', 'warranties'])
+            ->with(['category'])
             ->orderByDesc('created_at')
-            ->get();
+            ->get()
+            ->filter(fn ($product) => ($product->default_price['available'] ?? false) === true)
+            ->values();
     }
 
     public function render()

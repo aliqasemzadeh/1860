@@ -919,4 +919,7 @@ return [
     'no_addresses_found' => 'آدرسی یافت نشد.',
     'user_dashboard_description' => 'خلاصه حساب و اطلاعات شخصی شما.',
     'options' => 'گزینه‌ها',
+
+    'available_products' => 'محصولات موجود',
+    'available_products_description' => 'کالاهایی که هم‌اکنون قابل خرید هستند',
 ];
