@@ -80,6 +80,7 @@ return [
         'administrator_setting_category_delete' => 'Delete Setting Category',
 
         'administrator_setting_option_index' => 'Setting Options List',
+        'administrator_setting_option_update' => 'Update Setting Options',
 
         'administrator_api_access' => 'Administrator API Access',
         'administrator_api_ticket_management' => 'Ticket Management (API)',

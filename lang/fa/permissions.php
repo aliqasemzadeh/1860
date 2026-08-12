@@ -80,6 +80,7 @@ return [
         'administrator_setting_category_delete' => 'حذف دسته‌بندی تنظیمات',
 
         'administrator_setting_option_index' => 'فهرست گزینه‌های تنظیمات',
+        'administrator_setting_option_update' => 'ویرایش گزینه‌های تنظیمات',
 
         // API permissions
         'administrator_api_access' => 'دسترسی API مدیریت',

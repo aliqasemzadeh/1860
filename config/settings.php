@@ -7,7 +7,10 @@ return [
      * put them (manually) here.
      */
     'settings' => [
-
+        App\Settings\GeneralSettings::class,
+        App\Settings\ContactSettings::class,
+        App\Settings\SocialSettings::class,
+        App\Settings\MaintenanceSettings::class,
     ],
 
     /*
