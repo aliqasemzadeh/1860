@@ -35,6 +35,21 @@
                                 <flux:text class="text-sm text-zinc-600 dark:text-zinc-400">
                                     {{ __('app.order_date') }}: {{ jalali($this->order->created_at) }}
                                 </flux:text>
+                                @if($this->order->tracking_code)
+                                    <flux:text class="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                                        {{ __('app.tracking_code') }}: {{ $this->order->tracking_code }}
+                                    </flux:text>
+                                @endif
+                                @if($this->order->shipped_at)
+                                    <flux:text class="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                                        {{ __('app.shipped_at') }}: {{ jalali($this->order->shipped_at) }}
+                                    </flux:text>
+                                @endif
+                                @if($this->order->delivered_at)
+                                    <flux:text class="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                                        {{ __('app.delivered_at') }}: {{ jalali($this->order->delivered_at) }}
+                                    </flux:text>
+                                @endif
                             </div>
                             <div class="flex gap-3">
                                 @if(!$this->order->paid_at)

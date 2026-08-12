@@ -6,6 +6,7 @@ use App\Models\Shop\Order;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -18,6 +19,12 @@ class Index extends Component
     public string $sortDirection = 'desc';
 
     public string $search = '';
+
+    #[On('panel.shop.order.index.render')]
+    public function refreshOrders(): void
+    {
+        unset($this->orders);
+    }
 
     public function sort(string $column): void
     {

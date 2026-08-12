@@ -18,6 +18,7 @@
     </div>
 
     <livewire:panel.shop.order.view />
+    <livewire:panel.shop.order.ship />
 
     <flux:table :paginate="$this->orders">
         <flux:table.columns>
@@ -58,7 +59,14 @@
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex items-center gap-2">
-                        <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.order.view.assign-data', { id: '{{ $order->id }}' })">{{ __('app.view_order') }}</flux:button>
+                        <flux:tooltip content="{{ __('app.view_order') }}">
+                            <flux:button size="xs" variant="primary" icon="eye" icon:variant="outline" wire:click="$dispatch('panel.shop.order.view.assign-data', { id: '{{ $order->id }}' })" />
+                        </flux:tooltip>
+                        @if ($order->status === 'processing' && $order->paid_at)
+                            <flux:tooltip content="{{ __('app.ship_order') }}">
+                                <flux:button size="xs" variant="primary" color="green" icon="truck" icon:variant="outline" wire:click="$dispatch('panel.shop.order.ship.assign-data', { id: '{{ $order->id }}' })" />
+                            </flux:tooltip>
+                        @endif
                     </div>
                 </flux:table.cell>
             </flux:table.row>
