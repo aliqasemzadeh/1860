@@ -24,6 +24,8 @@ class Edit extends Component
 
     public string $email = '';
 
+    public string $national_code = '';
+
     public string $password = '';
 
     public string $password_confirmation = '';
@@ -37,6 +39,7 @@ class Edit extends Component
         $this->last_name = (string) ($this->user->last_name ?? '');
         $this->mobile = (string) $this->user->mobile;
         $this->email = (string) ($this->user->email ?? '');
+        $this->national_code = (string) ($this->user->national_code ?? '');
         $this->password = '';
         $this->password_confirmation = '';
         Flux::modal('panel.administrator.user-management.user.edit.modal')->show();
@@ -55,6 +58,12 @@ class Edit extends Component
             'last_name' => ['nullable', 'string', 'max:255'],
             'mobile' => ['required', 'string', 'ir_mobile', 'max:255', Rule::unique('users', 'mobile')->ignore($this->user)],
             'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->user)],
+            'national_code' => [
+                'nullable',
+                'string',
+                'ir_national_id',
+                Rule::unique('users', 'national_code')->ignore($this->user),
+            ],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'password_confirmation' => ['nullable', 'string'],
         ]);
@@ -63,11 +72,13 @@ class Edit extends Component
         $firstName = trim((string) ($validated['first_name'] ?? ''));
         $lastName = trim((string) ($validated['last_name'] ?? ''));
         $email = trim((string) ($validated['email'] ?? ''));
+        $nationalCode = trim((string) ($validated['national_code'] ?? ''));
 
         $this->user->first_name = $firstName === '' ? null : $firstName;
         $this->user->last_name = $lastName === '' ? null : $lastName;
         $this->user->mobile = $validated['mobile'];
         $this->user->email = $email === '' ? null : $email;
+        $this->user->national_code = $nationalCode === '' ? null : $nationalCode;
 
         if (! empty($validated['password'] ?? '')) {
             // Will be hashed automatically via the model cast

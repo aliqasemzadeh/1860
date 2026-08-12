@@ -35,6 +35,13 @@
                 <flux:error name="email" />
             </flux:field>
             <flux:field>
+                <flux:label>{{ __('app.national_code') }}</flux:label>
+
+                <flux:input wire:model="national_code" type="text" maxlength="10" dir="ltr" />
+
+                <flux:error name="national_code" />
+            </flux:field>
+            <flux:field>
                 <flux:label>{{ __('app.password') }}</flux:label>
 
                 <flux:input wire:model="password" type="password" />

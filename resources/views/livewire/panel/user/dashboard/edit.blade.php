@@ -27,6 +27,12 @@
                     </flux:field>
 
                     <flux:field>
+                        <flux:label>{{ __('app.national_code') }}</flux:label>
+                        <flux:input wire:model="form.national_code" type="text" maxlength="10" dir="ltr" />
+                        <flux:error name="form.national_code" />
+                    </flux:field>
+
+                    <flux:field>
                         <flux:label>{{ __('app.mobile') }}</flux:label>
                         <flux:input type="text" value="{{ auth()->user()->mobile }}" disabled />
                         <flux:description>{{ __('app.mobile_cannot_be_changed') }}</flux:description>

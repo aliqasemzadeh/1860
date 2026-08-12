@@ -27,6 +27,51 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {{-- Main Content --}}
                 <div class="lg:col-span-2 space-y-6">
+                    {{-- Customer Information Section --}}
+                    <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
+                        <flux:heading size="lg" class="mb-2">{{ __('app.customer_information') }}</flux:heading>
+                        <flux:text class="mb-6 text-zinc-600 dark:text-zinc-400">{{ __('app.customer_information_description') }}</flux:text>
+
+                        @if($this->needsProfileCompletion)
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <flux:field>
+                                        <flux:label>{{ __('app.first_name') }}</flux:label>
+                                        <flux:input wire:model="profileForm.first_name" type="text" />
+                                        <flux:error name="profileForm.first_name" />
+                                    </flux:field>
+
+                                    <flux:field>
+                                        <flux:label>{{ __('app.last_name') }}</flux:label>
+                                        <flux:input wire:model="profileForm.last_name" type="text" />
+                                        <flux:error name="profileForm.last_name" />
+                                    </flux:field>
+                                </div>
+
+                                <flux:field>
+                                    <flux:label>{{ __('app.national_code') }}</flux:label>
+                                    <flux:input wire:model="profileForm.national_code" type="text" maxlength="10" dir="ltr" />
+                                    <flux:error name="profileForm.national_code" />
+                                </flux:field>
+                            </div>
+                        @else
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <flux:text class="text-sm text-zinc-500">{{ __('app.first_name') }}</flux:text>
+                                    <flux:text class="font-medium">{{ auth()->user()->first_name }}</flux:text>
+                                </div>
+                                <div>
+                                    <flux:text class="text-sm text-zinc-500">{{ __('app.last_name') }}</flux:text>
+                                    <flux:text class="font-medium">{{ auth()->user()->last_name }}</flux:text>
+                                </div>
+                                <div>
+                                    <flux:text class="text-sm text-zinc-500">{{ __('app.national_code') }}</flux:text>
+                                    <flux:text class="font-medium" dir="ltr">{{ auth()->user()->national_code }}</flux:text>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
                     {{-- Shipping Address Section --}}
                     <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
                         <flux:heading size="lg" class="mb-6">{{ __('app.shipping_address') }}</flux:heading>

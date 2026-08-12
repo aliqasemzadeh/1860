@@ -15,6 +15,7 @@
                         <flux:heading size="sm">{{ __('app.customer_details') }}</flux:heading>
                         <flux:text><strong>{{ __('app.name') }}:</strong> {{ $order->user?->name }}</flux:text>
                         <flux:text><strong>{{ __('app.email') }}:</strong> {{ $order->user?->email }}</flux:text>
+                        <flux:text><strong>{{ __('app.national_code') }}:</strong> {{ $order->user?->national_code ?: '-' }}</flux:text>
                     </div>
 
                     <!-- Shipping Address -->

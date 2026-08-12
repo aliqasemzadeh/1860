@@ -3,6 +3,7 @@
 namespace App\Livewire\Main\Order;
 
 use App\Jobs\Notification\SendSmsMessageJob;
+use App\Livewire\Forms\Main\Order\CustomerProfileForm;
 use App\Models\Customer\ShippingAddress as CustomerShippingAddress;
 use App\Models\Shop\Order;
 use App\Models\Shop\OrderItem;
@@ -19,6 +20,8 @@ use Livewire\Component;
 #[Layout('layouts.app')]
 class Shipping extends Component
 {
+    public CustomerProfileForm $profileForm;
+
     public $selectedAddressId = null;
 
     public $selectedShippingRateId = null;
@@ -58,12 +61,24 @@ class Shipping extends Component
             return $this->redirect(route('order.cart'), navigate: true);
         }
 
+        $this->profileForm->setUser(auth()->user());
+
         // Set default address if available
         $defaultAddress = auth()->user()->defaultShippingAddress;
         if ($defaultAddress) {
             $this->selectedAddressId = $defaultAddress->id;
             $this->loadAddress($defaultAddress->id);
         }
+    }
+
+    #[Computed]
+    public function needsProfileCompletion(): bool
+    {
+        $user = auth()->user();
+
+        return blank($user->first_name)
+            || blank($user->last_name)
+            || blank($user->national_code);
     }
 
     #[Computed]
@@ -512,6 +527,10 @@ class Shipping extends Component
 
     public function createOrder()
     {
+        if ($this->needsProfileCompletion) {
+            $this->profileForm->update(auth()->user());
+        }
+
         if (! $this->selectedAddressId) {
             Flux::toast(variant: 'danger', text: __('app.select_shipping_address'));
 

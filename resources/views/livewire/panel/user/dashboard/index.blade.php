@@ -46,6 +46,10 @@
                     <flux:text class="font-medium">{{ $this->user->email ?: '-' }}</flux:text>
                 </div>
                 <div>
+                    <flux:text class="text-sm text-zinc-500">{{ __('app.national_code') }}</flux:text>
+                    <flux:text class="font-medium" dir="ltr">{{ $this->user->national_code ?: '-' }}</flux:text>
+                </div>
+                <div>
                     <flux:text class="text-sm text-zinc-500">{{ __('app.member_since') }}</flux:text>
                     <flux:text class="font-medium">
                         {{ $this->user->created_at ? \Morilog\Jalali\Jalalian::fromCarbon($this->user->created_at)->format('%Y/%m/%d') : '-' }}
