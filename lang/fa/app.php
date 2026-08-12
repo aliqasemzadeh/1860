@@ -830,6 +830,7 @@ return [
     'customer_information' => 'اطلاعات مشتری',
     'customer_information_description' => 'برای ثبت سفارش، لطفاً اطلاعات خود را تکمیل کنید.',
     'complete_profile_to_order' => 'لطفاً نام، نام خانوادگی و کد ملی خود را وارد کنید.',
+    'invalid_national_code' => 'کد ملی وارد شده معتبر نیست.',
     'total_amount' => 'مبلغ کل',
     'status' => 'وضعیت',
     'order_date' => 'تاریخ ثبت',

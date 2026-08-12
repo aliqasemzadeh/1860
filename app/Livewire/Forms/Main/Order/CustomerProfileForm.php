@@ -5,6 +5,7 @@ namespace App\Livewire\Forms\Main\Order;
 use App\Models\User;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
+use Sadegh19b\LaravelPersianValidation\Rules\IranianNationalId;
 
 class CustomerProfileForm extends Form
 {
@@ -29,7 +30,7 @@ class CustomerProfileForm extends Form
             'national_code' => [
                 'required',
                 'string',
-                'ir_national_id',
+                new IranianNationalId(convertPersianNumbers: true),
                 Rule::unique('users', 'national_code')->ignore($user->id),
             ],
         ];
@@ -37,11 +38,22 @@ class CustomerProfileForm extends Form
 
     public function update(User $user): void
     {
+        $this->national_code = $this->normalizeDigits(trim($this->national_code));
+
         $validated = $this->validate($this->rules($user));
 
         $user->first_name = trim($validated['first_name']);
         $user->last_name = trim($validated['last_name']);
-        $user->national_code = trim($validated['national_code']);
+        $user->national_code = $this->normalizeDigits(trim($validated['national_code']));
         $user->save();
+    }
+
+    protected function normalizeDigits(string $value): string
+    {
+        return str_replace(
+            ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'],
+            ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+            $value
+        );
     }
 }

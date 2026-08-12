@@ -37,20 +37,20 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <flux:field>
                                         <flux:label>{{ __('app.first_name') }}</flux:label>
-                                        <flux:input wire:model="profileForm.first_name" type="text" />
+                                        <flux:input wire:model.live="profileForm.first_name" type="text" />
                                         <flux:error name="profileForm.first_name" />
                                     </flux:field>
 
                                     <flux:field>
                                         <flux:label>{{ __('app.last_name') }}</flux:label>
-                                        <flux:input wire:model="profileForm.last_name" type="text" />
+                                        <flux:input wire:model.live="profileForm.last_name" type="text" />
                                         <flux:error name="profileForm.last_name" />
                                     </flux:field>
                                 </div>
 
                                 <flux:field>
                                     <flux:label>{{ __('app.national_code') }}</flux:label>
-                                    <flux:input wire:model="profileForm.national_code" type="text" maxlength="10" dir="ltr" />
+                                    <flux:input wire:model.live="profileForm.national_code" type="text" maxlength="10" dir="ltr" />
                                     <flux:error name="profileForm.national_code" />
                                 </flux:field>
                             </div>
@@ -287,10 +287,18 @@
                             wire:click="createOrder"
                             variant="primary"
                             class="w-full"
-                            :disabled="!$selectedAddressId || !$selectedShippingRateId"
+                            :disabled="!$this->canCompleteOrder"
                         >
                             {{ __('app.complete_order') }}
                         </flux:button>
+
+                        @if(count($this->completeOrderBlockers) > 0)
+                            <ul class="mt-3 space-y-1 text-sm text-amber-700 dark:text-amber-300 list-disc list-inside">
+                                @foreach($this->completeOrderBlockers as $reason)
+                                    <li>{{ $reason }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
                     </div>
                 </div>
             </div>

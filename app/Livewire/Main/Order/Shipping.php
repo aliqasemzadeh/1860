@@ -13,9 +13,11 @@ use App\Models\Shop\ShippingZone;
 use Binafy\LaravelCart\Models\Cart as UserCart;
 use Flux\Flux;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Sadegh19b\LaravelPersianValidation\Rules\IranianNationalId;
 
 #[Layout('layouts.app')]
 class Shipping extends Component
@@ -79,6 +81,38 @@ class Shipping extends Component
         return blank($user->first_name)
             || blank($user->last_name)
             || blank($user->national_code);
+    }
+
+    #[Computed]
+    public function completeOrderBlockers(): array
+    {
+        $reasons = [];
+
+        if ($this->needsProfileCompletion) {
+            if (blank($this->profileForm->first_name)
+                || blank($this->profileForm->last_name)
+                || blank($this->profileForm->national_code)) {
+                $reasons[] = __('app.complete_profile_to_order');
+            } elseif (! $this->isNationalCodeValid($this->profileForm->national_code)) {
+                $reasons[] = __('app.invalid_national_code');
+            }
+        }
+
+        if (! $this->selectedAddressId) {
+            $reasons[] = __('app.select_shipping_address');
+        } elseif ($this->availableShippingMethods->isEmpty()) {
+            $reasons[] = __('app.no_shipping_methods_available');
+        } elseif (! $this->selectedShippingRateId) {
+            $reasons[] = __('app.select_shipping_method');
+        }
+
+        return $reasons;
+    }
+
+    #[Computed]
+    public function canCompleteOrder(): bool
+    {
+        return $this->completeOrderBlockers === [];
     }
 
     #[Computed]
@@ -527,20 +561,18 @@ class Shipping extends Component
 
     public function createOrder()
     {
+        if (! $this->canCompleteOrder) {
+            Flux::toast(
+                variant: 'danger',
+                text: $this->completeOrderBlockers[0] ?? __('app.complete_profile_to_order')
+            );
+
+            return;
+        }
+
         if ($this->needsProfileCompletion) {
             $this->profileForm->update(auth()->user());
-        }
-
-        if (! $this->selectedAddressId) {
-            Flux::toast(variant: 'danger', text: __('app.select_shipping_address'));
-
-            return;
-        }
-
-        if (! $this->selectedShippingRateId) {
-            Flux::toast(variant: 'danger', text: __('app.select_shipping_method'));
-
-            return;
+            unset($this->needsProfileCompletion);
         }
 
         $address = CustomerShippingAddress::find($this->selectedAddressId);
@@ -643,6 +675,14 @@ class Shipping extends Component
 
         Flux::toast(variant: 'success', text: __('app.order_created'));
         $this->redirect(route('order.view', ['id' => $order->id]), navigate: true);
+    }
+
+    protected function isNationalCodeValid(string $nationalCode): bool
+    {
+        return ! Validator::make(
+            ['national_code' => $nationalCode],
+            ['national_code' => [new IranianNationalId(convertPersianNumbers: true)]]
+        )->fails();
     }
 
     public function render()
