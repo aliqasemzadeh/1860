@@ -43,7 +43,7 @@
 
                                         {{-- Product Info --}}
                                         <div class="flex-1 min-w-0">
-                                            <a href="{{ route('product.view.id', ['id' => $item->itemable->id]) }}">
+                                            <a href="{{ $item->itemable->url }}">
                                                 <flux:heading size="md" class="mb-2 text-zinc-900 dark:text-zinc-100 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors">
                                                     {{ $item->itemable->name ?? __('app.product') }}
                                                 </flux:heading>

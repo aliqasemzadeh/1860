@@ -41,13 +41,15 @@
                 {{-- Breadcrumb --}}
                 <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
                     <a href="{{ route('home') }}" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-                        {{ __('app.dashboard') }}
+                        {{ __('app.home') }}
                     </a>
                     <span>/</span>
                     @if($this->product->category)
-                        <span class="text-zinc-900 dark:text-zinc-100">{{ $this->product->category->name }}</span>
+                        <a href="{{ $this->product->category->url }}" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors" wire:navigate>
+                            {{ $this->product->category->name }}
+                        </a>
+                        <span>/</span>
                     @endif
-                    <span>/</span>
                     <span class="text-zinc-900 dark:text-zinc-100 font-medium">{{ $this->product->name }}</span>
                 </nav>
 
