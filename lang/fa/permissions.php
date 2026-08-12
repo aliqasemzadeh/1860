@@ -98,5 +98,88 @@ return [
 
     'shop' => [
         'shop_access' => 'فروشگاه',
+
+        'shop_dashboard_index' => 'داشبورد فروشگاه',
+
+        'shop_product_index' => 'فهرست محصولات',
+        'shop_product_create' => 'ایجاد محصول',
+        'shop_product_edit' => 'ویرایش محصول',
+        'shop_product_delete' => 'حذف محصول',
+        'shop_product_wizard_create' => 'ایجاد محصول با ویزارد',
+        'shop_product_attributes_index' => 'ویژگی‌های محصول',
+        'shop_product_attributes_edit' => 'ویرایش ویژگی‌های محصول',
+        'shop_product_colors_manage' => 'مدیریت رنگ‌های محصول',
+        'shop_product_warranties_manage' => 'مدیریت گارانتی‌های محصول',
+        'shop_product_images_manage' => 'مدیریت تصاویر محصول',
+        'shop_product_image_wizard' => 'واردات تصاویر محصول',
+        'shop_product_price_fetchers_manage' => 'مدیریت دریافت‌کننده‌های قیمت',
+
+        'shop_product_pricing_index' => 'فهرست قیمت‌گذاری محصول',
+        'shop_product_pricing_create' => 'ایجاد قیمت محصول',
+        'shop_product_pricing_edit' => 'ویرایش قیمت محصول',
+        'shop_product_pricing_history' => 'تاریخچه قیمت محصول',
+
+        'shop_order_index' => 'فهرست سفارش‌ها',
+        'shop_order_view' => 'مشاهده سفارش',
+
+        'shop_setting_management' => 'مدیریت تنظیمات فروشگاه',
+
+        'shop_setting_category_index' => 'فهرست دسته‌بندی‌های فروشگاه',
+        'shop_setting_category_create' => 'ایجاد دسته‌بندی فروشگاه',
+        'shop_setting_category_edit' => 'ویرایش دسته‌بندی فروشگاه',
+        'shop_setting_category_delete' => 'حذف دسته‌بندی فروشگاه',
+        'shop_setting_category_attributes' => 'اختصاص ویژگی به دسته‌بندی',
+
+        'shop_setting_brand_index' => 'فهرست برندها',
+        'shop_setting_brand_create' => 'ایجاد برند',
+        'shop_setting_brand_edit' => 'ویرایش برند',
+        'shop_setting_brand_delete' => 'حذف برند',
+
+        'shop_setting_color_index' => 'فهرست رنگ‌ها',
+        'shop_setting_color_create' => 'ایجاد رنگ',
+        'shop_setting_color_edit' => 'ویرایش رنگ',
+        'shop_setting_color_delete' => 'حذف رنگ',
+
+        'shop_setting_warranty_index' => 'فهرست گارانتی‌ها',
+        'shop_setting_warranty_create' => 'ایجاد گارانتی',
+        'shop_setting_warranty_edit' => 'ویرایش گارانتی',
+        'shop_setting_warranty_delete' => 'حذف گارانتی',
+
+        'shop_setting_unit_index' => 'فهرست واحدها',
+        'shop_setting_unit_create' => 'ایجاد واحد',
+        'shop_setting_unit_edit' => 'ویرایش واحد',
+        'shop_setting_unit_delete' => 'حذف واحد',
+
+        'shop_setting_attribute_group_index' => 'فهرست گروه‌های ویژگی',
+        'shop_setting_attribute_group_create' => 'ایجاد گروه ویژگی',
+        'shop_setting_attribute_group_edit' => 'ویرایش گروه ویژگی',
+        'shop_setting_attribute_group_delete' => 'حذف گروه ویژگی',
+
+        'shop_setting_attribute_index' => 'فهرست ویژگی‌ها',
+        'shop_setting_attribute_create' => 'ایجاد ویژگی',
+        'shop_setting_attribute_edit' => 'ویرایش ویژگی',
+        'shop_setting_attribute_delete' => 'حذف ویژگی',
+
+        'shop_setting_attribute_option_index' => 'فهرست گزینه‌های ویژگی',
+        'shop_setting_attribute_option_create' => 'ایجاد گزینه ویژگی',
+        'shop_setting_attribute_option_edit' => 'ویرایش گزینه ویژگی',
+        'shop_setting_attribute_option_delete' => 'حذف گزینه ویژگی',
+
+        'shop_shipping_management' => 'مدیریت ارسال',
+
+        'shop_shipping_method_index' => 'فهرست روش‌های ارسال',
+        'shop_shipping_method_create' => 'ایجاد روش ارسال',
+        'shop_shipping_method_edit' => 'ویرایش روش ارسال',
+        'shop_shipping_method_delete' => 'حذف روش ارسال',
+
+        'shop_shipping_zone_index' => 'فهرست مناطق ارسال',
+        'shop_shipping_zone_create' => 'ایجاد منطقه ارسال',
+        'shop_shipping_zone_edit' => 'ویرایش منطقه ارسال',
+        'shop_shipping_zone_delete' => 'حذف منطقه ارسال',
+
+        'shop_shipping_rate_index' => 'فهرست نرخ‌های ارسال',
+        'shop_shipping_rate_create' => 'ایجاد نرخ ارسال',
+        'shop_shipping_rate_edit' => 'ویرایش نرخ ارسال',
+        'shop_shipping_rate_delete' => 'حذف نرخ ارسال',
     ],
 ];
