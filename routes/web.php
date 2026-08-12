@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', \App\Livewire\Main\Dashboard\Index::class)->name('home');
@@ -10,6 +11,9 @@ Route::get('/category/{id}/{slug?}', \App\Livewire\Main\Category\View::class)
 Route::get('/product/{id}/{slug?}', \App\Livewire\Main\Product\View::class)
     ->whereNumber('id')
     ->name('product.view');
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
 // Legacy redirects (301) for old product/category URLs
 Route::get('/category/id/{id}', function (int $id) {

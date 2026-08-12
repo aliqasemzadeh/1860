@@ -3,6 +3,7 @@
 namespace App\Models\Shop;
 
 use App\Models\Shop\PriceFetcher;
+use App\Services\Shop\SitemapService;
 use Binafy\LaravelCart\Cartable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +15,16 @@ use Illuminate\Support\Facades\Cache;
 class Product extends Model implements Cartable
 {
     use SoftDeletes;
+
+    protected static function booted(): void
+    {
+        $invalidateSitemap = fn () => Cache::forget(SitemapService::CACHE_KEY);
+
+        static::saved($invalidateSitemap);
+        static::deleted($invalidateSitemap);
+        static::restored($invalidateSitemap);
+        static::forceDeleted($invalidateSitemap);
+    }
 
     /**
      * The attributes that are mass assignable.
