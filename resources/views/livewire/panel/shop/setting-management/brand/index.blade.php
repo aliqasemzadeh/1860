@@ -22,6 +22,7 @@
             <flux:table.column sortable>{{ __('app.slug') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.slug_fa') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.date') }}</flux:table.column>
+            <flux:table.column>{{ __('app.options') }}</flux:table.column>
         </flux:table.columns>
 
         @foreach ($this->brands as $brand)
@@ -34,6 +35,9 @@
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     {{ $brand->slug_fa }}
+                </flux:table.cell>
+                <flux:table.cell class="whitespace-nowrap">
+                    {{ jalali($brand->created_at) }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.brand.edit.assign-data', { id: '{{ $brand->id }}' })">{{ __('app.edit') }}</flux:button>

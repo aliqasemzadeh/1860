@@ -68,7 +68,8 @@
                                 @elseif($attribute->type === 'date')
                                     <flux:input
                                         wire:model="attributeValues.{{ $attribute->id }}"
-                                        type="date"
+                                        placeholder="1403/01/01"
+                                        dir="ltr"
                                     />
                                 @elseif($attribute->type === 'select')
                                     <flux:select

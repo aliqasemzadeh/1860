@@ -35,7 +35,7 @@
             <flux:table.row :key="$role->id">
                 <flux:table.cell class="whitespace-nowrap">{{ \App\Support\PermissionLabel::role($role->name) }}</flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">{{ $role->guard_name }}</flux:table.cell>
-                <flux:table.cell class="whitespace-nowrap">{{ $role->created_at?->format('Y-m-d H:i') }}</flux:table.cell>
+                <flux:table.cell class="whitespace-nowrap">{{ jalali($role->created_at) }}</flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     @can('administrator_user_management_role_edit')
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('administrator.user-management.role.edit.assign-data', { id: '{{ $role->id }}' })">{{ __('app.edit') }}</flux:button>

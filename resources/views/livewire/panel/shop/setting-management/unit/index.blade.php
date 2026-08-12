@@ -29,7 +29,7 @@
                     {{ $unit->name }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
-                    {{ $unit->created_at?->format('Y-m-d H:i') }}
+                    {{ jalali($unit->created_at) }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex items-center gap-2">

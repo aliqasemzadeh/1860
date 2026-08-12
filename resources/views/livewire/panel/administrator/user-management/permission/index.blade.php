@@ -33,7 +33,7 @@
             <flux:table.row :key="$permission->id">
                 <flux:table.cell class="whitespace-nowrap">{{ \App\Support\PermissionLabel::for($permission->name) }}</flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">{{ $permission->guard_name }}</flux:table.cell>
-                <flux:table.cell class="whitespace-nowrap">{{ $permission->created_at?->format('Y-m-d H:i') }}</flux:table.cell>
+                <flux:table.cell class="whitespace-nowrap">{{ jalali($permission->created_at) }}</flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     @can('administrator_user_management_permission_edit')
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('administrator.user-management.permission.edit.assign-data', { id: '{{ $permission->id }}' })">{{ __('app.edit') }}</flux:button>

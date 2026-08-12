@@ -54,7 +54,7 @@
                     <flux:badge color="{{ $statusColor }}">{{ __('app.order_status_' . $order->status) }}</flux:badge>
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
-                    {{ $order->created_at ? \Morilog\Jalali\Jalalian::fromCarbon($order->created_at)->format('%Y-%m-%d %H:%M') : '-' }}
+                    {{ jalali($order->created_at) }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex items-center gap-2">

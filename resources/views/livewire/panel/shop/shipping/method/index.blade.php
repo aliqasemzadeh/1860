@@ -22,7 +22,7 @@
 
     <flux:table :paginate="$this->methods">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
-            <flux:table.column colspan="4" class="bg-white dark:bg-zinc-900">
+            <flux:table.column colspan="5" class="bg-white dark:bg-zinc-900">
                 <div class="flex flex-col gap-1 pe-2 items-end">
                     <flux:input
                         size="sm"
@@ -38,6 +38,7 @@
             <flux:table.column sortable>{{ __('app.slug') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.status') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.date') }}</flux:table.column>
+            <flux:table.column>{{ __('app.options') }}</flux:table.column>
         </flux:table.columns>
 
         <flux:table.rows>
@@ -53,6 +54,9 @@
                         <flux:badge :color="$method->is_active ? 'green' : 'zinc'">
                             {{ $method->is_active ? __('app.yes') : __('app.no') }}
                         </flux:badge>
+                    </flux:table.cell>
+                    <flux:table.cell class="whitespace-nowrap">
+                        {{ jalali($method->created_at) }}
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.shipping.method.edit.assign-data', { id: '{{ $method->id }}' })">

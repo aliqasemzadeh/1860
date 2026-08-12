@@ -45,7 +45,7 @@ class ProductAttributeValue extends Model
      */
     public function getDisplayValueAttribute(): mixed
     {
-        if (!$this->relationLoaded('attribute') || !$this->attribute) {
+        if (! $this->relationLoaded('attribute') || ! $this->attribute) {
             return $this->value_text ?? '-';
         }
 
@@ -53,7 +53,7 @@ class ProductAttributeValue extends Model
             'text', 'textarea' => $this->value_text,
             'number' => $this->value_number !== null ? number_format($this->value_number, 0) : null,
             'boolean' => $this->value_bool !== null ? ($this->value_bool ? __('app.yes') : __('app.no')) : null,
-            'date' => $this->value_date?->format('Y-m-d'),
+            'date' => jalali($this->value_date, 'Y/m/d', '-'),
             'select' => $this->getSelectDisplayValue(),
             'multiselect' => $this->getMultiselectDisplayValue(),
             default => $this->value_text,
@@ -67,16 +67,17 @@ class ProductAttributeValue extends Model
      */
     private function getSelectDisplayValue(): ?string
     {
-        if (!$this->value_json) {
+        if (! $this->value_json) {
             return null;
         }
 
         $selectedValue = is_array($this->value_json) ? ($this->value_json[0] ?? null) : $this->value_json;
-        if (!$selectedValue) {
+        if (! $selectedValue) {
             return null;
         }
 
         $option = $this->attribute->options->firstWhere('value', $selectedValue);
+
         return $option?->label ?? $selectedValue;
     }
 
@@ -85,7 +86,7 @@ class ProductAttributeValue extends Model
      */
     private function getMultiselectDisplayValue(): ?array
     {
-        if (!$this->value_json || !is_array($this->value_json)) {
+        if (! $this->value_json || ! is_array($this->value_json)) {
             return null;
         }
 

@@ -38,7 +38,7 @@
                                                 </flux:badge>
                                             </div>
                                             <flux:text class="text-sm text-zinc-600 dark:text-zinc-400">
-                                                {{ __('app.order_date') }}: {{ \Morilog\Jalali\Jalalian::forge($order->created_at)->format('Y/m/d H:i') }}
+                                                {{ __('app.order_date') }}: {{ jalali($order->created_at) }}
                                             </flux:text>
                                         </div>
                                         <div class="flex flex-col md:items-end gap-2">

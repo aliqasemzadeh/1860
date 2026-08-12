@@ -918,4 +918,5 @@ return [
     'default_address_updated' => 'آدرس پیش‌فرض به‌روزرسانی شد.',
     'no_addresses_found' => 'آدرسی یافت نشد.',
     'user_dashboard_description' => 'خلاصه حساب و اطلاعات شخصی شما.',
+    'options' => 'گزینه‌ها',
 ];

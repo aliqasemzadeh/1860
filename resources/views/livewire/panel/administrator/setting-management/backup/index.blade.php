@@ -33,7 +33,7 @@
                     {{ $backup['filename'] }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
-                    {{ jdate($backup['date'])->format('Y/m/d H:i') }}
+                    {{ jalali($backup['date']) }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     {{ number_format($backup['size'] / 1048576, 2) }} MB

@@ -61,7 +61,7 @@
                     {{ $product->brand?->name ?? '-' }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
-                    {{ $product->created_at ? \Morilog\Jalali\Jalalian::fromCarbon($product->created_at)->format('%Y-%m-%d %H:%M') : '-' }}
+                    {{ jalali($product->created_at) }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex items-center gap-2">

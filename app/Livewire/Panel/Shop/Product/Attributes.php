@@ -8,6 +8,7 @@ use App\Models\Shop\ProductAttributeValue;
 use Flux\Flux;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Morilog\Jalali\Jalalian;
 
 class Attributes extends Component
 {
@@ -48,7 +49,7 @@ class Attributes extends Component
             'text', 'textarea' => $value->value_text,
             'number' => $value->value_number,
             'boolean' => $value->value_bool,
-            'date' => $value->value_date?->format('Y-m-d'),
+            'date' => $value->value_date ? Jalalian::fromCarbon($value->value_date)->format('Y/m/d') : null,
             'select' => is_array($value->value_json) ? ($value->value_json[0] ?? null) : $value->value_json,
             'multiselect' => $value->value_json ?? [],
             default => $value->value_text,
@@ -68,7 +69,7 @@ class Attributes extends Component
     {
         $this->product = Product::with('category.attributes')->findOrFail($this->productId);
 
-        if (!$this->product->category) {
+        if (! $this->product->category) {
             Flux::toast(variant: 'error', text: __('app.product_must_have_category'));
 
             return;
@@ -84,12 +85,13 @@ class Attributes extends Component
                 || ($attribute->type !== 'multiselect' && empty($value));
 
             // Skip if value is empty and not required
-            if ($isEmpty && !$attribute->is_required) {
+            if ($isEmpty && ! $attribute->is_required) {
                 // Delete existing value if exists
                 ProductAttributeValue::query()
                     ->where('product_id', $this->product->id)
                     ->where('attribute_id', $attribute->id)
                     ->delete();
+
                 continue;
             }
 
@@ -110,7 +112,7 @@ class Attributes extends Component
                 'text', 'textarea' => $valueData['value_text'] = $value,
                 'number' => $valueData['value_number'] = $value,
                 'boolean' => $valueData['value_bool'] = (bool) $value,
-                'date' => $valueData['value_date'] = $value ? \Carbon\Carbon::parse($value) : null,
+                'date' => $valueData['value_date'] = $value ? Jalalian::fromFormat('Y/m/d', str_replace('-', '/', $value))->toCarbon() : null,
                 'select' => $valueData['value_json'] = $value ? [$value] : null,
                 'multiselect' => $valueData['value_json'] = is_array($value) ? array_values($value) : ($value ? [$value] : []),
                 default => $valueData['value_text'] = $value,
@@ -139,4 +141,3 @@ class Attributes extends Component
         ]);
     }
 }
-

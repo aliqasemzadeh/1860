@@ -52,7 +52,7 @@
                 <div>
                     <flux:text class="text-sm text-zinc-500">{{ __('app.member_since') }}</flux:text>
                     <flux:text class="font-medium">
-                        {{ $this->user->created_at ? \Morilog\Jalali\Jalalian::fromCarbon($this->user->created_at)->format('%Y/%m/%d') : '-' }}
+                        {{ jalali($this->user->created_at, 'Y/m/d') }}
                     </flux:text>
                 </div>
             </div>

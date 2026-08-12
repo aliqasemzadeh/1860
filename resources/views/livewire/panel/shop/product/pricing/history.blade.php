@@ -48,7 +48,6 @@
                             <flux:chart.line field="price" class="text-sky-500 dark:text-sky-400" curve="none" />
                             <flux:chart.axis axis="x" field="date">
                                 <flux:chart.axis.grid />
-                                <flux:chart.axis.tick :format='["year" => "numeric", "month" => "short", "day" => "numeric", "hour" => "numeric", "minute" => "2-digit"]' />
                                 <flux:chart.axis.line />
                             </flux:chart.axis>
                             <flux:chart.axis axis="y">
@@ -73,7 +72,7 @@
                         @foreach ($this->priceHistory as $row)
                             <flux:table.row>
                                 <flux:table.cell>
-                                    {{ jdate($row->created_at)->format('Y/m/d H:i') }}
+                                    {{ jalali($row->created_at) }}
                                 </flux:table.cell>
                                 <flux:table.cell class="tabular-nums">
                                     {{ number_format($row->price, 0) }} {{ __('app.toman') }}

@@ -59,7 +59,7 @@
                     {{ $order->order_number }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
-                    {{ $order->created_at ? \Morilog\Jalali\Jalalian::fromCarbon($order->created_at)->format('%Y/%m/%d %H:%M') : '-' }}
+                    {{ jalali($order->created_at) }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     {{ number_format((float) $order->total_amount) }} {{ $order->currency ?? __('app.rial') }}

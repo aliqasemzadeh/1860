@@ -4,7 +4,7 @@
             <div class="space-y-6">
                 <div>
                     <flux:heading size="lg">{{ __('app.order_details') }} #{{ $order->order_number }}</flux:heading>
-                    <flux:subheading>{{ __('app.order_date') }}: {{ \Morilog\Jalali\Jalalian::fromCarbon($order->created_at)->format('%Y-%m-%d %H:%M') }}</flux:subheading>
+                    <flux:subheading>{{ __('app.order_date') }}: {{ jalali($order->created_at) }}</flux:subheading>
                 </div>
 
                 <flux:separator />

@@ -22,7 +22,7 @@
 
     <flux:table :paginate="$this->zones">
         <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
-            <flux:table.column colspan="6" class="bg-white dark:bg-zinc-900">
+            <flux:table.column colspan="7" class="bg-white dark:bg-zinc-900">
                 <div class="flex flex-col gap-1 pe-2 items-end">
                     <flux:input
                         size="sm"
@@ -40,6 +40,7 @@
             <flux:table.column>{{ __('app.cities') }}</flux:table.column>
             <flux:table.column>{{ __('app.areas') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.date') }}</flux:table.column>
+            <flux:table.column>{{ __('app.options') }}</flux:table.column>
         </flux:table.columns>
 
         <flux:table.rows>
@@ -75,6 +76,9 @@
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap text-xs">
                         {{ implode(', ', (array) $zone->areas) }}
+                    </flux:table.cell>
+                    <flux:table.cell class="whitespace-nowrap">
+                        {{ jalali($zone->created_at) }}
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.shipping.zone.edit.assign-data', { id: '{{ $zone->id }}' })">

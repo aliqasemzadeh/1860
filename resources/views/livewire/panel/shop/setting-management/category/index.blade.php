@@ -22,6 +22,7 @@
             <flux:table.column sortable>{{ __('app.slug') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.slug_fa') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.date') }}</flux:table.column>
+            <flux:table.column>{{ __('app.options') }}</flux:table.column>
         </flux:table.columns>
 
         @foreach ($this->categories as $category)
@@ -34,6 +35,9 @@
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     {{ $category->slug_fa }}
+                </flux:table.cell>
+                <flux:table.cell class="whitespace-nowrap">
+                    {{ jalali($category->created_at) }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.category.edit.assign-data', { id: '{{ $category->id }}' })">{{ __('app.edit') }}</flux:button>
@@ -54,6 +58,9 @@
                         {{ $child->slug_fa }}
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
+                        {{ jalali($child->created_at) }}
+                    </flux:table.cell>
+                    <flux:table.cell class="whitespace-nowrap">
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.category.edit.assign-data', { id: '{{ $child->id }}' })">{{ __('app.edit') }}</flux:button>
                         <flux:button size="xs" variant="primary" color="purple" href="{{ route('panel.shop.setting-management.category.attributes', ['id' => $child->id]) }}" wire:navigate>{{ __('app.attributes') }}</flux:button>
                         <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>
@@ -70,6 +77,9 @@
                         </flux:table.cell>
                         <flux:table.cell class="whitespace-nowrap">
                             {{ $grandchild->slug_fa }}
+                        </flux:table.cell>
+                        <flux:table.cell class="whitespace-nowrap">
+                            {{ jalali($grandchild->created_at) }}
                         </flux:table.cell>
                         <flux:table.cell class="whitespace-nowrap">
                             <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.category.edit.assign-data', { id: '{{ $grandchild->id }}' })">{{ __('app.edit') }}</flux:button>

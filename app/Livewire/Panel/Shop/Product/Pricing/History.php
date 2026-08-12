@@ -4,7 +4,6 @@ namespace App\Livewire\Panel\Shop\Product\Pricing;
 
 use App\Models\Shop\Product;
 use App\Models\Shop\ProductPrice;
-use Carbon\Carbon;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
@@ -17,6 +16,7 @@ class History extends Component
     public $productId;
 
     public ?int $colorId = null;
+
     public ?int $warrantyId = null;
 
     public Product $product;
@@ -31,7 +31,7 @@ class History extends Component
     }
 
     #[On('panel.shop.product.pricing.history.assign-data')]
-    public function assignData(int $colorId = null, int $warrantyId = null): void
+    public function assignData(?int $colorId = null, ?int $warrantyId = null): void
     {
         $this->colorId = $colorId;
         $this->warrantyId = $warrantyId;
@@ -42,10 +42,10 @@ class History extends Component
     public function priceHistory()
     {
         return ProductPrice::where('product_id', $this->productId)
-            ->when($this->colorId !== null, fn($query) => $query->where('color_id', $this->colorId))
-            ->when($this->colorId === null, fn($query) => $query->whereNull('color_id'))
-            ->when($this->warrantyId !== null, fn($query) => $query->where('warranty_id', $this->warrantyId))
-            ->when($this->warrantyId === null, fn($query) => $query->whereNull('warranty_id'))
+            ->when($this->colorId !== null, fn ($query) => $query->where('color_id', $this->colorId))
+            ->when($this->colorId === null, fn ($query) => $query->whereNull('color_id'))
+            ->when($this->warrantyId !== null, fn ($query) => $query->where('warranty_id', $this->warrantyId))
+            ->when($this->warrantyId === null, fn ($query) => $query->whereNull('warranty_id'))
             ->with(['color', 'warranty'])
             ->orderBy('created_at', 'asc')
             ->get();
@@ -56,7 +56,7 @@ class History extends Component
     {
         $data = $this->priceHistory->map(function ($price) {
             $item = [
-                'date' =>  Carbon::make($price->created_at)->toString(),
+                'date' => jalali($price->created_at),
                 'price' => (float) $price->price,
             ];
 
@@ -72,9 +72,9 @@ class History extends Component
         if (empty($data)) {
             return [
                 [
-                    'date' => Carbon::now()->toIso8601String(),
+                    'date' => jalali(now()),
                     'price' => 0,
-                ]
+                ],
             ];
         }
 
@@ -89,6 +89,7 @@ class History extends Component
         }
 
         $firstPrice = $this->priceHistory->first();
+
         return $firstPrice?->color?->name;
     }
 
@@ -100,6 +101,7 @@ class History extends Component
         }
 
         $firstPrice = $this->priceHistory->first();
+
         return $firstPrice?->warranty?->name;
     }
 
