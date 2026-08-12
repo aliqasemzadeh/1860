@@ -120,6 +120,7 @@ return [
 
         'shop_order_index' => 'Orders List',
         'shop_order_view' => 'View Order',
+        'shop_order_ship' => 'Ship Order',
 
         'shop_setting_management' => 'Shop Settings Management',
 

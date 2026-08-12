@@ -121,6 +121,7 @@ return [
 
         'shop_order_index' => 'فهرست سفارش‌ها',
         'shop_order_view' => 'مشاهده سفارش',
+        'shop_order_ship' => 'ثبت ارسال سفارش',
 
         'shop_setting_management' => 'مدیریت تنظیمات فروشگاه',
 
