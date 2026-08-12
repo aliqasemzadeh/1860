@@ -5,6 +5,7 @@ return [
 
     // General / Navigation
     'create' => 'Create',
+    'home' => 'Home',
     'update' => 'Update',
     'edit' => 'Edit',
     'delete' => 'Delete',
