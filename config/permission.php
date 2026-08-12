@@ -199,4 +199,12 @@ return [
 
         'store' => 'default',
     ],
+
+    /*
+     * Permission prefixes that are granted to any authenticated user
+     * without requiring a role assignment (e.g. user panel).
+     */
+    'unrestricted_prefixes' => [
+        'user',
+    ],
 ];

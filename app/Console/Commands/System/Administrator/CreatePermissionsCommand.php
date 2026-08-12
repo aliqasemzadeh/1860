@@ -29,12 +29,9 @@ class CreatePermissionsCommand extends Command
     public function handle(): int
     {
         $groups = [
-            'user' => 'user',
-            'administrator' => 'panel.administrator',
-            'crm' => 'crm',
+            'user' => null,
+            'administrator' => 'administrator',
             'shop' => 'shop',
-            'service_center' => 'service_center',
-            'accounting' => 'accounting',
         ];
 
         foreach ($groups as $permissionGroup => $roleName) {
@@ -46,7 +43,7 @@ class CreatePermissionsCommand extends Command
         return self::SUCCESS;
     }
 
-    protected function syncGroup(string $permissionGroup, string $roleName): void
+    protected function syncGroup(string $permissionGroup, ?string $roleName): void
     {
         $permissions = __('permissions.'.$permissionGroup);
 
@@ -58,6 +55,12 @@ class CreatePermissionsCommand extends Command
 
         foreach ($permissions as $permission => $translate) {
             Permission::firstOrCreate(['name' => $permission]);
+        }
+
+        if ($roleName === null) {
+            $this->info("Created [{$permissionGroup}] permissions (no role assignment).");
+
+            return;
         }
 
         try {
