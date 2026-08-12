@@ -55,4 +55,8 @@ return [
     'image_not_found' => 'Image not found.',
     'file_not_found' => 'File not found.',
     'output_file_not_created' => 'Output file was not created.',
+
+    // Sitemap
+    'rebuild_sitemap' => 'Rebuild Sitemap',
+    'sitemap_rebuilt' => 'Sitemap rebuilt with :count URLs.',
 ];
