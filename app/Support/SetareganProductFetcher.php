@@ -160,7 +160,7 @@ class SetareganProductFetcher
             // Slugs
             if (isset($productInfo['name'])) {
                 $productInfo['slug'] = \Illuminate\Support\Str::slug($productInfo['name']);
-                $productInfo['slug_fa'] = str_replace(' ', '-', $productInfo['name']);
+                $productInfo['slug_fa'] = slug_fa($productInfo['name']);
             }
 
             // Append specs to description if needed

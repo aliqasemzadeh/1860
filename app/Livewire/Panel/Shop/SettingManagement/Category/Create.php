@@ -21,6 +21,12 @@ class Create extends Component
 
     public int $main_category_id = 0;
 
+    public function updatedName(string $value): void
+    {
+        $this->slug = \Illuminate\Support\Str::slug($value);
+        $this->slug_fa = slug_fa($value);
+    }
+
     public function create(): void
     {
         $validated = $this->validate([

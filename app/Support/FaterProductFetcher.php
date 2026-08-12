@@ -163,7 +163,7 @@ class FaterProductFetcher
             // Generate slug from name
             if (isset($productInfo['name'])) {
                 $productInfo['slug'] = \Illuminate\Support\Str::slug($productInfo['name']);
-                $productInfo['slug_fa'] = str_replace(' ', '-', $productInfo['name']);
+                $productInfo['slug_fa'] = slug_fa($productInfo['name']);
             }
 
             // Format specifications into description if not already set

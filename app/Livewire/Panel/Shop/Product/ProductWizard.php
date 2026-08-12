@@ -55,7 +55,7 @@ class ProductWizard extends Component
     public function updatedName(string $value): void
     {
         $this->slug = Str::slug($value);
-        $this->slug_fa = str_replace(' ', '-', $value);
+        $this->slug_fa = slug_fa($value);
     }
 
     public function nextStep(): void
@@ -124,7 +124,7 @@ class ProductWizard extends Component
             $this->name = $data['name'] ?? '';
             $this->description = $data['description'] ?? null;
             $this->slug = $data['slug'] ?? Str::slug($this->name);
-            $this->slug_fa = $data['slug_fa'] ?? str_replace(' ', '-', $this->name);
+            $this->slug_fa = $data['slug_fa'] ?? slug_fa($this->name);
             $this->weight = $data['weight'] ?? 0;
             $this->x_dimension = $data['x_dimension'] ?? 0;
             $this->y_dimension = $data['y_dimension'] ?? 0;

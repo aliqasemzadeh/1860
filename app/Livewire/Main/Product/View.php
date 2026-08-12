@@ -28,15 +28,15 @@ class View extends Component
         $this->id = $id;
         $this->slug = $slug;
 
-        if (! $this->product) {
+        $product = $this->product;
+
+        if (! $product) {
             abort(404);
         }
 
-        $canonicalSlug = $this->product->slug_fa ?: $this->product->slug;
+        $canonicalSlug = $product->slug_fa ?: $product->slug;
         if ($this->slug === null || $this->slug !== $canonicalSlug) {
-            $this->redirect($this->product->url, navigate: false);
-            // Force a 301 for SEO when slug is missing/wrong
-            abort(redirect()->to($this->product->url, 301));
+            return redirect()->to($product->url, 301);
         }
     }
 
@@ -301,11 +301,6 @@ class View extends Component
     {
         if (! $this->product) {
             abort(404);
-        }
-
-        $canonicalSlug = $this->product->slug_fa ?: $this->product->slug;
-        if ($this->slug === null || $this->slug !== $canonicalSlug) {
-            return redirect()->to($this->product->url, 301);
         }
 
         return view('livewire.main.product.view');

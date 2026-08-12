@@ -28,6 +28,17 @@ class View extends Component
     {
         $this->id = $id;
         $this->slug = $slug;
+
+        $category = $this->category;
+
+        if (! $category) {
+            abort(404);
+        }
+
+        $canonicalSlug = $category->slug_fa ?: $category->slug;
+        if ($this->slug === null || $this->slug !== $canonicalSlug) {
+            return redirect()->to($category->url, 301);
+        }
     }
 
     #[Computed]
@@ -173,11 +184,6 @@ class View extends Component
     {
         if (! $this->category) {
             abort(404);
-        }
-
-        $canonicalSlug = $this->category->slug_fa ?: $this->category->slug;
-        if ($this->slug === null || $this->slug !== $canonicalSlug) {
-            return redirect()->to($this->category->url, 301);
         }
 
         return view('livewire.main.category.view');

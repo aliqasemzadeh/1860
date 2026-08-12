@@ -26,8 +26,9 @@ Route::get('/product/id/{id}', function (int $id) {
 
 Route::get('/category/{slug}', function (string $slug) {
     $category = \App\Models\Shop\Category::query()
-        ->where('slug', $slug)
-        ->orWhere('slug_fa', $slug)
+        ->where(function ($q) use ($slug) {
+            $q->where('slug', $slug)->orWhere('slug_fa', $slug);
+        })
         ->firstOrFail();
 
     return redirect()->to($category->url, 301);
@@ -35,8 +36,9 @@ Route::get('/category/{slug}', function (string $slug) {
 
 Route::get('/product/{slug}', function (string $slug) {
     $product = \App\Models\Shop\Product::query()
-        ->where('slug', $slug)
-        ->orWhere('slug_fa', $slug)
+        ->where(function ($q) use ($slug) {
+            $q->where('slug', $slug)->orWhere('slug_fa', $slug);
+        })
         ->firstOrFail();
 
     return redirect()->to($product->url, 301);
