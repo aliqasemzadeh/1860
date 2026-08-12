@@ -21,6 +21,12 @@ class Edit extends Component
 
     public string $slug_fa = '';
 
+    public function updatedName(string $value): void
+    {
+        $this->slug = \Illuminate\Support\Str::slug($value);
+        $this->slug_fa = slug_fa($value);
+    }
+
     #[On('panel.shop.setting-management.brand.edit.assign-data')]
     public function assignData($id): void
     {

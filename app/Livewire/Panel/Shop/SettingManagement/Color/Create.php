@@ -18,6 +18,12 @@ class Create extends Component
 
     public string $hex = '#14b8a6';
 
+    public function updatedName(string $value): void
+    {
+        $this->slug = \Illuminate\Support\Str::slug($value);
+        $this->slug_fa = slug_fa($value);
+    }
+
     public function create(): void
     {
         $validated = $this->validate([
