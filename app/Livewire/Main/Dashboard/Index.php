@@ -22,6 +22,7 @@ class Index extends Component
     {
         return Product::query()
             ->with(['category'])
+            ->whereAvailability(true)
             ->orderByDesc('created_at')
             ->get();
     }
