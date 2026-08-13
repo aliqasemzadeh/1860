@@ -7,6 +7,7 @@ use App\Models\Shop\Category;
 use App\Models\Shop\Product;
 use App\Models\Shop\ProductImage;
 use App\Models\Shop\Unit;
+use App\Services\Shop\ProductImageSeoService;
 use App\Support\FaterProductFetcher;
 use App\Support\GigabyteProductFetcher;
 use App\Support\SetareganProductFetcher;
@@ -181,44 +182,39 @@ class ProductWizard extends Component
         // Download and save first image as processed product file
         $filePath = null;
         $fileName = null;
-        if (!empty($this->image_urls)) {
+        $naming = [
+            'slug_fa' => $this->slug_fa,
+            'slug' => $this->slug,
+            'name' => $this->name,
+        ];
+        $seo = app(ProductImageSeoService::class);
+
+        if (! empty($this->image_urls)) {
             try {
                 $firstImageUrl = $this->image_urls[0];
                 Log::info("Downloading first image from: {$firstImageUrl}");
                 $imageResponse = Http::timeout(30)->get($firstImageUrl);
 
                 if ($imageResponse->successful()) {
-                    // Ensure directory exists
                     Storage::disk('public')->makeDirectory('products');
 
-                    // Always store processed main image as PNG and square
-                    $fileName = Str::slug($this->name) . '.png';
-                    $filePath = 'products/' . $fileName;
-
                     $processedImage = $this->processImageToSquare($imageResponse->body());
-                    if ($processedImage !== null) {
-                        $saved = Storage::disk('public')->put($filePath, $processedImage);
-                        if ($saved) {
-                            Log::info("Successfully saved processed main image: {$filePath}");
-                        } else {
-                            Log::error("Failed to save processed main image: {$filePath}");
-                        }
-                    } else {
-                        // Fallback: store original response if processing fails
-                        Log::warning("Image processing failed, storing original image");
-                        $saved = Storage::disk('public')->put($filePath, $imageResponse->body());
-                        if ($saved) {
-                            Log::info("Successfully saved original main image: {$filePath}");
-                        } else {
-                            Log::error("Failed to save original main image: {$filePath}");
-                        }
+                    $binary = $processedImage ?? $imageResponse->body();
+
+                    if ($processedImage === null) {
+                        Log::warning('Image processing failed, storing original image as WebP');
                     }
+
+                    $paths = $seo->storeAsWebp($binary, 'products', $naming);
+                    $filePath = $paths['file_path'];
+                    $fileName = $paths['file_name'];
+                    Log::info("Successfully saved processed main image: {$filePath}");
                 } else {
                     Log::warning("Failed to download first image. Status: {$imageResponse->status()}");
                 }
             } catch (\Exception $e) {
-                Log::error('Failed to download product image: ' . $e->getMessage(), [
-                    'trace' => $e->getTraceAsString()
+                Log::error('Failed to download product image: '.$e->getMessage(), [
+                    'trace' => $e->getTraceAsString(),
                 ]);
             }
         }
@@ -241,12 +237,11 @@ class ProductWizard extends Component
         ]);
 
         // Download and save additional processed images
-        if (!empty($this->image_urls) && count($this->image_urls) > 1) {
-            // Ensure directory exists
+        if (! empty($this->image_urls) && count($this->image_urls) > 1) {
             Storage::disk('public')->makeDirectory('products/images');
 
             $additionalImages = array_slice($this->image_urls, 1);
-            Log::info("Processing " . count($additionalImages) . " additional images");
+            Log::info('Processing '.count($additionalImages).' additional images');
 
             foreach ($additionalImages as $index => $imageUrl) {
                 try {
@@ -254,53 +249,33 @@ class ProductWizard extends Component
                     $imageResponse = Http::timeout(30)->get($imageUrl);
 
                     if ($imageResponse->successful()) {
-                        // Store additional images as processed square PNGs
-                        $imageFileName = Str::slug($this->name) . '-' . uniqid() . '.png';
-                        $imageFilePath = 'products/images/' . $imageFileName;
-
                         $processedImage = $this->processImageToSquare($imageResponse->body());
-                        $saved = false;
+                        $binary = $processedImage ?? $imageResponse->body();
 
-                        if ($processedImage !== null) {
-                            $saved = Storage::disk('public')->put($imageFilePath, $processedImage);
-                            if ($saved) {
-                                Log::info("Successfully saved processed additional image: {$imageFilePath}");
-                            } else {
-                                Log::error("Failed to save processed additional image: {$imageFilePath}");
-                            }
-                        } else {
-                            // Fallback: store original response if processing fails
-                            Log::warning("Image processing failed for additional image, storing original");
-                            $saved = Storage::disk('public')->put($imageFilePath, $imageResponse->body());
-                            if ($saved) {
-                                Log::info("Successfully saved original additional image: {$imageFilePath}");
-                            } else {
-                                Log::error("Failed to save original additional image: {$imageFilePath}");
-                            }
+                        if ($processedImage === null) {
+                            Log::warning('Image processing failed for additional image, storing original as WebP');
                         }
 
-                        if ($saved) {
-                            ProductImage::create([
-                                'product_id' => $product->id,
-                                'file_path' => $imageFilePath,
-                                'file_name' => $imageFileName,
-                            ]);
-                            Log::info("Created ProductImage record for: {$imageFilePath}");
-                        } else {
-                            Log::error("Skipping ProductImage creation because file was not saved: {$imageFilePath}");
-                        }
+                        $paths = $seo->storeAsWebp($binary, 'products/images', $product);
+
+                        ProductImage::create([
+                            'product_id' => $product->id,
+                            'file_path' => $paths['file_path'],
+                            'file_name' => $paths['file_name'],
+                        ]);
+                        Log::info("Created ProductImage record for: {$paths['file_path']}");
                     } else {
                         Log::warning("Failed to download additional image #{$index}. Status: {$imageResponse->status()}");
                     }
                 } catch (\Exception $e) {
-                    Log::error("Failed to download additional product image #{$index}: " . $e->getMessage(), [
+                    Log::error("Failed to download additional product image #{$index}: ".$e->getMessage(), [
                         'url' => $imageUrl,
-                        'trace' => $e->getTraceAsString()
+                        'trace' => $e->getTraceAsString(),
                     ]);
                 }
             }
         } else {
-            Log::info("No additional images to process (total images: " . count($this->image_urls) . ")");
+            Log::info('No additional images to process (total images: '.count($this->image_urls).')');
         }
 
         Flux::modal('panel.shop.product.product-wizard.modal')->close();
