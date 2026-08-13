@@ -6,6 +6,7 @@ use App\Models\Shop\Brand;
 use App\Models\Shop\Category;
 use App\Models\Shop\Product as ProductModel;
 use App\Models\Shop\Unit;
+use App\Services\Shop\ProductImageSeoService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Process;
@@ -123,17 +124,15 @@ class Edit extends Component
 
         // If a new file is uploaded, replace the old one
         if ($this->file) {
-            // Delete old file
-            if ($this->product->file_path && Storage::disk('public')->exists($this->product->file_path)) {
-                Storage::disk('public')->delete($this->product->file_path);
-            }
+            $paths = app(ProductImageSeoService::class)->storeAsWebp(
+                $this->file,
+                'products',
+                $this->product,
+                $this->product->file_path,
+            );
 
-            // Store new file publicly with original name
-            $filePath = $this->file->storeAs('products', $this->file->getClientOriginalName(), 'public');
-            $fileName = $this->file->getClientOriginalName();
-
-            $updateData['file_path'] = $filePath;
-            $updateData['file_name'] = $fileName;
+            $updateData['file_path'] = $paths['file_path'];
+            $updateData['file_name'] = $paths['file_name'];
         }
 
         $this->product->fill($updateData)->save();

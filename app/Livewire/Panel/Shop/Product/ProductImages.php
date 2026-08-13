@@ -4,6 +4,7 @@ namespace App\Livewire\Panel\Shop\Product;
 
 use App\Models\Shop\Product;
 use App\Models\Shop\ProductImage;
+use App\Services\Shop\ProductImageSeoService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Process;
@@ -169,14 +170,16 @@ class ProductImages extends Component
         }
 
         foreach ($this->images as $image) {
-            // Store file publicly with original name
-            $filePath = $image->storeAs('product-images', $image->getClientOriginalName(), 'public');
-            $fileName = $image->getClientOriginalName();
+            $paths = app(ProductImageSeoService::class)->storeAsWebp(
+                $image,
+                'product-images',
+                $this->product,
+            );
 
             ProductImage::create([
                 'product_id' => $this->product->id,
-                'file_path' => $filePath,
-                'file_name' => $fileName,
+                'file_path' => $paths['file_path'],
+                'file_name' => $paths['file_name'],
             ]);
         }
 

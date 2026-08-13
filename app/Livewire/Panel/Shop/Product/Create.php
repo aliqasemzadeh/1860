@@ -6,10 +6,10 @@ use App\Models\Shop\Brand;
 use App\Models\Shop\Category;
 use App\Models\Shop\Product;
 use App\Models\Shop\Unit;
+use App\Services\Shop\ProductImageSeoService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
@@ -89,45 +89,33 @@ class Create extends Component
 
         $filePath = null;
         $fileName = null;
+        $naming = [
+            'slug_fa' => $validated['slug_fa'],
+            'slug' => $validated['slug'],
+            'name' => $validated['name'],
+        ];
+        $seo = app(ProductImageSeoService::class);
 
         if ($this->file) {
-            // Store file publicly with original name
-            $filePath = $this->file->storeAs('products', $this->file->getClientOriginalName(), 'public');
-            $fileName = $this->file->getClientOriginalName();
+            $paths = $seo->storeAsWebp($this->file, 'products', $naming);
+            $filePath = $paths['file_path'];
+            $fileName = $paths['file_name'];
         } elseif ($this->selectedImageUrl) {
-            // Download image from URL
             try {
                 $imageResponse = Http::timeout(60)->get($this->selectedImageUrl);
 
                 if (! $imageResponse->successful()) {
                     Flux::toast(variant: 'danger', text: __('app.error_downloading_image'));
+
                     return;
                 }
 
-                // Get file extension from URL or content type
-                $extension = $this->getFileExtension($this->selectedImageUrl, $imageResponse->header('Content-Type', ''));
-                $baseName = basename(parse_url($this->selectedImageUrl, PHP_URL_PATH));
-                
-                if (empty($baseName) || ! preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $baseName)) {
-                    $baseName = $validated['slug'] . '.' . $extension;
-                } else {
-                    $baseName = pathinfo($baseName, PATHINFO_FILENAME) . '.' . $extension;
-                }
-
-                // Ensure unique filename
-                $fileName = $baseName;
-                $filePath = 'products/' . $fileName;
-                $counter = 1;
-                while (Storage::disk('public')->exists($filePath)) {
-                    $fileName = pathinfo($baseName, PATHINFO_FILENAME) . '-' . $counter . '.' . $extension;
-                    $filePath = 'products/' . $fileName;
-                    $counter++;
-                }
-
-                // Store the file
-                Storage::disk('public')->put($filePath, $imageResponse->body());
+                $paths = $seo->storeAsWebp($imageResponse->body(), 'products', $naming);
+                $filePath = $paths['file_path'];
+                $fileName = $paths['file_name'];
             } catch (\Exception $e) {
-                Flux::toast(variant: 'danger', text: __('app.error_downloading_image') . ': ' . $e->getMessage());
+                Flux::toast(variant: 'danger', text: __('app.error_downloading_image').': '.$e->getMessage());
+
                 return;
             }
         }
@@ -152,38 +140,6 @@ class Create extends Component
         $this->dispatch('panel.shop.product.index.render');
         Flux::toast(variant: 'success', text: __('app.product_created'));
         $this->reset(['name', 'description', 'slug', 'slug_fa', 'file', 'selectedImageUrl', 'weight', 'x_dimension', 'y_dimension', 'z_dimension', 'category_id', 'brand_id', 'unit_id', 'category_search', 'brand_search', 'unit_search']);
-    }
-
-    protected function getFileExtension(string $url, string $contentType): string
-    {
-        // Try to get extension from URL
-        $path = parse_url($url, PHP_URL_PATH);
-        if ($path) {
-            $extension = pathinfo($path, PATHINFO_EXTENSION);
-            if ($extension && in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-                return strtolower($extension);
-            }
-        }
-
-        // Try to get extension from content type
-        if ($contentType) {
-            $mimeToExt = [
-                'image/jpeg' => 'jpg',
-                'image/jpg' => 'jpg',
-                'image/png' => 'png',
-                'image/gif' => 'gif',
-                'image/webp' => 'webp',
-            ];
-
-            foreach ($mimeToExt as $mime => $ext) {
-                if (str_contains($contentType, $mime)) {
-                    return $ext;
-                }
-            }
-        }
-
-        // Default to jpg
-        return 'jpg';
     }
 
     public function removeFile(): void
