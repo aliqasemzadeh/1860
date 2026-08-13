@@ -77,7 +77,7 @@ class SendSmsMessageJob implements ShouldQueue
                 ->post('https://srscrm.ir/api/sms/send', [
                     'gateway' => $settings->gateway,
                     'to' => $normalizedTo,
-                    'message' => $text,
+                    'message' => $text . PHP_EOL . 'لغو11',
                 ])->json();
 
             // Optional: info log and simple auditing

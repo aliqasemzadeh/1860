@@ -69,7 +69,7 @@ class SendOtpJob implements ShouldQueue
                 ->post('https://srscrm.ir/api/sms/send', [
                     'gateway' => $settings->gateway,
                     'to' => $normalizedTo,
-                    'message' => $text,
+                    'message' => $text . PHP_EOL . 'لغو11',
                 ])->json();
 
             Log::info('SMS send attempt via Star SMS', [
