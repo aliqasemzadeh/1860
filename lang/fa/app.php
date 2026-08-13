@@ -96,6 +96,9 @@ return [
     'roles_description' => 'نقش‌ها را جستجو و به کاربر اختصاص دهید یا حذف کنید.',
     'permissions_description' => 'مجوزها را جستجو و به کاربر اختصاص دهید یا حذف کنید.',
     'are_you_sure' => 'آیا مطمئن هستید؟',
+    'delete_confirmation' => 'تایید حذف',
+    'delete_warning_message' => 'آیا از حذف این فایل پشتیبان اطمینان دارید؟',
+    'action_cannot_be_reversed' => 'این عملیات قابل بازگشت نیست.',
 
     // Permissions Create/Edit
     'create_permission_description' => 'برای ایجاد مجوز جدید، اطلاعات زیر را تکمیل کنید.',

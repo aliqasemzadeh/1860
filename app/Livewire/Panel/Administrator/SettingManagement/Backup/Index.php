@@ -30,7 +30,7 @@ class Index extends Component
     {
         $items = $this->collectBackups();
         $page = $this->getPage();
-        $perPage = 10;
+        $perPage = config('general.per_page', 10);
 
         return new Paginator(
             $items->forPage($page, $perPage)->values(),
@@ -73,6 +73,7 @@ class Index extends Component
         }
 
         unset($this->backups);
+        Flux::modals()->close();
         Flux::toast(__('app.backup_deleted'));
     }
 
