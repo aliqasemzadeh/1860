@@ -1,4 +1,4 @@
-# Project Name / نام پروژه
+# 1860.ai
 
 [English Version Below](#english)
 
