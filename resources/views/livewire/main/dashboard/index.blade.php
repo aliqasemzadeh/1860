@@ -8,18 +8,6 @@ use Illuminate\Support\Facades\Storage;
 <div>
     <section class="py-8 antialiased md:py-12">
         <div class="mx-auto max-w-7xl px-4 2xl:px-0">
-            <div class="mb-6">
-                <flux:radio.group
-                    wire:model.live="stockFilter"
-                    label="{{ __('app.stock_filter') }}"
-                    variant="segmented"
-                >
-                    <flux:radio value="available" label="{{ __('app.stock_filter_available') }}" />
-                    <flux:radio value="unavailable" label="{{ __('app.stock_filter_unavailable') }}" />
-                    <flux:radio value="all" label="{{ __('app.stock_filter_all') }}" />
-                </flux:radio.group>
-            </div>
-
             @if($this->products->isEmpty())
                 <div class="flex flex-col items-center justify-center py-16">
                     <flux:heading size="lg" class="text-zinc-500 dark:text-zinc-400 mb-2">
@@ -32,9 +20,6 @@ use Illuminate\Support\Facades\Storage;
             @else
                 <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2">
                     @foreach($this->products as $product)
-                        @php
-                            $isAvailable = ($product->default_price['available'] ?? false) === true;
-                        @endphp
                         <a
                             href="{{ $product->url }}"
                             wire:navigate
@@ -60,12 +45,6 @@ use Illuminate\Support\Facades\Storage;
                                     @if($product->sale_price && $product->price && $product->sale_price < $product->price)
                                         <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
                                             {{ __('app.discount') }}
-                                        </div>
-                                    @endif
-
-                                    @if($stockFilter === 'all')
-                                        <div class="absolute top-2 left-2 text-xs font-bold px-2 py-1 rounded {{ $isAvailable ? 'bg-green-500 text-white' : 'bg-zinc-500 text-white' }}">
-                                            {{ $isAvailable ? __('app.remaining') : __('app.out_of_stock') }}
                                         </div>
                                     @endif
                                 </div>

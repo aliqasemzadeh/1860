@@ -25,6 +25,8 @@ class View extends Component
 
     public $maxPrice = null;
 
+    public string $stockFilter = 'available';
+
     public function mount($id = null, $slug = null)
     {
         $this->id = $id;
@@ -153,7 +155,14 @@ class View extends Component
             })->values();
         }
 
-        return $products;
+        return $products
+            ->when($this->stockFilter === 'available', fn ($items) => $items->filter(
+                fn ($product) => ($product->default_price['available'] ?? false) === true
+            ))
+            ->when($this->stockFilter === 'unavailable', fn ($items) => $items->filter(
+                fn ($product) => ($product->default_price['available'] ?? false) !== true
+            ))
+            ->values();
     }
 
     protected function getCategoryIds(): array
@@ -177,6 +186,7 @@ class View extends Component
         $this->brandId = null;
         $this->minPrice = null;
         $this->maxPrice = null;
+        $this->stockFilter = 'available';
         $this->sortBy = 'created_at';
         $this->sortDirection = 'desc';
     }
@@ -186,7 +196,8 @@ class View extends Component
     {
         $filtered = filled($this->brandId)
             || $this->minPrice !== null
-            || $this->maxPrice !== null;
+            || $this->maxPrice !== null
+            || $this->stockFilter !== 'available';
 
         return Seo::category(
             $this->category,
