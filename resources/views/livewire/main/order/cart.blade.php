@@ -34,7 +34,7 @@
                                                 <a href="{{ $item->itemable->url }}">
                                                     <img
                                                         src="{{ \Illuminate\Support\Facades\Storage::url($item->itemable->file_path) }}"
-                                                        alt="{{ $item->itemable->name ?? '' }}"
+                                                        alt="{{ product_image_alt($item->itemable->name ?? '') }}"
                                                         class="w-24 h-24 object-cover rounded-lg border border-zinc-200 dark:border-zinc-700"
                                                     />
                                                 </a>

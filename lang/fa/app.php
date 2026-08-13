@@ -16,6 +16,9 @@ return [
     'add_watermarks' => 'افزودن واترمارک به تصاویر',
     'watermarks_added' => ':marked تصویر واترمارک شد، :skipped مورد رد شد.',
     'watermarks_added_generic' => 'عملیات واترمارک انجام شد.',
+    'optimize_images' => 'بهینه‌سازی تصاویر (WebP و نام SEO)',
+    'images_optimized' => ':optimized تصویر بهینه‌سازی شد، :skipped مورد رد شد.',
+    'images_optimized_generic' => 'عملیات بهینه‌سازی تصاویر انجام شد.',
 
     // Settings / Backup
     'backup' => 'پشتیبان‌گیری',

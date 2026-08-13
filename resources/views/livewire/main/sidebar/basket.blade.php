@@ -19,7 +19,7 @@
                                     <div class="flex-shrink-0">
                                         <img
                                             src="{{ \Illuminate\Support\Facades\Storage::url($item->itemable->file_path) }}"
-                                            alt="{{ $item->itemable->name ?? '' }}"
+                                            alt="{{ product_image_alt($item->itemable->name ?? '') }}"
                                             class="w-20 h-20 object-cover rounded-lg"
                                         />
                                     </div>

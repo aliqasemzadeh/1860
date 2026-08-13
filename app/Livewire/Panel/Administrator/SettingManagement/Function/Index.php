@@ -66,6 +66,32 @@ class Index extends Component
         Flux::toast(__('app.watermarks_added_generic'));
     }
 
+    public function optimizeImages(): void
+    {
+        $this->authorize('administrator_setting_function_index');
+
+        Artisan::call('app:optimize-images-command');
+        $output = Artisan::output();
+
+        if (preg_match(
+            '/RESULT products_optimized=(\d+) products_skipped=(\d+) product_images_optimized=(\d+) product_images_skipped=(\d+)/',
+            $output,
+            $matches
+        )) {
+            $optimized = (int) $matches[1] + (int) $matches[3];
+            $skipped = (int) $matches[2] + (int) $matches[4];
+
+            Flux::toast(__('app.images_optimized', [
+                'optimized' => $optimized,
+                'skipped' => $skipped,
+            ]));
+
+            return;
+        }
+
+        Flux::toast(__('app.images_optimized_generic'));
+    }
+
     public function updateQuick(): void
     {
         $this->authorize('administrator_setting_function_update');

@@ -16,7 +16,7 @@
                             <flux:avatar 
                                 size="sm" 
                                 src="{{ $product->file_path ? Storage::url($product->file_path) : '' }}"
-                                alt="{{ $product->name }}"
+                                alt="{{ product_image_alt($product) }}"
                             />
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center justify-between gap-2">

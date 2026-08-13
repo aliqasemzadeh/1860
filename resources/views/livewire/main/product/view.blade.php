@@ -157,7 +157,7 @@
                             </div>
                             <img
                                 x-bind:src="currentImage"
-                                alt="{{ $this->product->name }}"
+                                alt="{{ product_image_alt($this->product) }}"
                                 class="w-full h-full object-cover transition-opacity duration-300"
                                 x-bind:class="{ 'opacity-50': loading }"
                             />
@@ -180,7 +180,7 @@
                                     >
                                         <img
                                             src="{{ Storage::url($image['file_path']) }}"
-                                            alt="{{ $this->product->name }} - {{ $index + 1 }}"
+                                            alt="{{ product_image_alt($this->product) }} - {{ $index + 1 }}"
                                             class="w-full h-full object-cover"
                                             loading="lazy"
                                         />

@@ -63,6 +63,9 @@ return [
     // Sitemap
     'rebuild_sitemap' => 'Rebuild Sitemap',
     'sitemap_rebuilt' => 'Sitemap rebuilt with :count URLs.',
+    'optimize_images' => 'Optimize Images (WebP & SEO names)',
+    'images_optimized' => ':optimized images optimized, :skipped skipped.',
+    'images_optimized_generic' => 'Image optimization completed.',
 
     // Site options
     'options_description' => 'General site settings, contact info, social networks, and maintenance mode.',

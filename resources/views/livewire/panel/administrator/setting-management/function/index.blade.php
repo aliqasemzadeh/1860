@@ -21,6 +21,10 @@
                 {{ __('app.add_watermarks') }}
             </flux:button>
 
+            <flux:button wire:click="optimizeImages" variant="primary" color="emerald" class="w-full">
+                {{ __('app.optimize_images') }}
+            </flux:button>
+
             <flux:separator variant="subtle" />
 
             <flux:button

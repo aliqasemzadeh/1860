@@ -4,6 +4,7 @@ namespace App\Livewire\Panel\Shop\Product;
 
 use App\Models\Shop\Product;
 use App\Models\Shop\ProductImage;
+use App\Services\Shop\ProductImageSeoService;
 use App\Support\GetProductImages\BaseImageFetcher;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
@@ -147,89 +148,37 @@ class ProductImageWizard extends Component
 
             $successCount = 0;
             $failCount = 0;
-            $productSlug = $this->product->slug ?? 'product-' . $this->product->id;
+            $seo = app(ProductImageSeoService::class);
 
             foreach ($this->images as $imageData) {
                 try {
-                    // Download the image
                     $imageResponse = Http::timeout(60)->get($imageData['url']);
 
                     if (! $imageResponse->successful()) {
                         $failCount++;
+
                         continue;
                     }
 
-                    // Get file extension from URL or content type
-                    $extension = $this->getFileExtension($imageData['url'], $imageResponse->header('Content-Type', ''));
+                    $paths = $seo->storeAsWebp($imageResponse->body(), 'product-images', $this->product);
 
-                    // Get the custom name from imageData
-                    $customName = trim($imageData['name'] ?? '');
+                    $productImage = ProductImage::create([
+                        'product_id' => $this->product->id,
+                        'file_path' => $paths['file_path'],
+                        'file_name' => $paths['file_name'],
+                    ]);
 
-                    // Generate filename: slug-randomnumber.extension
-                    // If custom name is provided, use it as part of the filename
-                    $randomNumber = rand(1000, 9999);
-
-                    if (!empty($customName)) {
-                        // Remove extension from custom name if present
-                        $baseName = pathinfo($customName, PATHINFO_FILENAME);
-                        // Use slug of custom name + random number
-                        $slugName = Str::slug($baseName);
-                        if (!empty($slugName)) {
-                            $fileName = $productSlug . '-' . $slugName . '-' . $randomNumber . '.' . $extension;
-                        } else {
-                            $fileName = $productSlug . '-' . $randomNumber . '.' . $extension;
-                        }
-                    } else {
-                        // Just use slug + random number
-                        $fileName = $productSlug . '-' . $randomNumber . '.' . $extension;
+                    if (! empty($imageData['optimize']) && $imageData['optimize']) {
+                        \App\Jobs\Shop\ProductImageOptimizeJob::dispatch($productImage->id);
                     }
 
-                    $filePath = 'product-images/' . $fileName;
-
-                    // Ensure unique filename
-                    while (Storage::disk('public')->exists($filePath)) {
-                        $randomNumber = rand(1000, 9999);
-                        if (!empty($customName)) {
-                            $baseName = pathinfo($customName, PATHINFO_FILENAME);
-                            $slugName = Str::slug($baseName);
-                            if (!empty($slugName)) {
-                                $fileName = $productSlug . '-' . $slugName . '-' . $randomNumber . '.' . $extension;
-                            } else {
-                                $fileName = $productSlug . '-' . $randomNumber . '.' . $extension;
-                            }
-                        } else {
-                            $fileName = $productSlug . '-' . $randomNumber . '.' . $extension;
-                        }
-                        $filePath = 'product-images/' . $fileName;
-                    }
-
-                    // Store the file
-                    $saved = Storage::disk('public')->put($filePath, $imageResponse->body());
-
-                    if ($saved) {
-                        // Create ProductImage record
-                        $productImage = ProductImage::create([
-                            'product_id' => $this->product->id,
-                            'file_path' => $filePath,
-                            'file_name' => $fileName,
-                        ]);
-
-                        // اگر بهینه‌سازی فعال باشد، Job را dispatch کن
-                        if (!empty($imageData['optimize']) && $imageData['optimize']) {
-                            \App\Jobs\Shop\ProductImageOptimizeJob::dispatch($productImage->id);
-                        }
-
-                        $successCount++;
-                    } else {
-                        $failCount++;
-                    }
+                    $successCount++;
                 } catch (\Exception $e) {
                     $failCount++;
-                    \Log::error('Failed to upload image: ' . $e->getMessage(), [
+                    \Log::error('Failed to upload image: '.$e->getMessage(), [
                         'url' => $imageData['url'] ?? null,
                         'product_id' => $this->product->id,
                     ]);
-                    // Continue with next image
                 }
             }
 
@@ -248,38 +197,6 @@ class ProductImageWizard extends Component
         } finally {
             $this->isLoading = false;
         }
-    }
-
-    protected function getFileExtension(string $url, string $contentType): string
-    {
-        // Try to get extension from URL
-        $path = parse_url($url, PHP_URL_PATH);
-        if ($path) {
-            $extension = pathinfo($path, PATHINFO_EXTENSION);
-            if ($extension && in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-                return strtolower($extension);
-            }
-        }
-
-        // Try to get extension from content type
-        if ($contentType) {
-            $mimeToExt = [
-                'image/jpeg' => 'jpg',
-                'image/jpg' => 'jpg',
-                'image/png' => 'png',
-                'image/gif' => 'gif',
-                'image/webp' => 'webp',
-            ];
-
-            foreach ($mimeToExt as $mime => $ext) {
-                if (str_contains($contentType, $mime)) {
-                    return $ext;
-                }
-            }
-        }
-
-        // Default to jpg
-        return 'jpg';
     }
 
     public function render(): View

@@ -156,7 +156,7 @@ $hasActiveFilters = $this->brandId
                                             @if($product->file_path)
                                                 <img
                                                     src="{{ Storage::url($product->file_path) }}"
-                                                    alt="{{ $product->name }}"
+                                                    alt="{{ product_image_alt($product) }}"
                                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                                 />
                                             @else
