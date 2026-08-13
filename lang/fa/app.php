@@ -1004,5 +1004,8 @@ return [
     'maintenance_enabled' => 'حالت تعمیر فعال شد.',
     'maintenance_disabled' => 'حالت تعمیر غیرفعال شد.',
     'settings_updated' => 'تنظیمات با موفقیت به‌روزرسانی شد.',
-
+    'sms_settings' => 'تنظیمات پیامک',
+    'sms_settings_description' => 'تنظیمات مربوط به پنل پیامک ستارگان.',
+    'sms_token' => 'توکن API',
+    'sms_gateway' => 'شماره درگاه (Gateway)',
 ];

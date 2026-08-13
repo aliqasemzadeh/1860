@@ -2,9 +2,9 @@
 
 namespace App\Jobs\Otp;
 
+use App\Settings\SmsSettings;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -23,13 +23,13 @@ class SendOtpJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(SmsSettings $settings): void
     {
         $message = __('otp.sms_text', ['code' => $this->otp]);
 
         [$originalMobile, $normalizedMobile] = $this->normalizeIranMobile($this->mobile);
 
-        $this->sendViaSabapnovin($normalizedMobile, $message, $originalMobile);
+        $this->sendViaStarSms($normalizedMobile, $message, $originalMobile, $settings);
     }
 
     /**
@@ -61,28 +61,28 @@ class SendOtpJob implements ShouldQueue
         return [$original, $m];
     }
 
-    private function sendViaSabapnovin(string $normalizedTo, string $text, string $originalTo): void
+    private function sendViaStarSms(string $normalizedTo, string $text, string $originalTo, SmsSettings $settings): void
     {
         try {
-            $request = Http::withoutVerifying()
-                ->get(
-                    sprintf('https://api.sabanovin.com/v1/%s/sms/send.json', (string) Config::get('sms.api-key')),
-                    [
-                        'gateway' => Config::get('sms.gateway'),
-                        'to' => $normalizedTo,
-                        'text' => $text.PHP_EOL.'لغو 11',
-                    ]
-                )->json();
+            $response = Http::withoutVerifying()
+                ->withToken($settings->token)
+                ->post('https://srscrm.ir/api/sms/send', [
+                    'gateway' => $settings->gateway,
+                    'to' => $normalizedTo,
+                    'message' => $text,
+                ])->json();
 
-            Log::info('SMS send attempt via Sabapnovin', [
+            Log::info('SMS send attempt via Star SMS', [
                 'to' => $normalizedTo,
                 'original' => $originalTo,
                 'message' => $text,
-                'response' => $request,
+                'response' => $response,
             ]);
 
-            if (($request['status']['code'] ?? 0) != 200) {
-                Log::error('Send SMS Error: '.($request['status']['message'] ?? 'unknown error'));
+            if (!($response['ok'] ?? false)) {
+                Log::error('Send SMS Error: '.($response['message'] ?? 'unknown error'), [
+                    'code' => $response['code'] ?? 'no_code'
+                ]);
             }
         } catch (\Throwable $e) {
             Log::error('Failed to send SMS: '.$e->getMessage(), [

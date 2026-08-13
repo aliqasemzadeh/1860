@@ -7,9 +7,11 @@ use App\Livewire\Forms\ContactSettingForm;
 use App\Livewire\Forms\GeneralSettingForm;
 use App\Livewire\Forms\MaintenanceSettingForm;
 use App\Livewire\Forms\SocialSettingForm;
+use App\Livewire\Forms\SmsSettingForm;
 use App\Settings\ContactSettings;
 use App\Settings\GeneralSettings;
 use App\Settings\MaintenanceSettings;
+use App\Settings\SmsSettings;
 use App\Settings\SocialSettings;
 use Flux\Flux;
 use Illuminate\Support\Facades\Artisan;
@@ -32,11 +34,16 @@ class Index extends Component
 
     public MaintenanceSettingForm $maintenanceForm;
 
+    public SmsSettingForm $smsForm;
+
+    public string $tab = 'general';
+
     public function mount(
         GeneralSettings $general,
         ContactSettings $contact,
         SocialSettings $social,
         MaintenanceSettings $maintenance,
+        SmsSettings $sms,
     ): void {
         $this->authorize('administrator_setting_option_index');
 
@@ -65,6 +72,11 @@ class Index extends Component
             'secret' => $maintenance->secret,
             'retry' => $maintenance->retry,
             'refresh' => $maintenance->refresh,
+        ]);
+
+        $this->smsForm->fill([
+            'token' => $sms->token,
+            'gateway' => $sms->gateway,
         ]);
     }
 
@@ -198,6 +210,19 @@ class Index extends Component
         $settings->secret = $this->maintenanceForm->secret;
         $settings->retry = $this->maintenanceForm->retry;
         $settings->refresh = $this->maintenanceForm->refresh;
+        $settings->save();
+
+        Flux::toast(__('app.settings_updated'));
+    }
+
+    public function saveSms(SmsSettings $settings): void
+    {
+        $this->authorize('administrator_setting_option_update');
+
+        $this->smsForm->validate();
+
+        $settings->token = $this->smsForm->token;
+        $settings->gateway = $this->smsForm->gateway;
         $settings->save();
 
         Flux::toast(__('app.settings_updated'));

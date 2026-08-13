@@ -10,284 +10,328 @@
     </div>
 
     <div class="space-y-6">
-        <flux:card>
-            <form wire:submit="saveGeneral" class="space-y-4">
-                <flux:heading size="lg">{{ __('app.general_settings') }}</flux:heading>
-                <flux:text>{{ __('app.general_settings_description') }}</flux:text>
-                <flux:separator variant="subtle" />
+        <flux:tab.group>
+            <flux:tabs wire:model="tab">
+                <flux:tab name="general">{{ __('app.general_settings') }}</flux:tab>
+                <flux:tab name="contact">{{ __('app.contact_settings') }}</flux:tab>
+                <flux:tab name="social">{{ __('app.social_networks') }}</flux:tab>
+                <flux:tab name="sms">{{ __('app.sms_settings') }}</flux:tab>
+                <flux:tab name="maintenance">{{ __('app.maintenance_mode') }}</flux:tab>
+            </flux:tabs>
 
-                <flux:field>
-                    <flux:label>{{ __('app.site_title') }}</flux:label>
-                    <flux:input wire:model="generalForm.title" />
-                    <flux:error name="generalForm.title" />
-                </flux:field>
+            <flux:tab.panel name="general">
+                <flux:card>
+                    <form wire:submit="saveGeneral" class="space-y-4">
+                        <flux:heading size="lg">{{ __('app.general_settings') }}</flux:heading>
+                        <flux:text>{{ __('app.general_settings_description') }}</flux:text>
+                        <flux:separator variant="subtle" />
 
-                <flux:field>
-                    <flux:label>{{ __('app.site_description') }}</flux:label>
-                    <flux:textarea wire:model="generalForm.description" rows="3" />
-                    <flux:error name="generalForm.description" />
-                </flux:field>
-
-                <flux:field>
-                    <flux:label>{{ __('app.site_keywords') }}</flux:label>
-                    <flux:input wire:model="generalForm.keywords" />
-                    <flux:text class="mt-1 text-xs">{{ __('app.site_keywords_help') }}</flux:text>
-                    <flux:error name="generalForm.keywords" />
-                </flux:field>
-
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <div class="space-y-2">
-                        @if ($generalForm->logo_path)
-                            <img
-                                src="{{ Storage::disk('public')->url($generalForm->logo_path) }}"
-                                alt="{{ __('app.site_logo') }}"
-                                class="mb-2 h-16 object-contain"
-                            />
-                            <flux:tooltip content="{{ __('app.delete') }}">
-                                <flux:button
-                                    size="xs"
-                                    variant="primary"
-                                    color="red"
-                                    icon="trash"
-                                    icon:variant="outline"
-                                    wire:click="removeLogo"
-                                    wire:confirm="{{ __('app.are_you_sure') }}"
-                                />
-                            </flux:tooltip>
-                        @endif
-                        <flux:file-upload wire:model="generalForm.logo" label="{{ __('app.site_logo') }}">
-                            <flux:file-upload.dropzone
-                                heading="{{ __('app.site_logo_upload') }}"
-                                text="PNG, JPG, WEBP, SVG - 2MB"
-                                with-progress
-                                inline
-                            />
-                        </flux:file-upload>
-                        <flux:error name="generalForm.logo" />
-                    </div>
-
-                    <div class="space-y-2">
-                        @if ($generalForm->favicon_path)
-                            <img
-                                src="{{ Storage::disk('public')->url($generalForm->favicon_path) }}"
-                                alt="{{ __('app.site_favicon') }}"
-                                class="mb-2 h-10 object-contain"
-                            />
-                            <flux:tooltip content="{{ __('app.delete') }}">
-                                <flux:button
-                                    size="xs"
-                                    variant="primary"
-                                    color="red"
-                                    icon="trash"
-                                    icon:variant="outline"
-                                    wire:click="removeFavicon"
-                                    wire:confirm="{{ __('app.are_you_sure') }}"
-                                />
-                            </flux:tooltip>
-                        @endif
-                        <flux:file-upload wire:model="generalForm.favicon" label="{{ __('app.site_favicon') }}">
-                            <flux:file-upload.dropzone
-                                heading="{{ __('app.site_favicon_upload') }}"
-                                text="ICO, PNG, SVG - 512KB"
-                                with-progress
-                                inline
-                            />
-                        </flux:file-upload>
-                        <flux:error name="generalForm.favicon" />
-                    </div>
-                </div>
-
-                <flux:button type="submit" class="w-full" variant="primary" color="teal">
-                    {{ __('app.save') }}
-                </flux:button>
-            </form>
-        </flux:card>
-
-        <flux:card>
-            <form wire:submit="saveContact" class="space-y-4">
-                <flux:heading size="lg">{{ __('app.contact_settings') }}</flux:heading>
-                <flux:text>{{ __('app.contact_settings_description') }}</flux:text>
-                <flux:separator variant="subtle" />
-
-                <flux:field>
-                    <flux:label>{{ __('app.address') }}</flux:label>
-                    <flux:textarea wire:model="contactForm.address" rows="2" />
-                    <flux:error name="contactForm.address" />
-                </flux:field>
-
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <flux:field>
-                        <flux:label>{{ __('app.mobile') }}</flux:label>
-                        <flux:input wire:model="contactForm.mobile" dir="ltr" />
-                        <flux:error name="contactForm.mobile" />
-                    </flux:field>
-
-                    <flux:field>
-                        <flux:label>{{ __('app.landline') }}</flux:label>
-                        <flux:input wire:model="contactForm.phone" dir="ltr" />
-                        <flux:error name="contactForm.phone" />
-                    </flux:field>
-                </div>
-
-                <flux:field>
-                    <flux:label>{{ __('app.email') }}</flux:label>
-                    <flux:input wire:model="contactForm.email" type="email" dir="ltr" />
-                    <flux:error name="contactForm.email" />
-                </flux:field>
-
-                <flux:button type="submit" class="w-full" variant="primary" color="teal">
-                    {{ __('app.save') }}
-                </flux:button>
-            </form>
-        </flux:card>
-
-        <flux:card>
-            <form wire:submit="saveSocial" class="space-y-4">
-                <flux:heading size="lg">{{ __('app.social_networks') }}</flux:heading>
-                <flux:text>{{ __('app.social_networks_description') }}</flux:text>
-                <flux:separator variant="subtle" />
-
-                <flux:subheading>{{ __('app.social_iranian') }}</flux:subheading>
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    @foreach ($this->networks as $network)
-                        @continue(! $network->isIranian())
                         <flux:field>
-                            <flux:label>{{ $network->label() }}</flux:label>
-                            <flux:input
-                                wire:model="socialForm.links.{{ $network->value }}"
-                                icon="{{ $network->icon() }}"
-                                dir="ltr"
-                                placeholder="https://"
-                            />
-                            <flux:error name="socialForm.links.{{ $network->value }}" />
+                            <flux:label>{{ __('app.site_title') }}</flux:label>
+                            <flux:input wire:model="generalForm.title" />
+                            <flux:error name="generalForm.title" />
                         </flux:field>
-                    @endforeach
-                </div>
 
-                <flux:separator variant="subtle" />
-
-                <flux:subheading>{{ __('app.social_foreign') }}</flux:subheading>
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    @foreach ($this->networks as $network)
-                        @continue($network->isIranian())
                         <flux:field>
-                            <flux:label>{{ $network->label() }}</flux:label>
-                            <flux:input
-                                wire:model="socialForm.links.{{ $network->value }}"
-                                icon="{{ $network->icon() }}"
-                                dir="ltr"
-                                placeholder="https://"
-                            />
-                            <flux:error name="socialForm.links.{{ $network->value }}" />
+                            <flux:label>{{ __('app.site_description') }}</flux:label>
+                            <flux:textarea wire:model="generalForm.description" rows="3" />
+                            <flux:error name="generalForm.description" />
                         </flux:field>
-                    @endforeach
-                </div>
 
-                <flux:button type="submit" class="w-full" variant="primary" color="teal">
-                    {{ __('app.save') }}
-                </flux:button>
-            </form>
-        </flux:card>
+                        <flux:field>
+                            <flux:label>{{ __('app.site_keywords') }}</flux:label>
+                            <flux:input wire:model="generalForm.keywords" />
+                            <flux:text class="mt-1 text-xs">{{ __('app.site_keywords_help') }}</flux:text>
+                            <flux:error name="generalForm.keywords" />
+                        </flux:field>
 
-        <flux:card>
-            <div class="space-y-4">
-                <div class="flex items-center justify-between gap-4">
-                    <div>
-                        <flux:heading size="lg">{{ __('app.maintenance_mode') }}</flux:heading>
-                        <flux:text>{{ __('app.maintenance_mode_description') }}</flux:text>
-                    </div>
-                    <flux:badge :color="$this->isDown ? 'red' : 'green'">
-                        {{ $this->isDown ? __('app.maintenance_active') : __('app.maintenance_inactive') }}
-                    </flux:badge>
-                </div>
-                <flux:separator variant="subtle" />
-
-                @if ($this->bypassUrl)
-                    <flux:callout variant="warning" icon="triangle-alert" heading="{{ __('app.maintenance_bypass_url') }}">
-                        <flux:text dir="ltr" class="break-all">{{ $this->bypassUrl }}</flux:text>
-                    </flux:callout>
-                @endif
-
-                <form wire:submit="saveMaintenance" class="space-y-4">
-                    <flux:field>
-                        <flux:label>{{ __('app.maintenance_message') }}</flux:label>
-                        <flux:textarea wire:model="maintenanceForm.message" rows="3" />
-                        <flux:error name="maintenanceForm.message" />
-                    </flux:field>
-
-                    <flux:field>
-                        <flux:label>{{ __('app.maintenance_secret') }}</flux:label>
-                        <div class="flex items-start gap-2">
-                            <div class="flex-1">
-                                <flux:input
-                                    wire:model="maintenanceForm.secret"
-                                    dir="ltr"
-                                    type="password"
-                                    viewable
-                                    copyable
-                                />
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div class="space-y-2">
+                                @if ($generalForm->logo_path)
+                                    <img
+                                        src="{{ Storage::disk('public')->url($generalForm->logo_path) }}"
+                                        alt="{{ __('app.site_logo') }}"
+                                        class="mb-2 h-16 object-contain"
+                                    />
+                                    <flux:tooltip content="{{ __('app.delete') }}">
+                                        <flux:button
+                                            size="xs"
+                                            variant="primary"
+                                            color="red"
+                                            icon="trash"
+                                            icon:variant="outline"
+                                            wire:click="removeLogo"
+                                            wire:confirm="{{ __('app.are_you_sure') }}"
+                                        />
+                                    </flux:tooltip>
+                                @endif
+                                <flux:file-upload wire:model="generalForm.logo" label="{{ __('app.site_logo') }}">
+                                    <flux:file-upload.dropzone
+                                        heading="{{ __('app.site_logo_upload') }}"
+                                        text="PNG, JPG, WEBP, SVG - 2MB"
+                                        with-progress
+                                        inline
+                                    />
+                                </flux:file-upload>
+                                <flux:error name="generalForm.logo" />
                             </div>
-                            <flux:tooltip content="{{ __('app.maintenance_generate_secret') }}">
-                                <flux:button
-                                    type="button"
-                                    size="sm"
-                                    variant="primary"
-                                    color="zinc"
-                                    icon="key"
-                                    icon:variant="outline"
-                                    wire:click="generateSecret"
-                                />
-                            </flux:tooltip>
+
+                            <div class="space-y-2">
+                                @if ($generalForm->favicon_path)
+                                    <img
+                                        src="{{ Storage::disk('public')->url($generalForm->favicon_path) }}"
+                                        alt="{{ __('app.site_favicon') }}"
+                                        class="mb-2 h-10 object-contain"
+                                    />
+                                    <flux:tooltip content="{{ __('app.delete') }}">
+                                        <flux:button
+                                            size="xs"
+                                            variant="primary"
+                                            color="red"
+                                            icon="trash"
+                                            icon:variant="outline"
+                                            wire:click="removeFavicon"
+                                            wire:confirm="{{ __('app.are_you_sure') }}"
+                                        />
+                                    </flux:tooltip>
+                                @endif
+                                <flux:file-upload wire:model="generalForm.favicon" label="{{ __('app.site_favicon') }}">
+                                    <flux:file-upload.dropzone
+                                        heading="{{ __('app.site_favicon_upload') }}"
+                                        text="ICO, PNG, SVG - 512KB"
+                                        with-progress
+                                        inline
+                                    />
+                                </flux:file-upload>
+                                <flux:error name="generalForm.favicon" />
+                            </div>
                         </div>
-                        <flux:text class="mt-1 text-xs">{{ __('app.maintenance_secret_help') }}</flux:text>
-                        <flux:error name="maintenanceForm.secret" />
-                    </flux:field>
 
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <flux:button type="submit" class="w-full" variant="primary" color="teal">
+                            {{ __('app.save') }}
+                        </flux:button>
+                    </form>
+                </flux:card>
+            </flux:tab.panel>
+
+            <flux:tab.panel name="contact">
+                <flux:card>
+                    <form wire:submit="saveContact" class="space-y-4">
+                        <flux:heading size="lg">{{ __('app.contact_settings') }}</flux:heading>
+                        <flux:text>{{ __('app.contact_settings_description') }}</flux:text>
+                        <flux:separator variant="subtle" />
+
                         <flux:field>
-                            <flux:label>{{ __('app.maintenance_retry') }}</flux:label>
-                            <flux:input wire:model="maintenanceForm.retry" type="number" min="0" dir="ltr" />
-                            <flux:error name="maintenanceForm.retry" />
+                            <flux:label>{{ __('app.address') }}</flux:label>
+                            <flux:textarea wire:model="contactForm.address" rows="2" />
+                            <flux:error name="contactForm.address" />
+                        </flux:field>
+
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <flux:field>
+                                <flux:label>{{ __('app.mobile') }}</flux:label>
+                                <flux:input wire:model="contactForm.mobile" dir="ltr" />
+                                <flux:error name="contactForm.mobile" />
+                            </flux:field>
+
+                            <flux:field>
+                                <flux:label>{{ __('app.landline') }}</flux:label>
+                                <flux:input wire:model="contactForm.phone" dir="ltr" />
+                                <flux:error name="contactForm.phone" />
+                            </flux:field>
+                        </div>
+
+                        <flux:field>
+                            <flux:label>{{ __('app.email') }}</flux:label>
+                            <flux:input wire:model="contactForm.email" type="email" dir="ltr" />
+                            <flux:error name="contactForm.email" />
+                        </flux:field>
+
+                        <flux:button type="submit" class="w-full" variant="primary" color="teal">
+                            {{ __('app.save') }}
+                        </flux:button>
+                    </form>
+                </flux:card>
+            </flux:tab.panel>
+
+            <flux:tab.panel name="social">
+                <flux:card>
+                    <form wire:submit="saveSocial" class="space-y-4">
+                        <flux:heading size="lg">{{ __('app.social_networks') }}</flux:heading>
+                        <flux:text>{{ __('app.social_networks_description') }}</flux:text>
+                        <flux:separator variant="subtle" />
+
+                        <flux:subheading>{{ __('app.social_iranian') }}</flux:subheading>
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            @foreach ($this->networks as $network)
+                                @continue(! $network->isIranian())
+                                <flux:field>
+                                    <flux:label>{{ $network->label() }}</flux:label>
+                                    <flux:input
+                                        wire:model="socialForm.links.{{ $network->value }}"
+                                        icon="{{ $network->icon() }}"
+                                        dir="ltr"
+                                        placeholder="https://"
+                                    />
+                                    <flux:error name="socialForm.links.{{ $network->value }}" />
+                                </flux:field>
+                            @endforeach
+                        </div>
+
+                        <flux:separator variant="subtle" />
+
+                        <flux:subheading>{{ __('app.social_foreign') }}</flux:subheading>
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            @foreach ($this->networks as $network)
+                                @continue($network->isIranian())
+                                <flux:field>
+                                    <flux:label>{{ $network->label() }}</flux:label>
+                                    <flux:input
+                                        wire:model="socialForm.links.{{ $network->value }}"
+                                        icon="{{ $network->icon() }}"
+                                        dir="ltr"
+                                        placeholder="https://"
+                                    />
+                                    <flux:error name="socialForm.links.{{ $network->value }}" />
+                                </flux:field>
+                            @endforeach
+                        </div>
+
+                        <flux:button type="submit" class="w-full" variant="primary" color="teal">
+                            {{ __('app.save') }}
+                        </flux:button>
+                    </form>
+                </flux:card>
+            </flux:tab.panel>
+
+            <flux:tab.panel name="sms">
+                <flux:card>
+                    <form wire:submit="saveSms" class="space-y-4">
+                        <flux:heading size="lg">{{ __('app.sms_settings') }}</flux:heading>
+                        <flux:text>{{ __('app.sms_settings_description') }}</flux:text>
+                        <flux:separator variant="subtle" />
+
+                        <flux:field>
+                            <flux:label>{{ __('app.sms_token') }}</flux:label>
+                            <flux:input wire:model="smsForm.token" type="password" viewable copyable dir="ltr" />
+                            <flux:error name="smsForm.token" />
                         </flux:field>
 
                         <flux:field>
-                            <flux:label>{{ __('app.maintenance_refresh') }}</flux:label>
-                            <flux:input wire:model="maintenanceForm.refresh" type="number" min="0" dir="ltr" />
-                            <flux:error name="maintenanceForm.refresh" />
+                            <flux:label>{{ __('app.sms_gateway') }}</flux:label>
+                            <flux:input wire:model="smsForm.gateway" dir="ltr" placeholder="1000" />
+                            <flux:error name="smsForm.gateway" />
                         </flux:field>
+
+                        <flux:button type="submit" class="w-full" variant="primary" color="teal">
+                            {{ __('app.save') }}
+                        </flux:button>
+                    </form>
+                </flux:card>
+            </flux:tab.panel>
+
+            <flux:tab.panel name="maintenance">
+                <flux:card>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <flux:heading size="lg">{{ __('app.maintenance_mode') }}</flux:heading>
+                                <flux:text>{{ __('app.maintenance_mode_description') }}</flux:text>
+                            </div>
+                            <flux:badge :color="$this->isDown ? 'red' : 'green'">
+                                {{ $this->isDown ? __('app.maintenance_active') : __('app.maintenance_inactive') }}
+                            </flux:badge>
+                        </div>
+                        <flux:separator variant="subtle" />
+
+                        @if ($this->bypassUrl)
+                            <flux:callout variant="warning" icon="triangle-alert" heading="{{ __('app.maintenance_bypass_url') }}">
+                                <flux:text dir="ltr" class="break-all">{{ $this->bypassUrl }}</flux:text>
+                            </flux:callout>
+                        @endif
+
+                        <form wire:submit="saveMaintenance" class="space-y-4">
+                            <flux:field>
+                                <flux:label>{{ __('app.maintenance_message') }}</flux:label>
+                                <flux:textarea wire:model="maintenanceForm.message" rows="3" />
+                                <flux:error name="maintenanceForm.message" />
+                            </flux:field>
+
+                            <flux:field>
+                                <flux:label>{{ __('app.maintenance_secret') }}</flux:label>
+                                <div class="flex items-start gap-2">
+                                    <div class="flex-1">
+                                        <flux:input
+                                            wire:model="maintenanceForm.secret"
+                                            dir="ltr"
+                                            type="password"
+                                            viewable
+                                            copyable
+                                        />
+                                    </div>
+                                    <flux:tooltip content="{{ __('app.maintenance_generate_secret') }}">
+                                        <flux:button
+                                            type="button"
+                                            size="sm"
+                                            variant="primary"
+                                            color="zinc"
+                                            icon="key"
+                                            icon:variant="outline"
+                                            wire:click="generateSecret"
+                                        />
+                                    </flux:tooltip>
+                                </div>
+                                <flux:text class="mt-1 text-xs">{{ __('app.maintenance_secret_help') }}</flux:text>
+                                <flux:error name="maintenanceForm.secret" />
+                            </flux:field>
+
+                            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                <flux:field>
+                                    <flux:label>{{ __('app.maintenance_retry') }}</flux:label>
+                                    <flux:input wire:model="maintenanceForm.retry" type="number" min="0" dir="ltr" />
+                                    <flux:error name="maintenanceForm.retry" />
+                                </flux:field>
+
+                                <flux:field>
+                                    <flux:label>{{ __('app.maintenance_refresh') }}</flux:label>
+                                    <flux:input wire:model="maintenanceForm.refresh" type="number" min="0" dir="ltr" />
+                                    <flux:error name="maintenanceForm.refresh" />
+                                </flux:field>
+                            </div>
+
+                            <flux:button type="submit" class="w-full" variant="primary" color="teal">
+                                {{ __('app.save') }}
+                            </flux:button>
+                        </form>
+
+                        <flux:separator variant="subtle" />
+
+                        @if ($this->isDown)
+                            <flux:button
+                                wire:click="disableMaintenance"
+                                wire:confirm="{{ __('app.are_you_sure') }}"
+                                variant="primary"
+                                color="green"
+                                icon="play"
+                                class="w-full"
+                            >
+                                {{ __('app.maintenance_disable') }}
+                            </flux:button>
+                        @else
+                            <flux:button
+                                wire:click="enableMaintenance"
+                                wire:confirm="{{ __('app.are_you_sure') }}"
+                                variant="primary"
+                                color="red"
+                                icon="power"
+                                class="w-full"
+                            >
+                                {{ __('app.maintenance_enable') }}
+                            </flux:button>
+                        @endif
                     </div>
-
-                    <flux:button type="submit" class="w-full" variant="primary" color="teal">
-                        {{ __('app.save') }}
-                    </flux:button>
-                </form>
-
-                <flux:separator variant="subtle" />
-
-                @if ($this->isDown)
-                    <flux:button
-                        wire:click="disableMaintenance"
-                        wire:confirm="{{ __('app.are_you_sure') }}"
-                        variant="primary"
-                        color="green"
-                        icon="play"
-                        class="w-full"
-                    >
-                        {{ __('app.maintenance_disable') }}
-                    </flux:button>
-                @else
-                    <flux:button
-                        wire:click="enableMaintenance"
-                        wire:confirm="{{ __('app.are_you_sure') }}"
-                        variant="primary"
-                        color="red"
-                        icon="power"
-                        class="w-full"
-                    >
-                        {{ __('app.maintenance_enable') }}
-                    </flux:button>
-                @endif
-            </div>
-        </flux:card>
+                </flux:card>
+            </flux:tab.panel>
+        </flux:tab.group>
     </div>
 </div>
