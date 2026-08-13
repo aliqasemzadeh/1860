@@ -1,59 +1,128 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Project Name / نام پروژه
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[English Version Below](#english)
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## فارسی (Persian)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+این پروژه یک اپلیکیشن وب مدرن است که با استفاده از آخرین تکنولوژی‌های اکوسیستم لاراول توسعه یافته است.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### تکنولوژی‌های مورد استفاده
+- **Backend:** PHP 8.4, Laravel 13
+- **Frontend:** TailwindCSS, AlpineJS
+- **Livewire:** Version 4 (Beta)
+- **UI Library:** FluxUI Pro
+- **Icons:** Lucide Icons
 
-## Learning Laravel
+### پیش‌نیازها
+قبل از نصب، مطمئن شوید موارد زیر روی سیستم شما نصب است:
+- PHP >= 8.4
+- Composer
+- Node.js & NPM
+- MySQL یا هر پایگاه داده مورد حمایت لاراول
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### مراحل نصب
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. **کلون کردن پروژه:**
+   ```bash
+   git clone <repository-url>
+   cd <project-folder>
+   ```
 
-## Laravel Sponsors
+2. **تنظیمات فایل محیطی:**
+   فایل `.env.example` را به `.env` کپی کرده و اطلاعات پایگاه داده خود را در آن وارد کنید.
+   ```bash
+   cp .env.example .env
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+3. **نصب وابستگی‌ها و راه‌اندازی سریع:**
+   این پروژه دارای یک اسکریپت آماده برای نصب است که تمام مراحل (نصب پکیج‌ها، ایجاد کلید، مهاجرت دیتابیس و ساخت فایل‌های فرانت‌اند) را انجام می‌دهد:
+   ```bash
+   composer run setup
+   ```
 
-### Premium Partners
+   *نکته: اگر می‌خواهید مراحل را دستی انجام دهید:*
+   ```bash
+   composer install
+   php artisan key:generate
+   php artisan migrate
+   npm install
+   npm run build
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+4. **اجرای پروژه:**
+   ```bash
+   php artisan serve
+   ```
+   و در ترمینال دیگر برای فایل‌های فرانت‌‌اند:
+   ```bash
+   npm run dev
+   ```
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+<a name="english"></a>
+## English
 
-## Code of Conduct
+This project is a modern web application developed using the latest technologies in the Laravel ecosystem.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Tech Stack
+- **Backend:** PHP 8.4, Laravel 13
+- **Frontend:** TailwindCSS, AlpineJS
+- **Livewire:** Version 4 (Beta)
+- **UI Library:** FluxUI Pro
+- **Icons:** Lucide Icons
 
-## Security Vulnerabilities
+### Prerequisites
+Before installation, ensure you have the following installed:
+- PHP >= 8.4
+- Composer
+- Node.js & NPM
+- MySQL or any Laravel-supported database
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Installation Steps
 
-## License
+1. **Clone the Repository:**
+   ```bash
+   git clone <repository-url>
+   cd <project-folder>
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+2. **Environment Configuration:**
+   Copy `.env.example` to `.env` and configure your database settings.
+   ```bash
+   cp .env.example .env
+   ```
+
+3. **Install Dependencies & Quick Setup:**
+   The project includes a setup script that handles everything (installing packages, generating keys, running migrations, and building assets):
+   ```bash
+   composer run setup
+   ```
+
+   *Note: If you prefer manual installation:*
+   ```bash
+   composer install
+   php artisan key:generate
+   php artisan migrate
+   npm install
+   npm run build
+   ```
+
+4. **Running the Application:**
+   ```bash
+   php artisan serve
+   ```
+   And in another terminal for assets:
+   ```bash
+   npm run dev
+   ```
+
+---
+
+### ⚠️ Important Note / نکته مهم
+
+**English:** You MUST purchase a **FluxUI Pro** license to use this software. This project relies on Pro components that require a valid license key from [fluxui.dev](https://fluxui.dev/).
+
+**فارسی:** برای استفاده از این نرم‌افزار، شما الزماً باید لایسنس **FluxUI Pro** را خریداری کنید. این پروژه از اجزای نسخه Pro استفاده می‌کند که نیازمند کلید لایسنس معتبر از سایت [fluxui.dev](https://fluxui.dev/) می‌باشد.
