@@ -30,7 +30,7 @@ class Index extends Component
     {
         return Permission::query()
             ->tap(fn ($query) => $this->sortBy ? $query->orderBy($this->sortBy, $this->sortDirection) : $query)
-            ->paginate(10);
+            ->paginate(20);
     }
 
     #[Layout('layouts.panels.administrator')]
