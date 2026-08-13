@@ -68,11 +68,16 @@ class Seo
     public static function site(?string $title = null, bool $noindex = false): self
     {
         $general = app(GeneralSettings::class);
+        $siteName = self::siteName();
 
         return new self(
-            title: $title ?: self::siteName(),
-            description: filled($general->description) ? $general->description : null,
-            keywords: filled($general->keywords) ? $general->keywords : null,
+            title: $title ?: $siteName,
+            description: filled($general->description)
+                ? $general->description
+                : self::clean(__('app.seo_home_description', ['name' => $siteName])),
+            keywords: filled($general->keywords)
+                ? $general->keywords
+                : __('app.seo_home_keywords'),
             canonical: route('home'),
             image: self::defaultImage($general),
             noindex: $noindex,
@@ -100,7 +105,9 @@ class Seo
         return new self(
             title: $title,
             description: self::clean($description),
-            keywords: filled($general->keywords) ? $general->keywords : null,
+            keywords: filled($general->keywords)
+                ? $general->keywords
+                : __('app.seo_home_keywords'),
             canonical: $canonical,
             image: self::defaultImage($general),
             prev: $page > 1
@@ -118,7 +125,9 @@ class Seo
         return new self(
             title: __('app.seo_contact_title'),
             description: self::clean(__('app.contact_description')),
-            keywords: filled($general->keywords) ? $general->keywords : null,
+            keywords: filled($general->keywords)
+                ? $general->keywords
+                : __('app.seo_home_keywords'),
             canonical: route('contact.index'),
             image: self::defaultImage($general),
             schemas: [

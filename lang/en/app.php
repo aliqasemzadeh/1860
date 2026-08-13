@@ -40,7 +40,8 @@ return [
     'slug_fa' => 'Slug (FA)',
     'category_seo_description' => 'Browse and buy :name products at the best price.',
     'seo_home_title' => ':name',
-    'seo_home_description' => 'Shop online at :name with the best prices and fast delivery.',
+    'seo_home_description' => ':name E-commerce; The most specialized reference for digital goods and mobile phones, built with cutting-edge technologies (Laravel 13, Livewire 4, FluxUI). Providing the best market prices through an intelligent pricing analysis system, an extensive product catalog, and a modern, high-speed user experience.',
+    'seo_home_keywords' => 'online shop, mobile, digital goods, smart pricing, Setaregan Roz Jonoub',
     'seo_page' => 'Page :page',
     'seo_contact_title' => 'Contact Us',
 
