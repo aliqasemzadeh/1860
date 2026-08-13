@@ -2,9 +2,9 @@
 
 namespace App\Jobs\Notification;
 
+use App\Settings\SmsSettings;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -18,19 +18,19 @@ class SendSmsMessageJob implements ShouldQueue
     public function __construct(
         public string $mobile,
         public string $text
-    ) 
+    )
     {
     }
 
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(SmsSettings $settings): void
     {
-        // Normalize and send SMS via Sabapnovin
+        // Normalize and send SMS via Star SMS (srscrm.ir)
         [$originalMobile, $normalizedMobile] = $this->normalizeIranMobile($this->mobile);
 
-        $this->sendViaSabapnovin($normalizedMobile, $this->text, $originalMobile);
+        $this->sendViaStarSms($normalizedMobile, $this->text, $originalMobile, $settings);
     }
 
     /**
@@ -68,30 +68,30 @@ class SendSmsMessageJob implements ShouldQueue
     }
 
     /**
-     * Send SMS via Sabapnovin using provided gateway.
+     * Send SMS via Star SMS using provided gateway.
      */
-    private function sendViaSabapnovin(string $normalizedTo, string $text, string $originalTo): void
+    private function sendViaStarSms(string $normalizedTo, string $text, string $originalTo, SmsSettings $settings): void
     {
         try {
-            $request = Http::get(
-                sprintf('https://api.sabanovin.com/v1/%s/sms/send.json', (string) Config::get('sms.api-key')),
-                [
-                    'gateway' => Config::get('sms.gateway'),
+            $response = Http::withToken($settings->token)
+                ->post('https://srscrm.ir/api/sms/send', [
+                    'gateway' => $settings->gateway,
                     'to' => $normalizedTo,
-                    'text' => $text.PHP_EOL."لغو 11",
-                ]
-            )->json();
+                    'message' => $text,
+                ])->json();
 
             // Optional: info log and simple auditing
-            Log::info('SMS send attempt via Sabapnovin', [
+            Log::info('SMS send attempt via Star SMS', [
                 'to' => $normalizedTo,
                 'original' => $originalTo,
                 'message' => $text,
-                'response' => $request,
+                'response' => $response,
             ]);
 
-            if (($request['status']['code'] ?? 0) != 200) {
-                Log::error('Send SMS Error: '.($request['status']['message'] ?? 'unknown error'));
+            if (!($response['ok'] ?? false)) {
+                Log::error('Send SMS Error: '.($response['message'] ?? 'unknown error'), [
+                    'code' => $response['code'] ?? 'no_code'
+                ]);
             }
         } catch (\Throwable $e) {
             Log::error('Failed to send SMS: '.$e->getMessage(), [
