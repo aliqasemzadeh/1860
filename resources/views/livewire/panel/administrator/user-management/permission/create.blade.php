@@ -22,7 +22,7 @@
                 </flux:field>
             </div>
             <button type="submit" class="btn-default btn-indigo w-full">
-                {{ __('app.create') }}
+                {{ __('general.create') }}
             </button>
         </form>
     </div>

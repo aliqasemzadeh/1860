@@ -23,7 +23,7 @@
                 </flux:field>
 
                 <flux:field>
-                    <flux:label>{{ __('app.description') }}</flux:label>
+                    <flux:label>{{ __('general.description') }}</flux:label>
                     <flux:textarea wire:model="description" rows="3" />
                     <flux:error name="description" />
                 </flux:field>
@@ -38,7 +38,7 @@
             </div>
 
             <flux:button type="submit" class="w-full" variant="primary">
-                {{ __('app.create') }}
+                {{ __('general.create') }}
             </flux:button>
         </form>
     </div>

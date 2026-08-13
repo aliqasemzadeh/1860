@@ -2,7 +2,7 @@
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.product_attributes') }}: {{ $product->name }}</flux:heading>
+                <flux:heading size="xl" level="1">{{ __('general.product_attributes') }}: {{ $product->name }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.product_attributes_description') }}</flux:subheading>
             </div>
             <div class="flex items-center gap-2">
@@ -10,7 +10,7 @@
                     {{ __('app.back') }}
                 </flux:button>
                 <flux:button variant="primary" wire:click="save">
-                    {{ __('app.save') }}
+                    {{ __('general.save') }}
                 </flux:button>
             </div>
         </div>

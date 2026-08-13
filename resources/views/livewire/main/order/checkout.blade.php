@@ -8,7 +8,7 @@
             {{-- Breadcrumb --}}
             <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
                 <a href="{{ route('home') }}" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-                    {{ __('app.dashboard') }}
+                    {{ __('general.dashboard') }}
                 </a>
                 <span>/</span>
                 <a href="{{ route('order.cart') }}" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
@@ -32,7 +32,7 @@
                             <flux:text class="text-center text-zinc-600 dark:text-zinc-400">{{ __('app.enter_mobile_prompt') }}</flux:text>
                         </div>
                         <flux:field>
-                            <flux:label>{{ __('app.mobile') }}</flux:label>
+                            <flux:label>{{ __('general.mobile') }}</flux:label>
                             <flux:input dir="ltr" wire:model="mobile" placeholder="09123456789" />
                             <flux:error name="mobile" />
                         </flux:field>

@@ -51,7 +51,7 @@
                                                 <span class="font-medium">{{ $priceFetcher->type_label }}</span>
                                                 @if ($priceFetcher->last_price)
                                                     <span class="text-sm text-gray-600 dark:text-gray-400">
-                                                        {{ number_format($priceFetcher->last_price) }} {{ __('app.toman') }}
+                                                        {{ number_format($priceFetcher->last_price) }} {{ __('general.toman') }}
                                                     </span>
                                                 @else
                                                     <span class="text-sm text-gray-500 dark:text-gray-500">
@@ -81,9 +81,9 @@
                                                 size="xs"
                                                 variant="danger"
                                                 wire:click="removePriceFetcher({{ $priceFetcher->id }})"
-                                                wire:confirm="{{ __('app.are_you_sure') }}"
+                                                wire:confirm="{{ __('general.are_you_sure') }}"
                                             >
-                                                {{ __('app.delete') }}
+                                                {{ __('general.delete') }}
                                             </flux:button>
                                         </div>
                                     </div>

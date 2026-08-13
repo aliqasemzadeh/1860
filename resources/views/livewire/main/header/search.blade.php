@@ -1,10 +1,10 @@
 <div>
     <flux:modal.trigger name="search" shortcut="cmd.f">
-        <flux:input as="button" placeholder="{{ __('app.search') }}" icon="magnifying-glass" kbd="⌘K" />
+        <flux:input as="button" placeholder="{{ __('general.search') }}" icon="magnifying-glass" kbd="⌘K" />
     </flux:modal.trigger>
     <flux:modal name="search" variant="bare" class="w-full max-w-[30rem] my-[12vh] max-h-screen overflow-y-hidden">
         <flux:command class="border-none shadow-lg inline-flex flex-col max-h-[76vh]">
-            <flux:command.input wire:model.live.debounce.150ms="query" placeholder="{{ __('app.search_placeholder') }}" closable />
+            <flux:command.input wire:model.live.debounce.150ms="query" placeholder="{{ __('general.search_placeholder') }}" closable />
             <flux:command.items>
                 @forelse($this->products as $product)
                     <flux:command.item 
@@ -25,7 +25,7 @@
                                     </div>
                                     @if($product->price)
                                         <div class="text-xs font-bold text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
-                                            {{ number_format($product->sale_price && $product->sale_price < $product->price ? $product->sale_price : $product->price, 0) }} {{ __('app.toman') }}
+                                            {{ number_format($product->sale_price && $product->sale_price < $product->price ? $product->sale_price : $product->price, 0) }} {{ __('general.toman') }}
                                         </div>
                                     @endif
                                 </div>
@@ -41,9 +41,9 @@
                                     @endphp
                                     <div class="text-xs whitespace-nowrap">
                                         @if($isAvailable)
-                                            <span class="text-green-600 dark:text-green-400">{{ __('app.remaining') }}</span>
+                                            <span class="text-green-600 dark:text-green-400">{{ __('general.remaining') }}</span>
                                         @else
-                                            <span class="text-red-600 dark:text-red-400">{{ __('app.out_of_stock') }}</span>
+                                            <span class="text-red-600 dark:text-red-400">{{ __('general.out_of_stock') }}</span>
                                         @endif
                                     </div>
                                 </div>

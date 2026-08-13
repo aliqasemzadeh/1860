@@ -74,9 +74,9 @@ class Basket extends Component
             $selectedPrice = $this->getPriceForItem($item);
             if ($selectedPrice && $item->quantity < $selectedPrice->quantity) {
                 $item->increment('quantity');
-                Flux::toast(variant: 'success', text: __('app.quantity_increased'));
+                Flux::toast(variant: 'success', text: __('general.quantity_increased'));
             } else {
-                Flux::toast(variant: 'danger', text: __('app.max_quantity_reached'));
+                Flux::toast(variant: 'danger', text: __('general.max_quantity_reached'));
             }
             $this->dispatch('main.sidebar.basket.refresh-cart');
         }
@@ -91,7 +91,7 @@ class Basket extends Component
         $item = CartItem::find($itemId);
         if ($item && $item->quantity > 1) {
             $item->decrement('quantity');
-            Flux::toast(variant: 'success', text: __('app.quantity_decreased'));
+            Flux::toast(variant: 'success', text: __('general.quantity_decreased'));
             $this->dispatch('main.sidebar.basket.refresh-cart');
         } elseif ($item && $item->quantity == 1) {
             // Remove item if quantity is 1
@@ -109,7 +109,7 @@ class Basket extends Component
         if ($item) {
             // Delete the specific cart item directly to preserve options (color/warranty)
             $item->delete();
-            Flux::toast(variant: 'success', text: __('app.item_removed_from_cart'));
+            Flux::toast(variant: 'success', text: __('general.item_removed_from_cart'));
             $this->dispatch('main.sidebar.basket.refresh-cart');
         }
     }

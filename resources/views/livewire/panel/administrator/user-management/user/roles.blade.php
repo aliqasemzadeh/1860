@@ -1,7 +1,7 @@
 <flux:modal name="panel.administrator.user-management.user.roles.modal" class="min-w-full min-h-full">
     <div class="space-y-6">
         <div>
-            <flux:heading size="lg">{{ __('app.roles') }}: {{ isset($user) ? $user->mobile : '' }}</flux:heading>
+            <flux:heading size="lg">{{ __('general.roles') }}: {{ isset($user) ? $user->mobile : '' }}</flux:heading>
             <flux:text class="mt-2">{{ __('app.roles_description') }}</flux:text>
         </div>
 
@@ -9,7 +9,7 @@
             <div>
                 <flux:field>
                     <flux:field>
-                        <flux:label>{{ __('app.search') }}</flux:label>
+                        <flux:label>{{ __('general.search') }}</flux:label>
                         <flux:input wire:model.live="search" type="text" />
                         <flux:error name="search" />
                     </flux:field>
@@ -29,7 +29,7 @@
                                 </div>
                                 <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
                                     @can('administrator_user_management_roles')
-                                        <flux:button wire:click="assign({{ $role->id }})" wire:confirm="{{ __('app.are_you_sure') }}"><flux:icon.plus-circle /></flux:button>
+                                        <flux:button wire:click="assign({{ $role->id }})" wire:confirm="{{ __('general.are_you_sure') }}"><flux:icon.plus-circle /></flux:button>
                                     @endcan
                                 </div>
                             </div>
@@ -55,7 +55,7 @@
                                 </div>
                                 <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
                                     @can('administrator_user_management_roles')
-                                        <flux:button wire:click="delete({{ $role->id }})" wire:confirm="{{ __('app.are_you_sure') }}"><flux:icon.trash /></flux:button>
+                                        <flux:button wire:click="delete({{ $role->id }})" wire:confirm="{{ __('general.are_you_sure') }}"><flux:icon.trash /></flux:button>
                                     @endcan
                                 </div>
                             </div>

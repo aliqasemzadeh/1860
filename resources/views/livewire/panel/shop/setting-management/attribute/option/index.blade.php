@@ -27,7 +27,7 @@
             <flux:table.column sortable wire:click="sort('value')">{{ __('app.option_value') }}</flux:table.column>
             <flux:table.column sortable wire:click="sort('label')">{{ __('app.option_label') }}</flux:table.column>
             <flux:table.column sortable wire:click="sort('sort_order')">{{ __('app.sort_order') }}</flux:table.column>
-            <flux:table.column>{{ __('app.actions') }}</flux:table.column>
+            <flux:table.column>{{ __('general.actions') }}</flux:table.column>
         </flux:table.columns>
 
         @foreach ($this->optionsList as $option)
@@ -42,8 +42,8 @@
                     {{ $option->sort_order }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
-                    <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.attribute.option.edit.assign-data', { id: '{{ $option->id }}' })">{{ __('app.edit') }}</flux:button>
-                    <flux:button size="xs" variant="danger" wire:click="delete({{ $option->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
+                    <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.attribute.option.edit.assign-data', { id: '{{ $option->id }}' })">{{ __('general.edit') }}</flux:button>
+                    <flux:button size="xs" variant="danger" wire:click="delete({{ $option->id }})" wire:confirm="{{ __('general.are_you_sure') }}">{{ __('general.delete') }}</flux:button>
                 </flux:table.cell>
             </flux:table.row>
         @endforeach

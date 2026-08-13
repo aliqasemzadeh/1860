@@ -203,13 +203,13 @@ class View extends Component
     public function delete(): void
     {
         if (! $this->product) {
-            Flux::toast(variant: 'danger', text: __('app.product_not_found'));
+            Flux::toast(variant: 'danger', text: __('general.product_not_found'));
 
             return;
         }
 
         $this->product->delete();
-        Flux::toast(variant: 'success', text: __('app.product_deleted'));
+        Flux::toast(variant: 'success', text: __('general.product_deleted'));
 
         $this->redirect(route('panel.shop.product.index'), navigate: true);
     }
@@ -227,7 +227,7 @@ class View extends Component
         }
 
         if (! $this->product) {
-            Flux::toast(variant: 'danger', text: __('app.product_not_found'));
+            Flux::toast(variant: 'danger', text: __('general.product_not_found'));
 
             return;
         }
@@ -235,7 +235,7 @@ class View extends Component
         $selectedPrice = $this->selectedPrice();
 
         if (! $selectedPrice || $selectedPrice->quantity < $this->quantity) {
-            Flux::toast(variant: 'danger', text: __('app.insufficient_quantity'));
+            Flux::toast(variant: 'danger', text: __('general.insufficient_quantity'));
 
             return;
         }
@@ -281,7 +281,7 @@ class View extends Component
                 if ($newQuantity <= $selectedPrice->quantity) {
                     $existingItem->increment('quantity', $this->quantity);
                 } else {
-                    Flux::toast(variant: 'danger', text: __('app.insufficient_quantity'));
+                    Flux::toast(variant: 'danger', text: __('general.insufficient_quantity'));
 
                     return;
                 }
@@ -294,13 +294,13 @@ class View extends Component
                 ]);
             }
 
-            Flux::toast(variant: 'success', text: __('app.product_added_to_cart'));
+            Flux::toast(variant: 'success', text: __('general.product_added_to_cart'));
             $this->dispatch('main.sidebar.basket.refresh-cart');
             // Open basket modal after adding item
             Flux::modal('main.sidebar.basket.modal')->show();
         } catch (\Exception $e) {
             Flux::toast(variant: 'danger', text: $e->getMessage());
-            //Flux::toast(variant: 'danger', text: __('app.failed_to_add_to_cart'));
+            //Flux::toast(variant: 'danger', text: __('general.failed_to_add_to_cart'));
         }
     }
 

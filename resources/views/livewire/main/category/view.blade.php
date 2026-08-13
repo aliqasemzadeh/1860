@@ -74,7 +74,7 @@ $hasActiveFilters = $this->brandId
 
                     @if($this->brands->isNotEmpty())
                         <flux:select
-                            label="{{ __('app.brand') }}"
+                            label="{{ __('general.brand') }}"
                             placeholder="{{ __('app.select_brand') }}"
                             wire:model.live="brandId"
                             searchable
@@ -100,7 +100,7 @@ $hasActiveFilters = $this->brandId
                             wire:model.live.debounce.500ms="maxPrice"
                         />
                         <flux:text class="text-xs text-zinc-500">
-                            {{ __('app.toman') }}
+                            {{ __('general.toman') }}
                         </flux:text>
                     </div>
 
@@ -169,13 +169,13 @@ $hasActiveFilters = $this->brandId
 
                                             @if($product->sale_price && $product->price && $product->sale_price < $product->price)
                                                 <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                                                    {{ __('app.discount') }}
+                                                    {{ __('general.discount') }}
                                                 </div>
                                             @endif
 
                                             @if($this->stockFilter === 'all')
                                                 <div class="absolute top-2 left-2 text-xs font-bold px-2 py-1 rounded {{ $isAvailable ? 'bg-green-500 text-white' : 'bg-zinc-500 text-white' }}">
-                                                    {{ $isAvailable ? __('app.remaining') : __('app.out_of_stock') }}
+                                                    {{ $isAvailable ? __('general.remaining') : __('general.out_of_stock') }}
                                                 </div>
                                             @endif
                                         </div>
@@ -200,21 +200,21 @@ $hasActiveFilters = $this->brandId
                                                         @if($product->sale_price && $product->sale_price < $product->price)
                                                             <div class="flex flex-col items-center">
                                                                 <div class="text-lg font-bold text-green-600 dark:text-green-400">
-                                                                    {{ number_format($product->sale_price, 0) }} {{ __('app.toman') }}
+                                                                    {{ number_format($product->sale_price, 0) }} {{ __('general.toman') }}
                                                                 </div>
                                                                 <div class="text-sm text-zinc-400 dark:text-zinc-500 line-through">
-                                                                    {{ number_format($product->price, 0) }} {{ __('app.toman') }}
+                                                                    {{ number_format($product->price, 0) }} {{ __('general.toman') }}
                                                                 </div>
                                                             </div>
                                                         @else
                                                             <div class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                                                                {{ number_format($product->price, 0) }} {{ __('app.toman') }}
+                                                                {{ number_format($product->price, 0) }} {{ __('general.toman') }}
                                                             </div>
                                                         @endif
                                                     </div>
                                                 @else
                                                     <div class="text-sm text-zinc-400 dark:text-zinc-500 text-center">
-                                                        {{ __('app.price_not_available') }}
+                                                        {{ __('general.price_not_available') }}
                                                     </div>
                                                 @endif
                                             </div>

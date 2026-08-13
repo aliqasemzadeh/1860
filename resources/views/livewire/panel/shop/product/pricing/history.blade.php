@@ -25,7 +25,7 @@
                             <flux:text>{{ __('app.price_today') }}</flux:text>
                             <flux:heading size="xl" class="mt-2 tabular-nums">
                                 @if ($this->priceHistory->isNotEmpty())
-                                    {{ number_format($this->priceHistory->last()->price, 0) }} {{ __('app.toman') }}
+                                    {{ number_format($this->priceHistory->last()->price, 0) }} {{ __('general.toman') }}
                                 @else
                                     -
                                 @endif
@@ -35,7 +35,7 @@
                             <flux:text>{{ __('app.sale_price_yesterday') }}</flux:text>
                             <flux:heading size="lg" class="mt-2 tabular-nums">
                                 @if ($this->priceHistory->isNotEmpty() && $this->priceHistory->last()->sale_price)
-                                    {{ number_format($this->priceHistory->last()->sale_price, 0) }} {{ __('app.toman') }}
+                                    {{ number_format($this->priceHistory->last()->sale_price, 0) }} {{ __('general.toman') }}
                                 @else
                                     -
                                 @endif
@@ -75,11 +75,11 @@
                                     {{ jalali($row->created_at) }}
                                 </flux:table.cell>
                                 <flux:table.cell class="tabular-nums">
-                                    {{ number_format($row->price, 0) }} {{ __('app.toman') }}
+                                    {{ number_format($row->price, 0) }} {{ __('general.toman') }}
                                 </flux:table.cell>
                                 <flux:table.cell class="tabular-nums">
                                     @if ($row->sale_price)
-                                        {{ number_format($row->sale_price, 0) }} {{ __('app.toman') }}
+                                        {{ number_format($row->sale_price, 0) }} {{ __('general.toman') }}
                                     @else
                                         -
                                     @endif

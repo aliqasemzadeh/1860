@@ -26,7 +26,7 @@
                 <div class="flex flex-col gap-1 pe-2 items-end">
                     <flux:input
                         size="sm"
-                        placeholder="{{ __('app.search_placeholder') }}"
+                        placeholder="{{ __('general.search_placeholder') }}"
                         wire:model.live="search"
                     />
                 </div>
@@ -40,7 +40,7 @@
             <flux:table.column>{{ __('app.cities') }}</flux:table.column>
             <flux:table.column>{{ __('app.areas') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.date') }}</flux:table.column>
-            <flux:table.column>{{ __('app.options') }}</flux:table.column>
+            <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 
         <flux:table.rows>
@@ -82,10 +82,10 @@
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.shipping.zone.edit.assign-data', { id: '{{ $zone->id }}' })">
-                            {{ __('app.edit') }}
+                            {{ __('general.edit') }}
                         </flux:button>
                         <flux:button size="xs" variant="danger" wire:click="delete({{ $zone->id }})">
-                            {{ __('app.delete') }}
+                            {{ __('general.delete') }}
                         </flux:button>
                     </flux:table.cell>
                 </flux:table.row>

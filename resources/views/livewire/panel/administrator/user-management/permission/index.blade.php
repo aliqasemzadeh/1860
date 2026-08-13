@@ -1,11 +1,11 @@
 <x-slot name="title">
-    {{ __('app.permissions') }}
+    {{ __('general.permissions') }}
 </x-slot>
 <div>
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.permissions') }}</flux:heading>
+                <flux:heading size="xl" level="1">{{ __('general.permissions') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.permissions_description') }}</flux:subheading>
             </div>
             @can('administrator_user_management_permission_create')
@@ -36,10 +36,10 @@
                 <flux:table.cell class="whitespace-nowrap">{{ jalali($permission->created_at) }}</flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     @can('administrator_user_management_permission_edit')
-                        <flux:button size="xs" variant="primary" wire:click="$dispatch('administrator.user-management.permission.edit.assign-data', { id: '{{ $permission->id }}' })">{{ __('app.edit') }}</flux:button>
+                        <flux:button size="xs" variant="primary" wire:click="$dispatch('administrator.user-management.permission.edit.assign-data', { id: '{{ $permission->id }}' })">{{ __('general.edit') }}</flux:button>
                     @endcan
                     @can('administrator_user_management_permission_delete')
-                        <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>
+                        <flux:button size="xs" variant="danger">{{ __('general.delete') }}</flux:button>
                     @endcan
                 </flux:table.cell>
             </flux:table.row>

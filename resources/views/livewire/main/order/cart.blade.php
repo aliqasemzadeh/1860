@@ -9,7 +9,7 @@
                 {{-- Breadcrumb --}}
                 <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
                     <a href="{{ route('home') }}" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-                        {{ __('app.dashboard') }}
+                        {{ __('general.dashboard') }}
                     </a>
                     <span>/</span>
                     <span class="text-zinc-900 dark:text-zinc-100 font-medium">{{ __('app.shopping_cart') }}</span>
@@ -90,11 +90,11 @@
                                             @endphp
                                             <div class="mt-3">
                                                 <flux:text class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                                                    {{ number_format($itemPrice * $item->quantity, 0) }} {{ __('app.toman') }}
+                                                    {{ number_format($itemPrice * $item->quantity, 0) }} {{ __('general.toman') }}
                                                 </flux:text>
                                                 @if($item->quantity > 1)
                                                     <flux:text class="text-sm text-zinc-500 dark:text-zinc-500 block mt-1">
-                                                        {{ number_format($itemPrice, 0) }} {{ __('app.toman') }} × {{ $item->quantity }}
+                                                        {{ number_format($itemPrice, 0) }} {{ __('general.toman') }} × {{ $item->quantity }}
                                                     </flux:text>
                                                 @endif
                                             </div>
@@ -150,7 +150,7 @@
                                     <div class="flex items-center justify-between">
                                         <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('app.subtotal') }}</flux:text>
                                         <flux:text class="font-medium text-zinc-900 dark:text-zinc-100">
-                                            {{ number_format($this->totalAmount, 0) }} {{ __('app.toman') }}
+                                            {{ number_format($this->totalAmount, 0) }} {{ __('general.toman') }}
                                         </flux:text>
                                     </div>
                                     <div class="flex items-center justify-between">
@@ -165,7 +165,7 @@
                                                 {{ __('app.total') }}
                                             </flux:heading>
                                             <flux:heading size="lg" class="text-zinc-900 dark:text-zinc-100">
-                                                {{ number_format($this->totalAmount, 0) }} {{ __('app.toman') }}
+                                                {{ number_format($this->totalAmount, 0) }} {{ __('general.toman') }}
                                             </flux:heading>
                                         </div>
                                     </div>

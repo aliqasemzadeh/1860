@@ -12,8 +12,8 @@
 
     <div class="mb-6">
         <flux:field>
-            <flux:label>{{ __('app.search') }}</flux:label>
-            <flux:input wire:model.live.debounce.500ms="search" type="text" placeholder="{{ __('app.search') }}" />
+            <flux:label>{{ __('general.search') }}</flux:label>
+            <flux:input wire:model.live.debounce.500ms="search" type="text" placeholder="{{ __('general.search') }}" />
         </flux:field>
     </div>
 
@@ -27,7 +27,7 @@
             <flux:table.column sortable :sorted="$sortBy === 'total_amount'" :direction="$sortDirection" wire:click="sort('total_amount')">{{ __('app.total_amount') }}</flux:table.column>
             <flux:table.column>{{ __('app.status') }}</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')">{{ __('app.order_date') }}</flux:table.column>
-            <flux:table.column>{{ __('app.options') }}</flux:table.column>
+            <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 
         @foreach ($this->orders as $order)

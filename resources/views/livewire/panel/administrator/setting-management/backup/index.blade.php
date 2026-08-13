@@ -2,7 +2,7 @@
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.backups') }}</flux:heading>
+                <flux:heading size="xl" level="1">{{ __('general.backup') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.backups_description') }}</flux:subheading>
             </div>
             <flux:modal.trigger name="panel.administrator.setting-management.backup.create.modal">
@@ -21,7 +21,7 @@
             <flux:table.column>{{ __('app.backup_filename') }}</flux:table.column>
             <flux:table.column>{{ __('app.backup_date') }}</flux:table.column>
             <flux:table.column>{{ __('app.backup_size') }}</flux:table.column>
-            <flux:table.column>{{ __('app.options') }}</flux:table.column>
+            <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 
         @forelse ($this->backups as $backup)
@@ -51,7 +51,7 @@
                             />
                         </flux:tooltip>
 
-                        <flux:tooltip content="{{ __('app.delete') }}">
+                        <flux:tooltip content="{{ __('general.delete') }}">
                             <flux:modal.trigger name="panel.administrator.setting-management.backup.delete.{{ $loop->index }}">
                                 <flux:button
                                     size="xs"
@@ -66,11 +66,11 @@
                         <flux:modal name="panel.administrator.setting-management.backup.delete.{{ $loop->index }}" class="min-w-[22rem]">
                             <div class="space-y-6">
                                 <div>
-                                    <flux:heading size="lg">{{ __('app.delete_confirmation') }}</flux:heading>
+                                    <flux:heading size="lg">{{ __('general.delete_confirmation') }}</flux:heading>
 
                                     <flux:text class="mt-2">
-                                        {{ __('app.delete_warning_message') }}<br>
-                                        {{ __('app.action_cannot_be_reversed') }}
+                                        {{ __('general.delete_warning_message') }}<br>
+                                        {{ __('general.action_cannot_be_reversed') }}
                                     </flux:text>
                                 </div>
 
@@ -78,10 +78,10 @@
                                     <flux:spacer />
 
                                     <flux:modal.close>
-                                        <flux:button variant="ghost">{{ __('app.cancel') }}</flux:button>
+                                        <flux:button variant="ghost">{{ __('general.cancel') }}</flux:button>
                                     </flux:modal.close>
 
-                                    <flux:button type="submit" variant="danger" wire:click="delete('{{ $backup['disk'] }}', '{{ $backup['path'] }}')">{{ __('app.delete') }}</flux:button>
+                                    <flux:button type="submit" variant="danger" wire:click="delete('{{ $backup['disk'] }}', '{{ $backup['path'] }}')">{{ __('general.delete') }}</flux:button>
                                 </div>
                             </div>
                         </flux:modal>

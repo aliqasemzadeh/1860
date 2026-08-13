@@ -28,7 +28,7 @@
             </div>
 
             <flux:button type="submit" class="w-full" variant="primary" color="teal">
-                {{ __('app.save') }}
+                {{ __('general.save') }}
             </flux:button>
         </form>
     </div>

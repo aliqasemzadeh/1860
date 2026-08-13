@@ -10,7 +10,7 @@
                     {{-- Breadcrumb --}}
                     <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
                         <a href="{{ route('home') }}" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-                            {{ __('app.dashboard') }}
+                            {{ __('general.dashboard') }}
                         </a>
                         <span>/</span>
                         <a href="{{ route('order.index') }}" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
@@ -107,14 +107,14 @@
                                                 </div>
 
                                                 <flux:text class="text-sm text-zinc-600 dark:text-zinc-400">
-                                                    {{ __('app.quantity') }}: {{ $item->quantity }} × {{ number_format($item->unit_price_amount, 0) }} {{ __('app.toman') }}
+                                                    {{ __('general.quantity') }}: {{ $item->quantity }} × {{ number_format($item->unit_price_amount, 0) }} {{ __('general.toman') }}
                                                 </flux:text>
                                             </div>
 
                                             {{-- Item Total --}}
                                             <div class="flex items-center">
                                                 <flux:text class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                                                    {{ number_format($item->total_amount, 0) }} {{ __('app.toman') }}
+                                                    {{ number_format($item->total_amount, 0) }} {{ __('general.toman') }}
                                                 </flux:text>
                                             </div>
                                         </div>
@@ -132,15 +132,15 @@
                                     <div class="flex items-center justify-between">
                                         <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('app.subtotal') }}</flux:text>
                                         <flux:text class="font-medium text-zinc-900 dark:text-zinc-100">
-                                            {{ number_format($this->order->subtotal_amount, 0) }} {{ __('app.toman') }}
+                                            {{ number_format($this->order->subtotal_amount, 0) }} {{ __('general.toman') }}
                                         </flux:text>
                                     </div>
                                     
                                     @if($this->order->discount_amount > 0)
                                         <div class="flex items-center justify-between">
-                                            <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('app.discount') }}</flux:text>
+                                            <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('general.discount') }}</flux:text>
                                             <flux:text class="font-medium text-green-600 dark:text-green-400">
-                                                -{{ number_format($this->order->discount_amount, 0) }} {{ __('app.toman') }}
+                                                -{{ number_format($this->order->discount_amount, 0) }} {{ __('general.toman') }}
                                             </flux:text>
                                         </div>
                                     @endif
@@ -149,7 +149,7 @@
                                         <div class="flex items-center justify-between">
                                             <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('app.shipping') }}</flux:text>
                                             <flux:text class="font-medium text-zinc-900 dark:text-zinc-100">
-                                                {{ number_format($this->order->shipping_amount, 0) }} {{ __('app.toman') }}
+                                                {{ number_format($this->order->shipping_amount, 0) }} {{ __('general.toman') }}
                                             </flux:text>
                                         </div>
                                         @if($this->order->shippingMethod)
@@ -168,7 +168,7 @@
                                         <div class="flex items-center justify-between">
                                             <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('app.tax') }}</flux:text>
                                             <flux:text class="font-medium text-zinc-900 dark:text-zinc-100">
-                                                {{ number_format($this->order->tax_amount, 0) }} {{ __('app.toman') }}
+                                                {{ number_format($this->order->tax_amount, 0) }} {{ __('general.toman') }}
                                             </flux:text>
                                         </div>
                                     @endif
@@ -179,7 +179,7 @@
                                                 {{ __('app.total') }}
                                             </flux:heading>
                                             <flux:heading size="lg" class="text-zinc-900 dark:text-zinc-100">
-                                                {{ number_format($this->order->total_amount, 0) }} {{ __('app.toman') }}
+                                                {{ number_format($this->order->total_amount, 0) }} {{ __('general.toman') }}
                                             </flux:heading>
                                         </div>
                                     </div>
@@ -203,7 +203,7 @@
                                                 <div>{{ __('app.postal_code') }}: {{ $this->order->shipping_address['postal_code'] }}</div>
                                             @endif
                                             @if(isset($this->order->shipping_address['mobile']))
-                                                <div>{{ __('app.mobile') }}: {{ $this->order->shipping_address['mobile'] }}</div>
+                                                <div>{{ __('general.mobile') }}: {{ $this->order->shipping_address['mobile'] }}</div>
                                             @endif
                                         </div>
                                     </div>

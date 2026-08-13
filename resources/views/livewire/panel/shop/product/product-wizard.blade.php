@@ -33,7 +33,7 @@
                             <flux:input.group>
                                 <flux:select wire:model="category_id" variant="combobox" :filter="false" placeholder="{{ __('app.select_category') }}">
                                     <x-slot name="input">
-                                        <flux:select.input wire:model.live="category_search" placeholder="{{ __('app.search') }}..." />
+                                        <flux:select.input wire:model.live="category_search" placeholder="{{ __('general.search') }}..." />
                                     </x-slot>
                                     @foreach ($this->categories as $category)
                                         <flux:select.option value="{{ $category->id }}" wire:key="category-{{ $category->id }}">
@@ -49,11 +49,11 @@
                         </flux:field>
 
                         <flux:field>
-                            <flux:label>{{ __('app.brand') }}</flux:label>
+                            <flux:label>{{ __('general.brand') }}</flux:label>
                             <flux:input.group>
                                 <flux:select wire:model="brand_id" variant="combobox" :filter="false" placeholder="{{ __('app.select_brand') }}">
                                     <x-slot name="input">
-                                        <flux:select.input wire:model.live="brand_search" placeholder="{{ __('app.search') }}..." />
+                                        <flux:select.input wire:model.live="brand_search" placeholder="{{ __('general.search') }}..." />
                                     </x-slot>
                                     @foreach ($this->brands as $brand)
                                         <flux:select.option value="{{ $brand->id }}" wire:key="brand-{{ $brand->id }}">
@@ -72,7 +72,7 @@
 
                 <div class="flex justify-end gap-3 mt-6">
                     <flux:button type="button" wire:click="closeModal" variant="ghost">
-                        {{ __('app.cancel') }}
+                        {{ __('general.cancel') }}
                     </flux:button>
                     <flux:button type="submit" variant="primary">
                         {{ __('app.fetch_product_info') }}
@@ -114,7 +114,7 @@
                                 {{-- Product Images Preview --}}
                                 @if (!empty($image_urls))
                                     <div>
-                                        <flux:label class="mb-2">{{ __('app.images') }}</flux:label>
+                                        <flux:label class="mb-2">{{ __('general.images') }}</flux:label>
                                         <div class="grid grid-cols-4 gap-4">
                                             @foreach ($image_urls as $index => $imageUrl)
                                                 <div class="relative aspect-square rounded-lg overflow-hidden border border-gray-200">
@@ -135,11 +135,11 @@
                                     </flux:field>
 
                                     <flux:field>
-                                        <flux:label>{{ __('app.unit') }}</flux:label>
+                                        <flux:label>{{ __('general.unit') }}</flux:label>
                                         <flux:input.group>
                                             <flux:select wire:model="unit_id" variant="combobox" :filter="false" placeholder="{{ __('app.select_unit') }}">
                                                 <x-slot name="input">
-                                                    <flux:select.input wire:model.live="unit_search" placeholder="{{ __('app.search') }}..." />
+                                                    <flux:select.input wire:model.live="unit_search" placeholder="{{ __('general.search') }}..." />
                                                 </x-slot>
                                                 @foreach ($this->units as $unit)
                                                     <flux:select.option value="{{ $unit->id }}" wire:key="unit-{{ $unit->id }}">
@@ -156,7 +156,7 @@
                                 </div>
 
                                 <flux:field>
-                                    <flux:label>{{ __('app.description') }}</flux:label>
+                                    <flux:label>{{ __('general.description') }}</flux:label>
                                     <flux:textarea wire:model="description" rows="8" />
                                     <flux:error name="description" />
                                 </flux:field>
@@ -178,9 +178,9 @@
                                 {{-- Weight and Dimensions --}}
                                 <div class="grid grid-cols-4 gap-6">
                                     <flux:field>
-                                        <flux:label>{{ __('app.weight') }}</flux:label>
+                                        <flux:label>{{ __('general.weight') }}</flux:label>
                                         <flux:input.group>
-                                            <flux:input.group.prefix>{{ __('app.gram') }}</flux:input.group.prefix>
+                                            <flux:input.group.prefix>{{ __('general.gram') }}</flux:input.group.prefix>
                                             <flux:input wire:model="weight" type="number" step="0.01" min="0" />
                                         </flux:input.group>
                                         <flux:error name="weight" />
@@ -217,7 +217,7 @@
                                 {{-- Specifications Preview (if available) --}}
                                 @if (isset($fetched_data['specifications']) && !empty($fetched_data['specifications']))
                                     <div>
-                                        <flux:label class="mb-2">{{ __('app.technical_specifications') }}</flux:label>
+                                        <flux:label class="mb-2">{{ __('general.technical_specifications') }}</flux:label>
                                         <div class="bg-gray-50 rounded-lg p-4 space-y-2">
                                             @foreach ($fetched_data['specifications'] as $key => $value)
                                                 <div class="flex">
@@ -236,7 +236,7 @@
                                     {{ __('app.back') }}
                                 </flux:button>
                                 <flux:button type="button" wire:click="closeModal" variant="ghost">
-                                    {{ __('app.cancel') }}
+                                    {{ __('general.cancel') }}
                                 </flux:button>
                                 <flux:button type="submit" variant="primary">
                                     {{ __('app.create_product_and_price_fetcher') }}

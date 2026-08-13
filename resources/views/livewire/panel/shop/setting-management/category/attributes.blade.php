@@ -10,7 +10,7 @@
                     {{ __('app.back') }}
                 </flux:button>
                 <flux:button variant="primary" wire:click="save">
-                    {{ __('app.save') }}
+                    {{ __('general.save') }}
                 </flux:button>
             </div>
         </div>

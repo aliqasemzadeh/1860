@@ -21,7 +21,7 @@
             <flux:table.column sortable wire:click="sort('name')">{{ __('app.name') }}</flux:table.column>
             <flux:table.column sortable wire:click="sort('attributes_count')">{{ __('app.attributes_count') }}</flux:table.column>
             <flux:table.column sortable wire:click="sort('sort_order')">{{ __('app.sort_order') }}</flux:table.column>
-            <flux:table.column>{{ __('app.actions') }}</flux:table.column>
+            <flux:table.column>{{ __('general.actions') }}</flux:table.column>
         </flux:table.columns>
 
         @foreach ($this->attributeGroups as $group)
@@ -36,8 +36,8 @@
                     {{ $group->sort_order }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
-                    <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.attribute-group.edit.assign-data', { id: '{{ $group->id }}' })">{{ __('app.edit') }}</flux:button>
-                    <flux:button size="xs" variant="danger" wire:click="delete({{ $group->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
+                    <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.attribute-group.edit.assign-data', { id: '{{ $group->id }}' })">{{ __('general.edit') }}</flux:button>
+                    <flux:button size="xs" variant="danger" wire:click="delete({{ $group->id }})" wire:confirm="{{ __('general.are_you_sure') }}">{{ __('general.delete') }}</flux:button>
                 </flux:table.cell>
             </flux:table.row>
         @endforeach

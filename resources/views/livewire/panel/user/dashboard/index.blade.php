@@ -30,15 +30,15 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <flux:text class="text-sm text-zinc-500">{{ __('app.first_name') }}</flux:text>
+                    <flux:text class="text-sm text-zinc-500">{{ __('general.first_name') }}</flux:text>
                     <flux:text class="font-medium">{{ $this->user->first_name ?: '-' }}</flux:text>
                 </div>
                 <div>
-                    <flux:text class="text-sm text-zinc-500">{{ __('app.last_name') }}</flux:text>
+                    <flux:text class="text-sm text-zinc-500">{{ __('general.last_name') }}</flux:text>
                     <flux:text class="font-medium">{{ $this->user->last_name ?: '-' }}</flux:text>
                 </div>
                 <div>
-                    <flux:text class="text-sm text-zinc-500">{{ __('app.mobile') }}</flux:text>
+                    <flux:text class="text-sm text-zinc-500">{{ __('general.mobile') }}</flux:text>
                     <flux:text class="font-medium">{{ $this->user->mobile }}</flux:text>
                 </div>
                 <div>

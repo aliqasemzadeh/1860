@@ -7,21 +7,21 @@
         <form wire:submit="edit" method="post">
         <div class="pb-2">
             <flux:field>
-                    <flux:label>{{ __('app.first_name') }}</flux:label>
+                    <flux:label>{{ __('general.first_name') }}</flux:label>
 
                     <flux:input wire:model="first_name" type="text" />
 
                     <flux:error name="first_name" />
             </flux:field>
             <flux:field>
-                <flux:label>{{ __('app.last_name') }}</flux:label>
+                <flux:label>{{ __('general.last_name') }}</flux:label>
 
                 <flux:input wire:model="last_name" type="text" />
 
                 <flux:error name="last_name" />
             </flux:field>
             <flux:field>
-                <flux:label>{{ __('app.mobile') }}</flux:label>
+                <flux:label>{{ __('general.mobile') }}</flux:label>
 
                 <flux:input wire:model="mobile" type="text" />
 

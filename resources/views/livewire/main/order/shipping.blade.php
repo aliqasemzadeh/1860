@@ -8,7 +8,7 @@
             {{-- Breadcrumb --}}
             <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
                 <a href="{{ route('home') }}" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-                    {{ __('app.dashboard') }}
+                    {{ __('general.dashboard') }}
                 </a>
                 <span>/</span>
                 <a href="{{ route('order.cart') }}" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
@@ -36,13 +36,13 @@
                             <div class="space-y-4">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <flux:field>
-                                        <flux:label>{{ __('app.first_name') }}</flux:label>
+                                        <flux:label>{{ __('general.first_name') }}</flux:label>
                                         <flux:input wire:model.live="profileForm.first_name" type="text" />
                                         <flux:error name="profileForm.first_name" />
                                     </flux:field>
 
                                     <flux:field>
-                                        <flux:label>{{ __('app.last_name') }}</flux:label>
+                                        <flux:label>{{ __('general.last_name') }}</flux:label>
                                         <flux:input wire:model.live="profileForm.last_name" type="text" />
                                         <flux:error name="profileForm.last_name" />
                                     </flux:field>
@@ -57,11 +57,11 @@
                         @else
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
-                                    <flux:text class="text-sm text-zinc-500">{{ __('app.first_name') }}</flux:text>
+                                    <flux:text class="text-sm text-zinc-500">{{ __('general.first_name') }}</flux:text>
                                     <flux:text class="font-medium">{{ auth()->user()->first_name }}</flux:text>
                                 </div>
                                 <div>
-                                    <flux:text class="text-sm text-zinc-500">{{ __('app.last_name') }}</flux:text>
+                                    <flux:text class="text-sm text-zinc-500">{{ __('general.last_name') }}</flux:text>
                                     <flux:text class="font-medium">{{ auth()->user()->last_name }}</flux:text>
                                 </div>
                                 <div>
@@ -104,7 +104,7 @@
                                             wire:click="deleteAddress({{ $addr->id }})"
                                             wire:confirm="{{ __('app.confirm_delete_address') }}"
                                         >
-                                            {{ __('app.delete') }}
+                                            {{ __('general.delete') }}
                                         </flux:button>
                                     </div>
                                 @endforeach
@@ -177,8 +177,8 @@
                                 </flux:field>
 
                                 <div class="flex gap-3">
-                                    <flux:button type="submit" variant="primary">{{ __('app.save') }}</flux:button>
-                                    <flux:button type="button" wire:click="toggleNewAddressForm" variant="ghost">{{ __('app.cancel') }}</flux:button>
+                                    <flux:button type="submit" variant="primary">{{ __('general.save') }}</flux:button>
+                                    <flux:button type="button" wire:click="toggleNewAddressForm" variant="ghost">{{ __('general.cancel') }}</flux:button>
                                 </div>
                             </form>
                         @else
@@ -202,7 +202,7 @@
                                                 {{ $method['method_name'] }}
                                             </div>
                                             <div class="text-sm text-zinc-600 dark:text-zinc-400">
-                                                {{ number_format($method['cost'], 0) }} {{ __('app.toman') }}
+                                                {{ number_format($method['cost'], 0) }} {{ __('general.toman') }}
                                                 @if($method['estimated_days'])
                                                     • {{ __('app.estimated_delivery') }}: {{ $method['estimated_days'] }}
                                                 @endif
@@ -240,7 +240,7 @@
                             <div class="flex items-center justify-between">
                                 <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('app.subtotal') }}</flux:text>
                                 <flux:text class="font-medium text-zinc-900 dark:text-zinc-100">
-                                    {{ number_format($this->subtotal, 0) }} {{ __('app.toman') }}
+                                    {{ number_format($this->subtotal, 0) }} {{ __('general.toman') }}
                                 </flux:text>
                             </div>
 
@@ -251,7 +251,7 @@
                                 <div class="flex items-center justify-between">
                                     <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('app.shipping') }}</flux:text>
                                     <flux:text class="font-medium text-zinc-900 dark:text-zinc-100">
-                                        {{ number_format($selectedMethod['cost'], 0) }} {{ __('app.toman') }}
+                                        {{ number_format($selectedMethod['cost'], 0) }} {{ __('general.toman') }}
                                     </flux:text>
                                 </div>
                             @else
@@ -274,9 +274,9 @@
                                                 $selectedMethod = $this->availableShippingMethods->firstWhere('id', $selectedShippingRateId);
                                                 $total = $this->subtotal + $selectedMethod['cost'];
                                             @endphp
-                                            {{ number_format($total, 0) }} {{ __('app.toman') }}
+                                            {{ number_format($total, 0) }} {{ __('general.toman') }}
                                         @else
-                                            {{ number_format($this->subtotal, 0) }} {{ __('app.toman') }}
+                                            {{ number_format($this->subtotal, 0) }} {{ __('general.toman') }}
                                         @endif
                                     </flux:heading>
                                 </div>

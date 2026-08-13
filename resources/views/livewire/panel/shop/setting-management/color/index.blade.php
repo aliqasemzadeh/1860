@@ -2,7 +2,7 @@
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.colors') }}</flux:heading>
+                <flux:heading size="xl" level="1">{{ __('general.colors') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.colors_description') }}</flux:subheading>
             </div>
             <flux:modal.trigger name="panel.shop.setting-management.color.create.modal">
@@ -39,8 +39,8 @@
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex items-center gap-2">
                         <span class="font-mono text-xs">{{ $color->hex }}</span>
-                        <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.color.edit.assign-data', { id: '{{ $color->id }}' })">{{ __('app.edit') }}</flux:button>
-                        <flux:button size="xs" variant="danger" wire:click="delete({{ $color->id }})">{{ __('app.delete') }}</flux:button>
+                        <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.color.edit.assign-data', { id: '{{ $color->id }}' })">{{ __('general.edit') }}</flux:button>
+                        <flux:button size="xs" variant="danger" wire:click="delete({{ $color->id }})">{{ __('general.delete') }}</flux:button>
                     </div>
                 </flux:table.cell>
             </flux:table.row>

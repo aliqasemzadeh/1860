@@ -1,16 +1,16 @@
 <x-slot name="title">
-    {{ __('app.pricing') }} - {{ $product->name }}
+    {{ __('general.pricing') }} - {{ $product->name }}
 </x-slot>
 <div>
     <flux:breadcrumbs class="mb-6">
         <flux:breadcrumbs.item href="{{ route('panel.shop.product.index') }}" wire:navigate>{{ __('app.products') }}</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>{{ $product->name }}</flux:breadcrumbs.item>
-        <flux:breadcrumbs.item>{{ __('app.pricing') }}</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item>{{ __('general.pricing') }}</flux:breadcrumbs.item>
     </flux:breadcrumbs>
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.pricing') }} - {{ $product->name }}</flux:heading>
+                <flux:heading size="xl" level="1">{{ __('general.pricing') }} - {{ $product->name }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.pricing_description') }}</flux:subheading>
             </div>
             <flux:modal.trigger name="panel.shop.product.pricing.create.modal">
@@ -35,10 +35,10 @@
                 <flux:table.column>{{ __('app.warranty') }}</flux:table.column>
                 <flux:table.column>{{ __('app.price') }}</flux:table.column>
                 <flux:table.column>{{ __('app.sale_price') }}</flux:table.column>
-                <flux:table.column>{{ __('app.quantity') }}</flux:table.column>
+                <flux:table.column>{{ __('general.quantity') }}</flux:table.column>
                 <flux:table.column>{{ __('app.is_default') }}</flux:table.column>
                 <flux:table.column>{{ __('app.created_at') }}</flux:table.column>
-                <flux:table.column>{{ __('app.options') }}</flux:table.column>
+                <flux:table.column>{{ __('general.options') }}</flux:table.column>
             </flux:table.columns>
 
             @foreach ($this->latestPrices as $price)
@@ -59,11 +59,11 @@
                         {{ $price->warranty?->name ?? __('app.none') }}
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
-                        {{ number_format($price->price, 0) }} {{ __('app.toman') }}
+                        {{ number_format($price->price, 0) }} {{ __('general.toman') }}
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         @if ($price->sale_price)
-                            {{ number_format($price->sale_price, 0) }} {{ __('app.toman') }}
+                            {{ number_format($price->sale_price, 0) }} {{ __('general.toman') }}
                         @else
                             <span class="text-zinc-400 dark:text-zinc-500">-</span>
                         @endif
@@ -73,9 +73,9 @@
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         @if ($price->is_default)
-                            <flux:badge variant="success">{{ __('app.yes') }}</flux:badge>
+                            <flux:badge variant="success">{{ __('general.yes') }}</flux:badge>
                         @else
-                            <flux:badge variant="ghost">{{ __('app.no') }}</flux:badge>
+                            <flux:badge variant="ghost">{{ __('general.no') }}</flux:badge>
                         @endif
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
@@ -83,7 +83,7 @@
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         <div class="flex items-center gap-2">
-                            <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.product.pricing.edit.assign-data', { id: '{{ $price->id }}' })">{{ __('app.edit') }}</flux:button>
+                            <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.product.pricing.edit.assign-data', { id: '{{ $price->id }}' })">{{ __('general.edit') }}</flux:button>
                             <flux:button size="xs" variant="primary" color="sky" wire:click="$dispatch('panel.shop.product.pricing.history.assign-data', { colorId: {{ $price->color_id ?? 'null' }}, warrantyId: {{ $price->warranty_id ?? 'null' }} })">{{ __('app.price_history') }}</flux:button>
                         </div>
                     </flux:table.cell>

@@ -39,7 +39,7 @@ class Payment extends Component
         $order = $this->order;
 
         if (! $order) {
-            Flux::toast(variant: 'danger', text: __('app.order_not_found'));
+            Flux::toast(variant: 'danger', text: __('general.order_not_found'));
 
             return $this->redirect(route('order.index'), navigate: true);
         }
@@ -79,7 +79,7 @@ class Payment extends Component
             $this->paymentHtml = $payment->pay()->render();
 
         } catch (\Exception $e) {
-            Flux::toast(variant: 'danger', text: __('app.payment_error').': '.$e->getMessage());
+            Flux::toast(variant: 'danger', text: __('general.payment_error').': '.$e->getMessage());
 
             return $this->redirect(route('order.view', ['id' => $order->id]), navigate: true);
         }

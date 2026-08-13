@@ -52,7 +52,7 @@ class ProductAttributeValue extends Model
         $value = match ($this->attribute->type) {
             'text', 'textarea' => $this->value_text,
             'number' => $this->value_number !== null ? number_format($this->value_number, 0) : null,
-            'boolean' => $this->value_bool !== null ? ($this->value_bool ? __('app.yes') : __('app.no')) : null,
+            'boolean' => $this->value_bool !== null ? ($this->value_bool ? __('general.yes') : __('general.no')) : null,
             'date' => jalali($this->value_date, 'Y/m/d', '-'),
             'select' => $this->getSelectDisplayValue(),
             'multiselect' => $this->getMultiselectDisplayValue(),

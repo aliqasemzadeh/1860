@@ -47,7 +47,7 @@
                     <flux:table>
                         <flux:table.columns>
                             <flux:table.column>{{ __('app.name') }}</flux:table.column>
-                            <flux:table.column>{{ __('app.quantity') }}</flux:table.column>
+                            <flux:table.column>{{ __('general.quantity') }}</flux:table.column>
                             <flux:table.column>{{ __('app.total_amount') }}</flux:table.column>
                         </flux:table.columns>
 

@@ -8,7 +8,7 @@
 
                 <flux:modal name="{{ $category->slug }}" variant="bare" class="w-full max-w-[30rem] my-[12vh] max-h-screen overflow-y-hidden">
                     <flux:command wire:key="command-{{ $category->slug }}" class="border-none shadow-lg inline-flex flex-col max-h-[76vh]">
-                        <flux:command.input placeholder="{{ __('app.search') }}" closable />
+                        <flux:command.input placeholder="{{ __('general.search') }}" closable />
                         <flux:command.items>
                             @foreach ($category->children as $child)
                                 <flux:command.item 

@@ -44,7 +44,7 @@ use Illuminate\Support\Facades\Storage;
 
                                     @if($product->sale_price && $product->price && $product->sale_price < $product->price)
                                         <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                                            {{ __('app.discount') }}
+                                            {{ __('general.discount') }}
                                         </div>
                                     @endif
                                 </div>
@@ -63,21 +63,21 @@ use Illuminate\Support\Facades\Storage;
                                                 @if($product->sale_price && $product->sale_price < $product->price)
                                                     <div class="flex flex-col items-center">
                                                         <div class="text-lg font-bold text-green-600 dark:text-green-400">
-                                                            {{ number_format($product->sale_price, 0) }} {{ __('app.toman') }}
+                                                            {{ number_format($product->sale_price, 0) }} {{ __('general.toman') }}
                                                         </div>
                                                         <div class="text-sm text-zinc-400 dark:text-zinc-500 line-through">
-                                                            {{ number_format($product->price, 0) }} {{ __('app.toman') }}
+                                                            {{ number_format($product->price, 0) }} {{ __('general.toman') }}
                                                         </div>
                                                     </div>
                                                 @else
                                                     <div class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                                                        {{ number_format($product->price, 0) }} {{ __('app.toman') }}
+                                                        {{ number_format($product->price, 0) }} {{ __('general.toman') }}
                                                     </div>
                                                 @endif
                                             </div>
                                         @else
                                             <div class="text-sm text-zinc-400 dark:text-zinc-500 text-center">
-                                                {{ __('app.price_not_available') }}
+                                                {{ __('general.price_not_available') }}
                                             </div>
                                         @endif
                                     </div>

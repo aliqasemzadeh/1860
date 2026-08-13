@@ -35,7 +35,7 @@ class Index extends Component
         $product = Product::query()->find($id);
         if ($product !== null) {
             $product->delete();
-            Flux::toast(variant: 'success', text: __('app.product_deleted'));
+            Flux::toast(variant: 'success', text: __('general.product_deleted'));
         }
     }
 

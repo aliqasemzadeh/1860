@@ -133,8 +133,8 @@ class Seo
             schemas: [
                 SeoSchema::contactPage(),
                 SeoSchema::breadcrumbs([
-                    ['name' => __('app.home'), 'url' => route('home')],
-                    ['name' => __('app.contact_us'), 'url' => route('contact.index')],
+                    ['name' => __('general.home'), 'url' => route('home')],
+                    ['name' => __('general.contact_us'), 'url' => route('contact.index')],
                 ]),
             ],
         );
@@ -195,7 +195,7 @@ class Seo
         }
 
         $crumbs = [
-            ['name' => __('app.home'), 'url' => route('home')],
+            ['name' => __('general.home'), 'url' => route('home')],
         ];
         if ($product->category) {
             $crumbs[] = ['name' => $product->category->name, 'url' => $product->category->url];
@@ -267,7 +267,7 @@ class Seo
             schemas: [
                 SeoSchema::collectionPage($category, $pageProducts, $description),
                 SeoSchema::breadcrumbs([
-                    ['name' => __('app.home'), 'url' => route('home')],
+                    ['name' => __('general.home'), 'url' => route('home')],
                     ['name' => $category->name, 'url' => $baseUrl],
                 ]),
             ],

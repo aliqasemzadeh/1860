@@ -2,7 +2,7 @@
     <flux:card>
         <div class="space-y-6">
             <div class="space-y-2">
-                <flux:heading size="xl">{{ __('app.contact_us') }}</flux:heading>
+                <flux:heading size="xl">{{ __('general.contact_us') }}</flux:heading>
                 <flux:text>{{ __('app.contact_description') }}</flux:text>
             </div>
 
@@ -27,7 +27,7 @@
                             <flux:icon name="device-phone-mobile" class="size-6 text-zinc-500" />
                         </div>
                         <div>
-                            <flux:heading size="lg">{{ __('app.mobile') }}</flux:heading>
+                            <flux:heading size="lg">{{ __('general.mobile') }}</flux:heading>
                             <flux:text class="mt-1" dir="ltr">{{ $this->contact->mobile }}</flux:text>
                         </div>
                     </div>

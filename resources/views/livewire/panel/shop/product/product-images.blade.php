@@ -56,7 +56,7 @@
                             @endif
 
                                 <flux:button type="submit" variant="primary" class="w-full mt-4" :disabled="count($images) === 0">
-                                    {{ __('app.save') }}
+                                    {{ __('general.save') }}
                                 </flux:button>
                         </form>
                     </flux:field>
@@ -93,7 +93,7 @@
                                             />
                                             <flux:file-item.remove 
                                                 wire:click="removeProductImage({{ $image->id }})"
-                                                wire:confirm="{{ __('app.are_you_sure') }}"
+                                                wire:confirm="{{ __('general.are_you_sure') }}"
                                                 aria-label="{{ __('app.remove_file') }}: {{ $image->file_name }}"
                                             />
                                         </x-slot>

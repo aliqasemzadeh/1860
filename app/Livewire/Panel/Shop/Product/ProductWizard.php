@@ -71,7 +71,7 @@ class ProductWizard extends Component
                 'site_type' => __('app.site_type'),
                 'url' => __('app.product_wizard_url'),
                 'category_id' => __('app.category'),
-                'brand_id' => __('app.brand'),
+                'brand_id' => __('general.brand'),
             ]);
 
             // Validate URL matches site type
@@ -170,13 +170,13 @@ class ProductWizard extends Component
             'name' => __('app.name'),
             'slug' => __('app.slug'),
             'slug_fa' => __('app.slug_fa'),
-            'weight' => __('app.weight'),
+            'weight' => __('general.weight'),
             'x_dimension' => __('app.x_dimension'),
             'y_dimension' => __('app.y_dimension'),
             'z_dimension' => __('app.z_dimension'),
             'category_id' => __('app.category'),
-            'brand_id' => __('app.brand'),
-            'unit_id' => __('app.unit'),
+            'brand_id' => __('general.brand'),
+            'unit_id' => __('general.unit'),
         ]);
 
         // Download and save first image as processed product file

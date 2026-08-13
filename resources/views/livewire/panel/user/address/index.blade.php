@@ -17,8 +17,8 @@
 
     <flux:card class="mb-6">
         <flux:field>
-            <flux:label>{{ __('app.search') }}</flux:label>
-            <flux:input wire:model.live.debounce.500ms="search" type="text" placeholder="{{ __('app.search') }}" />
+            <flux:label>{{ __('general.search') }}</flux:label>
+            <flux:input wire:model.live.debounce.500ms="search" type="text" placeholder="{{ __('general.search') }}" />
         </flux:field>
     </flux:card>
 
@@ -33,7 +33,7 @@
             <flux:table.column>{{ __('app.address') }}</flux:table.column>
             <flux:table.column>{{ __('app.postal_code') }}</flux:table.column>
             <flux:table.column>{{ __('app.default_address') }}</flux:table.column>
-            <flux:table.column>{{ __('app.options') }}</flux:table.column>
+            <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 
         @forelse ($this->addresses as $address)
@@ -63,7 +63,7 @@
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex items-center gap-2">
                         @can('user_address_edit')
-                            <flux:tooltip content="{{ __('app.edit') }}">
+                            <flux:tooltip content="{{ __('general.edit') }}">
                                 <flux:button
                                     size="xs"
                                     variant="primary"
@@ -89,7 +89,7 @@
                         @endcan
 
                         @can('user_address_delete')
-                            <flux:tooltip content="{{ __('app.delete') }}">
+                            <flux:tooltip content="{{ __('general.delete') }}">
                                 <flux:button
                                     size="xs"
                                     variant="primary"
@@ -97,7 +97,7 @@
                                     icon="trash"
                                     icon:variant="outline"
                                     wire:click="delete({{ $address->id }})"
-                                    wire:confirm="{{ __('app.are_you_sure') }}"
+                                    wire:confirm="{{ __('general.are_you_sure') }}"
                                 />
                             </flux:tooltip>
                         @endcan

@@ -21,14 +21,14 @@ class PaymentController extends Controller
         try {
             $order = Order::with('items')->find($orderId);
             if (! $order) {
-                return redirect()->route('order.index')->with('error', __('app.order_not_found'));
+                return redirect()->route('order.index')->with('error', __('general.order_not_found'));
             }
 
             if ($order->paid_at !== null) {
                 session()->forget('payment_order_id');
 
                 return redirect()->route('order.view', ['id' => $order->id])
-                    ->with('success', __('app.payment_successful'));
+                    ->with('success', __('general.payment_successful'));
             }
 
             // Get transaction ID from request (different gateways use different parameters)
@@ -46,7 +46,7 @@ class PaymentController extends Controller
 
             if (! $transactionId) {
                 return redirect()->route('order.view', ['id' => $order->id])
-                    ->with('error', __('app.payment_error'));
+                    ->with('error', __('general.payment_error'));
             }
 
             // Verify payment
@@ -66,7 +66,7 @@ class PaymentController extends Controller
             session()->forget('payment_order_id');
 
             return redirect()->route('order.view', ['id' => $order->id])
-                ->with('success', __('app.payment_successful'));
+                ->with('success', __('general.payment_successful'));
 
         } catch (InvalidPaymentException $exception) {
             // Payment failed
@@ -76,7 +76,7 @@ class PaymentController extends Controller
             ]);
 
             return redirect()->route('order.view', ['id' => $orderId])
-                ->with('error', __('app.payment_failed').': '.$exception->getMessage());
+                ->with('error', __('general.payment_failed').': '.$exception->getMessage());
         } catch (\Exception $e) {
             Log::error('Payment callback error', [
                 'order_id' => $orderId,
@@ -85,7 +85,7 @@ class PaymentController extends Controller
             ]);
 
             return redirect()->route('order.index')
-                ->with('error', __('app.payment_error').': '.$e->getMessage());
+                ->with('error', __('general.payment_error').': '.$e->getMessage());
         }
     }
 }

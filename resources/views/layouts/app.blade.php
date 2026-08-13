@@ -17,7 +17,7 @@
     <flux:sidebar.spacer />
 
     <flux:sidebar.nav>
-            <flux:sidebar.item icon="mail" href="{{ route('contact.index') }}">{{ __('app.contact_us') }}</flux:sidebar.item>
+            <flux:sidebar.item icon="mail" href="{{ route('contact.index') }}">{{ __('general.contact_us') }}</flux:sidebar.item>
     </flux:sidebar.nav>
 
 

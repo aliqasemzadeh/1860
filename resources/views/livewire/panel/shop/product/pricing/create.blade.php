@@ -15,7 +15,7 @@
                             @else
                                 <flux:select wire:model="color_id" variant="combobox" :filter="false" placeholder="{{ __('app.select_color_optional') }}">
                                     <x-slot name="input">
-                                        <flux:select.input wire:model.live="color_search" placeholder="{{ __('app.search') }}..." />
+                                        <flux:select.input wire:model.live="color_search" placeholder="{{ __('general.search') }}..." />
                                     </x-slot>
                                     <flux:select.option value="">{{ __('app.none') }}</flux:select.option>
                                     @foreach ($this->colors as $color)
@@ -41,7 +41,7 @@
                             @else
                                 <flux:select wire:model="warranty_id" variant="combobox" :filter="false" placeholder="{{ __('app.select_warranty_optional') }}">
                                     <x-slot name="input">
-                                        <flux:select.input wire:model.live="warranty_search" placeholder="{{ __('app.search') }}..." />
+                                        <flux:select.input wire:model.live="warranty_search" placeholder="{{ __('general.search') }}..." />
                                     </x-slot>
                                     <flux:select.option value="">{{ __('app.none') }}</flux:select.option>
                                     @foreach ($this->warranties as $warranty)
@@ -56,7 +56,7 @@
                         <flux:field>
                             <flux:label>{{ __('app.price') }}</flux:label>
                             <flux:input.group>
-                                <flux:input.group.prefix>{{ __('app.toman') }}</flux:input.group.prefix>
+                                <flux:input.group.prefix>{{ __('general.toman') }}</flux:input.group.prefix>
                                 <flux:input wire:model="price" type="text" mask:dynamic="$money($input)" />
                             </flux:input.group>
                             <flux:error name="price" />
@@ -65,14 +65,14 @@
                         <flux:field>
                             <flux:label>{{ __('app.sale_price') }}</flux:label>
                             <flux:input.group>
-                                <flux:input.group.prefix>{{ __('app.toman') }}</flux:input.group.prefix>
+                                <flux:input.group.prefix>{{ __('general.toman') }}</flux:input.group.prefix>
                                 <flux:input wire:model="sale_price" type="text" mask:dynamic="$money($input)" />
                             </flux:input.group>
                             <flux:error name="sale_price" />
                         </flux:field>
 
                         <flux:field>
-                            <flux:label>{{ __('app.quantity') }}</flux:label>
+                            <flux:label>{{ __('general.quantity') }}</flux:label>
                             <flux:input wire:model="quantity" type="number" step="0.01" min="0" placeholder="0" />
                             <flux:error name="quantity" />
                         </flux:field>
@@ -84,7 +84,7 @@
                     </div>
 
             <flux:button type="submit" class="w-full mt-6" variant="primary">
-                {{ __('app.create') }}
+                {{ __('general.create') }}
             </flux:button>
         </form>
     </div>

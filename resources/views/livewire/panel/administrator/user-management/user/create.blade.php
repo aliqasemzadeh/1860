@@ -8,7 +8,7 @@
             <form wire:submit="create" method="post">
                 <div class="pb-2">
                     <flux:field>
-                        <flux:label>{{ __('app.mobile') }}</flux:label>
+                        <flux:label>{{ __('general.mobile') }}</flux:label>
 
                         <flux:input wire:model="mobile" type="text" />
 
@@ -16,7 +16,7 @@
                     </flux:field>
                 </div>
                 <flux:button type="submit" class="w-full" variant="primary">
-                    {{ __('app.create') }}
+                    {{ __('general.create') }}
                 </flux:button>
             </form>
     </div>

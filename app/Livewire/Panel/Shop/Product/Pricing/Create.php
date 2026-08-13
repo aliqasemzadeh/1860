@@ -82,7 +82,7 @@ class Create extends Component
         }
 
         if (!$this->product || !$this->productId) {
-            Flux::toast(variant: 'danger', text: __('app.product_not_found'));
+            Flux::toast(variant: 'danger', text: __('general.product_not_found'));
             return;
         }
 

@@ -20,7 +20,7 @@
         <flux:table.columns>
             <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('app.name') }}</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')">{{ __('app.date') }}</flux:table.column>
-            <flux:table.column>{{ __('app.options') }}</flux:table.column>
+            <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 
         @foreach ($this->units as $unit)
@@ -33,8 +33,8 @@
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex items-center gap-2">
-                        <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.unit.edit.assign-data', { id: '{{ $unit->id }}' })">{{ __('app.edit') }}</flux:button>
-                        <flux:button size="xs" variant="danger" wire:click="delete({{ $unit->id }})">{{ __('app.delete') }}</flux:button>
+                        <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.unit.edit.assign-data', { id: '{{ $unit->id }}' })">{{ __('general.edit') }}</flux:button>
+                        <flux:button size="xs" variant="danger" wire:click="delete({{ $unit->id }})">{{ __('general.delete') }}</flux:button>
                     </div>
                 </flux:table.cell>
             </flux:table.row>

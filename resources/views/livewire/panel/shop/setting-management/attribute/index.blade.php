@@ -24,7 +24,7 @@
             <flux:table.column sortable wire:click="sort('type')">{{ __('app.attribute_type') }}</flux:table.column>
             <flux:table.column>{{ __('app.options_count') }}</flux:table.column>
             <flux:table.column sortable wire:click="sort('sort_order')">{{ __('app.sort_order') }}</flux:table.column>
-            <flux:table.column>{{ __('app.actions') }}</flux:table.column>
+            <flux:table.column>{{ __('general.actions') }}</flux:table.column>
         </flux:table.columns>
 
         @foreach ($this->attributesList as $attribute)
@@ -71,11 +71,11 @@
                     {{ $attribute->sort_order }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
-                    <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.attribute.edit.assign-data', { id: '{{ $attribute->id }}' })">{{ __('app.edit') }}</flux:button>
+                    <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.attribute.edit.assign-data', { id: '{{ $attribute->id }}' })">{{ __('general.edit') }}</flux:button>
                     @if(in_array($attribute->type, ['select', 'multiselect']))
                         <flux:button size="xs" variant="ghost" href="{{ route('panel.shop.setting-management.attribute.options.index', ['attributeId' => $attribute->id]) }}" wire:navigate>{{ __('app.attribute_options') }}</flux:button>
                     @endif
-                    <flux:button size="xs" variant="danger" wire:click="delete({{ $attribute->id }})" wire:confirm="{{ __('app.are_you_sure') }}">{{ __('app.delete') }}</flux:button>
+                    <flux:button size="xs" variant="danger" wire:click="delete({{ $attribute->id }})" wire:confirm="{{ __('general.are_you_sure') }}">{{ __('general.delete') }}</flux:button>
                 </flux:table.cell>
             </flux:table.row>
         @endforeach

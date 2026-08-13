@@ -1,11 +1,11 @@
 <x-slot name="title">
-    {{ __('app.roles') }}
+    {{ __('general.roles') }}
 </x-slot>
 <div>
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.roles') }}</flux:heading>
+                <flux:heading size="xl" level="1">{{ __('general.roles') }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('app.roles_description') }}</flux:subheading>
             </div>
             @can('administrator_user_management_role_create')
@@ -38,16 +38,16 @@
                 <flux:table.cell class="whitespace-nowrap">{{ jalali($role->created_at) }}</flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     @can('administrator_user_management_role_edit')
-                        <flux:button size="xs" variant="primary" wire:click="$dispatch('administrator.user-management.role.edit.assign-data', { id: '{{ $role->id }}' })">{{ __('app.edit') }}</flux:button>
+                        <flux:button size="xs" variant="primary" wire:click="$dispatch('administrator.user-management.role.edit.assign-data', { id: '{{ $role->id }}' })">{{ __('general.edit') }}</flux:button>
                     @endcan
                     @can('administrator_user_management_role_users')
-                        <flux:button size="xs" variant="primary" wire:click="$dispatch('administrator.user-management.role.users.assign-data', { id: '{{ $role->id }}' })">{{ __('app.users') }}</flux:button>
+                        <flux:button size="xs" variant="primary" wire:click="$dispatch('administrator.user-management.role.users.assign-data', { id: '{{ $role->id }}' })">{{ __('general.users') }}</flux:button>
                     @endcan
                     @can('administrator_user_management_role_permissions')
-                        <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.administrator.user-management.role.permissions.assign-data', { id: '{{ $role->id }}' })">{{ __('app.permissions') }}</flux:button>
+                        <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.administrator.user-management.role.permissions.assign-data', { id: '{{ $role->id }}' })">{{ __('general.permissions') }}</flux:button>
                     @endcan
                     @can('administrator_user_management_role_delete')
-                        <flux:button size="xs" variant="danger">{{ __('app.delete') }}</flux:button>
+                        <flux:button size="xs" variant="danger">{{ __('general.delete') }}</flux:button>
                     @endcan
                 </flux:table.cell>
             </flux:table.row>

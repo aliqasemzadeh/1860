@@ -20,7 +20,7 @@
                     {{-- Breadcrumb --}}
                     <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
                         <a href="{{ route('home') }}" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-                            {{ __('app.dashboard') }}
+                            {{ __('general.dashboard') }}
                         </a>
                         <span>/</span>
                         <a href="{{ route('order.index') }}" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
@@ -56,7 +56,7 @@
                                     <div class="flex items-center justify-between">
                                         <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('app.total') }}</flux:text>
                                         <flux:heading size="lg" class="text-zinc-900 dark:text-zinc-100">
-                                            {{ number_format($this->order->total_amount, 0) }} {{ __('app.toman') }}
+                                            {{ number_format($this->order->total_amount, 0) }} {{ __('general.toman') }}
                                         </flux:heading>
                                     </div>
                                 </div>
@@ -79,7 +79,7 @@
                                     class="w-full"
                                     wire:navigate
                                 >
-                                    {{ __('app.cancel') }}
+                                    {{ __('general.cancel') }}
                                 </flux:button>
                             </div>
                         </div>

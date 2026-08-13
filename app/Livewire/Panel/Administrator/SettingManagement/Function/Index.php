@@ -21,7 +21,7 @@ class Index extends Component
         $this->authorize('administrator_setting_function_index');
 
         Artisan::call('system:administrator:create-permissions-command');
-        Flux::toast(__('app.permissions_updated'));
+        Flux::toast(__('general.permissions_updated'));
     }
 
     public function clearCache(): void
@@ -29,7 +29,7 @@ class Index extends Component
         $this->authorize('administrator_setting_function_index');
 
         Artisan::call('cache:clear');
-        Flux::toast(__('app.cache_cleared'));
+        Flux::toast(__('general.cache_cleared'));
     }
 
     public function rebuildSitemap(): void
@@ -37,7 +37,7 @@ class Index extends Component
         $this->authorize('administrator_setting_function_index');
 
         $urls = app(SitemapService::class)->refresh();
-        Flux::toast(__('app.sitemap_rebuilt', ['count' => count($urls)]));
+        Flux::toast(__('general.sitemap_rebuilt', ['count' => count($urls)]));
     }
 
     public function addWatermarks(): void
@@ -55,7 +55,7 @@ class Index extends Component
             $marked = (int) $matches[1] + (int) $matches[3];
             $skipped = (int) $matches[2] + (int) $matches[4];
 
-            Flux::toast(__('app.watermarks_added', [
+            Flux::toast(__('general.watermarks_added', [
                 'marked' => $marked,
                 'skipped' => $skipped,
             ]));
@@ -63,7 +63,7 @@ class Index extends Component
             return;
         }
 
-        Flux::toast(__('app.watermarks_added_generic'));
+        Flux::toast(__('general.watermarks_added_generic'));
     }
 
     public function optimizeImages(): void
@@ -81,7 +81,7 @@ class Index extends Component
             $optimized = (int) $matches[1] + (int) $matches[3];
             $skipped = (int) $matches[2] + (int) $matches[4];
 
-            Flux::toast(__('app.images_optimized', [
+            Flux::toast(__('general.images_optimized', [
                 'optimized' => $optimized,
                 'skipped' => $skipped,
             ]));
@@ -89,7 +89,7 @@ class Index extends Component
             return;
         }
 
-        Flux::toast(__('app.images_optimized_generic'));
+        Flux::toast(__('general.images_optimized_generic'));
     }
 
     public function updateQuick(): void
@@ -97,7 +97,7 @@ class Index extends Component
         $this->authorize('administrator_setting_function_update');
 
         UpdateProjectJob::dispatch(runComposer: false, runNpmBuild: false);
-        Flux::toast(__('app.update_dispatched'));
+        Flux::toast(__('general.update_dispatched'));
     }
 
     public function updateFull(): void
@@ -105,7 +105,7 @@ class Index extends Component
         $this->authorize('administrator_setting_function_update');
 
         UpdateProjectJob::dispatch(runComposer: true, runNpmBuild: true);
-        Flux::toast(__('app.update_dispatched'));
+        Flux::toast(__('general.update_dispatched'));
     }
 
     #[Layout('layouts.panels.administrator')]

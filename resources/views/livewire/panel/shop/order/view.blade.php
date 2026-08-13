@@ -58,7 +58,7 @@
                         <flux:table.columns>
                             <flux:table.column>{{ __('app.name') }}</flux:table.column>
                             <flux:table.column>{{ __('app.sku') }}</flux:table.column>
-                            <flux:table.column>{{ __('app.quantity') }}</flux:table.column>
+                            <flux:table.column>{{ __('general.quantity') }}</flux:table.column>
                             <flux:table.column>{{ __('app.unit_price') }}</flux:table.column>
                             <flux:table.column>{{ __('app.total_amount') }}</flux:table.column>
                         </flux:table.columns>
@@ -85,7 +85,7 @@
                             <flux:text>{{ number_format((float) $order->subtotal_amount) }} {{ $order->currency }}</flux:text>
                         </div>
                         <div class="flex justify-between">
-                            <flux:text>{{ __('app.discount') }}:</flux:text>
+                            <flux:text>{{ __('general.discount') }}:</flux:text>
                             <flux:text>{{ number_format((float) $order->discount_amount) }} {{ $order->currency }}</flux:text>
                         </div>
                         <div class="flex justify-between">

@@ -13,7 +13,7 @@
                         <flux:label>{{ __('app.add_warranty') }}</flux:label>
                         <flux:select wire:model="selectedWarrantyId" variant="combobox" :filter="false" placeholder="{{ __('app.select_warranty') }}">
                             <x-slot name="input">
-                                <flux:select.input wire:model.live="warrantySearch" placeholder="{{ __('app.search') }}..." />
+                                <flux:select.input wire:model.live="warrantySearch" placeholder="{{ __('general.search') }}..." />
                             </x-slot>
                             @foreach ($this->availableWarranties as $warranty)
                                 <flux:select.option value="{{ $warranty->id }}" wire:key="warranty-{{ $warranty->id }}">
@@ -47,9 +47,9 @@
                                         size="xs"
                                         variant="danger"
                                         wire:click="removeWarranty({{ $warranty->id }})"
-                                        wire:confirm="{{ __('app.are_you_sure') }}"
+                                        wire:confirm="{{ __('general.are_you_sure') }}"
                                     >
-                                        {{ __('app.delete') }}
+                                        {{ __('general.delete') }}
                                     </flux:button>
                                 </div>
                             @endforeach

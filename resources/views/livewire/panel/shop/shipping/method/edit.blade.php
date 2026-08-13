@@ -25,7 +25,7 @@
                 </flux:field>
 
                 <flux:field>
-                    <flux:label>{{ __('app.description') }}</flux:label>
+                    <flux:label>{{ __('general.description') }}</flux:label>
                     <flux:textarea wire:model="description" rows="3" />
                     <flux:error name="description" />
                 </flux:field>

@@ -13,7 +13,7 @@
                         <flux:label>{{ __('app.add_color') }}</flux:label>
                         <flux:select wire:model="selectedColorId" variant="combobox" :filter="false" placeholder="{{ __('app.select_color') }}">
                             <x-slot name="input">
-                                <flux:select.input wire:model.live="colorSearch" placeholder="{{ __('app.search') }}..." />
+                                <flux:select.input wire:model.live="colorSearch" placeholder="{{ __('general.search') }}..." />
                             </x-slot>
                             @foreach ($this->availableColors as $color)
                                 <flux:select.option value="{{ $color->id }}" wire:key="color-{{ $color->id }}">
@@ -55,9 +55,9 @@
                                         size="xs"
                                         variant="danger"
                                         wire:click="removeColor({{ $color->id }})"
-                                        wire:confirm="{{ __('app.are_you_sure') }}"
+                                        wire:confirm="{{ __('general.are_you_sure') }}"
                                     >
-                                        {{ __('app.delete') }}
+                                        {{ __('general.delete') }}
                                     </flux:button>
                                 </div>
                             @endforeach

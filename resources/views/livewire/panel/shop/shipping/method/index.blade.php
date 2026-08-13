@@ -26,7 +26,7 @@
                 <div class="flex flex-col gap-1 pe-2 items-end">
                     <flux:input
                         size="sm"
-                        placeholder="{{ __('app.search_placeholder') }}"
+                        placeholder="{{ __('general.search_placeholder') }}"
                         wire:model.live="search"
                     />
                 </div>
@@ -38,7 +38,7 @@
             <flux:table.column sortable>{{ __('app.slug') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.status') }}</flux:table.column>
             <flux:table.column sortable>{{ __('app.date') }}</flux:table.column>
-            <flux:table.column>{{ __('app.options') }}</flux:table.column>
+            <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 
         <flux:table.rows>
@@ -52,7 +52,7 @@
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         <flux:badge :color="$method->is_active ? 'green' : 'zinc'">
-                            {{ $method->is_active ? __('app.yes') : __('app.no') }}
+                            {{ $method->is_active ? __('general.yes') : __('general.no') }}
                         </flux:badge>
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
@@ -60,10 +60,10 @@
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.shipping.method.edit.assign-data', { id: '{{ $method->id }}' })">
-                            {{ __('app.edit') }}
+                            {{ __('general.edit') }}
                         </flux:button>
                         <flux:button size="xs" variant="danger" wire:click="delete({{ $method->id }})">
-                            {{ __('app.delete') }}
+                            {{ __('general.delete') }}
                         </flux:button>
                     </flux:table.cell>
                 </flux:table.row>

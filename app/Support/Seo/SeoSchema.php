@@ -214,7 +214,7 @@ class SeoSchema
         return [
             '@context' => 'https://schema.org',
             '@type' => 'ContactPage',
-            'name' => __('app.contact_us'),
+            'name' => __('general.contact_us'),
             'url' => route('contact.index'),
             'mainEntity' => $organization,
         ];

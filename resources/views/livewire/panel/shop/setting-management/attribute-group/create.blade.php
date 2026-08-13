@@ -21,7 +21,7 @@
             </div>
 
             <flux:button type="submit" class="w-full" variant="primary">
-                {{ __('app.create') }}
+                {{ __('general.create') }}
             </flux:button>
         </form>
     </div>

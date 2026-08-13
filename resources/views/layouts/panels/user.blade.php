@@ -11,7 +11,7 @@
     <flux:sidebar.search placeholder="Search..." />
 
     <flux:sidebar.nav>
-        <flux:sidebar.item icon="gauge" href="{{ route('panel.user.dashboard.index') }}" wire:navigate :current="request()->routeIs('panel.user.dashboard.*')">{{ __('app.dashboard') }}</flux:sidebar.item>
+        <flux:sidebar.item icon="gauge" href="{{ route('panel.user.dashboard.index') }}" wire:navigate :current="request()->routeIs('panel.user.dashboard.*')">{{ __('general.dashboard') }}</flux:sidebar.item>
         <flux:sidebar.item icon="bring-to-front" href="{{ route('panel.user.order.index') }}" wire:navigate :current="request()->routeIs('panel.user.order.*')">{{ __('app.my_orders') }}</flux:sidebar.item>
         <flux:sidebar.item icon="map-pin" href="{{ route('panel.user.address.index') }}" wire:navigate :current="request()->routeIs('panel.user.address.*')">{{ __('app.addresses') }}</flux:sidebar.item>
     </flux:sidebar.nav>

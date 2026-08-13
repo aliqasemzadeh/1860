@@ -24,7 +24,7 @@
                 {{-- Breadcrumb --}}
                 <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
                     <a href="{{ route('home') }}" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-                        {{ __('app.home') }}
+                        {{ __('general.home') }}
                     </a>
                     <span>/</span>
                     @if($this->product->category)
@@ -45,7 +45,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
                             <flux:heading size="sm" class="text-zinc-900 dark:text-zinc-100">
-                                {{ __('app.options') }}
+                                {{ __('general.options') }}
                             </flux:heading>
                         </div>
                         <div class="flex flex-wrap items-center gap-2">
@@ -54,7 +54,7 @@
                                 variant="primary"
                                 wire:click="$dispatch('panel.shop.product.edit.assign-data', { id: '{{ $this->product->id }}' })"
                             >
-                                {{ __('app.edit') }}
+                                {{ __('general.edit') }}
                             </flux:button>
                             <flux:button
                                 size="sm"
@@ -62,7 +62,7 @@
                                 color="sky"
                                 wire:click="$dispatch('panel.shop.product.colors.assign-data', { id: '{{ $this->product->id }}' })"
                             >
-                                {{ __('app.colors') }}
+                                {{ __('general.colors') }}
                             </flux:button>
                             <flux:button
                                 size="sm"
@@ -70,7 +70,7 @@
                                 color="green"
                                 wire:click="$dispatch('panel.shop.product.warranties.assign-data', { id: '{{ $this->product->id }}' })"
                             >
-                                {{ __('app.warranties') }}
+                                {{ __('general.warranties') }}
                             </flux:button>
                             <flux:button
                                 size="sm"
@@ -78,7 +78,7 @@
                                 color="purple"
                                 wire:click="$dispatch('panel.shop.product.price-fetchers.assign-data', { id: '{{ $this->product->id }}' })"
                             >
-                                {{ __('app.price_fetchers') }}
+                                {{ __('general.price_fetchers') }}
                             </flux:button>
                             <flux:button
                                 size="sm"
@@ -86,7 +86,7 @@
                                 color="orange"
                                 wire:click="$dispatch('panel.shop.product.images.assign-data', { id: '{{ $this->product->id }}' })"
                             >
-                                {{ __('app.images') }}
+                                {{ __('general.images') }}
                             </flux:button>
                             <flux:button
                                 size="sm"
@@ -95,7 +95,7 @@
                                 href="{{ route('panel.shop.product.pricing.index', ['productId' => $this->product->id]) }}"
                                 wire:navigate
                             >
-                                {{ __('app.pricing') }}
+                                {{ __('general.pricing') }}
                             </flux:button>
                             <flux:button
                                 size="sm"
@@ -104,15 +104,15 @@
                                 href="{{ route('panel.shop.product.attributes.index', ['id' => $this->product->id]) }}"
                                 wire:navigate
                             >
-                                {{ __('app.product_attributes') }}
+                                {{ __('general.product_attributes') }}
                             </flux:button>
                             <flux:button
                                 size="sm"
                                 variant="danger"
                                 wire:click="delete"
-                                wire:confirm="{{ __('app.are_you_sure') }}"
+                                wire:confirm="{{ __('general.are_you_sure') }}"
                             >
-                                {{ __('app.delete') }}
+                                {{ __('general.delete') }}
                             </flux:button>
                         </div>
                     </div>
@@ -163,7 +163,7 @@
                             />
                             @if($this->product->sale_price && $this->product->price && $this->product->sale_price < $this->product->price)
                                 <div class="absolute top-4 right-4 bg-red-500 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-lg">
-                                    {{ __('app.discount') }}
+                                    {{ __('general.discount') }}
                                 </div>
                             @endif
                         </div>
@@ -204,7 +204,7 @@
                             </flux:heading>
                             @if($this->product->brand)
                                 <flux:text class="text-zinc-600 dark:text-zinc-400 text-lg">
-                                    {{ __('app.brand') }}: <span class="font-medium">{{ $this->product->brand->name }}</span>
+                                    {{ __('general.brand') }}: <span class="font-medium">{{ $this->product->brand->name }}</span>
                                 </flux:text>
                             @endif
                         </div>
@@ -219,36 +219,36 @@
                                     @if($selectedPrice->sale_price && $selectedPrice->sale_price < $selectedPrice->price)
                                         <div class="flex items-center gap-4">
                                             <div class="text-4xl font-bold text-green-600 dark:text-green-400">
-                                                {{ number_format($selectedPrice->sale_price, 0) }} {{ __('app.toman') }}
+                                                {{ number_format($selectedPrice->sale_price, 0) }} {{ __('general.toman') }}
                                             </div>
                                             <div class="text-2xl text-zinc-400 dark:text-zinc-500 line-through">
-                                                {{ number_format($selectedPrice->price, 0) }} {{ __('app.toman') }}
+                                                {{ number_format($selectedPrice->price, 0) }} {{ __('general.toman') }}
                                             </div>
                                         </div>
                                         @php
                                             $discountPercent = round((($selectedPrice->price - $selectedPrice->sale_price) / $selectedPrice->price) * 100);
                                         @endphp
                                         <div class="text-sm text-green-600 dark:text-green-400 font-medium">
-                                            {{ $discountPercent }}% {{ __('app.discount') }}
+                                            {{ $discountPercent }}% {{ __('general.discount') }}
                                         </div>
                                     @else
                                         <div class="text-4xl font-bold text-zinc-900 dark:text-zinc-100">
-                                            {{ number_format($selectedPrice->price, 0) }} {{ __('app.toman') }}
+                                            {{ number_format($selectedPrice->price, 0) }} {{ __('general.toman') }}
                                         </div>
                                     @endif
                                     @if($selectedPrice->quantity <= 0)
                                         <div class="text-sm text-red-600 dark:text-red-400 font-medium">
-                                            {{ __('app.out_of_stock') }}
+                                            {{ __('general.out_of_stock') }}
                                         </div>
                                     @elseif($selectedPrice->quantity < 10)
                                         <div class="text-sm text-orange-600 dark:text-orange-400 font-medium">
-                                            {{ __('app.low_stock') }} ({{ number_format($selectedPrice->quantity, 0) }} {{ __('app.remaining') }})
+                                            {{ __('general.low_stock') }} ({{ number_format($selectedPrice->quantity, 0) }} {{ __('general.remaining') }})
                                         </div>
                                     @endif
                                 </div>
                             @else
                                 <div class="text-lg text-zinc-400 dark:text-zinc-500">
-                                    {{ __('app.price_not_available') }}
+                                    {{ __('general.price_not_available') }}
                                 </div>
                             @endif
                         </div>
@@ -312,7 +312,7 @@
                             <div class="space-y-4">
                                 <div>
                                     <flux:heading size="sm" class="mb-3 text-zinc-900 dark:text-zinc-100">
-                                        {{ __('app.quantity') }}
+                                        {{ __('general.quantity') }}
                                     </flux:heading>
                                     <div class="flex items-center gap-3">
                                         <button
@@ -360,14 +360,14 @@
                                 class="w-full py-3 text-lg"
                                 disabled
                             >
-                                {{ __('app.out_of_stock') }}
+                                {{ __('general.out_of_stock') }}
                             </flux:button>
                         @endif
 
                         {{-- Specifications --}}
                         <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6">
                             <flux:heading size="sm" class="mb-4 text-zinc-900 dark:text-zinc-100">
-                                {{ __('app.description') }}
+                                {{ __('general.description') }}
                             </flux:heading>
                             @if($this->product->description)
                                 <flux:text class="text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line">
@@ -384,23 +384,23 @@
                         @if($this->product->weight || $this->product->x_dimension || $this->product->y_dimension || $this->product->z_dimension || $this->product->unit)
                             <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6">
                                 <flux:heading size="sm" class="mb-4 text-zinc-900 dark:text-zinc-100">
-                                    {{ __('app.technical_specifications') }}
+                                    {{ __('general.technical_specifications') }}
                                 </flux:heading>
                                 <div class="grid grid-cols-2 gap-4">
                                     @if($this->product->weight)
                                         <div>
                                             <flux:text class="text-sm text-zinc-600 dark:text-zinc-400">
-                                                {{ __('app.weight') }}
+                                                {{ __('general.weight') }}
                                             </flux:text>
                                             <div class="text-lg font-medium text-zinc-900 dark:text-zinc-100">
-                                                {{ number_format($this->product->weight, 0) }} {{ __('app.gram') }}
+                                                {{ number_format($this->product->weight, 0) }} {{ __('general.gram') }}
                                             </div>
                                         </div>
                                     @endif
                                     @if($this->product->x_dimension || $this->product->y_dimension || $this->product->z_dimension)
                                         <div>
                                             <flux:text class="text-sm text-zinc-600 dark:text-zinc-400">
-                                                {{ __('app.dimensions') }}
+                                                {{ __('general.dimensions') }}
                                             </flux:text>
                                             <div class="text-lg font-medium text-zinc-900 dark:text-zinc-100">
                                                 @if($this->product->x_dimension)
@@ -412,14 +412,14 @@
                                                 @if($this->product->z_dimension)
                                                     × {{ number_format($this->product->z_dimension, 0) }}
                                                 @endif
-                                                {{ __('app.centimeter') }}
+                                                {{ __('general.centimeter') }}
                                             </div>
                                         </div>
                                     @endif
                                     @if($this->product->unit)
                                         <div>
                                             <flux:text class="text-sm text-zinc-600 dark:text-zinc-400">
-                                                {{ __('app.unit') }}
+                                                {{ __('general.unit') }}
                                             </flux:text>
                                             <div class="text-lg font-medium text-zinc-900 dark:text-zinc-100">
                                                 {{ $this->product->unit->name }}
@@ -434,7 +434,7 @@
                         @if($this->product->prices->isNotEmpty() && ($this->product->colors->count() > 1 || $this->product->warranties->count() > 1))
                             <div>
                                 <flux:heading size="sm" class="mb-4 text-zinc-900 dark:text-zinc-100">
-                                    {{ __('app.pricing') }}
+                                    {{ __('general.pricing') }}
                                 </flux:heading>
                                 <div class="space-y-3 max-h-64 overflow-y-auto">
                                     @foreach($this->product->prices->where('quantity', '>', 0) as $price)
@@ -455,20 +455,20 @@
                                                     @endif
                                                 </div>
                                                 <div class="text-xs text-zinc-500 dark:text-zinc-500">
-                                                    {{ __('app.quantity') }}: {{ number_format($price->quantity, 0) }}
+                                                    {{ __('general.quantity') }}: {{ number_format($price->quantity, 0) }}
                                                 </div>
                                             </div>
                                             <div class="text-left">
                                                 @if($price->sale_price && $price->sale_price < $price->price)
                                                     <div class="text-lg font-bold text-green-600 dark:text-green-400">
-                                                        {{ number_format($price->sale_price, 0) }} {{ __('app.toman') }}
+                                                        {{ number_format($price->sale_price, 0) }} {{ __('general.toman') }}
                                                     </div>
                                                     <div class="text-sm text-zinc-400 dark:text-zinc-500 line-through">
-                                                        {{ number_format($price->price, 0) }} {{ __('app.toman') }}
+                                                        {{ number_format($price->price, 0) }} {{ __('general.toman') }}
                                                     </div>
                                                 @else
                                                     <div class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                                                        {{ number_format($price->price, 0) }} {{ __('app.toman') }}
+                                                        {{ number_format($price->price, 0) }} {{ __('general.toman') }}
                                                     </div>
                                                 @endif
                                             </div>
@@ -493,7 +493,7 @@
                         @if($attributesByGroup->isNotEmpty())
                             <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6">
                                 <flux:heading size="sm" class="mb-4 text-zinc-900 dark:text-zinc-100">
-                                    {{ __('app.technical_specifications') }}
+                                    {{ __('general.technical_specifications') }}
                                 </flux:heading>
                                 <div class="space-y-4">
                                     @foreach($attributesByGroup as $groupName => $groupAttributes)
@@ -539,7 +539,7 @@
             <div class="mx-auto max-w-7xl px-4 2xl:px-0">
                 <div class="flex flex-col items-center justify-center py-16">
                     <flux:heading size="lg" class="text-zinc-500 dark:text-zinc-400 mb-2">
-                        {{ __('app.product_not_found') }}
+                        {{ __('general.product_not_found') }}
                     </flux:heading>
                     <flux:text class="text-zinc-400 dark:text-zinc-500 mb-6">
                         {{ __('app.product_not_found_description') }}

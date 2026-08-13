@@ -70,11 +70,11 @@
                                     @endphp
                                     <div class="mt-2">
                                         <flux:text class="text-sm font-bold text-zinc-900 dark:text-zinc-100">
-                                            {{ number_format($itemPrice * $item->quantity, 0) }} {{ __('app.toman') }}
+                                            {{ number_format($itemPrice * $item->quantity, 0) }} {{ __('general.toman') }}
                                         </flux:text>
                                         @if($item->quantity > 1)
                                             <flux:text class="text-xs text-zinc-500 dark:text-zinc-500">
-                                                {{ number_format($itemPrice, 0) }} {{ __('app.toman') }} × {{ $item->quantity }}
+                                                {{ number_format($itemPrice, 0) }} {{ __('general.toman') }} × {{ $item->quantity }}
                                             </flux:text>
                                         @endif
                                     </div>
@@ -128,7 +128,7 @@
                             {{ __('app.total') }}
                         </flux:heading>
                         <flux:heading size="lg" class="text-zinc-900 dark:text-zinc-100">
-                            {{ number_format($this->totalAmount, 0) }} {{ __('app.toman') }}
+                            {{ number_format($this->totalAmount, 0) }} {{ __('general.toman') }}
                         </flux:heading>
                     </div>
                     <flux:button href="{{ route('order.cart') }}" variant="primary" class="w-full" wire:navigate>

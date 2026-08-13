@@ -18,7 +18,7 @@
                         </flux:field>
 
                         <flux:field>
-                            <flux:label>{{ __('app.description') }}</flux:label>
+                            <flux:label>{{ __('general.description') }}</flux:label>
                             <flux:editor wire:model="description" />
                             <flux:error name="description" />
                         </flux:field>
@@ -28,7 +28,7 @@
                             <flux:input.group>
                                 <flux:select wire:model="category_id" variant="combobox" :filter="false" placeholder="{{ __('app.select_category') }}">
                                     <x-slot name="input">
-                                        <flux:select.input wire:model.live="category_search" placeholder="{{ __('app.search') }}..." />
+                                        <flux:select.input wire:model.live="category_search" placeholder="{{ __('general.search') }}..." />
                                     </x-slot>
                                     @foreach ($this->categories as $category)
                                         <flux:select.option value="{{ $category->id }}" wire:key="category-{{ $category->id }}">
@@ -44,11 +44,11 @@
                         </flux:field>
 
                         <flux:field>
-                            <flux:label>{{ __('app.brand') }}</flux:label>
+                            <flux:label>{{ __('general.brand') }}</flux:label>
                             <flux:input.group>
                                 <flux:select wire:model="brand_id" variant="combobox" :filter="false" placeholder="{{ __('app.select_brand') }}">
                                     <x-slot name="input">
-                                        <flux:select.input wire:model.live="brand_search" placeholder="{{ __('app.search') }}..." />
+                                        <flux:select.input wire:model.live="brand_search" placeholder="{{ __('general.search') }}..." />
                                     </x-slot>
                                     @foreach ($this->brands as $brand)
                                         <flux:select.option value="{{ $brand->id }}" wire:key="brand-{{ $brand->id }}">
@@ -64,11 +64,11 @@
                         </flux:field>
 
                         <flux:field>
-                            <flux:label>{{ __('app.unit') }}</flux:label>
+                            <flux:label>{{ __('general.unit') }}</flux:label>
                             <flux:input.group>
                                 <flux:select wire:model="unit_id" variant="combobox" :filter="false" placeholder="{{ __('app.select_unit') }}">
                                     <x-slot name="input">
-                                        <flux:select.input wire:model.live="unit_search" placeholder="{{ __('app.search') }}..." />
+                                        <flux:select.input wire:model.live="unit_search" placeholder="{{ __('general.search') }}..." />
                                     </x-slot>
                                     @foreach ($this->units as $unit)
                                         <flux:select.option value="{{ $unit->id }}" wire:key="unit-{{ $unit->id }}">
@@ -87,9 +87,9 @@
                     <!-- Column 2: weight, file, slug, slug_fa -->
                     <div class="space-y-3">
                         <flux:field>
-                            <flux:label>{{ __('app.weight') }}</flux:label>
+                            <flux:label>{{ __('general.weight') }}</flux:label>
                             <flux:input.group>
-                                <flux:input.group.prefix>{{ __('app.gram') }}</flux:input.group.prefix>
+                                <flux:input.group.prefix>{{ __('general.gram') }}</flux:input.group.prefix>
                                 <flux:input wire:model="weight" type="number" step="0.01" min="0" />
                             </flux:input.group>
                             <flux:error name="weight" />

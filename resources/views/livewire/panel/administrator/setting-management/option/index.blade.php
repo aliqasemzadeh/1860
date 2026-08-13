@@ -1,10 +1,10 @@
 <x-slot name="title">
-    {{ __('app.options') }}
+    {{ __('general.options') }}
 </x-slot>
 
 <div>
     <div class="relative mb-6 w-full">
-        <flux:heading size="xl" level="1">{{ __('app.options') }}</flux:heading>
+        <flux:heading size="xl" level="1">{{ __('general.options') }}</flux:heading>
         <flux:subheading size="lg" class="mb-6">{{ __('app.options_description') }}</flux:subheading>
         <flux:separator variant="subtle" />
     </div>
@@ -53,7 +53,7 @@
                                         alt="{{ __('app.site_logo') }}"
                                         class="mb-2 h-16 object-contain"
                                     />
-                                    <flux:tooltip content="{{ __('app.delete') }}">
+                                    <flux:tooltip content="{{ __('general.delete') }}">
                                         <flux:button
                                             size="xs"
                                             variant="primary"
@@ -61,7 +61,7 @@
                                             icon="trash"
                                             icon:variant="outline"
                                             wire:click="removeLogo"
-                                            wire:confirm="{{ __('app.are_you_sure') }}"
+                                            wire:confirm="{{ __('general.are_you_sure') }}"
                                         />
                                     </flux:tooltip>
                                 @endif
@@ -83,7 +83,7 @@
                                         alt="{{ __('app.site_favicon') }}"
                                         class="mb-2 h-10 object-contain"
                                     />
-                                    <flux:tooltip content="{{ __('app.delete') }}">
+                                    <flux:tooltip content="{{ __('general.delete') }}">
                                         <flux:button
                                             size="xs"
                                             variant="primary"
@@ -91,7 +91,7 @@
                                             icon="trash"
                                             icon:variant="outline"
                                             wire:click="removeFavicon"
-                                            wire:confirm="{{ __('app.are_you_sure') }}"
+                                            wire:confirm="{{ __('general.are_you_sure') }}"
                                         />
                                     </flux:tooltip>
                                 @endif
@@ -108,7 +108,7 @@
                         </div>
 
                         <flux:button type="submit" class="w-full" variant="primary" color="teal">
-                            {{ __('app.save') }}
+                            {{ __('general.save') }}
                         </flux:button>
                     </form>
                 </flux:card>
@@ -129,7 +129,7 @@
 
                         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <flux:field>
-                                <flux:label>{{ __('app.mobile') }}</flux:label>
+                                <flux:label>{{ __('general.mobile') }}</flux:label>
                                 <flux:input wire:model="contactForm.mobile" dir="ltr" />
                                 <flux:error name="contactForm.mobile" />
                             </flux:field>
@@ -148,7 +148,7 @@
                         </flux:field>
 
                         <flux:button type="submit" class="w-full" variant="primary" color="teal">
-                            {{ __('app.save') }}
+                            {{ __('general.save') }}
                         </flux:button>
                     </form>
                 </flux:card>
@@ -198,7 +198,7 @@
                         </div>
 
                         <flux:button type="submit" class="w-full" variant="primary" color="teal">
-                            {{ __('app.save') }}
+                            {{ __('general.save') }}
                         </flux:button>
                     </form>
                 </flux:card>
@@ -224,7 +224,7 @@
                         </flux:field>
 
                         <flux:button type="submit" class="w-full" variant="primary" color="teal">
-                            {{ __('app.save') }}
+                            {{ __('general.save') }}
                         </flux:button>
                     </form>
                 </flux:card>
@@ -300,7 +300,7 @@
                             </div>
 
                             <flux:button type="submit" class="w-full" variant="primary" color="teal">
-                                {{ __('app.save') }}
+                                {{ __('general.save') }}
                             </flux:button>
                         </form>
 
@@ -309,7 +309,7 @@
                         @if ($this->isDown)
                             <flux:button
                                 wire:click="disableMaintenance"
-                                wire:confirm="{{ __('app.are_you_sure') }}"
+                                wire:confirm="{{ __('general.are_you_sure') }}"
                                 variant="primary"
                                 color="green"
                                 icon="play"
@@ -320,7 +320,7 @@
                         @else
                             <flux:button
                                 wire:click="enableMaintenance"
-                                wire:confirm="{{ __('app.are_you_sure') }}"
+                                wire:confirm="{{ __('general.are_you_sure') }}"
                                 variant="primary"
                                 color="red"
                                 icon="power"

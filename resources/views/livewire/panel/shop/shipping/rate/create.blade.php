@@ -53,13 +53,13 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <flux:field>
-                        <flux:label>{{ __('app.min_weight') }} ({{ __('app.gram') }})</flux:label>
+                        <flux:label>{{ __('app.min_weight') }} ({{ __('general.gram') }})</flux:label>
                         <flux:input wire:model="min_weight" type="number" min="0" step="1" />
                         <flux:error name="min_weight" />
                     </flux:field>
 
                     <flux:field>
-                        <flux:label>{{ __('app.max_weight') }} ({{ __('app.gram') }})</flux:label>
+                        <flux:label>{{ __('app.max_weight') }} ({{ __('general.gram') }})</flux:label>
                         <flux:input wire:model="max_weight" type="number" min="0" step="1" />
                         <flux:error name="max_weight" />
                     </flux:field>
@@ -98,7 +98,7 @@
             </div>
 
             <flux:button type="submit" class="w-full" variant="primary">
-                {{ __('app.create') }}
+                {{ __('general.create') }}
             </flux:button>
         </form>
     </div>

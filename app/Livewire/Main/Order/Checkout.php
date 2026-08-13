@@ -44,7 +44,7 @@ class Checkout extends Component
         $this->code = '';
         $this->step = 2;
         $this->canResendAt = now()->addMinutes((int) config('one-time-passwords.default_expires_in_minutes'));
-        Flux::toast(variant: 'success', text: __('app.code_sent'));
+        Flux::toast(variant: 'success', text: __('general.code_sent'));
     }
 
     public function verify(): void
@@ -57,7 +57,7 @@ class Checkout extends Component
         $user = User::where('mobile', $this->mobile)->first();
 
         if (! $user) {
-            Flux::toast(variant: 'danger', text: __('app.invalid_code'));
+            Flux::toast(variant: 'danger', text: __('general.invalid_code'));
 
             return;
         }
@@ -65,14 +65,14 @@ class Checkout extends Component
         $result = $user->attemptLoginUsingOneTimePassword($this->code, true);
 
         if (! $result->isOk()) {
-            Flux::toast(variant: 'danger', text: __('app.invalid_code'));
+            Flux::toast(variant: 'danger', text: __('general.invalid_code'));
 
             return;
         }
 
         request()->session()->regenerate();
 
-        Flux::toast(variant: 'success', text: __('app.login_successful'));
+        Flux::toast(variant: 'success', text: __('general.login_successful'));
         $this->redirect(route('order.shipping'), navigate: true);
     }
 
@@ -81,14 +81,14 @@ class Checkout extends Component
         $expiry = (int) config('one-time-passwords.default_expires_in_minutes');
 
         if ($this->canResendAt && now()->lt($this->canResendAt)) {
-            Flux::toast(variant: 'danger', text: __('app.wait_before_resend'));
+            Flux::toast(variant: 'danger', text: __('general.wait_before_resend'));
 
             return;
         }
 
         if (! $this->mobile) {
             $this->step = 1;
-            Flux::toast(variant: 'danger', text: __('app.enter_mobile'));
+            Flux::toast(variant: 'danger', text: __('general.enter_mobile'));
 
             return;
         }
@@ -100,7 +100,7 @@ class Checkout extends Component
         $otp = $user->createOneTimePassword();
 
         dispatch(new SendOtpJob($this->mobile, $otp->password));
-        Flux::toast(variant: 'success', text: __('app.code_resent'));
+        Flux::toast(variant: 'success', text: __('general.code_resent'));
 
         $this->canResendAt = now()->addMinutes($expiry);
     }
