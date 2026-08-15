@@ -23,6 +23,8 @@ class Create extends Component
 
     public string $name = '';
 
+    public string $en_name = '';
+
     public ?string $description = null;
 
     public string $slug = '';
@@ -54,6 +56,8 @@ class Create extends Component
 
     public string $unit_search = '';
 
+    public array $tags = [];
+
     public function updatedName(string $value): void
     {
         $this->slug = Str::slug($value);
@@ -64,7 +68,9 @@ class Create extends Component
     {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
+            'en_name' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'tags' => ['nullable', 'array'],
             'slug' => ['required', 'string', 'max:255', 'alpha_dash', 'unique:products,slug'],
             'slug_fa' => ['required', 'string', 'max:255', 'unique:products,slug_fa'],
             'file' => ['nullable', 'file', 'max:10240'],
@@ -120,8 +126,9 @@ class Create extends Component
             }
         }
 
-        Product::create([
+        $product = Product::create([
             'name' => $validated['name'],
+            'en_name' => $validated['en_name'],
             'description' => $validated['description'] ?? null,
             'slug' => $validated['slug'],
             'slug_fa' => $validated['slug_fa'],
@@ -136,10 +143,14 @@ class Create extends Component
             'unit_id' => $validated['unit_id'],
         ]);
 
+        if (!empty($this->tags)) {
+            $product->attachTags($this->tags);
+        }
+
         Flux::modal('panel.shop.product.create.modal')->close();
         $this->dispatch('panel.shop.product.index.render');
         Flux::toast(variant: 'success', text: __('app.product_created'));
-        $this->reset(['name', 'description', 'slug', 'slug_fa', 'file', 'selectedImageUrl', 'weight', 'x_dimension', 'y_dimension', 'z_dimension', 'category_id', 'brand_id', 'unit_id', 'category_search', 'brand_search', 'unit_search']);
+        $this->reset(['name', 'en_name', 'description', 'tags', 'slug', 'slug_fa', 'file', 'selectedImageUrl', 'weight', 'x_dimension', 'y_dimension', 'z_dimension', 'category_id', 'brand_id', 'unit_id', 'category_search', 'brand_search', 'unit_search']);
     }
 
     public function removeFile(): void
@@ -165,7 +176,7 @@ class Create extends Component
             $this->file->delete();
             $this->file = null;
         }
-        
+
         $this->selectedImageUrl = $url;
     }
 
