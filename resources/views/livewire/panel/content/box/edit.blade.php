@@ -16,7 +16,7 @@
 
         <flux:pillbox wire:model="form.product_ids" label="{{ __('general.products') }}" searchable>
             @foreach($this->products as $product)
-                <flux:pillbox.item :value="$product->id">{{ $product->name }}</flux:pillbox.item>
+                <flux:pillbox.option :value="$product->id">{{ $product->name }}</flux:pillbox.option>
             @endforeach
         </flux:pillbox>
 
