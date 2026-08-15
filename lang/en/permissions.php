@@ -81,19 +81,6 @@ return [
 
         'administrator_setting_option_index' => 'Setting Options List',
         'administrator_setting_option_update' => 'Update Setting Options',
-
-        'administrator_api_access' => 'Administrator API Access',
-        'administrator_api_ticket_management' => 'Ticket Management (API)',
-        'administrator_api_ticket_index' => 'Tickets List (API)',
-        'administrator_api_ticket_view' => 'View Ticket (API)',
-        'administrator_api_ticket_replay' => 'Reply to Ticket (API)',
-        'administrator_api_ticket_categories' => 'Ticket Categories (API)',
-        'administrator_api_ticket_download_file' => 'Download Ticket File (API)',
-
-        'administrator_api_faq_management' => 'FAQ Management (API)',
-        'administrator_api_faq_index' => 'FAQ List (API)',
-        'administrator_api_faq_show' => 'Show FAQ (API)',
-        'administrator_api_faq_search' => 'Search FAQ (API)',
     ],
 
     'shop' => [

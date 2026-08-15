@@ -81,20 +81,6 @@ return [
 
         'administrator_setting_option_index' => 'فهرست گزینه‌های تنظیمات',
         'administrator_setting_option_update' => 'ویرایش گزینه‌های تنظیمات',
-
-        // API permissions
-        'administrator_api_access' => 'دسترسی API مدیریت',
-        'administrator_api_ticket_management' => 'مدیریت تیکت‌ها (API)',
-        'administrator_api_ticket_index' => 'فهرست تیکت‌ها (API)',
-        'administrator_api_ticket_view' => 'مشاهده تیکت (API)',
-        'administrator_api_ticket_replay' => 'پاسخ به تیکت (API)',
-        'administrator_api_ticket_categories' => 'دسته‌بندی‌های تیکت (API)',
-        'administrator_api_ticket_download_file' => 'دانلود فایل تیکت (API)',
-
-        'administrator_api_faq_management' => 'مدیریت پرسش‌های متداول (API)',
-        'administrator_api_faq_index' => 'فهرست پرسش‌های متداول (API)',
-        'administrator_api_faq_show' => 'نمایش پرسش متداول (API)',
-        'administrator_api_faq_search' => 'جستجوی پرسش‌های متداول (API)',
     ],
 
     'shop' => [
