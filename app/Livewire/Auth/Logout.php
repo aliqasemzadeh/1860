@@ -17,7 +17,7 @@ class Logout extends Component
         request()->session()->invalidate();
         request()->session()->regenerateToken();
 
-        Flux::toast(variant: 'success', text: __("1860.logout.success"));
+        Flux::toast(variant: 'success', text: __('general.logout_success'));
 
         $this->redirectIntended(route('login'));
     }
