@@ -231,6 +231,11 @@ class Index extends Component
         $command = $this->commands[$key];
         $start = microtime(true);
 
+        $log = CommandLog::create([
+            'command' => 'php artisan ' . $command['signature'],
+            'status' => 'running',
+        ]);
+
         try {
             $result = $command['action']();
 
@@ -239,12 +244,26 @@ class Index extends Component
             $this->lastCommand = 'php artisan ' . $command['signature'];
             $this->executionDuration = (int) ((microtime(true) - $start) * 1000);
 
+            $log->update([
+                'output' => $this->lastOutput,
+                'status_code' => $this->lastStatus,
+                'execution_time_ms' => $this->executionDuration,
+                'status' => $this->lastStatus === 0 ? 'success' : 'failed',
+            ]);
+
             Flux::toast(__('general.success'));
         } catch (\Exception $e) {
             $this->lastStatus = 1;
             $this->lastOutput = $e->getMessage();
             $this->lastCommand = 'php artisan ' . $command['signature'];
             $this->executionDuration = (int) ((microtime(true) - $start) * 1000);
+
+            $log->update([
+                'output' => $this->lastOutput,
+                'status_code' => $this->lastStatus,
+                'execution_time_ms' => $this->executionDuration,
+                'status' => 'failed',
+            ]);
 
             Flux::toast(__('general.error'), variant: 'danger');
         }
@@ -262,12 +281,6 @@ class Index extends Component
     public function recentLogs()
     {
         return CommandLog::latest()->take(10)->get();
-    }
-
-    #[On('echo:commands,System.CommandLogUpdated')]
-    public function refreshLogs(): void
-    {
-        // This will trigger a re-render and refresh the computed property
     }
 
     #[Layout('layouts.panels.administrator')]
