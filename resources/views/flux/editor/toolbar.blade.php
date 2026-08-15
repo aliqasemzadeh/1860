@@ -50,6 +50,9 @@ $classes = Flux::classes()
                 <flux:editor.link />
                 <flux:editor.separator />
                 <flux:editor.align />
+                <flux:editor.separator />
+                <flux:editor.table />
+                <flux:editor.table-controls />
             <?php endif; ?>
         <?php endif; ?>
     </div>
