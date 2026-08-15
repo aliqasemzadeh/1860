@@ -15,11 +15,17 @@ class Edit extends Component
     use WithFileUploads;
 
     public BoxForm $form;
+    public string $search = '';
 
     #[Computed]
     public function products()
     {
-        return Product::query()->select('id', 'name')->get();
+        return Product::query()
+            ->select('products.id', 'products.name')
+            ->when($this->search, fn($query) => $query->where('name', 'like', '%' . $this->search . '%'))
+            ->when($this->form->product_ids, fn($query) => $query->orWhereIn('products.id', $this->form->product_ids))
+            ->limit(20)
+            ->get();
     }
 
     #[On('panels.administrator.content.box.edit.assign-data')]
