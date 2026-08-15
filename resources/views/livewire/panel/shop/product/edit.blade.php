@@ -18,6 +18,18 @@
                         </flux:field>
 
                         <flux:field>
+                            <flux:label>{{ __('general.en_name') }}</flux:label>
+                            <flux:input wire:model="en_name" type="text" />
+                            <flux:error name="en_name" />
+                        </flux:field>
+
+                        <flux:field>
+                            <flux:label>{{ __('general.tags') }}</flux:label>
+                            <flux:pillbox wire:model="tags" searchable />
+                            <flux:error name="tags" />
+                        </flux:field>
+
+                        <flux:field>
                             <flux:label>{{ __('general.description') }}</flux:label>
                             <flux:editor wire:model="description" />
                             <flux:error name="description" />
