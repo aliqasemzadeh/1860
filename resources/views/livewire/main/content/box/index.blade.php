@@ -8,8 +8,8 @@
             $logoUrl = $box->getFirstMediaUrl('box_images');
         @endphp
         <section
-            class="py-8 my-8 rounded-2xl overflow-hidden transition-all duration-500"
-            style="background-color: {{ $bgColor }}; color: {{ $textColor }};"
+            class="py-8 my-8 rounded-2xl overflow-hidden transition-all duration-500 bg-[var(--box-bg)] text-[var(--box-text)] dark:bg-zinc-900 dark:text-zinc-100"
+            style="--box-bg: {{ $bgColor }}; --box-text: {{ $textColor }};"
         >
             <div class="mx-auto max-w-7xl px-4 2xl:px-0">
                 <div class="flex items-center justify-between mb-6">
@@ -18,21 +18,21 @@
                             <img
                                 src="{{ $logoUrl }}"
                                 alt="{{ $box->title_fa }}"
-                                class="h-10 w-10 md:h-12 md:w-12 object-contain rounded-lg bg-white/90 p-1 shadow-sm"
+                                class="h-10 w-10 md:h-12 md:w-12 object-contain rounded-lg bg-white/90 dark:bg-zinc-800/90 p-1 shadow-sm"
                             />
                         @else
                             <div class="w-2 h-8 rounded-full" style="background-color: {{ $accentColor }};"></div>
                         @endif
-                        <flux:heading size="xl" style="color: {{ $textColor }};">{{ $box->title_fa }}</flux:heading>
+                        <flux:heading size="xl" class="text-[var(--box-text)] dark:text-zinc-100">{{ $box->title_fa }}</flux:heading>
                     </div>
                     <div class="flex items-center gap-2">
-                        <flux:carousel.controls name="box-{{ $box->id }}-carousel" style="color: {{ $textColor }};" />
+                        <flux:carousel.controls name="box-{{ $box->id }}-carousel" class="text-[var(--box-text)] dark:text-zinc-100" />
                         <flux:button
                             href="{{ route('content.box.view', ['id' => $box->id, 'slug' => $box->title_en]) }}"
                             wire:navigate
                             variant="ghost"
                             icon-trailing="chevron-left"
-                            style="color: {{ $textColor }};"
+                            class="text-[var(--box-text)] dark:text-zinc-100"
                         >
                             {{ __('general.view_all') }}
                         </flux:button>
@@ -48,7 +48,7 @@
                                 wire:key="box-{{ $box->id }}-product-{{ $product->id }}"
                                 class="group relative bg-white/10 backdrop-blur-md rounded-xl p-2 border border-white/20 hover:border-white/40 transition-all duration-300 block h-full"
                             >
-                                <div class="aspect-square rounded-lg overflow-hidden mb-3 bg-white">
+                                <div class="aspect-square rounded-lg overflow-hidden mb-3 bg-white dark:bg-zinc-800">
                                     @if($product->file_path)
                                         <img
                                             src="{{ Storage::url($product->file_path) }}"
@@ -61,7 +61,7 @@
                                         </div>
                                     @endif
                                 </div>
-                                <flux:heading size="sm" class="line-clamp-2 h-10 text-center" style="color: {{ $textColor }};">
+                                <flux:heading size="sm" class="line-clamp-2 h-10 text-center text-[var(--box-text)] dark:text-zinc-100">
                                     {{ $product->name }}
                                 </flux:heading>
 
