@@ -21,6 +21,8 @@ class Index extends Component
 
     public string $lastCommand = '';
 
+    public string $lastCommandKey = '';
+
     public string $lastOutput = '';
 
     public int $executionDuration = 0;
@@ -251,12 +253,14 @@ class Index extends Component
         try {
             $log = CommandLog::create([
                 'command' => $displayCommand,
+                'parameters' => ['key' => $key],
                 'status' => 'running',
                 'output' => __('general.command_queued'),
             ]);
 
             $this->activeLogId = $log->id;
             $this->lastCommand = $displayCommand;
+            $this->lastCommandKey = $key;
 
             if ($mode === 'queue') {
                 $this->dispatchQueuedCommand($command, $log->id);
@@ -316,6 +320,7 @@ class Index extends Component
             $this->lastStatus = 1;
             $this->lastOutput = $e->getMessage();
             $this->lastCommand = $displayCommand;
+            $this->lastCommandKey = $key;
             $this->executionDuration = (int) ((microtime(true) - $start) * 1000);
             $this->activeLogId = null;
 
@@ -392,6 +397,7 @@ class Index extends Component
 
         $this->selectedLogId = $log->id;
         $this->lastCommand = $log->command;
+        $this->lastCommandKey = $this->resolveCommandKeyFromLog($log) ?? '';
         $this->lastOutput = SystemCommandGuard::stripAnsi($log->output);
         $this->lastStatus = (int) $log->status_code;
         $this->executionDuration = (int) ($log->execution_time_ms ?? 0);
@@ -400,9 +406,84 @@ class Index extends Component
         Flux::modal('panels.administrator.setting-management.function.command-log.detail')->show();
     }
 
+    public function rerunLastCommand(): void
+    {
+        $this->authorize('administrator_setting_function_index');
+
+        if ($this->lastCommandKey === '') {
+            Flux::toast(__('general.command_not_found', ['key' => '-']), variant: 'danger');
+
+            return;
+        }
+
+        if ($this->activeLogId) {
+            Flux::toast(__('general.running'), variant: 'danger');
+
+            return;
+        }
+
+        $this->runCommand($this->lastCommandKey);
+    }
+
+    public function rerunLog(int $id): void
+    {
+        $this->authorize('administrator_setting_function_index');
+
+        $log = CommandLog::findOrFail($id);
+
+        if ($log->status === 'running') {
+            Flux::toast(__('general.running'), variant: 'danger');
+
+            return;
+        }
+
+        $key = $this->resolveCommandKeyFromLog($log);
+
+        if ($key === null) {
+            Flux::toast(
+                variant: 'danger',
+                text: __('general.command_not_found', ['key' => $log->command]),
+            );
+
+            return;
+        }
+
+        Flux::modal('panels.administrator.setting-management.function.command-log.detail')->close();
+
+        $this->runCommand($key);
+    }
+
+    protected function resolveCommandKeyFromLog(CommandLog $log): ?string
+    {
+        $catalog = $this->commandCatalog();
+        $parameters = $log->parameters;
+        $storedKey = is_object($parameters) ? ($parameters['key'] ?? null) : (is_array($parameters) ? ($parameters['key'] ?? null) : null);
+
+        if (is_string($storedKey) && array_key_exists($storedKey, $catalog)) {
+            return $storedKey;
+        }
+
+        foreach ($catalog as $key => $command) {
+            $displayCommand = match ($command['mode'] ?? 'sync') {
+                'queue' => ($command['job'] ?? null)
+                    ? $command['signature']
+                    : 'php artisan '.$command['signature'],
+                'service' => $command['signature'],
+                default => 'php artisan '.$command['signature'],
+            };
+
+            if ($displayCommand === $log->command) {
+                return $key;
+            }
+        }
+
+        return null;
+    }
+
     public function clearConsole(): void
     {
         $this->lastCommand = '';
+        $this->lastCommandKey = '';
         $this->lastOutput = '';
         $this->executionDuration = 0;
         $this->lastStatus = 0;

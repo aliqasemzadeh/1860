@@ -815,6 +815,7 @@ return [
     'required_field' => 'Required Field',
     'resend_code' => 'Resend Code',
     'reset' => 'Reset',
+    'rerun' => 'Re-run',
     'return_to_home' => 'Return to Home',
     'rial' => 'Rial',
     'role' => 'Role',
