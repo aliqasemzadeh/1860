@@ -14,15 +14,15 @@
             <flux:input type="color" wire:model="form.color_theme.accent" label="{{ __('general.accent_color') }}" />
         </div>
 
-        <flux:select wire:model="form.product_ids" label="{{ __('general.products') }}" variant="combobox" multiple :filter="false">
+        <flux:pillbox wire:model="form.product_ids" label="{{ __('general.products') }}" variant="combobox" multiple :filter="false">
             <x-slot name="input">
-                <flux:select.input wire:model.live="search" />
+                <flux:pillbox.input wire:model.live="search" />
             </x-slot>
 
             @foreach($this->products as $product)
-                <flux:select.option :value="$product->id" wire:key="{{ $product->id }}">{{ $product->name }}</flux:select.option>
+                <flux:pillbox.option :value="$product->id" wire:key="{{ $product->id }}">{{ $product->name }}</flux:pillbox.option>
             @endforeach
-        </flux:select>
+        </flux:pillbox>
 
         <flux:file-upload wire:model="form.image" label="{{ __('general.image') }}" variant="inline" />
 
