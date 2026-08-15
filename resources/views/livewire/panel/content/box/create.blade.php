@@ -14,7 +14,7 @@
             <flux:input type="color" wire:model="form.color_theme.accent" label="{{ __('general.accent_color') }}" />
         </div>
 
-        <flux:file-upload wire:model="form.image" label="{{ __('general.image') }}" variant="inline" />
+        <flux:file-upload wire:model="form.image" label="{{ __('general.logo') }}" variant="inline" />
 
         <flux:field variant="inline">
             <flux:label>{{ __('general.active') }}</flux:label>

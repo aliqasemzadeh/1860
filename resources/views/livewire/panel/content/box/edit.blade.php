@@ -14,7 +14,18 @@
             <flux:input type="color" wire:model="form.color_theme.accent" label="{{ __('general.accent_color') }}" />
         </div>
 
-        <flux:file-upload wire:model="form.image" label="{{ __('general.image') }}" variant="inline" />
+        <flux:file-upload wire:model="form.image" label="{{ __('general.logo') }}" variant="inline" />
+
+        @if ($form->box?->getFirstMediaUrl('box_images'))
+            <div class="flex items-center gap-3 rounded-xl border border-zinc-200 dark:border-zinc-700 p-3">
+                <img
+                    src="{{ $form->box->getFirstMediaUrl('box_images') }}"
+                    alt="{{ $form->title_fa }}"
+                    class="h-12 w-12 object-contain rounded-lg bg-white"
+                />
+                <flux:text>{{ __('general.logo') }}</flux:text>
+            </div>
+        @endif
 
         <flux:field variant="inline">
             <flux:label>{{ __('general.active') }}</flux:label>

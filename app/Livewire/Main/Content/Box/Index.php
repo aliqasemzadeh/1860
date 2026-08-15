@@ -20,9 +20,10 @@ class Index extends Component
             ->where('is_active', true)
             ->ordered()
             ->with([
+                'media',
                 'products' => function ($query) use ($productCount) {
                     $query->select('products.*')->inRandomOrder()->take($productCount)->withEffectivePrice();
-                }
+                },
             ])
             ->get();
     }

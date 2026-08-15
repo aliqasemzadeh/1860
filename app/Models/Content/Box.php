@@ -34,6 +34,12 @@ class Box extends Model implements HasMedia, Sortable
         'sort_when_creating' => true,
     ];
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('box_images')
+            ->singleFile();
+    }
+
     /**
      * Get the products related to the box.
      */

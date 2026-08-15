@@ -8,25 +8,29 @@
         $bgColor = $theme['bg'] ?? '#ffffff';
         $textColor = $theme['text'] ?? '#000000';
         $accentColor = $theme['accent'] ?? '#3b82f6';
+        $logoUrl = $this->box->getFirstMediaUrl('box_images');
     @endphp
 
-    <div class="relative w-full h-64 md:h-96 rounded-b-[3rem] overflow-hidden mb-12 shadow-2xl">
-        @if($this->box->getFirstMediaUrl('box_images'))
-            <img
-                src="{{ $this->box->getFirstMediaUrl('box_images') }}"
-                class="w-full h-full object-cover"
-                alt="{{ $this->box->title_fa }}"
-            />
-        @else
-            <div class="w-full h-full transition-all duration-700" style="background: linear-gradient(135deg, {{ $bgColor }}, {{ $accentColor }});"></div>
-        @endif
-        <div class="absolute inset-0 bg-black/40 flex items-center justify-center text-center p-6">
-            <div class="max-w-4xl">
-                <flux:breadcrumbs class="mb-4 text-white/80">
+    <div
+        class="relative w-full h-64 md:h-80 rounded-b-[3rem] overflow-hidden mb-12 shadow-2xl"
+        style="background: linear-gradient(135deg, {{ $bgColor }}, {{ $accentColor }});"
+    >
+        <div class="absolute inset-0 flex items-center justify-center text-center p-6">
+            <div class="max-w-4xl flex flex-col items-center">
+                <flux:breadcrumbs class="mb-4" style="color: {{ $textColor }}; opacity: 0.8;">
                     <flux:breadcrumbs.item href="{{ route('home') }}">{{ __('general.home') }}</flux:breadcrumbs.item>
                     <flux:breadcrumbs.item>{{ $this->box->title_fa }}</flux:breadcrumbs.item>
                 </flux:breadcrumbs>
-                <flux:heading size="2xl" class="text-white drop-shadow-lg">{{ $this->box->title_fa }}</flux:heading>
+
+                @if ($logoUrl)
+                    <img
+                        src="{{ $logoUrl }}"
+                        alt="{{ $this->box->title_fa }}"
+                        class="h-16 w-16 md:h-24 md:w-24 object-contain rounded-2xl bg-white/90 p-2 shadow-lg mb-4"
+                    />
+                @endif
+
+                <flux:heading size="2xl" style="color: {{ $textColor }};">{{ $this->box->title_fa }}</flux:heading>
             </div>
         </div>
     </div>
@@ -60,12 +64,12 @@
                                     </div>
                                 @endif
                             </div>
-                            <flux:heading size="md" class="line-clamp-2 h-12 mb-4 group-hover:text-teal-600 transition-colors">
+                            <flux:heading size="md" class="line-clamp-2 h-12 mb-4 transition-colors group-hover:opacity-80">
                                 {{ $product->name }}
                             </flux:heading>
                             <div class="flex items-center justify-between border-t border-zinc-50 dark:border-zinc-800 pt-4">
                                 @if($product->effective_price)
-                                    <div class="text-teal-600 dark:text-teal-400 font-bold text-xl">
+                                    <div class="font-bold text-xl" style="color: {{ $accentColor }};">
                                         {{ number_format($product->effective_price, 0) }}
                                         <span class="text-xs font-normal opacity-70">{{ __('general.toman') }}</span>
                                     </div>

@@ -5,6 +5,7 @@
             $bgColor = $theme['bg'] ?? '#ffffff';
             $textColor = $theme['text'] ?? '#000000';
             $accentColor = $theme['accent'] ?? '#3b82f6';
+            $logoUrl = $box->getFirstMediaUrl('box_images');
         @endphp
         <section
             class="py-8 my-8 rounded-2xl overflow-hidden transition-all duration-500"
@@ -13,7 +14,15 @@
             <div class="mx-auto max-w-7xl px-4 2xl:px-0">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
-                        <div class="w-2 h-8 rounded-full" style="background-color: {{ $accentColor }};"></div>
+                        @if ($logoUrl)
+                            <img
+                                src="{{ $logoUrl }}"
+                                alt="{{ $box->title_fa }}"
+                                class="h-10 w-10 md:h-12 md:w-12 object-contain rounded-lg bg-white/90 p-1 shadow-sm"
+                            />
+                        @else
+                            <div class="w-2 h-8 rounded-full" style="background-color: {{ $accentColor }};"></div>
+                        @endif
                         <flux:heading size="xl" style="color: {{ $textColor }};">{{ $box->title_fa }}</flux:heading>
                     </div>
                     <div class="flex items-center gap-2">
