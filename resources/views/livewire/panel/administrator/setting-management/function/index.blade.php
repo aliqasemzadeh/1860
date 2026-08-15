@@ -5,9 +5,36 @@
         <flux:separator variant="subtle" />
 
         <div class="mt-6 space-y-6">
+            <div class="flex gap-4">
+                <flux:button
+                    variant="primary"
+                    color="teal"
+                    icon="bolt"
+                    class="w-full"
+                    wire:click="runCommand('update_quick')"
+                >
+                    {{ __('general.quick_update') }}
+                </flux:button>
+
+                <flux:button
+                    variant="primary"
+                    color="blue"
+                    icon="arrow-path"
+                    class="w-full"
+                    wire:click="runCommand('update_full')"
+                >
+                    {{ __('general.full_update') }}
+                </flux:button>
+            </div>
+
             <flux:card>
                 <flux:command>
-                    <flux:command.input placeholder="{{ __('general.command_palette') }}..." icon="search" clearable />
+                    <flux:command.input
+                        wire:model.live.debounce.300ms="search"
+                        placeholder="{{ __('general.command_palette') }}..."
+                        icon="search"
+                        clearable
+                    />
 
                     <flux:command.items>
                         @foreach(collect($this->commands)->groupBy('category') as $category => $items)

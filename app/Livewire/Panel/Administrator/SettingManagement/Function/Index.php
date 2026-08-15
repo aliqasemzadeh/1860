@@ -16,6 +16,7 @@ class Index extends Component
     public string $lastOutput = '';
     public int $executionDuration = 0;
     public int $lastStatus = 0;
+    public string $search = '';
 
     public function mount(): void
     {
@@ -25,7 +26,7 @@ class Index extends Component
     #[Computed]
     public function commands(): array
     {
-        return [
+        $allCommands = [
             'cache_clear' => [
                 'name' => __('general.cmd_cache_clear_title'),
                 'description' => __('general.cmd_cache_clear_desc'),
@@ -156,6 +157,16 @@ class Index extends Component
                 },
             ],
         ];
+
+        if (empty($this->search)) {
+            return $allCommands;
+        }
+
+        return array_filter($allCommands, function ($command) {
+            return str_contains(strtolower($command['name']), strtolower($this->search)) ||
+                   str_contains(strtolower($command['signature']), strtolower($this->search)) ||
+                   str_contains(strtolower($command['category']), strtolower($this->search));
+        });
     }
 
     public function runCommand(string $key): void
