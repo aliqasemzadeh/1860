@@ -1,5 +1,5 @@
 <div>
-    @foreach($this->boxes as $box)
+    @forelse($this->boxes as $box)
         @php
             $theme = $box->color_theme ?? [];
             $bgColor = $theme['bg'] ?? '#ffffff';
@@ -67,5 +67,6 @@
                 </div>
             </div>
         </section>
-    @endforeach
+    @empty
+    @endforelse
 </div>
