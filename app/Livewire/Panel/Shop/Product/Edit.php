@@ -29,6 +29,8 @@ class Edit extends Component
 
     public string $name = '';
 
+    public string $en_name = '';
+
     public ?string $description = null;
 
     public string $slug = '';
@@ -40,6 +42,8 @@ class Edit extends Component
     public string $brand_search = '';
 
     public string $unit_search = '';
+
+    public array $tags = [];
 
     #[Validate('nullable|file|max:10240')] // 10MB Max
     public $file = null;
@@ -70,7 +74,9 @@ class Edit extends Component
         $this->product = ProductModel::findOrFail($id);
         $this->id = $this->product->id;
         $this->name = (string) $this->product->name;
+        $this->en_name = (string) $this->product->en_name;
         $this->description = $this->product->description;
+        $this->tags = $this->product->tags->pluck('name')->toArray();
         $this->slug = (string) $this->product->slug;
         $this->slug_fa = (string) $this->product->slug_fa;
         $this->weight = (float) $this->product->weight;
@@ -95,7 +101,9 @@ class Edit extends Component
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
+            'en_name' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'tags' => ['nullable', 'array'],
             'slug' => ['required', 'string', 'max:255', 'alpha_dash', Rule::unique('products', 'slug')->ignore($this->product)],
             'slug_fa' => ['required', 'string', 'max:255', Rule::unique('products', 'slug_fa')->ignore($this->product)],
             'file' => ['nullable', 'file', 'max:10240'],
@@ -110,6 +118,7 @@ class Edit extends Component
 
         $updateData = [
             'name' => $validated['name'],
+            'en_name' => $validated['en_name'],
             'description' => $validated['description'] ?? null,
             'slug' => $validated['slug'],
             'slug_fa' => $validated['slug_fa'],
@@ -136,6 +145,7 @@ class Edit extends Component
         }
 
         $this->product->fill($updateData)->save();
+        $this->product->syncTags($this->tags);
 
         $this->dispatch('panel.shop.product.index.render');
         Flux::modal('panel.shop.product.edit.modal')->close();
@@ -197,7 +207,7 @@ class Edit extends Component
             // Update database with new file path and name
             $pathInfoDb = pathinfo($this->product->file_path);
             $newFilePath = $pathInfoDb['dirname'] . '/' . $pathInfoDb['filename'] . '.png';
-            
+
             $pathInfoName = pathinfo($this->product->file_name);
             $newFileName = $pathInfoName['filename'] . '.png';
 
