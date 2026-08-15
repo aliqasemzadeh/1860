@@ -12,12 +12,12 @@
     @endphp
 
     <div
-        class="relative w-full h-64 md:h-80 rounded-b-[3rem] overflow-hidden mb-12 shadow-2xl"
-        style="background: linear-gradient(135deg, {{ $bgColor }}, {{ $accentColor }});"
+        class="relative w-full h-64 md:h-80 rounded-b-[3rem] overflow-hidden mb-12 shadow-2xl bg-gradient-to-br from-[var(--box-bg)] to-[var(--box-accent)] dark:from-zinc-900 dark:to-zinc-950"
+        style="--box-bg: {{ $bgColor }}; --box-accent: {{ $accentColor }}; --box-text: {{ $textColor }};"
     >
         <div class="absolute inset-0 flex items-center justify-center text-center p-6">
             <div class="max-w-4xl flex flex-col items-center">
-                <flux:breadcrumbs class="mb-4" style="color: {{ $textColor }}; opacity: 0.8;">
+                <flux:breadcrumbs class="mb-4 text-[var(--box-text)] dark:text-zinc-300" style="opacity: 0.8;">
                     <flux:breadcrumbs.item href="{{ route('home') }}">{{ __('general.home') }}</flux:breadcrumbs.item>
                     <flux:breadcrumbs.item>{{ $this->box->title_fa }}</flux:breadcrumbs.item>
                 </flux:breadcrumbs>
@@ -26,11 +26,11 @@
                     <img
                         src="{{ $logoUrl }}"
                         alt="{{ $this->box->title_fa }}"
-                        class="h-16 w-16 md:h-24 md:w-24 object-contain rounded-2xl bg-white/90 p-2 shadow-lg mb-4"
+                        class="h-16 w-16 md:h-24 md:w-24 object-contain rounded-2xl bg-white/90 dark:bg-zinc-800/90 p-2 shadow-lg mb-4"
                     />
                 @endif
 
-                <flux:heading size="2xl" style="color: {{ $textColor }};">{{ $this->box->title_fa }}</flux:heading>
+                <flux:heading size="2xl" class="text-[var(--box-text)] dark:text-zinc-100">{{ $this->box->title_fa }}</flux:heading>
             </div>
         </div>
     </div>
