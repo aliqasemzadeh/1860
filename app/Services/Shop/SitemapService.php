@@ -2,6 +2,7 @@
 
 namespace App\Services\Shop;
 
+use App\Models\Content\Post;
 use App\Models\Shop\Category;
 use App\Models\Shop\Product;
 use Illuminate\Support\Facades\Cache;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 class SitemapService
 {
-    public const CACHE_KEY = 'sitemap.urls.v2';
+    public const CACHE_KEY = 'sitemap.urls.v3';
 
     public const CACHE_TTL_HOURS = 12;
 
@@ -54,7 +55,17 @@ class SitemapService
             ->orderBy('id')
             ->get();
 
-        $latestUpdate = collect([$categories->max('updated_at'), $products->max('updated_at')])
+        $posts = Post::query()
+            ->published()
+            ->select(['id', 'slug', 'updated_at', 'published_at', 'status'])
+            ->orderBy('id')
+            ->get();
+
+        $latestUpdate = collect([
+            $categories->max('updated_at'),
+            $products->max('updated_at'),
+            $posts->max('updated_at'),
+        ])
             ->filter()
             ->max();
 
@@ -78,6 +89,12 @@ class SitemapService
                 'lastmod' => $settingsUpdatedAt ?? $latestUpdate ?? now(),
                 'changefreq' => 'yearly',
                 'priority' => '0.5',
+            ],
+            [
+                'loc' => route('post.index'),
+                'lastmod' => $posts->max('updated_at') ?? $latestUpdate ?? now(),
+                'changefreq' => 'daily',
+                'priority' => '0.7',
             ],
         ];
 
@@ -103,6 +120,15 @@ class SitemapService
             }
 
             $urls[] = $entry;
+        }
+
+        foreach ($posts as $post) {
+            $urls[] = [
+                'loc' => route('post.view', ['slug' => $post->slug]),
+                'lastmod' => $post->updated_at,
+                'changefreq' => 'weekly',
+                'priority' => '0.6',
+            ];
         }
 
         return $urls;

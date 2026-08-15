@@ -3,6 +3,8 @@
 namespace App\Livewire\Forms\Panel\Content;
 
 use App\Models\Content\Post;
+use App\Services\Shop\SitemapService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
@@ -69,8 +71,11 @@ class PostForm extends Form
         return DB::transaction(function () use ($validated) {
             $post = Post::query()->create($this->payload($validated));
 
-            $post->products()->sync($this->normalizedProductIds($validated));
+            $productIds = $this->normalizedProductIds($validated);
+            $post->products()->sync($productIds);
             $post->syncTags($validated['tags_array'] ?? []);
+
+            $this->forgetCaches($productIds);
 
             return $post;
         });
@@ -81,10 +86,15 @@ class PostForm extends Form
         $validated = $this->validate();
 
         DB::transaction(function () use ($post, $validated) {
+            $previousProductIds = $post->products()->pluck('products.id')->map(fn ($id) => (int) $id)->all();
+            $productIds = $this->normalizedProductIds($validated);
+
             $post->update($this->payload($validated, $post));
 
-            $post->products()->sync($this->normalizedProductIds($validated));
+            $post->products()->sync($productIds);
             $post->syncTags($validated['tags_array'] ?? []);
+
+            $this->forgetCaches(array_unique([...$previousProductIds, ...$productIds]));
         });
     }
 
@@ -92,12 +102,10 @@ class PostForm extends Form
     {
         $publishedAt = $existing?->published_at;
 
-        if ($validated['status'] === 'published' && $publishedAt === null) {
-            $publishedAt = now();
-        }
-
-        if ($validated['status'] !== 'published') {
-            $publishedAt = $existing?->published_at;
+        if ($validated['status'] === 'published') {
+            $publishedAt ??= now();
+        } elseif ($validated['status'] === 'draft') {
+            $publishedAt = null;
         }
 
         return [
@@ -119,5 +127,17 @@ class PostForm extends Form
             ->unique()
             ->values()
             ->all();
+    }
+
+    /**
+     * @param  list<int>  $productIds
+     */
+    protected function forgetCaches(array $productIds): void
+    {
+        foreach ($productIds as $productId) {
+            Cache::forget("product.{$productId}.related_posts");
+        }
+
+        app(SitemapService::class)->forget();
     }
 }

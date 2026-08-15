@@ -17,6 +17,7 @@
     <flux:sidebar.spacer />
 
     <flux:sidebar.nav>
+            <flux:sidebar.item icon="newspaper" href="{{ route('post.index') }}" wire:navigate :current="request()->routeIs('post.*')">{{ __('app.blog') }}</flux:sidebar.item>
             <flux:sidebar.item icon="mail" href="{{ route('contact.index') }}">{{ __('general.contact_us') }}</flux:sidebar.item>
     </flux:sidebar.nav>
 

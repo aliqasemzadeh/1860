@@ -3,8 +3,10 @@
 namespace App\Livewire\Panel\Content\Post;
 
 use App\Models\Content\Post;
+use App\Services\Shop\SitemapService;
 use Flux\Flux;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
@@ -14,6 +16,8 @@ use Livewire\WithPagination;
 class Index extends Component
 {
     use WithPagination;
+
+    protected const SORTABLE = ['title', 'status', 'published_at', 'created_at'];
 
     public string $search = '';
 
@@ -40,6 +44,10 @@ class Index extends Component
 
     public function sort(string $column): void
     {
+        if (! in_array($column, self::SORTABLE, true)) {
+            return;
+        }
+
         if ($this->sortBy === $column) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
         } else {
@@ -51,6 +59,9 @@ class Index extends Component
     #[Computed]
     public function posts(): LengthAwarePaginator
     {
+        $sortBy = in_array($this->sortBy, self::SORTABLE, true) ? $this->sortBy : 'created_at';
+        $sortDirection = $this->sortDirection === 'asc' ? 'asc' : 'desc';
+
         return Post::query()
             ->with('tags')
             ->withCount('products')
@@ -62,7 +73,7 @@ class Index extends Component
                 });
             })
             ->when($this->statusFilter !== '', fn ($query) => $query->where('status', $this->statusFilter))
-            ->orderBy($this->sortBy, $this->sortDirection)
+            ->orderBy($sortBy, $sortDirection)
             ->paginate(10);
     }
 
@@ -70,13 +81,21 @@ class Index extends Component
     {
         $this->authorize('content_post_delete');
 
-        $post = Post::query()->find($id);
+        $post = Post::query()->with('products:id')->find($id);
 
         if ($post === null) {
             return;
         }
 
+        $productIds = $post->products->pluck('id')->map(fn ($id) => (int) $id)->all();
+
         $post->delete();
+
+        foreach ($productIds as $productId) {
+            Cache::forget("product.{$productId}.related_posts");
+        }
+
+        app(SitemapService::class)->forget();
 
         $this->dispatch('panel.content.post.index.render');
         Flux::toast(variant: 'success', text: __('app.post_deleted'));

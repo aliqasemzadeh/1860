@@ -7,6 +7,7 @@ use App\Models\Shop\ProductPrice;
 use App\Support\Seo\Seo;
 use Binafy\LaravelCart\Models\Cart;
 use Flux\Flux;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -311,13 +312,19 @@ class View extends Component
             return collect();
         }
 
-        return $this->product
-            ->posts()
-            ->published()
-            ->with('tags')
-            ->orderByDesc('published_at')
-            ->limit(4)
-            ->get();
+        $productId = $this->product->id;
+
+        return Cache::remember(
+            "product.{$productId}.related_posts",
+            now()->addHour(),
+            fn () => $this->product
+                ->posts()
+                ->published()
+                ->with('tags')
+                ->orderByDesc('published_at')
+                ->limit(4)
+                ->get()
+        );
     }
 
     public function render()

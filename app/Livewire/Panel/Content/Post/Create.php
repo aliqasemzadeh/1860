@@ -12,6 +12,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Spatie\Tags\Tag;
 
 class Create extends Component
 {
@@ -23,6 +24,8 @@ class Create extends Component
     public $featured_file = null;
 
     public string $product_search = '';
+
+    public string $tag_search = '';
 
     public function updatedFormTitle(string $value): void
     {
@@ -65,6 +68,31 @@ class Create extends Component
         return $products;
     }
 
+    #[Computed]
+    public function tags(): Collection
+    {
+        $selected = collect($this->form->tags_array)
+            ->map(fn ($name) => trim((string) $name))
+            ->filter()
+            ->values();
+
+        $found = Tag::query()
+            ->when($this->tag_search !== '', fn ($q) => $q->containing($this->tag_search))
+            ->limit(20)
+            ->get()
+            ->map(fn (Tag $tag) => (string) $tag->name);
+
+        $options = $found->concat($selected)->unique()->values();
+
+        $typed = trim($this->tag_search);
+
+        if ($typed !== '' && ! $options->contains(fn ($name) => mb_strtolower($name) === mb_strtolower($typed))) {
+            $options = $options->push($typed);
+        }
+
+        return $options;
+    }
+
     public function removeFeaturedFile(): void
     {
         if ($this->featured_file) {
@@ -91,8 +119,8 @@ class Create extends Component
         Flux::toast(variant: 'success', text: __('app.post_created'));
 
         $this->form->reset();
-        $this->reset(['featured_file', 'product_search']);
-        unset($this->products);
+        $this->reset(['featured_file', 'product_search', 'tag_search']);
+        unset($this->products, $this->tags);
     }
 
     public function render(): View

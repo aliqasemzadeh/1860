@@ -141,6 +141,8 @@ return [
     'select_featured_image' => 'Select featured image',
     'related_products' => 'Related Products',
     'select_products' => 'Select products',
+    'select_tags' => 'Select tags',
+    'add_tag' => 'Type a new tag...',
     'related_posts' => 'Related Posts',
     'search_in_posts' => 'Search title and slug...',
     'post_status_draft' => 'Draft',
@@ -150,4 +152,6 @@ return [
     'no_posts_found' => 'No posts found.',
     'posts_with_tag' => 'Posts tagged :tag',
     'all_statuses' => 'All statuses',
+    'blog' => 'Blog',
+    'blog_description' => 'Latest posts and product-related articles.',
 ];

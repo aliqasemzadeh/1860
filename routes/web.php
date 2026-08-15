@@ -12,6 +12,9 @@ Route::get('/product/{id}/{slug?}', \App\Livewire\Main\Product\View::class)
     ->whereNumber('id')
     ->name('product.view');
 
+Route::get('/blog', \App\Livewire\Main\Content\Post\Index::class)
+    ->name('post.index');
+
 Route::get('/post/{slug}', \App\Livewire\Main\Content\Post\View::class)
     ->name('post.view');
 

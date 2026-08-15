@@ -11,6 +11,10 @@
                         {{ __('general.home') }}
                     </a>
                     <span>/</span>
+                    <a href="{{ route('post.index') }}" wire:navigate class="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100">
+                        {{ __('app.blog') }}
+                    </a>
+                    <span>/</span>
                     <span class="font-medium text-zinc-900 dark:text-zinc-100">{{ $this->post->title }}</span>
                 </nav>
 

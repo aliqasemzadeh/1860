@@ -1025,6 +1025,8 @@ return [
     'select_featured_image' => 'انتخاب تصویر شاخص',
     'related_products' => 'محصولات مرتبط',
     'select_products' => 'انتخاب محصولات',
+    'select_tags' => 'انتخاب برچسب‌ها',
+    'add_tag' => 'برچسب جدید بنویسید...',
     'related_posts' => 'نوشته‌های مرتبط',
     'search_in_posts' => 'جستجو در عنوان و نامک...',
     'post_status_draft' => 'پیش‌نویس',
@@ -1034,4 +1036,6 @@ return [
     'no_posts_found' => 'نوشته‌ای یافت نشد.',
     'posts_with_tag' => 'نوشته‌های برچسب :tag',
     'all_statuses' => 'همه وضعیت‌ها',
+    'blog' => 'وبلاگ',
+    'blog_description' => 'آخرین نوشته‌ها و مطالب مرتبط با محصولات.',
 ];

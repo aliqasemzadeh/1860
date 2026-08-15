@@ -95,7 +95,22 @@
 
                         <flux:field>
                             <flux:label>{{ __('general.tags') }}</flux:label>
-                            <flux:pillbox wire:model="form.tags_array" searchable placeholder="{{ __('general.tags') }}" />
+                            <flux:pillbox
+                                variant="combobox"
+                                multiple
+                                :filter="false"
+                                wire:model.live="form.tags_array"
+                                placeholder="{{ __('app.select_tags') }}"
+                            >
+                                <x-slot name="input">
+                                    <flux:pillbox.input wire:model.live.debounce.300ms="tag_search" placeholder="{{ __('app.add_tag') }}" />
+                                </x-slot>
+                                @foreach ($this->tags as $tag)
+                                    <flux:pillbox.option value="{{ $tag }}" wire:key="create-tag-{{ $loop->index }}">
+                                        {{ $tag }}
+                                    </flux:pillbox.option>
+                                @endforeach
+                            </flux:pillbox>
                             <flux:error name="form.tags_array" />
                         </flux:field>
                     </div>
