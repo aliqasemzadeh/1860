@@ -99,12 +99,16 @@ class SeoSchema
         $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'Product',
-            'name' => $product->name,
+            'name' => implode(' ', array_filter([$product->name, $product->en_name])),
             'description' => $description,
             'sku' => (string) $product->id,
             'mpn' => (string) $product->id,
             'url' => $canonicalUrl,
         ];
+
+        if ($product->tags->isNotEmpty()) {
+            $schema['keywords'] = $product->tags->pluck('name')->implode(', ');
+        }
 
         if ($imageUrls !== []) {
             $schema['image'] = $imageUrls;

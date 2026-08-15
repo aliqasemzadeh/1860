@@ -147,14 +147,25 @@ class Seo
     {
         $title = implode(' - ', array_filter([
             $product->name,
+            $product->en_name,
             $product->category?->name,
             $product->brand?->name,
         ]));
 
         $description = self::clean(
-            strip_tags((string) ($product->description ?: $product->name)),
+            strip_tags((string) ($product->description ?: implode(' ', array_filter([$product->name, $product->en_name])))),
             (int) config('seo.description_limit', 160)
         );
+
+        $keywords = $product->tags->pluck('name')->implode(', ');
+        if (empty($keywords)) {
+            $keywords = implode(', ', array_filter([
+                $product->name,
+                $product->en_name,
+                $product->category?->name,
+                $product->brand?->name,
+            ]));
+        }
 
         $imageUrl = null;
         foreach ($images as $image) {
@@ -205,6 +216,7 @@ class Seo
         return new self(
             title: $title,
             description: $description,
+            keywords: $keywords,
             canonical: $product->url,
             image: $imageUrl,
             type: 'product',
