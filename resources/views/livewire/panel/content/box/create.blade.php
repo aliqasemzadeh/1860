@@ -1,31 +1,3 @@
-<?php
-
-use App\Livewire\Forms\Content\BoxForm;
-use App\Models\Shop\Product;
-use Livewire\Attributes\Computed;
-use Livewire\Component;
-use Livewire\WithFileUploads;
-
-new class extends Component {
-    use WithFileUploads;
-
-    public BoxForm $form;
-
-    #[Computed]
-    public function products()
-    {
-        return Product::query()->select('id', 'name')->get();
-    }
-
-    public function save()
-    {
-        $this->form->store();
-        $this->dispatch('panels.administrator.content.box.index.table');
-        Flux::modals()->close();
-        Flux::toast(__('general.created_successfully'));
-    }
-}; ?>
-
 <flux:modal name="content.box.create" flyout position="right" class="w-full max-w-lg">
     <form wire:submit="save" class="space-y-6">
         <div>

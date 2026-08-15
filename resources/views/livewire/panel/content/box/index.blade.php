@@ -1,31 +1,3 @@
-<?php
-
-use App\Models\Content\Box;
-use Livewire\Attributes\Computed;
-use Livewire\Attributes\On;
-use Livewire\Component;
-
-new class extends Component {
-    public $search = '';
-
-    #[Computed]
-    #[On('panels.administrator.content.box.index.table')]
-    public function boxes()
-    {
-        return Box::query()
-            ->when($this->search, fn($q) => $q->where('title_fa', 'like', "%{$this->search}%")->orWhere('title_en', 'like', "%{$this->search}%"))
-            ->ordered()
-            ->paginate(config('general.per_page'));
-    }
-
-    public function delete(int $id)
-    {
-        Box::query()->findOrFail($id)->delete();
-        Flux::toast(__('general.deleted_successfully'));
-        $this->dispatch('panels.administrator.content.box.index.table');
-    }
-}; ?>
-
 <div>
     <div class="space-y-6">
         <div class="flex items-center justify-between">
