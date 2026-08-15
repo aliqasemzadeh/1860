@@ -15,6 +15,10 @@ Route::get('/product/{id}/{slug?}', \App\Livewire\Main\Product\View::class)
 Route::get('/blog', \App\Livewire\Main\Content\Post\Index::class)
     ->name('post.index');
 
+Route::get('/box/{id}/{slug?}', \App\Livewire\Main\Content\Box\View::class)
+    ->whereNumber('id')
+    ->name('content.box.view');
+
 Route::get('/post/{slug}', \App\Livewire\Main\Content\Post\View::class)
     ->name('post.view');
 
