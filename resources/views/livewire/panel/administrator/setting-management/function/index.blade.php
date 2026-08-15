@@ -13,9 +13,8 @@
                 <flux:button
                     variant="primary"
                     color="teal"
-                    size="lg"
                     icon="zap"
-                    class="w-full py-4 text-base"
+                    class="w-full !h-14 !px-6 !text-base"
                     wire:click="runQuickUpdate"
                     wire:confirm="{{ __('general.are_you_sure') }}"
                 >
@@ -25,9 +24,8 @@
                 <flux:button
                     variant="primary"
                     color="blue"
-                    size="lg"
                     icon="refresh-cw"
-                    class="w-full py-4 text-base"
+                    class="w-full !h-14 !px-6 !text-base"
                     wire:click="runFullUpdate"
                     wire:confirm="{{ __('general.are_you_sure') }}"
                 >
