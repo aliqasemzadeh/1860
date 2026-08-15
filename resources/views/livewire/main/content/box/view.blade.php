@@ -34,7 +34,7 @@
     <div class="mx-auto max-w-7xl px-4 2xl:px-0 mb-16">
         <flux:tab.group>
             <flux:tabs variant="segmented">
-                <flux:tab name="products" icon="package" selected>{{ __('general.products') }}</flux:tab>
+                <flux:tab name="products" icon="package">{{ __('general.products') }}</flux:tab>
                 <flux:tab name="articles" icon="book-open">{{ __('general.articles') }}</flux:tab>
             </flux:tabs>
 
@@ -85,7 +85,7 @@
                 <div class="mt-12">
                     {{ $this->products->links() }}
                 </div>
-            </flux:tabs.panel>
+            </flux:tab.panel>
 
             <flux:tab.panel name="articles">
                 <div class="mt-8 space-y-6">
