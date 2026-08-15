@@ -17,24 +17,25 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Spatie\Tags\HasTags;
 
-#[Fillable([
-    'name',
-    'en_name',
-    'description',
-    'slug',
-    'slug_fa',
-    'file_path',
-    'file_name',
-    'weight',
-    'x_dimension',
-    'y_dimension',
-    'z_dimension',
-    'category_id',
-    'brand_id',
-    'unit_id',
-])]
 class Product extends Model implements Cartable
 {
+    protected $fillable = [
+        'name',
+        'en_name',
+        'description',
+        'slug',
+        'slug_fa',
+        'file_path',
+        'file_name',
+        'weight',
+        'x_dimension',
+        'y_dimension',
+        'z_dimension',
+        'category_id',
+        'brand_id',
+        'unit_id',
+    ];
+
     use SoftDeletes, HasTags;
 
     protected static function booted(): void

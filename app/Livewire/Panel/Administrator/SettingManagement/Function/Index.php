@@ -231,12 +231,13 @@ class Index extends Component
         $command = $this->commands[$key];
         $start = microtime(true);
 
-        $log = CommandLog::create([
-            'command' => 'php artisan ' . $command['signature'],
-            'status' => 'running',
-        ]);
-
+        $log = null;
         try {
+            $log = CommandLog::create([
+                'command' => 'php artisan ' . $command['signature'],
+                'status' => 'running',
+            ]);
+
             $result = $command['action']();
 
             $this->lastStatus = is_int($result) ? $result : 0;
@@ -258,12 +259,14 @@ class Index extends Component
             $this->lastCommand = 'php artisan ' . $command['signature'];
             $this->executionDuration = (int) ((microtime(true) - $start) * 1000);
 
-            $log->update([
-                'output' => $this->lastOutput,
-                'status_code' => $this->lastStatus,
-                'execution_time_ms' => $this->executionDuration,
-                'status' => 'failed',
-            ]);
+            if ($log) {
+                $log->update([
+                    'output' => $this->lastOutput,
+                    'status_code' => $this->lastStatus,
+                    'execution_time_ms' => $this->executionDuration,
+                    'status' => 'failed',
+                ]);
+            }
 
             Flux::toast(__('general.error'), variant: 'danger');
         }
