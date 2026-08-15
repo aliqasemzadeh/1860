@@ -14,9 +14,9 @@
 
         <flux:menu>
             @auth
-                <flux:menu.item icon="user" href="{{ route('panel.user.dashboard.index') }}" wire:navigate>{{ __('app.profile') }}</flux:menu.item>
+                <flux:menu.item icon="user" href="{{ route('panel.user.dashboard.index') }}" wire:navigate>{{ __('general.profile') }}</flux:menu.item>
                 <flux:menu.separator />
-                <flux:menu.item icon="arrow-right-start-on-rectangle" href="{{ route('logout') }}">{{ __('app.logout.title') }}</flux:menu.item>
+                <flux:menu.item icon="arrow-right-start-on-rectangle" href="{{ route('logout') }}">{{ __('general.logout.title') }}</flux:menu.item>
             @endauth
         </flux:menu>
     </flux:dropdown>

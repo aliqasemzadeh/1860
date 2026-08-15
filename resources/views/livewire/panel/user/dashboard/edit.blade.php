@@ -2,8 +2,8 @@
     <flux:modal name="panel.user.dashboard.edit.modal" class="md:w-96" flyout position="right">
         <div class="space-y-6">
             <div>
-                <flux:heading size="lg">{{ __('app.edit_profile') }}</flux:heading>
-                <flux:text class="mt-2">{{ __('app.edit_profile_description') }}</flux:text>
+                <flux:heading size="lg">{{ __('general.edit_profile') }}</flux:heading>
+                <flux:text class="mt-2">{{ __('general.edit_profile_description') }}</flux:text>
             </div>
 
             <form wire:submit="save" method="post">
@@ -21,13 +21,13 @@
                     </flux:field>
 
                     <flux:field>
-                        <flux:label>{{ __('app.email') }}</flux:label>
+                        <flux:label>{{ __('general.email') }}</flux:label>
                         <flux:input wire:model="form.email" type="email" />
                         <flux:error name="form.email" />
                     </flux:field>
 
                     <flux:field>
-                        <flux:label>{{ __('app.national_code') }}</flux:label>
+                        <flux:label>{{ __('general.national_code') }}</flux:label>
                         <flux:input wire:model="form.national_code" type="text" maxlength="10" dir="ltr" />
                         <flux:error name="form.national_code" />
                     </flux:field>
@@ -35,7 +35,7 @@
                     <flux:field>
                         <flux:label>{{ __('general.mobile') }}</flux:label>
                         <flux:input type="text" value="{{ auth()->user()->mobile }}" disabled />
-                        <flux:description>{{ __('app.mobile_cannot_be_changed') }}</flux:description>
+                        <flux:description>{{ __('general.mobile_cannot_be_changed') }}</flux:description>
                     </flux:field>
                 </div>
 

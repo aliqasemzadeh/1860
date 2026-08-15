@@ -79,7 +79,7 @@ class Edit extends Component
 
         $this->dispatch('panel.shop.shipping.rate.index.render');
         Flux::modal('panel.shop.shipping.rate.edit.modal')->close();
-        Flux::toast(variant: 'success', text: __('app.shipping_rate_updated'));
+        Flux::toast(variant: 'success', text: __('general.shipping_rate_updated'));
     }
 
     public function render(): View

@@ -6,11 +6,11 @@
         <div class="flex items-center justify-between">
             <div>
                 <flux:heading size="xl" level="1">{{ __('general.roles') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.roles_description') }}</flux:subheading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.roles_description') }}</flux:subheading>
             </div>
             @can('administrator_user_management_role_create')
                 <flux:modal.trigger name="administrator.user-management.role.create.modal">
-                    <flux:button variant="primary">{{ __('app.create_role') }}</flux:button>
+                    <flux:button variant="primary">{{ __('general.create_role') }}</flux:button>
                 </flux:modal.trigger>
             @endcan
         </div>
@@ -25,9 +25,9 @@
 
     <flux:table>
         <flux:table.columns>
-            <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('app.name') }}</flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'guard_name'" :direction="$sortDirection" wire:click="sort('guard_name')">{{ __('app.guard_name') }}</flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')">{{ __('app.date') }}</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('general.name') }}</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'guard_name'" :direction="$sortDirection" wire:click="sort('guard_name')">{{ __('general.guard_name') }}</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')">{{ __('general.date') }}</flux:table.column>
             <flux:table.column />
         </flux:table.columns>
 

@@ -114,7 +114,7 @@ class Index extends Component
         $names = $this->getStateNames($zone);
 
         if (empty($names)) {
-            return __('app.all');
+            return __('general.all');
         }
 
         return implode(', ', $names);
@@ -127,7 +127,7 @@ class Index extends Component
     {
         $cities = (array) $zone->cities;
         if (empty($cities)) {
-            return __('app.all');
+            return __('general.all');
         }
 
         $names = [];

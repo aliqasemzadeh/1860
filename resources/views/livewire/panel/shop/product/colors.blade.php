@@ -1,8 +1,8 @@
 <flux:modal name="panel.shop.product.colors.modal" class="md:w-96" flyout position="right">
     <div class="space-y-6">
         <div>
-            <flux:heading size="lg">{{ __('app.product_colors') }}</flux:heading>
-            <flux:text class="mt-2">{{ __('app.product_colors_description') }}</flux:text>
+            <flux:heading size="lg">{{ __('general.product_colors') }}</flux:heading>
+            <flux:text class="mt-2">{{ __('general.product_colors_description') }}</flux:text>
         </div>
 
         @if ($product)
@@ -10,8 +10,8 @@
                 <!-- Add Color Section -->
                 <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4">
                     <flux:field>
-                        <flux:label>{{ __('app.add_color') }}</flux:label>
-                        <flux:select wire:model="selectedColorId" variant="combobox" :filter="false" placeholder="{{ __('app.select_color') }}">
+                        <flux:label>{{ __('general.add_color') }}</flux:label>
+                        <flux:select wire:model="selectedColorId" variant="combobox" :filter="false" placeholder="{{ __('general.select_color') }}">
                             <x-slot name="input">
                                 <flux:select.input wire:model.live="colorSearch" placeholder="{{ __('general.search') }}..." />
                             </x-slot>
@@ -28,7 +28,7 @@
                         </flux:select>
                         <div class="mt-3 flex items-center gap-2">
                             <flux:button wire:click="addColor" variant="primary" color="zinc" :disabled="!$selectedColorId">
-                                {{ __('app.add') }}
+                                {{ __('general.add') }}
                             </flux:button>
                             <flux:modal.trigger name="panel.shop.setting-management.color.create.modal">
                                 <flux:button variant="ghost" color="zinc" icon="plus" />
@@ -39,7 +39,7 @@
 
                 <!-- Colors List -->
                 <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-                    <flux:heading size="sm" class="mb-4">{{ __('app.product_colors_list') }}</flux:heading>
+                    <flux:heading size="sm" class="mb-4">{{ __('general.product_colors_list') }}</flux:heading>
 
                     @if ($product->colors->count() > 0)
                         <div class="space-y-2">
@@ -63,7 +63,7 @@
                             @endforeach
                         </div>
                     @else
-                        <flux:text class="text-gray-500 dark:text-gray-400">{{ __('app.no_colors_added') }}</flux:text>
+                        <flux:text class="text-gray-500 dark:text-gray-400">{{ __('general.no_colors_added') }}</flux:text>
                     @endif
                 </div>
             </div>

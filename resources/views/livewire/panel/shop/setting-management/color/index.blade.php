@@ -3,10 +3,10 @@
         <div class="flex items-center justify-between">
             <div>
                 <flux:heading size="xl" level="1">{{ __('general.colors') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.colors_description') }}</flux:subheading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.colors_description') }}</flux:subheading>
             </div>
             <flux:modal.trigger name="panel.shop.setting-management.color.create.modal">
-                <flux:button variant="primary">{{ __('app.create_color') }}</flux:button>
+                <flux:button variant="primary">{{ __('general.create_color') }}</flux:button>
             </flux:modal.trigger>
         </div>
 
@@ -18,10 +18,10 @@
 
     <flux:table>
         <flux:table.columns>
-            <flux:table.column sortable>{{ __('app.name') }}</flux:table.column>
-            <flux:table.column sortable>{{ __('app.slug') }}</flux:table.column>
-            <flux:table.column sortable>{{ __('app.slug_fa') }}</flux:table.column>
-            <flux:table.column>{{ __('app.hex') }}</flux:table.column>
+            <flux:table.column sortable>{{ __('general.name') }}</flux:table.column>
+            <flux:table.column sortable>{{ __('general.slug') }}</flux:table.column>
+            <flux:table.column sortable>{{ __('general.slug_fa') }}</flux:table.column>
+            <flux:table.column>{{ __('general.hex') }}</flux:table.column>
         </flux:table.columns>
 
         @foreach ($this->colors as $color)

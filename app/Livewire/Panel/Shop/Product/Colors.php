@@ -55,7 +55,7 @@ class Colors extends Component
         $this->product->refresh();
         $this->selectedColorId = null;
         $this->colorSearch = '';
-        Flux::toast(variant: 'success', text: __('app.color_added'));
+        Flux::toast(variant: 'success', text: __('general.color_added'));
     }
 
     public function removeColor(int $colorId): void
@@ -69,7 +69,7 @@ class Colors extends Component
             ->delete();
 
         $this->product->refresh();
-        Flux::toast(variant: 'success', text: __('app.color_removed'));
+        Flux::toast(variant: 'success', text: __('general.color_removed'));
     }
 
     #[Computed]

@@ -48,12 +48,12 @@ class PriceFetcher extends Model
         }
 
         return match ($this->type) {
-            'digikala' => __('app.price_fetcher_type_digikala'),
-            'fafait' => __('app.price_fetcher_type_fafait'),
-            'markazi' => __('app.price_fetcher_type_markazi'),
-            'fater' => __('app.price_fetcher_type_fater'),
-            'setaregan' => __('app.price_fetcher_type_setaregan'),
-            'technolife' => __('app.price_fetcher_type_technolife'),
+            'digikala' => __('general.price_fetcher_type_digikala'),
+            'fafait' => __('general.price_fetcher_type_fafait'),
+            'markazi' => __('general.price_fetcher_type_markazi'),
+            'fater' => __('general.price_fetcher_type_fater'),
+            'setaregan' => __('general.price_fetcher_type_setaregan'),
+            'technolife' => __('general.price_fetcher_type_technolife'),
             default => $this->type,
         };
     }

@@ -2,8 +2,8 @@
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.my_orders') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.my_orders_description') }}</flux:subheading>
+                <flux:heading size="xl" level="1">{{ __('general.my_orders') }}</flux:heading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.my_orders_description') }}</flux:subheading>
             </div>
         </div>
 
@@ -14,28 +14,28 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <flux:field>
                 <flux:label>{{ __('general.search') }}</flux:label>
-                <flux:input wire:model.live.debounce.500ms="search" type="text" placeholder="{{ __('app.order_number') }}" />
+                <flux:input wire:model.live.debounce.300ms="search" clearable type="text" placeholder="{{ __('general.order_number') }}" />
             </flux:field>
 
             <flux:field>
-                <flux:label>{{ __('app.status') }}</flux:label>
+                <flux:label>{{ __('general.status') }}</flux:label>
                 <flux:select wire:model.live="status" searchable>
-                    <flux:select.option value="">{{ __('app.all_statuses') }}</flux:select.option>
-                    <flux:select.option value="pending">{{ __('app.order_status_pending') }}</flux:select.option>
-                    <flux:select.option value="processing">{{ __('app.order_status_processing') }}</flux:select.option>
-                    <flux:select.option value="shipped">{{ __('app.order_status_shipped') }}</flux:select.option>
-                    <flux:select.option value="delivered">{{ __('app.order_status_delivered') }}</flux:select.option>
-                    <flux:select.option value="cancelled">{{ __('app.order_status_cancelled') }}</flux:select.option>
-                    <flux:select.option value="completed">{{ __('app.order_status_completed') }}</flux:select.option>
+                    <flux:select.option value="">{{ __('general.all_statuses') }}</flux:select.option>
+                    <flux:select.option value="pending">{{ __('general.order_status_pending') }}</flux:select.option>
+                    <flux:select.option value="processing">{{ __('general.order_status_processing') }}</flux:select.option>
+                    <flux:select.option value="shipped">{{ __('general.order_status_shipped') }}</flux:select.option>
+                    <flux:select.option value="delivered">{{ __('general.order_status_delivered') }}</flux:select.option>
+                    <flux:select.option value="cancelled">{{ __('general.order_status_cancelled') }}</flux:select.option>
+                    <flux:select.option value="completed">{{ __('general.order_status_completed') }}</flux:select.option>
                 </flux:select>
             </flux:field>
 
             <flux:field>
-                <flux:label>{{ __('app.payment_status') }}</flux:label>
+                <flux:label>{{ __('general.payment_status') }}</flux:label>
                 <flux:select wire:model.live="paymentStatus" searchable>
-                    <flux:select.option value="">{{ __('app.all_statuses') }}</flux:select.option>
-                    <flux:select.option value="paid">{{ __('app.paid') }}</flux:select.option>
-                    <flux:select.option value="unpaid">{{ __('app.unpaid') }}</flux:select.option>
+                    <flux:select.option value="">{{ __('general.all_statuses') }}</flux:select.option>
+                    <flux:select.option value="paid">{{ __('general.paid') }}</flux:select.option>
+                    <flux:select.option value="unpaid">{{ __('general.unpaid') }}</flux:select.option>
                 </flux:select>
             </flux:field>
         </div>
@@ -45,11 +45,11 @@
 
     <flux:table :paginate="$this->orders">
         <flux:table.columns>
-            <flux:table.column sortable :sorted="$sortBy === 'order_number'" :direction="$sortDirection" wire:click="sort('order_number')">{{ __('app.order_number') }}</flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')">{{ __('app.order_date') }}</flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'total_amount'" :direction="$sortDirection" wire:click="sort('total_amount')">{{ __('app.total_amount') }}</flux:table.column>
-            <flux:table.column>{{ __('app.status') }}</flux:table.column>
-            <flux:table.column>{{ __('app.payment_status') }}</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'order_number'" :direction="$sortDirection" wire:click="sort('order_number')">{{ __('general.order_number') }}</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')">{{ __('general.order_date') }}</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'total_amount'" :direction="$sortDirection" wire:click="sort('total_amount')">{{ __('general.total_amount') }}</flux:table.column>
+            <flux:table.column>{{ __('general.status') }}</flux:table.column>
+            <flux:table.column>{{ __('general.payment_status') }}</flux:table.column>
             <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 
@@ -62,7 +62,7 @@
                     {{ jalali($order->created_at) }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
-                    {{ number_format((float) $order->total_amount) }} {{ $order->currency ?? __('app.rial') }}
+                    {{ number_format((float) $order->total_amount) }} {{ $order->currency ?? __('general.rial') }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     @php
@@ -75,18 +75,18 @@
                             default => 'zinc',
                         };
                     @endphp
-                    <flux:badge color="{{ $statusColor }}">{{ __('app.order_status_' . $order->status) }}</flux:badge>
+                    <flux:badge color="{{ $statusColor }}">{{ __('general.order_status_' . $order->status) }}</flux:badge>
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     @if ($order->paid_at)
-                        <flux:badge color="green">{{ __('app.paid') }}</flux:badge>
+                        <flux:badge color="green">{{ __('general.paid') }}</flux:badge>
                     @else
-                        <flux:badge color="orange">{{ __('app.unpaid') }}</flux:badge>
+                        <flux:badge color="orange">{{ __('general.unpaid') }}</flux:badge>
                     @endif
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex items-center gap-2">
-                        <flux:tooltip content="{{ __('app.view_order') }}">
+                        <flux:tooltip content="{{ __('general.view_order') }}">
                             <flux:button
                                 size="xs"
                                 variant="primary"
@@ -99,7 +99,7 @@
 
                         @can('user_order_pay')
                             @if (! $order->paid_at && ! $order->cancelled_at)
-                                <flux:tooltip content="{{ __('app.pay_now') }}">
+                                <flux:tooltip content="{{ __('general.pay_now') }}">
                                     <flux:button
                                         size="xs"
                                         variant="primary"

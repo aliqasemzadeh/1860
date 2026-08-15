@@ -70,7 +70,7 @@ class Attributes extends Component
         $this->product = Product::with('category.attributes')->findOrFail($this->productId);
 
         if (! $this->product->category) {
-            Flux::toast(variant: 'error', text: __('app.product_must_have_category'));
+            Flux::toast(variant: 'error', text: __('general.product_must_have_category'));
 
             return;
         }
@@ -97,7 +97,7 @@ class Attributes extends Component
 
             // Validate required attributes
             if ($attribute->is_required && $isEmpty) {
-                Flux::toast(variant: 'error', text: __('app.attribute_required', ['name' => $attribute->label]));
+                Flux::toast(variant: 'error', text: __('general.attribute_required', ['name' => $attribute->label]));
 
                 return;
             }
@@ -127,7 +127,7 @@ class Attributes extends Component
             );
         }
 
-        Flux::toast(variant: 'success', text: __('app.product_attributes_updated'));
+        Flux::toast(variant: 'success', text: __('general.product_attributes_updated'));
         $this->loadProduct();
     }
 

@@ -22,7 +22,7 @@ class Create extends Component
 
         Flux::modal('panel.administrator.setting-management.backup.create.modal')->close();
         $this->dispatch('panel.administrator.setting-management.backup.index.render');
-        Flux::toast(__('app.backup_dispatched'));
+        Flux::toast(__('general.backup_dispatched'));
         $this->form->reset();
     }
 

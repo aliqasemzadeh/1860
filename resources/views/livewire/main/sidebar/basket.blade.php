@@ -5,8 +5,8 @@
     <flux:modal name="main.sidebar.basket.modal" position="right" flyout>
         <div class="space-y-6 h-full flex flex-col">
             <div>
-                <flux:heading size="lg">{{ __('app.shopping_cart') }}</flux:heading>
-                <flux:text class="mt-2">{{ __('app.shopping_cart_description') }}</flux:text>
+                <flux:heading size="lg">{{ __('general.shopping_cart') }}</flux:heading>
+                <flux:text class="mt-2">{{ __('general.shopping_cart_description') }}</flux:text>
             </div>
 
             @if($this->cartItems && $this->cartItems->count() > 0)
@@ -28,7 +28,7 @@
                                 {{-- Product Info --}}
                                 <div class="flex-1 min-w-0">
                                     <flux:heading size="sm" class="mb-1 text-zinc-900 dark:text-zinc-100">
-                                        {{ $item->itemable->name ?? __('app.product') }}
+                                        {{ $item->itemable->name ?? __('general.product') }}
                                     </flux:heading>
 
                                     {{-- Options (Color, Warranty) --}}
@@ -49,7 +49,7 @@
                                         @endif
                                         @if(isset($options['warranty']))
                                             <flux:text class="text-xs text-zinc-600 dark:text-zinc-400 mb-1">
-                                                {{ __('app.warranty') }}: {{ $options['warranty']['name'] ?? '' }}
+                                                {{ __('general.warranty') }}: {{ $options['warranty']['name'] ?? '' }}
                                             </flux:text>
                                         @endif
                                     @endif
@@ -86,7 +86,7 @@
                                         type="button"
                                         wire:click="removeItem({{ $item->id }})"
                                         class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors"
-                                        title="{{ __('app.remove_item') }}"
+                                        title="{{ __('general.remove_item') }}"
                                     >
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -125,14 +125,14 @@
                 <div class="border-t border-zinc-200 dark:border-zinc-700 pt-4 space-y-4">
                     <div class="flex items-center justify-between">
                         <flux:heading size="sm" class="text-zinc-900 dark:text-zinc-100">
-                            {{ __('app.total') }}
+                            {{ __('general.total') }}
                         </flux:heading>
                         <flux:heading size="lg" class="text-zinc-900 dark:text-zinc-100">
                             {{ number_format($this->totalAmount, 0) }} {{ __('general.toman') }}
                         </flux:heading>
                     </div>
                     <flux:button href="{{ route('order.cart') }}" variant="primary" class="w-full" wire:navigate>
-                        {{ __('app.complete_order') }}
+                        {{ __('general.complete_order') }}
                     </flux:button>
                 </div>
             @else
@@ -140,7 +140,7 @@
                     <div class="text-center">
                         <flux:icon.shopping-cart class="w-16 h-16 mx-auto text-zinc-400 dark:text-zinc-600 mb-4" />
                         <flux:text class="text-zinc-500 dark:text-zinc-400">
-                            {{ __('app.cart_is_empty') }}
+                            {{ __('general.cart_is_empty') }}
                         </flux:text>
                     </div>
                 </div>

@@ -3,11 +3,11 @@
         <div class="flex items-center justify-between">
             <div>
                 <flux:heading size="xl" level="1">{{ __('general.product_attributes') }}: {{ $product->name }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.product_attributes_description') }}</flux:subheading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.product_attributes_description') }}</flux:subheading>
             </div>
             <div class="flex items-center gap-2">
                 <flux:button href="{{ route('panel.shop.product.index') }}" wire:navigate>
-                    {{ __('app.back') }}
+                    {{ __('general.back') }}
                 </flux:button>
                 <flux:button variant="primary" wire:click="save">
                     {{ __('general.save') }}
@@ -21,7 +21,7 @@
     @if(!$product->category)
         <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
             <flux:text class="text-yellow-800 dark:text-yellow-200">
-                {{ __('app.product_must_have_category_for_attributes') }}
+                {{ __('general.product_must_have_category_for_attributes') }}
             </flux:text>
         </div>
     @else
@@ -29,7 +29,7 @@
             @foreach($attributes as $groupName => $groupAttributes)
                 <div class="bg-zinc-50 dark:bg-zinc-900 rounded-lg p-4">
                     <flux:heading size="md" class="mb-4">
-                        {{ $groupName ?? __('app.ungrouped_attributes') }}
+                        {{ $groupName ?? __('general.ungrouped_attributes') }}
                     </flux:heading>
                     <div class="space-y-4">
                         @foreach($groupAttributes as $attribute)
@@ -75,7 +75,7 @@
                                     <flux:select
                                         variant="listbox"
                                         wire:model="attributeValues.{{ $attribute->id }}"
-                                        placeholder="{{ __('app.select_option') }}"
+                                        placeholder="{{ __('general.select_option') }}"
                                     >
                                         @foreach($attribute->options as $option)
                                             <flux:select.option value="{{ $option->value }}">
@@ -110,7 +110,7 @@
 
             @if($attributes->isEmpty())
                 <div class="text-center py-12 text-zinc-500">
-                    {{ __('app.no_attributes_assigned_to_category') }}
+                    {{ __('general.no_attributes_assigned_to_category') }}
                 </div>
             @endif
         </div>

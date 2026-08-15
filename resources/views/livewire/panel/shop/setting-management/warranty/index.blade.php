@@ -3,10 +3,10 @@
         <div class="flex items-center justify-between">
             <div>
                 <flux:heading size="xl" level="1">{{ __('general.warranties') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.warranties_description') }}</flux:subheading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.warranties_description') }}</flux:subheading>
             </div>
             <flux:modal.trigger name="panel.shop.setting-management.warranty.create.modal">
-                <flux:button variant="primary">{{ __('app.create_warranty') }}</flux:button>
+                <flux:button variant="primary">{{ __('general.create_warranty') }}</flux:button>
             </flux:modal.trigger>
         </div>
 
@@ -18,9 +18,9 @@
 
     <flux:table>
         <flux:table.columns>
-            <flux:table.column sortable wire:click="sort('name')">{{ __('app.name') }}</flux:table.column>
-            <flux:table.column sortable wire:click="sort('slug')">{{ __('app.slug') }}</flux:table.column>
-            <flux:table.column sortable wire:click="sort('slug_fa')">{{ __('app.slug_fa') }}</flux:table.column>
+            <flux:table.column sortable wire:click="sort('name')">{{ __('general.name') }}</flux:table.column>
+            <flux:table.column sortable wire:click="sort('slug')">{{ __('general.slug') }}</flux:table.column>
+            <flux:table.column sortable wire:click="sort('slug_fa')">{{ __('general.slug_fa') }}</flux:table.column>
             <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 

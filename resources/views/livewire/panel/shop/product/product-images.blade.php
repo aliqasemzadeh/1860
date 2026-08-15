@@ -6,8 +6,8 @@
     </style>
     <div class="space-y-6">
         <div>
-            <flux:heading size="lg">{{ __('app.product_images') }}</flux:heading>
-            <flux:text class="mt-2">{{ __('app.product_images_description') }}</flux:text>
+            <flux:heading size="lg">{{ __('general.product_images') }}</flux:heading>
+            <flux:text class="mt-2">{{ __('general.product_images_description') }}</flux:text>
         </div>
 
         @if ($product)
@@ -18,17 +18,17 @@
                     variant="primary"
                     icon="link"
                 >
-                    {{ __('app.fetch_images_from_url') }}
+                    {{ __('general.fetch_images_from_url') }}
                 </flux:button>
 
                 <!-- Upload Images Section -->
                     <flux:field>
-                        <flux:label>{{ __('app.add_images') }}</flux:label>
+                        <flux:label>{{ __('general.add_images') }}</flux:label>
                         <form wire:submit="save">
-                            <flux:file-upload wire:model="images" label="{{ __('app.upload_images') }}" multiple>
+                            <flux:file-upload wire:model="images" label="{{ __('general.upload_images') }}" multiple>
                                 <flux:file-upload.dropzone
-                                    heading="{{ __('app.drop_files_here') }}"
-                                    text="{{ __('app.image_upload_hint') }}"
+                                    heading="{{ __('general.drop_files_here') }}"
+                                    text="{{ __('general.image_upload_hint') }}"
                                     with-progress
                                     inline
                                 />
@@ -47,7 +47,7 @@
                                             <x-slot name="actions">
                                                 <flux:file-item.remove
                                                     wire:click="removeImage({{ $index }})"
-                                                    aria-label="{{ __('app.remove_file') }}: {{ $image->getClientOriginalName() }}"
+                                                    aria-label="{{ __('general.remove_file') }}: {{ $image->getClientOriginalName() }}"
                                                 />
                                             </x-slot>
                                         </flux:file-item>
@@ -63,7 +63,7 @@
 
                 <!-- Images List -->
                 <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-                    <flux:heading size="sm" class="mb-4">{{ __('app.product_images_list') }}</flux:heading>
+                    <flux:heading size="sm" class="mb-4">{{ __('general.product_images_list') }}</flux:heading>
 
                     @if ($product->images->count() > 0)
                         <div class="mt-4 flex flex-col gap-2">
@@ -88,13 +88,13 @@
                                                 icon="palette"
                                                 size="sm"
                                                 square
-                                                aria-label="{{ __('app.remove_background') }}: {{ $image->file_name }}"
-                                                title="{{ __('app.remove_background') }}"
+                                                aria-label="{{ __('general.remove_background') }}: {{ $image->file_name }}"
+                                                title="{{ __('general.remove_background') }}"
                                             />
                                             <flux:file-item.remove 
                                                 wire:click="removeProductImage({{ $image->id }})"
                                                 wire:confirm="{{ __('general.are_you_sure') }}"
-                                                aria-label="{{ __('app.remove_file') }}: {{ $image->file_name }}"
+                                                aria-label="{{ __('general.remove_file') }}: {{ $image->file_name }}"
                                             />
                                         </x-slot>
                                     </flux:file-item>
@@ -105,7 +105,7 @@
                             @endforeach
                         </div>
                     @else
-                        <flux:text class="text-gray-500 dark:text-gray-400">{{ __('app.no_images_added') }}</flux:text>
+                        <flux:text class="text-gray-500 dark:text-gray-400">{{ __('general.no_images_added') }}</flux:text>
                     @endif
                 </div>
             </div>

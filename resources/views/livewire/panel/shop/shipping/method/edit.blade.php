@@ -2,24 +2,24 @@
     <div class="space-y-6">
         <div>
             <flux:heading size="lg">
-                {{ __('app.edit_shipping_method') }} : {{ isset($name) ? $name : '' }}
+                {{ __('general.edit_shipping_method') }} : {{ isset($name) ? $name : '' }}
             </flux:heading>
-            <flux:text class="mt-2">{{ __('app.edit_shipping_method_description') }}</flux:text>
+            <flux:text class="mt-2">{{ __('general.edit_shipping_method_description') }}</flux:text>
         </div>
 
         <form wire:submit="edit" method="post">
             <div class="pb-2 space-y-3">
                 <flux:field>
-                    <flux:label>{{ __('app.name') }}</flux:label>
+                    <flux:label>{{ __('general.name') }}</flux:label>
                     <flux:input wire:model="name" type="text" />
                     <flux:error name="name" />
                 </flux:field>
 
                 <flux:field>
-                    <flux:label>{{ __('app.slug') }}</flux:label>
+                    <flux:label>{{ __('general.slug') }}</flux:label>
                     <flux:input wire:model="handle" type="text" />
                     <flux:text class="mt-1 text-xs text-gray-500">
-                        {{ __('app.shipping_handle_help') }}
+                        {{ __('general.shipping_handle_help') }}
                     </flux:text>
                     <flux:error name="handle" />
                 </flux:field>
@@ -31,16 +31,16 @@
                 </flux:field>
 
                 <flux:field>
-                    <flux:label>{{ __('app.status') }}</flux:label>
+                    <flux:label>{{ __('general.status') }}</flux:label>
                     <flux:switch wire:model="is_active">
-                        {{ __('app.is_active') }}
+                        {{ __('general.is_active') }}
                     </flux:switch>
                     <flux:error name="is_active" />
                 </flux:field>
             </div>
 
             <flux:button type="submit" class="w-full" variant="primary">
-                {{ __('app.update') }}
+                {{ __('general.update') }}
             </flux:button>
         </form>
     </div>

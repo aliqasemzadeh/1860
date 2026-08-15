@@ -2,7 +2,7 @@
     <div class="space-y-6">
         <div>
             <flux:heading size="lg">{{ __('general.roles') }}: {{ isset($user) ? $user->mobile : '' }}</flux:heading>
-            <flux:text class="mt-2">{{ __('app.roles_description') }}</flux:text>
+            <flux:text class="mt-2">{{ __('general.roles_description') }}</flux:text>
         </div>
 
         <div class="grid grid-cols-2 gap-4">

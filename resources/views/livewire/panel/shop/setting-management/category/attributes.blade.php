@@ -2,12 +2,12 @@
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.category_attributes') }}: {{ $category->name }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.category_attributes_description') }}</flux:subheading>
+                <flux:heading size="xl" level="1">{{ __('general.category_attributes') }}: {{ $category->name }}</flux:heading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.category_attributes_description') }}</flux:subheading>
             </div>
             <div class="flex items-center gap-2">
                 <flux:button href="{{ route('panel.shop.setting-management.category.index') }}" wire:navigate>
-                    {{ __('app.back') }}
+                    {{ __('general.back') }}
                 </flux:button>
                 <flux:button variant="primary" wire:click="save">
                     {{ __('general.save') }}
@@ -22,7 +22,7 @@
         @foreach($allAttributes as $groupName => $attributes)
             <div class="bg-zinc-50 dark:bg-zinc-900 rounded-lg p-4">
                 <flux:heading size="md" class="mb-4">
-                    {{ $groupName ?? __('app.ungrouped_attributes') }}
+                    {{ $groupName ?? __('general.ungrouped_attributes') }}
                 </flux:heading>
                 <div class="space-y-2">
                     @foreach($attributes as $attribute)
@@ -36,9 +36,9 @@
                                 <div class="text-sm text-zinc-500">
                                     <code>{{ $attribute->key }}</code>
                                     <span class="mx-2">•</span>
-                                    {{ __('app.attribute_type_' . $attribute->type) }}
+                                    {{ __('general.attribute_type_' . $attribute->type) }}
                                     @if($attribute->is_required)
-                                        <span class="text-red-500">• {{ __('app.required') }}</span>
+                                        <span class="text-red-500">• {{ __('general.required') }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -50,7 +50,7 @@
 
         @if($allAttributes->isEmpty())
             <div class="text-center py-12 text-zinc-500">
-                {{ __('app.no_attributes_found') }}
+                {{ __('general.no_attributes_found') }}
             </div>
         @endif
     </div>

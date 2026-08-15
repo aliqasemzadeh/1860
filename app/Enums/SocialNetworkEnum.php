@@ -18,7 +18,7 @@ enum SocialNetworkEnum: string
 
     public function label(): string
     {
-        return __('app.social_'.$this->value);
+        return __('general.social_'.$this->value);
     }
 
     public function icon(): string

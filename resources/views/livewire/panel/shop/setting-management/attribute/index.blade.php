@@ -2,11 +2,11 @@
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.attributes') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.attributes_description') }}</flux:subheading>
+                <flux:heading size="xl" level="1">{{ __('general.attributes') }}</flux:heading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.attributes_description') }}</flux:subheading>
             </div>
             <flux:modal.trigger name="panel.shop.setting-management.attribute.create.modal">
-                <flux:button variant="primary">{{ __('app.create_attribute') }}</flux:button>
+                <flux:button variant="primary">{{ __('general.create_attribute') }}</flux:button>
             </flux:modal.trigger>
         </div>
 
@@ -18,12 +18,12 @@
 
     <flux:table :paginate="$this->attributesList">
         <flux:table.columns>
-            <flux:table.column sortable wire:click="sort('label')">{{ __('app.attribute_label') }}</flux:table.column>
-            <flux:table.column sortable wire:click="sort('key')">{{ __('app.attribute_key') }}</flux:table.column>
-            <flux:table.column>{{ __('app.attribute_group') }}</flux:table.column>
-            <flux:table.column sortable wire:click="sort('type')">{{ __('app.attribute_type') }}</flux:table.column>
-            <flux:table.column>{{ __('app.options_count') }}</flux:table.column>
-            <flux:table.column sortable wire:click="sort('sort_order')">{{ __('app.sort_order') }}</flux:table.column>
+            <flux:table.column sortable wire:click="sort('label')">{{ __('general.attribute_label') }}</flux:table.column>
+            <flux:table.column sortable wire:click="sort('key')">{{ __('general.attribute_key') }}</flux:table.column>
+            <flux:table.column>{{ __('general.attribute_group') }}</flux:table.column>
+            <flux:table.column sortable wire:click="sort('type')">{{ __('general.attribute_type') }}</flux:table.column>
+            <flux:table.column>{{ __('general.options_count') }}</flux:table.column>
+            <flux:table.column sortable wire:click="sort('sort_order')">{{ __('general.sort_order') }}</flux:table.column>
             <flux:table.column>{{ __('general.actions') }}</flux:table.column>
         </flux:table.columns>
 
@@ -39,23 +39,23 @@
                     <code class="text-xs">{{ $attribute->key }}</code>
                 </flux:table.cell>
                 <flux:table.cell>
-                    {{ $attribute->attributeGroup?->name ?? __('app.ungrouped_attributes') }}
+                    {{ $attribute->attributeGroup?->name ?? __('general.ungrouped_attributes') }}
                 </flux:table.cell>
                 <flux:table.cell>
                     @if($attribute->type === 'text')
-                        {{ __('app.attribute_type_text') }}
+                        {{ __('general.attribute_type_text') }}
                     @elseif($attribute->type === 'textarea')
-                        {{ __('app.attribute_type_textarea') }}
+                        {{ __('general.attribute_type_textarea') }}
                     @elseif($attribute->type === 'number')
-                        {{ __('app.attribute_type_number') }}
+                        {{ __('general.attribute_type_number') }}
                     @elseif($attribute->type === 'boolean')
-                        {{ __('app.attribute_type_boolean') }}
+                        {{ __('general.attribute_type_boolean') }}
                     @elseif($attribute->type === 'date')
-                        {{ __('app.attribute_type_date') }}
+                        {{ __('general.attribute_type_date') }}
                     @elseif($attribute->type === 'select')
-                        {{ __('app.attribute_type_select') }}
+                        {{ __('general.attribute_type_select') }}
                     @elseif($attribute->type === 'multiselect')
-                        {{ __('app.attribute_type_multiselect') }}
+                        {{ __('general.attribute_type_multiselect') }}
                     @endif
                 </flux:table.cell>
                 <flux:table.cell>
@@ -73,7 +73,7 @@
                 <flux:table.cell class="whitespace-nowrap">
                     <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.attribute.edit.assign-data', { id: '{{ $attribute->id }}' })">{{ __('general.edit') }}</flux:button>
                     @if(in_array($attribute->type, ['select', 'multiselect']))
-                        <flux:button size="xs" variant="ghost" href="{{ route('panel.shop.setting-management.attribute.options.index', ['attributeId' => $attribute->id]) }}" wire:navigate>{{ __('app.attribute_options') }}</flux:button>
+                        <flux:button size="xs" variant="ghost" href="{{ route('panel.shop.setting-management.attribute.options.index', ['attributeId' => $attribute->id]) }}" wire:navigate>{{ __('general.attribute_options') }}</flux:button>
                     @endif
                     <flux:button size="xs" variant="danger" wire:click="delete({{ $attribute->id }})" wire:confirm="{{ __('general.are_you_sure') }}">{{ __('general.delete') }}</flux:button>
                 </flux:table.cell>

@@ -157,7 +157,7 @@ class Edit extends Component
 
         $this->dispatch('panel.shop.shipping.zone.index.render');
         Flux::modal('panel.shop.shipping.zone.edit.modal')->close();
-        Flux::toast(variant: 'success', text: __('app.shipping_zone_updated'));
+        Flux::toast(variant: 'success', text: __('general.shipping_zone_updated'));
     }
 
     public function render(): View

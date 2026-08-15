@@ -149,7 +149,7 @@ class Edit extends Component
 
         $this->dispatch('panel.shop.product.index.render');
         Flux::modal('panel.shop.product.edit.modal')->close();
-        Flux::toast(variant: 'success', text: __('app.product_updated'));
+        Flux::toast(variant: 'success', text: __('general.product_updated'));
     }
 
     public function removeFile(): void
@@ -157,21 +157,21 @@ class Edit extends Component
         if ($this->file) {
             $this->file->delete();
             $this->file = null;
-            Flux::toast(variant: 'success', text: __('app.file_removed'));
+            Flux::toast(variant: 'success', text: __('general.file_removed'));
         }
     }
 
     public function removeBackground(): void
     {
         if (! isset($this->product) || ! $this->product->file_path) {
-            Flux::toast(variant: 'danger', text: __('app.image_not_found'));
+            Flux::toast(variant: 'danger', text: __('general.image_not_found'));
             return;
         }
 
         $originalPath = Storage::disk('public')->path($this->product->file_path);
 
         if (! file_exists($originalPath)) {
-            Flux::toast(variant: 'danger', text: __('app.file_not_found'));
+            Flux::toast(variant: 'danger', text: __('general.file_not_found'));
             return;
         }
 
@@ -195,7 +195,7 @@ class Edit extends Component
 
             // Verify output file was created
             if (! file_exists($outputPath)) {
-                throw new \Exception(__('app.output_file_not_created'));
+                throw new \Exception(__('general.output_file_not_created'));
             }
 
             // Delete old file if it's not PNG
@@ -217,9 +217,9 @@ class Edit extends Component
             ]);
 
             $this->product->refresh();
-            Flux::toast(variant: 'success', text: __('app.background_removed'));
+            Flux::toast(variant: 'success', text: __('general.background_removed'));
         } catch (\Exception $e) {
-            Flux::toast(variant: 'danger', text: __('app.error_processing_image') . ': ' . $e->getMessage());
+            Flux::toast(variant: 'danger', text: __('general.error_processing_image') . ': ' . $e->getMessage());
         }
     }
 

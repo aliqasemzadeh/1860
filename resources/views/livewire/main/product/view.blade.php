@@ -269,7 +269,7 @@
                         @if($this->product->colors->isNotEmpty())
                             <div>
                                 <flux:heading size="sm" class="mb-3 text-zinc-900 dark:text-zinc-100">
-                                    {{ __('app.product_colors') }}
+                                    {{ __('general.product_colors') }}
                                 </flux:heading>
                                 <div class="flex flex-wrap gap-3">
                                     @foreach($this->product->colors as $color)
@@ -303,7 +303,7 @@
                         @if($this->product->warranties->isNotEmpty())
                             <div>
                                 <flux:heading size="sm" class="mb-3 text-zinc-900 dark:text-zinc-100">
-                                    {{ __('app.product_warranties') }}
+                                    {{ __('general.product_warranties') }}
                                 </flux:heading>
                                 <div class="flex flex-wrap gap-2">
                                     @foreach($this->product->warranties as $warranty)
@@ -353,7 +353,7 @@
                                             </svg>
                                         </button>
                                         <flux:text class="text-sm text-zinc-600 dark:text-zinc-400">
-                                            {{ __('app.max_quantity') }}: {{ number_format($this->selectedPrice->quantity, 0) }}
+                                            {{ __('general.max_quantity') }}: {{ number_format($this->selectedPrice->quantity, 0) }}
                                         </flux:text>
                                     </div>
                                 </div>
@@ -363,7 +363,7 @@
                                     icon="shopping-cart"
                                     class="w-full py-3 text-lg"
                                 >
-                                    {{ __('app.add_to_cart') }}
+                                    {{ __('general.add_to_cart') }}
                                 </flux:button>
                             </div>
                         @elseif($this->selectedPrice && $this->selectedPrice->quantity <= 0)
@@ -387,7 +387,7 @@
                                 </flux:text>
                             @else
                                 <flux:text class="text-zinc-400 dark:text-zinc-500 italic">
-                                    {{ __('app.empty_description') }}
+                                    {{ __('general.empty_description') }}
                                 </flux:text>
                             @endif
                         </div>
@@ -550,7 +550,7 @@
         @if ($this->relatedPosts->isNotEmpty())
             <section class="border-t border-zinc-200 py-10 antialiased dark:border-zinc-700 md:py-12">
                 <div class="mx-auto max-w-7xl px-4 2xl:px-0">
-                    <flux:heading size="lg" class="mb-6">{{ __('app.related_posts') }}</flux:heading>
+                    <flux:heading size="lg" class="mb-6">{{ __('general.related_posts') }}</flux:heading>
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                         @foreach ($this->relatedPosts as $post)
                             <a href="{{ $post->url }}" wire:navigate class="group block space-y-3 transition-opacity hover:opacity-90">
@@ -582,10 +582,10 @@
                         {{ __('general.product_not_found') }}
                     </flux:heading>
                     <flux:text class="text-zinc-400 dark:text-zinc-500 mb-6">
-                        {{ __('app.product_not_found_description') }}
+                        {{ __('general.product_not_found_description') }}
                     </flux:text>
                     <flux:button href="{{ route('home') }}">
-                        {{ __('app.return_to_home') }}
+                        {{ __('general.return_to_home') }}
                     </flux:button>
                 </div>
             </div>

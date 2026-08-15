@@ -42,7 +42,7 @@ class Create extends Component
         if ((int) $validated['main_category_id'] !== 0) {
             $parent = Category::query()->find($validated['main_category_id']);
             if ($parent === null || (int) $parent->main_category_id !== 0) {
-                $this->addError('main_category_id', __('app.parent_must_be_root'));
+                $this->addError('main_category_id', __('general.parent_must_be_root'));
 
                 return;
             }
@@ -53,7 +53,7 @@ class Create extends Component
         Flux::modal('panel.shop.setting-management.category.create.modal')->close();
         $this->dispatch('panel.shop.setting-management.category.index.render');
         $this->dispatch('panel.shop.product.category.refresh', ['id' => $category->id]);
-        Flux::toast(variant: 'success', text: __('app.category_created', ['name' => $validated['name']]));
+        Flux::toast(variant: 'success', text: __('general.category_created', ['name' => $validated['name']]));
         $this->reset(['name', 'slug', 'slug_fa', 'icon', 'sort_order', 'main_category_id']);
     }
 

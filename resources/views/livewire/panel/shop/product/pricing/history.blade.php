@@ -1,28 +1,28 @@
 <flux:modal name="panel.shop.product.pricing.history.modal" class="min-h-full min-w-full">
     <div class="space-y-6">
         <div>
-            <flux:heading size="lg">{{ __('app.price_history') }}</flux:heading>
+            <flux:heading size="lg">{{ __('general.price_history') }}</flux:heading>
             <flux:text class="mt-2">
                 {{ $product->name }}
                 @if ($this->colorName)
-                    - {{ __('app.color') }}: {{ $this->colorName }}
+                    - {{ __('general.color') }}: {{ $this->colorName }}
                 @endif
                 @if ($this->warrantyName)
-                    - {{ __('app.warranty') }}: {{ $this->warrantyName }}
+                    - {{ __('general.warranty') }}: {{ $this->warrantyName }}
                 @endif
             </flux:text>
         </div>
 
         @if ($this->priceHistory->isEmpty())
             <div class="text-center py-12">
-                <flux:text class="text-zinc-500 dark:text-zinc-400">{{ __('app.no_prices_found') }}</flux:text>
+                <flux:text class="text-zinc-500 dark:text-zinc-400">{{ __('general.no_prices_found') }}</flux:text>
             </div>
         @else
             <flux:card>
                 <flux:chart class="grid gap-6" :value="$this->chartData()">
                     <flux:chart.summary class="flex gap-12">
                         <div>
-                            <flux:text>{{ __('app.price_today') }}</flux:text>
+                            <flux:text>{{ __('general.price_today') }}</flux:text>
                             <flux:heading size="xl" class="mt-2 tabular-nums">
                                 @if ($this->priceHistory->isNotEmpty())
                                     {{ number_format($this->priceHistory->last()->price, 0) }} {{ __('general.toman') }}
@@ -32,7 +32,7 @@
                             </flux:heading>
                         </div>
                         <div>
-                            <flux:text>{{ __('app.sale_price_yesterday') }}</flux:text>
+                            <flux:text>{{ __('general.sale_price_yesterday') }}</flux:text>
                             <flux:heading size="lg" class="mt-2 tabular-nums">
                                 @if ($this->priceHistory->isNotEmpty() && $this->priceHistory->last()->sale_price)
                                     {{ number_format($this->priceHistory->last()->sale_price, 0) }} {{ __('general.toman') }}
@@ -63,9 +63,9 @@
             <flux:card class="mt-6">
                 <flux:table>
                     <flux:table.columns>
-                        <flux:table.column>{{ __('app.date') }}</flux:table.column>
-                        <flux:table.column>{{ __('app.price') }}</flux:table.column>
-                        <flux:table.column>{{ __('app.sale_price') }}</flux:table.column>
+                        <flux:table.column>{{ __('general.date') }}</flux:table.column>
+                        <flux:table.column>{{ __('general.price') }}</flux:table.column>
+                        <flux:table.column>{{ __('general.sale_price') }}</flux:table.column>
                     </flux:table.columns>
 
                     <flux:table.rows>

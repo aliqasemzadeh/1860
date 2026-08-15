@@ -78,7 +78,7 @@ class ProductImages extends Component
 
             $image->delete();
             $this->product->refresh();
-            Flux::toast(variant: 'success', text: __('app.image_removed'));
+            Flux::toast(variant: 'success', text: __('general.image_removed'));
         }
     }
 
@@ -93,14 +93,14 @@ class ProductImages extends Component
             ->first();
 
         if (! $image || ! $image->file_path) {
-            Flux::toast(variant: 'danger', text: __('app.image_not_found'));
+            Flux::toast(variant: 'danger', text: __('general.image_not_found'));
             return;
         }
 
         $originalPath = Storage::disk('public')->path($image->file_path);
 
         if (! file_exists($originalPath)) {
-            Flux::toast(variant: 'danger', text: __('app.file_not_found'));
+            Flux::toast(variant: 'danger', text: __('general.file_not_found'));
             return;
         }
 
@@ -124,7 +124,7 @@ class ProductImages extends Component
 
             // Verify output file was created
             if (! file_exists($outputPath)) {
-                throw new \Exception(__('app.output_file_not_created'));
+                throw new \Exception(__('general.output_file_not_created'));
             }
 
             // Delete old file if it's not PNG
@@ -146,9 +146,9 @@ class ProductImages extends Component
             ]);
 
             $this->product->refresh();
-            Flux::toast(variant: 'success', text: __('app.background_removed'));
+            Flux::toast(variant: 'success', text: __('general.background_removed'));
         } catch (\Exception $e) {
-            Flux::toast(variant: 'danger', text: __('app.error_processing_image') . ': ' . $e->getMessage());
+            Flux::toast(variant: 'danger', text: __('general.error_processing_image') . ': ' . $e->getMessage());
         }
     }
 
@@ -161,11 +161,11 @@ class ProductImages extends Component
         $this->validate([
             'images.*' => 'image|max:10240', // 10MB Max per image
         ], [], [
-            'images.*' => __('app.image'),
+            'images.*' => __('general.image'),
         ]);
 
         if (empty($this->images)) {
-            Flux::toast(variant: 'warning', text: __('app.no_images_selected'));
+            Flux::toast(variant: 'warning', text: __('general.no_images_selected'));
             return;
         }
 
@@ -185,7 +185,7 @@ class ProductImages extends Component
 
         $this->product->refresh();
         $this->images = [];
-        Flux::toast(variant: 'success', text: __('app.images_added'));
+        Flux::toast(variant: 'success', text: __('general.images_added'));
     }
 
     public function render(): View

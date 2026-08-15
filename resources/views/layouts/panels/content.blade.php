@@ -17,7 +17,7 @@
             wire:navigate
             :current="request()->routeIs('panel.content.post.*')"
         >
-            {{ __('app.posts') }}
+            {{ __('general.posts') }}
         </flux:sidebar.item>
 
         <flux:sidebar.item

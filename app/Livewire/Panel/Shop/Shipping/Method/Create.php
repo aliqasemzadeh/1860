@@ -37,7 +37,7 @@ class Create extends Component
 
         Flux::modal('panel.shop.shipping.method.create.modal')->close();
         $this->dispatch('panel.shop.shipping.method.index.render');
-        Flux::toast(variant: 'success', text: __('app.shipping_method_created'));
+        Flux::toast(variant: 'success', text: __('general.shipping_method_created'));
 
         $this->reset(['name', 'handle', 'description', 'is_active']);
         $this->is_active = true;

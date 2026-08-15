@@ -1,5 +1,5 @@
 <x-slot name="title">
-    {{ __('app.my_orders') }}
+    {{ __('general.my_orders') }}
 </x-slot>
 
 <div>
@@ -12,13 +12,13 @@
                         {{ __('general.dashboard') }}
                     </a>
                     <span>/</span>
-                    <span class="text-zinc-900 dark:text-zinc-100 font-medium">{{ __('app.my_orders') }}</span>
+                    <span class="text-zinc-900 dark:text-zinc-100 font-medium">{{ __('general.my_orders') }}</span>
                 </nav>
 
                 {{-- Page Header --}}
                 <div class="mb-8">
-                    <flux:heading size="xl">{{ __('app.my_orders') }}</flux:heading>
-                    <flux:text class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('app.my_orders_description') }}</flux:text>
+                    <flux:heading size="xl">{{ __('general.my_orders') }}</flux:heading>
+                    <flux:text class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('general.my_orders_description') }}</flux:text>
                 </div>
 
                 @if($this->orders && $this->orders->count() > 0)
@@ -31,14 +31,14 @@
                                         <div>
                                             <div class="flex items-center gap-3 mb-2">
                                                 <flux:heading size="lg">
-                                                    {{ __('app.order') }} #{{ $order->order_number }}
+                                                    {{ __('general.order') }} #{{ $order->order_number }}
                                                 </flux:heading>
                                                 <flux:badge variant="{{ $order->status === 'completed' ? 'success' : ($order->status === 'cancelled' ? 'danger' : 'warning') }}">
-                                                    {{ __('app.order_status_' . $order->status) }}
+                                                    {{ __('general.order_status_' . $order->status) }}
                                                 </flux:badge>
                                             </div>
                                             <flux:text class="text-sm text-zinc-600 dark:text-zinc-400">
-                                                {{ __('app.order_date') }}: {{ jalali($order->created_at) }}
+                                                {{ __('general.order_date') }}: {{ jalali($order->created_at) }}
                                             </flux:text>
                                         </div>
                                         <div class="flex flex-col md:items-end gap-2">
@@ -51,7 +51,7 @@
                                                 size="sm"
                                                 wire:navigate
                                             >
-                                                {{ __('app.view_order') }}
+                                                {{ __('general.view_order') }}
                                             </flux:button>
                                         </div>
                                     </div>
@@ -77,7 +77,7 @@
                                         @endforeach
                                         @if($order->items->count() > 3)
                                             <flux:text class="text-sm text-zinc-600 dark:text-zinc-400 italic">
-                                                {{ __('app.and_more_items', ['count' => $order->items->count() - 3]) }}
+                                                {{ __('general.and_more_items', ['count' => $order->items->count() - 3]) }}
                                             </flux:text>
                                         @endif
                                     </div>
@@ -89,12 +89,12 @@
                     <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-12">
                         <div class="text-center">
                             <flux:icon.boxes class="w-24 h-24 mx-auto text-zinc-400 dark:text-zinc-600 mb-6" />
-                            <flux:heading size="xl" class="mb-4">{{ __('app.no_orders_found') }}</flux:heading>
+                            <flux:heading size="xl" class="mb-4">{{ __('general.no_orders_found') }}</flux:heading>
                             <flux:text class="text-zinc-600 dark:text-zinc-400 mb-8">
-                                {{ __('app.no_orders_found_description') }}
+                                {{ __('general.no_orders_found_description') }}
                             </flux:text>
                             <flux:button href="{{ route('home') }}" variant="primary" wire:navigate>
-                                {{ __('app.continue_shopping') }}
+                                {{ __('general.continue_shopping') }}
                             </flux:button>
                         </div>
                     </div>
@@ -106,12 +106,12 @@
             <div class="mx-auto max-w-7xl px-4 2xl:px-0">
                 <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-12">
                     <div class="text-center">
-                        <flux:heading size="xl" class="mb-4">{{ __('app.please_login') }}</flux:heading>
+                        <flux:heading size="xl" class="mb-4">{{ __('general.please_login') }}</flux:heading>
                         <flux:text class="text-zinc-600 dark:text-zinc-400 mb-8">
-                            {{ __('app.please_login_to_view_orders') }}
+                            {{ __('general.please_login_to_view_orders') }}
                         </flux:text>
                         <flux:button href="{{ route('login') }}" variant="primary" wire:navigate>
-                            {{ __('app.login') }}
+                            {{ __('general.login') }}
                         </flux:button>
                     </div>
                 </div>

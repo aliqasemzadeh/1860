@@ -68,23 +68,23 @@ class ProductWizard extends Component
                 'category_id' => ['required', 'integer', 'exists:categories,id'],
                 'brand_id' => ['required', 'integer', 'exists:brands,id'],
             ], [], [
-                'site_type' => __('app.site_type'),
-                'url' => __('app.product_wizard_url'),
-                'category_id' => __('app.category'),
+                'site_type' => __('general.site_type'),
+                'url' => __('general.product_wizard_url'),
+                'category_id' => __('general.category'),
                 'brand_id' => __('general.brand'),
             ]);
 
             // Validate URL matches site type
             if ($this->site_type === 'fater' && !str_contains($this->url, 'faterco.ir')) {
-                $this->addError('url', __('app.url_does_not_match_site_type'));
+                $this->addError('url', __('general.url_does_not_match_site_type'));
                 return;
             }
             if ($this->site_type === 'gigabyte' && !str_contains($this->url, 'gigabyte.com')) {
-                $this->addError('url', __('app.url_does_not_match_site_type'));
+                $this->addError('url', __('general.url_does_not_match_site_type'));
                 return;
             }
             if ($this->site_type === 'setaregan' && !str_contains($this->url, 'setaregan.co')) {
-                $this->addError('url', __('app.url_does_not_match_site_type'));
+                $this->addError('url', __('general.url_does_not_match_site_type'));
                 return;
             }
 
@@ -108,13 +108,13 @@ class ProductWizard extends Component
             } elseif ($this->site_type === 'setaregan') {
                 $data = SetareganProductFetcher::fetchProductInfo($this->url, $logger);
             } else {
-                $this->fetch_error = __('app.unsupported_site');
+                $this->fetch_error = __('general.unsupported_site');
                 $this->is_fetching = false;
                 return;
             }
 
             if (!$data) {
-                $this->fetch_error = __('app.product_info_fetch_failed');
+                $this->fetch_error = __('general.product_info_fetch_failed');
                 $this->is_fetching = false;
                 return;
             }
@@ -134,9 +134,9 @@ class ProductWizard extends Component
 
             $this->step = 2;
             $this->is_fetching = false;
-            Flux::toast(variant: 'success', text: __('app.product_info_fetched'));
+            Flux::toast(variant: 'success', text: __('general.product_info_fetched'));
         } catch (\Exception $e) {
-            $this->fetch_error = __('app.product_info_fetch_failed') . ': ' . $e->getMessage();
+            $this->fetch_error = __('general.product_info_fetch_failed') . ': ' . $e->getMessage();
             $this->is_fetching = false;
             Log::error('Product wizard fetch error: ' . $e->getMessage());
         }
@@ -167,14 +167,14 @@ class ProductWizard extends Component
             'brand_id' => ['required', 'integer', 'exists:brands,id'],
             'unit_id' => ['required', 'integer', 'exists:units,id'],
         ], [], [
-            'name' => __('app.name'),
-            'slug' => __('app.slug'),
-            'slug_fa' => __('app.slug_fa'),
+            'name' => __('general.name'),
+            'slug' => __('general.slug'),
+            'slug_fa' => __('general.slug_fa'),
             'weight' => __('general.weight'),
-            'x_dimension' => __('app.x_dimension'),
-            'y_dimension' => __('app.y_dimension'),
-            'z_dimension' => __('app.z_dimension'),
-            'category_id' => __('app.category'),
+            'x_dimension' => __('general.x_dimension'),
+            'y_dimension' => __('general.y_dimension'),
+            'z_dimension' => __('general.z_dimension'),
+            'category_id' => __('general.category'),
             'brand_id' => __('general.brand'),
             'unit_id' => __('general.unit'),
         ]);
@@ -280,7 +280,7 @@ class ProductWizard extends Component
 
         Flux::modal('panel.shop.product.product-wizard.modal')->close();
         $this->dispatch('panel.shop.product.index.render');
-        Flux::toast(variant: 'success', text: __('app.product_created_with_price_fetcher'));
+        Flux::toast(variant: 'success', text: __('general.product_created_with_price_fetcher'));
 
         // Reset all fields
         $this->reset();

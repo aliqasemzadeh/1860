@@ -65,8 +65,8 @@ class CreateProductImageWizard extends Component
             'site_type' => 'required|string|in:logitech,logikey,gigabyte,xvision,matin,green,fater,avajang,generic,nova,fafait',
             'url' => 'required|url',
         ], [], [
-            'site_type' => __('app.site_type'),
-            'url' => __('app.url'),
+            'site_type' => __('general.site_type'),
+            'url' => __('general.url'),
         ]);
 
         $this->isLoading = true;
@@ -75,7 +75,7 @@ class CreateProductImageWizard extends Component
             $imageUrls = BaseImageFetcher::fetchBySiteType($this->site_type, $this->url);
 
             if (empty($imageUrls)) {
-                Flux::toast(variant: 'warning', text: __('app.no_images_found'));
+                Flux::toast(variant: 'warning', text: __('general.no_images_found'));
                 $this->isLoading = false;
                 return;
             }
@@ -105,9 +105,9 @@ class CreateProductImageWizard extends Component
                 }
             }
 
-            Flux::toast(variant: 'success', text: __('app.images_fetched', ['count' => count($imageUrls)]));
+            Flux::toast(variant: 'success', text: __('general.images_fetched', ['count' => count($imageUrls)]));
         } catch (\Exception $e) {
-            Flux::toast(variant: 'danger', text: __('app.error_fetching_images') . ': ' . $e->getMessage());
+            Flux::toast(variant: 'danger', text: __('general.error_fetching_images') . ': ' . $e->getMessage());
         } finally {
             $this->isLoading = false;
         }
@@ -126,7 +126,7 @@ class CreateProductImageWizard extends Component
     public function confirmSelection(): void
     {
         if (! $this->selectedImageUrl) {
-            Flux::toast(variant: 'warning', text: __('app.no_image_selected'));
+            Flux::toast(variant: 'warning', text: __('general.no_image_selected'));
             return;
         }
 
@@ -134,7 +134,7 @@ class CreateProductImageWizard extends Component
         $this->dispatch('panel.shop.product.create.image-selected', url: $this->selectedImageUrl);
 
         Flux::modal('panel.shop.product.create.image-wizard.modal')->close();
-        Flux::toast(variant: 'success', text: __('app.image_selected'));
+        Flux::toast(variant: 'success', text: __('general.image_selected'));
         $this->resetWizard();
     }
 

@@ -3,7 +3,7 @@
         <div class="space-y-6">
             <div class="space-y-2">
                 <flux:heading size="xl">{{ __('general.contact_us') }}</flux:heading>
-                <flux:text>{{ __('app.contact_description') }}</flux:text>
+                <flux:text>{{ __('general.contact_description') }}</flux:text>
             </div>
 
             <flux:separator variant="subtle" />
@@ -15,7 +15,7 @@
                             <flux:icon name="phone" class="size-6 text-zinc-500" />
                         </div>
                         <div>
-                            <flux:heading size="lg">{{ __('app.landline') }}</flux:heading>
+                            <flux:heading size="lg">{{ __('general.landline') }}</flux:heading>
                             <flux:text class="mt-1" dir="ltr">{{ $this->contact->phone }}</flux:text>
                         </div>
                     </div>
@@ -39,7 +39,7 @@
                             <flux:icon name="mail" class="size-6 text-zinc-500" />
                         </div>
                         <div>
-                            <flux:heading size="lg">{{ __('app.email') }}</flux:heading>
+                            <flux:heading size="lg">{{ __('general.email') }}</flux:heading>
                             <flux:text class="mt-1" dir="ltr">{{ $this->contact->email }}</flux:text>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                             <flux:icon name="map-pin" class="size-6 text-zinc-500" />
                         </div>
                         <div>
-                            <flux:heading size="lg">{{ __('app.address') }}</flux:heading>
+                            <flux:heading size="lg">{{ __('general.address') }}</flux:heading>
                             <flux:text class="mt-1">{{ $this->contact->address }}</flux:text>
                         </div>
                     </div>

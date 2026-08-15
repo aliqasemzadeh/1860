@@ -2,11 +2,11 @@
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.categories') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.categories_description') }}</flux:subheading>
+                <flux:heading size="xl" level="1">{{ __('general.categories') }}</flux:heading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.categories_description') }}</flux:subheading>
             </div>
             <flux:modal.trigger name="panel.shop.setting-management.category.create.modal">
-                <flux:button variant="primary">{{ __('app.create_category') }}</flux:button>
+                <flux:button variant="primary">{{ __('general.create_category') }}</flux:button>
             </flux:modal.trigger>
         </div>
 
@@ -18,10 +18,10 @@
 
     <flux:table>
         <flux:table.columns>
-            <flux:table.column sortable>{{ __('app.name') }}</flux:table.column>
-            <flux:table.column sortable>{{ __('app.slug') }}</flux:table.column>
-            <flux:table.column sortable>{{ __('app.slug_fa') }}</flux:table.column>
-            <flux:table.column sortable>{{ __('app.date') }}</flux:table.column>
+            <flux:table.column sortable>{{ __('general.name') }}</flux:table.column>
+            <flux:table.column sortable>{{ __('general.slug') }}</flux:table.column>
+            <flux:table.column sortable>{{ __('general.slug_fa') }}</flux:table.column>
+            <flux:table.column sortable>{{ __('general.date') }}</flux:table.column>
             <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 
@@ -41,7 +41,7 @@
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.category.edit.assign-data', { id: '{{ $category->id }}' })">{{ __('general.edit') }}</flux:button>
-                    <flux:button size="xs" variant="primary" color="purple" href="{{ route('panel.shop.setting-management.category.attributes', ['id' => $category->id]) }}" wire:navigate>{{ __('app.attributes') }}</flux:button>
+                    <flux:button size="xs" variant="primary" color="purple" href="{{ route('panel.shop.setting-management.category.attributes', ['id' => $category->id]) }}" wire:navigate>{{ __('general.attributes') }}</flux:button>
                     <flux:button size="xs" variant="danger">{{ __('general.delete') }}</flux:button>
                 </flux:table.cell>
             </flux:table.row>
@@ -62,7 +62,7 @@
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap">
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.category.edit.assign-data', { id: '{{ $child->id }}' })">{{ __('general.edit') }}</flux:button>
-                        <flux:button size="xs" variant="primary" color="purple" href="{{ route('panel.shop.setting-management.category.attributes', ['id' => $child->id]) }}" wire:navigate>{{ __('app.attributes') }}</flux:button>
+                        <flux:button size="xs" variant="primary" color="purple" href="{{ route('panel.shop.setting-management.category.attributes', ['id' => $child->id]) }}" wire:navigate>{{ __('general.attributes') }}</flux:button>
                         <flux:button size="xs" variant="danger">{{ __('general.delete') }}</flux:button>
                     </flux:table.cell>
                 </flux:table.row>
@@ -83,7 +83,7 @@
                         </flux:table.cell>
                         <flux:table.cell class="whitespace-nowrap">
                             <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.setting-management.category.edit.assign-data', { id: '{{ $grandchild->id }}' })">{{ __('general.edit') }}</flux:button>
-                            <flux:button size="xs" variant="primary" color="purple" href="{{ route('panel.shop.setting-management.category.attributes', ['id' => $grandchild->id]) }}" wire:navigate>{{ __('app.attributes') }}</flux:button>
+                            <flux:button size="xs" variant="primary" color="purple" href="{{ route('panel.shop.setting-management.category.attributes', ['id' => $grandchild->id]) }}" wire:navigate>{{ __('general.attributes') }}</flux:button>
                             <flux:button size="xs" variant="danger">{{ __('general.delete') }}</flux:button>
                         </flux:table.cell>
                     </flux:table.row>

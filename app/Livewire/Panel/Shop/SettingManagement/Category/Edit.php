@@ -64,7 +64,7 @@ class Edit extends Component
 
         // Prevent assigning itself as parent
         if ((int) $validated['main_category_id'] === (int) $this->category->id) {
-            $this->addError('main_category_id', __('app.parent_cannot_be_self'));
+            $this->addError('main_category_id', __('general.parent_cannot_be_self'));
 
             return;
         }
@@ -73,7 +73,7 @@ class Edit extends Component
         if ((int) $validated['main_category_id'] !== 0) {
             $parent = Category::query()->find($validated['main_category_id']);
             if ($parent === null || (int) $parent->main_category_id !== 0) {
-                $this->addError('main_category_id', __('app.parent_must_be_root'));
+                $this->addError('main_category_id', __('general.parent_must_be_root'));
 
                 return;
             }

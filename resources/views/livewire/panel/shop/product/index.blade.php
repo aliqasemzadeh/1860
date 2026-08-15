@@ -2,12 +2,12 @@
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.products') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.products_description') }}</flux:subheading>
+                <flux:heading size="xl" level="1">{{ __('general.products') }}</flux:heading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.products_description') }}</flux:subheading>
             </div>
             <div class="flex items-center gap-2">
                 <flux:modal.trigger name="panel.shop.product.create.modal">
-                    <flux:button variant="primary">{{ __('app.create_product') }}</flux:button>
+                    <flux:button variant="primary">{{ __('general.create_product') }}</flux:button>
                 </flux:modal.trigger>
             </div>
         </div>
@@ -18,7 +18,7 @@
     <div class="mb-6">
         <flux:field>
             <flux:label>{{ __('general.search') }}</flux:label>
-            <flux:input wire:model.live.debounce.500ms="search" type="text" placeholder="{{ __('app.search_in_products') }}" />
+            <flux:input wire:model.live.debounce.300ms="search" clearable type="text" placeholder="{{ __('general.search_in_products') }}" />
         </flux:field>
     </div>
 
@@ -39,10 +39,10 @@
 
     <flux:table :paginate="$this->products">
         <flux:table.columns>
-            <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('app.name') }}</flux:table.column>
-            <flux:table.column>{{ __('app.category') }}</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('general.name') }}</flux:table.column>
+            <flux:table.column>{{ __('general.category') }}</flux:table.column>
             <flux:table.column>{{ __('general.brand') }}</flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')">{{ __('app.date') }}</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')">{{ __('general.date') }}</flux:table.column>
             <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 

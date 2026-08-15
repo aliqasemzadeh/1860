@@ -45,8 +45,8 @@ class PriceFetchers extends Component
             'type' => 'required|in:digikala,fafait,markazi,fater,setaregan,technolife',
             'url' => 'required|url|max:500',
         ], [], [
-            'type' => __('app.price_fetcher_type'),
-            'url' => __('app.price_fetcher_url'),
+            'type' => __('general.price_fetcher_type'),
+            'url' => __('general.price_fetcher_url'),
         ]);
 
         PriceFetcher::create([
@@ -58,7 +58,7 @@ class PriceFetchers extends Component
         $this->product->refresh();
         $this->type = 'digikala';
         $this->url = '';
-        Flux::toast(variant: 'success', text: __('app.price_fetcher_added'));
+        Flux::toast(variant: 'success', text: __('general.price_fetcher_added'));
     }
 
     public function removePriceFetcher(int $priceFetcherId): void
@@ -72,7 +72,7 @@ class PriceFetchers extends Component
             ->delete();
 
         $this->product->refresh();
-        Flux::toast(variant: 'success', text: __('app.price_fetcher_removed'));
+        Flux::toast(variant: 'success', text: __('general.price_fetcher_removed'));
     }
 
     public function fetchPrice(int $priceFetcherId): void
@@ -86,7 +86,7 @@ class PriceFetchers extends Component
             ->first();
 
         if (! $priceFetcher) {
-            Flux::toast(variant: 'danger', text: __('app.price_fetcher_not_found'));
+            Flux::toast(variant: 'danger', text: __('general.price_fetcher_not_found'));
             return;
         }
 
@@ -96,9 +96,9 @@ class PriceFetchers extends Component
             FetchPriceJob::dispatch($priceFetcher)->onConnection('sync');
             $this->product->refresh();
             $priceFetcher->refresh();
-            Flux::toast(variant: 'success', text: __('app.price_fetcher_fetched'));
+            Flux::toast(variant: 'success', text: __('general.price_fetcher_fetched'));
         } catch (\Exception $e) {
-            Flux::toast(variant: 'danger', text: __('app.price_fetcher_fetch_failed') . ': ' . $e->getMessage());
+            Flux::toast(variant: 'danger', text: __('general.price_fetcher_fetch_failed') . ': ' . $e->getMessage());
         }
     }
 

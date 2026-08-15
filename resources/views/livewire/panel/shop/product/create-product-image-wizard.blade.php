@@ -10,15 +10,15 @@
     </style>
     <div class="space-y-6">
         <div>
-            <flux:heading size="lg">{{ __('app.select_product_image_from_url') }}</flux:heading>
-            <flux:text class="mt-2">{{ __('app.select_product_image_description') }}</flux:text>
+            <flux:heading size="lg">{{ __('general.select_product_image_from_url') }}</flux:heading>
+            <flux:text class="mt-2">{{ __('general.select_product_image_description') }}</flux:text>
         </div>
 
         <div class="space-y-4">
             <!-- Site Type Selection -->
             <flux:field>
-                <flux:label>{{ __('app.site_type') }}</flux:label>
-                <flux:select wire:model.live="site_type" placeholder="{{ __('app.select_site_type') }}">
+                <flux:label>{{ __('general.site_type') }}</flux:label>
+                <flux:select wire:model.live="site_type" placeholder="{{ __('general.select_site_type') }}">
                     @foreach($this->getSiteTypes() as $value => $label)
                         <flux:select.option value="{{ $value }}">{{ $label }}</flux:select.option>
                     @endforeach
@@ -28,7 +28,7 @@
 
             <!-- URL Input Section -->
             <flux:field>
-                <flux:label>{{ __('app.product_page_url') }}</flux:label>
+                <flux:label>{{ __('general.product_page_url') }}</flux:label>
                 <div class="flex gap-2">
                     <flux:input 
                         wire:model.live.debounce.500ms="url" 
@@ -41,13 +41,13 @@
                         variant="primary"
                         :disabled="$isLoading || !$url || !$site_type"
                     >
-                        {{ __('app.fetch') }}
+                        {{ __('general.fetch') }}
                     </flux:button>
                 </div>
                 <flux:error name="url" />
                 @if ($isLoading)
                     <flux:text class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        {{ __('app.loading') }}...
+                        {{ __('general.loading') }}...
                     </flux:text>
                 @endif
             </flux:field>
@@ -55,7 +55,7 @@
             <!-- Images List -->
             @if (count($images) > 0)
                 <div class="space-y-4">
-                    <flux:heading size="sm">{{ __('app.fetched_images') }} ({{ count($images) }})</flux:heading>
+                    <flux:heading size="sm">{{ __('general.fetched_images') }} ({{ count($images) }})</flux:heading>
                     
                     <div class="mt-4 grid grid-cols-2 gap-4 max-h-[500px] overflow-y-auto">
                         @foreach ($images as $index => $image)
@@ -72,7 +72,7 @@
                                         <x-slot name="actions">
                                             <flux:file-item.remove 
                                                 wire:click.stop="removeImage('{{ $image['id'] }}')"
-                                                aria-label="{{ __('app.remove_file') }}: {{ $image['name'] }}"
+                                                aria-label="{{ __('general.remove_file') }}: {{ $image['name'] }}"
                                             />
                                         </x-slot>
                                     </flux:file-item>
@@ -82,7 +82,7 @@
                                 </div>
                                 @if ($selectedImageUrl === $image['url'])
                                     <div class="text-xs text-blue-600 dark:text-blue-400 font-medium">
-                                        {{ __('app.selected') }}
+                                        {{ __('general.selected') }}
                                     </div>
                                 @endif
                             </div>
@@ -96,12 +96,12 @@
                         class="w-full"
                         :disabled="$isLoading || !$selectedImageUrl"
                     >
-                        {{ __('app.confirm_selection') }}
+                        {{ __('general.confirm_selection') }}
                     </flux:button>
                 </div>
             @else
                 <flux:text class="text-gray-500 dark:text-gray-400">
-                    {{ __('app.no_images_fetched_yet') }}
+                    {{ __('general.no_images_fetched_yet') }}
                 </flux:text>
             @endif
         </div>

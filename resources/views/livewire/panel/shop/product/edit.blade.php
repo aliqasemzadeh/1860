@@ -1,8 +1,8 @@
 <flux:modal name="panel.shop.product.edit.modal" class="md:w-2/3" flyout position="right">
     <div class="space-y-6">
         <div>
-            <flux:heading size="lg">{{ __('app.edit_product') }}</flux:heading>
-            <flux:text class="mt-2">{{ __('app.edit_product_description') }}</flux:text>
+            <flux:heading size="lg">{{ __('general.edit_product') }}</flux:heading>
+            <flux:text class="mt-2">{{ __('general.edit_product_description') }}</flux:text>
         </div>
 
         <form wire:submit="edit" method="post">
@@ -12,7 +12,7 @@
                     <!-- Column 1: name, description, category_id, brand_id, unit_id -->
                     <div class="space-y-3">
                         <flux:field>
-                            <flux:label>{{ __('app.name') }}</flux:label>
+                            <flux:label>{{ __('general.name') }}</flux:label>
                             <flux:input wire:model.live.debounce.500ms="name" type="text" />
                             <flux:error name="name" />
                         </flux:field>
@@ -36,9 +36,9 @@
                         </flux:field>
 
                         <flux:field>
-                            <flux:label>{{ __('app.category') }}</flux:label>
+                            <flux:label>{{ __('general.category') }}</flux:label>
                             <flux:input.group>
-                                <flux:select wire:model="category_id" variant="combobox" :filter="false" placeholder="{{ __('app.select_category') }}">
+                                <flux:select wire:model="category_id" variant="combobox" :filter="false" placeholder="{{ __('general.select_category') }}">
                                     <x-slot name="input">
                                         <flux:select.input wire:model.live="category_search" placeholder="{{ __('general.search') }}..." />
                                     </x-slot>
@@ -58,7 +58,7 @@
                         <flux:field>
                             <flux:label>{{ __('general.brand') }}</flux:label>
                             <flux:input.group>
-                                <flux:select wire:model="brand_id" variant="combobox" :filter="false" placeholder="{{ __('app.select_brand') }}">
+                                <flux:select wire:model="brand_id" variant="combobox" :filter="false" placeholder="{{ __('general.select_brand') }}">
                                     <x-slot name="input">
                                         <flux:select.input wire:model.live="brand_search" placeholder="{{ __('general.search') }}..." />
                                     </x-slot>
@@ -78,7 +78,7 @@
                         <flux:field>
                             <flux:label>{{ __('general.unit') }}</flux:label>
                             <flux:input.group>
-                                <flux:select wire:model="unit_id" variant="combobox" :filter="false" placeholder="{{ __('app.select_unit') }}">
+                                <flux:select wire:model="unit_id" variant="combobox" :filter="false" placeholder="{{ __('general.select_unit') }}">
                                     <x-slot name="input">
                                         <flux:select.input wire:model.live="unit_search" placeholder="{{ __('general.search') }}..." />
                                     </x-slot>
@@ -110,7 +110,7 @@
                         <flux:field>
                             @if (isset($product) && $product->file_path)
                                 <div class="mb-3">
-                                    <flux:text class="text-sm text-gray-500 mb-2">{{ __('app.current_file') }}: {{ $product->file_name }}</flux:text>
+                                    <flux:text class="text-sm text-gray-500 mb-2">{{ __('general.current_file') }}: {{ $product->file_name }}</flux:text>
                                     <div class="mt-2 relative inline-block">
                                         <img src="{{ Storage::url($product->file_path) }}" alt="{{ $product->name }}" class="max-w-full h-auto rounded-lg border border-gray-200 dark:border-gray-700" style="max-height: 200px;" />
                                         <div class="absolute top-2 right-2 flex gap-2">
@@ -122,16 +122,16 @@
                                                 size="sm"
                                                 square
                                                 class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm"
-                                                aria-label="{{ __('app.remove_background') }}"
-                                                title="{{ __('app.remove_background') }}"
+                                                aria-label="{{ __('general.remove_background') }}"
+                                                title="{{ __('general.remove_background') }}"
                                             />
                                         </div>
                                     </div>
                                 </div>
                             @endif
-                            <flux:file-upload wire:model="file" label="{{ __('app.file_upload') }}">
+                            <flux:file-upload wire:model="file" label="{{ __('general.file_upload') }}">
                                 <flux:file-upload.dropzone
-                                    heading="{{ __('app.file_upload_description') }}"
+                                    heading="{{ __('general.file_upload_description') }}"
                                     text="JPG, PNG, GIF, PDF up to 10MB"
                                     with-progress
                                     inline
@@ -144,7 +144,7 @@
                                         :size="$file->getSize()"
                                     >
                                         <x-slot name="actions">
-                                            <flux:file-item.remove wire:click="removeFile" aria-label="{{ __('app.file_removed') }}" />
+                                            <flux:file-item.remove wire:click="removeFile" aria-label="{{ __('general.file_removed') }}" />
                                         </x-slot>
                                     </flux:file-item>
                                 </div>
@@ -153,20 +153,20 @@
                         </flux:field>
 
                         <flux:field>
-                            <flux:label>{{ __('app.slug') }}</flux:label>
+                            <flux:label>{{ __('general.slug') }}</flux:label>
                             <flux:input wire:model="slug" type="text" />
                             <flux:error name="slug" />
                         </flux:field>
 
                         <flux:field>
-                            <flux:label>{{ __('app.slug_fa') }}</flux:label>
+                            <flux:label>{{ __('general.slug_fa') }}</flux:label>
                             <flux:input wire:model="slug_fa" type="text" />
                             <flux:error name="slug_fa" />
                         </flux:field>
 
                         <div class="grid grid-cols-3 gap-6">
                             <flux:field>
-                                <flux:label>{{ __('app.x_dimension') }}</flux:label>
+                                <flux:label>{{ __('general.x_dimension') }}</flux:label>
                                 <flux:input.group>
                                     <flux:input.group.prefix>mm</flux:input.group.prefix>
                                     <flux:input wire:model="x_dimension" type="number" step="0.01" min="0" />
@@ -175,7 +175,7 @@
                             </flux:field>
 
                             <flux:field>
-                                <flux:label>{{ __('app.y_dimension') }}</flux:label>
+                                <flux:label>{{ __('general.y_dimension') }}</flux:label>
                                 <flux:input.group>
                                     <flux:input.group.prefix>mm</flux:input.group.prefix>
                                     <flux:input wire:model="y_dimension" type="number" step="0.01" min="0" />
@@ -184,7 +184,7 @@
                             </flux:field>
 
                             <flux:field>
-                                <flux:label>{{ __('app.z_dimension') }}</flux:label>
+                                <flux:label>{{ __('general.z_dimension') }}</flux:label>
                                 <flux:input.group>
                                     <flux:input.group.prefix>mm</flux:input.group.prefix>
                                     <flux:input wire:model="z_dimension" type="number" step="0.01" min="0" />
@@ -198,7 +198,7 @@
 
             </div>
             <flux:button type="submit" class="w-full mt-6" variant="primary">
-                {{ __('app.update') }}
+                {{ __('general.update') }}
             </flux:button>
         </form>
     </div>

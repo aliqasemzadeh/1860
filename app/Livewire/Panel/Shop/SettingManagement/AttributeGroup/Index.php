@@ -33,7 +33,7 @@ class Index extends Component
         $group = AttributeGroup::query()->find($id);
         if ($group !== null) {
             $group->delete();
-            \Flux\Flux::toast(variant: 'success', text: __('app.attribute_group_deleted'));
+            \Flux\Flux::toast(variant: 'success', text: __('general.attribute_group_deleted'));
             $this->dispatch('panel.shop.setting-management.attribute-group.index.render');
         }
     }

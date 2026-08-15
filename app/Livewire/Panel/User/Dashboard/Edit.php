@@ -32,7 +32,7 @@ class Edit extends Component
 
         Flux::modal('panel.user.dashboard.edit.modal')->close();
         $this->dispatch('panel.user.dashboard.index.render');
-        Flux::toast(variant: 'success', text: __('app.profile_updated'));
+        Flux::toast(variant: 'success', text: __('general.profile_updated'));
     }
 
     public function render(): View

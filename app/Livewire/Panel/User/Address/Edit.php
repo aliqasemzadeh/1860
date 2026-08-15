@@ -51,7 +51,7 @@ class Edit extends Component
 
         Flux::modal('panel.user.address.edit.modal')->close();
         $this->dispatch('panel.user.address.index.render');
-        Flux::toast(variant: 'success', text: __('app.address_updated'));
+        Flux::toast(variant: 'success', text: __('general.address_updated'));
     }
 
     public function render(): View

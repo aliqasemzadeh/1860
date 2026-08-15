@@ -60,7 +60,7 @@ class Edit extends Component
 
         $this->dispatch('panel.shop.setting-management.attribute.option.index.refresh');
         Flux::modal('panel.shop.setting-management.attribute.option.edit.modal')->close();
-        Flux::toast(variant: 'success', text: __('app.attribute_option_updated'));
+        Flux::toast(variant: 'success', text: __('general.attribute_option_updated'));
     }
 
     public function render(): View

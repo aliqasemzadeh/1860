@@ -14,9 +14,9 @@
             </nav>
 
             <flux:heading size="xl" level="1" class="mb-2">
-                {{ __('app.posts_with_tag', ['tag' => $this->tag->name]) }}
+                {{ __('general.posts_with_tag', ['tag' => $this->tag->name]) }}
             </flux:heading>
-            <flux:subheading class="mb-8">{{ __('app.posts_description') }}</flux:subheading>
+            <flux:subheading class="mb-8">{{ __('general.posts_description') }}</flux:subheading>
 
             @if ($this->posts->isNotEmpty())
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -44,7 +44,7 @@
                     {{ $this->posts->links() }}
                 </div>
             @else
-                <flux:text class="text-zinc-500">{{ __('app.no_posts_found') }}</flux:text>
+                <flux:text class="text-zinc-500">{{ __('general.no_posts_found') }}</flux:text>
             @endif
         </div>
     </section>

@@ -1,5 +1,5 @@
 <x-slot name="title">
-    {{ __('app.shipping') }}
+    {{ __('general.shipping') }}
 </x-slot>
 
 <div>
@@ -12,16 +12,16 @@
                 </a>
                 <span>/</span>
                 <a href="{{ route('order.cart') }}" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-                    {{ __('app.shopping_cart') }}
+                    {{ __('general.shopping_cart') }}
                 </a>
                 <span>/</span>
-                <span class="text-zinc-900 dark:text-zinc-100 font-medium">{{ __('app.shipping') }}</span>
+                <span class="text-zinc-900 dark:text-zinc-100 font-medium">{{ __('general.shipping') }}</span>
             </nav>
 
             {{-- Page Header --}}
             <div class="mb-8">
-                <flux:heading size="xl">{{ __('app.shipping') }}</flux:heading>
-                <flux:text class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('app.shipping_description') }}</flux:text>
+                <flux:heading size="xl">{{ __('general.shipping') }}</flux:heading>
+                <flux:text class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('general.shipping_description') }}</flux:text>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -29,8 +29,8 @@
                 <div class="lg:col-span-2 space-y-6">
                     {{-- Customer Information Section --}}
                     <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
-                        <flux:heading size="lg" class="mb-2">{{ __('app.customer_information') }}</flux:heading>
-                        <flux:text class="mb-6 text-zinc-600 dark:text-zinc-400">{{ __('app.customer_information_description') }}</flux:text>
+                        <flux:heading size="lg" class="mb-2">{{ __('general.customer_information') }}</flux:heading>
+                        <flux:text class="mb-6 text-zinc-600 dark:text-zinc-400">{{ __('general.customer_information_description') }}</flux:text>
 
                         @if($this->needsProfileCompletion)
                             <div class="space-y-4">
@@ -49,7 +49,7 @@
                                 </div>
 
                                 <flux:field>
-                                    <flux:label>{{ __('app.national_code') }}</flux:label>
+                                    <flux:label>{{ __('general.national_code') }}</flux:label>
                                     <flux:input wire:model.live="profileForm.national_code" type="text" maxlength="10" dir="ltr" />
                                     <flux:error name="profileForm.national_code" />
                                 </flux:field>
@@ -65,7 +65,7 @@
                                     <flux:text class="font-medium">{{ auth()->user()->last_name }}</flux:text>
                                 </div>
                                 <div>
-                                    <flux:text class="text-sm text-zinc-500">{{ __('app.national_code') }}</flux:text>
+                                    <flux:text class="text-sm text-zinc-500">{{ __('general.national_code') }}</flux:text>
                                     <flux:text class="font-medium" dir="ltr">{{ auth()->user()->national_code }}</flux:text>
                                 </div>
                             </div>
@@ -74,7 +74,7 @@
 
                     {{-- Shipping Address Section --}}
                     <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
-                        <flux:heading size="lg" class="mb-6">{{ __('app.shipping_address') }}</flux:heading>
+                        <flux:heading size="lg" class="mb-6">{{ __('general.shipping_address') }}</flux:heading>
 
                         @if($this->addresses->count() > 0 && !$showNewAddressForm)
                             <div class="space-y-4 mb-4">
@@ -84,16 +84,16 @@
                                             <input type="radio" wire:model.live="selectedAddressId" value="{{ $addr->id }}" class="mt-1" />
                                             <div class="flex-1">
                                                 <div class="font-medium text-zinc-900 dark:text-zinc-100 mb-1">
-                                                    {{ $addr->name ?: __('app.address') }} {{ $addr->is_default ? '('.__('app.default').')' : '' }}
+                                                    {{ $addr->name ?: __('general.address') }} {{ $addr->is_default ? '('.__('general.default').')' : '' }}
                                                 </div>
                                                 <div class="text-sm text-zinc-600 dark:text-zinc-400">
                                                     {{ $addr->province_name }}, {{ $addr->city_name }}<br>
                                                     {{ $addr->address }}<br>
                                                     @if($addr->postal_code)
-                                                        {{ __('app.postal_code') }}: {{ $addr->postal_code }}<br>
+                                                        {{ __('general.postal_code') }}: {{ $addr->postal_code }}<br>
                                                     @endif
                                                     @if($addr->emergency_contact)
-                                                        {{ __('app.emergency_contact') }}: {{ $addr->emergency_contact }}
+                                                        {{ __('general.emergency_contact') }}: {{ $addr->emergency_contact }}
                                                     @endif
                                                 </div>
                                             </div>
@@ -102,7 +102,7 @@
                                             size="xs"
                                             variant="danger"
                                             wire:click="deleteAddress({{ $addr->id }})"
-                                            wire:confirm="{{ __('app.confirm_delete_address') }}"
+                                            wire:confirm="{{ __('general.confirm_delete_address') }}"
                                         >
                                             {{ __('general.delete') }}
                                         </flux:button>
@@ -114,16 +114,16 @@
                         @if($showNewAddressForm)
                             <form wire:submit="saveNewAddress" class="space-y-4">
                                 <flux:field>
-                                    <flux:label>{{ __('app.address_name') }} <flux:badge variant="ghost" size="sm">{{ __('app.optional') }}</flux:badge></flux:label>
+                                    <flux:label>{{ __('general.address_name') }} <flux:badge variant="ghost" size="sm">{{ __('general.optional') }}</flux:badge></flux:label>
                                     <flux:input wire:model="name" />
                                     <flux:error name="name" />
                                 </flux:field>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <flux:field>
-                                        <flux:label>{{ __('app.province') }}</flux:label>
+                                        <flux:label>{{ __('general.province') }}</flux:label>
                                         <flux:select wire:model.live="province_id" variant="combobox">
-                                            <flux:select.option value="">{{ __('app.select_province') }}</flux:select.option>
+                                            <flux:select.option value="">{{ __('general.select_province') }}</flux:select.option>
                                             @foreach($this->provinces as $id => $province)
                                                 <flux:select.option value="{{ $id }}">{{ $province }}</flux:select.option>
                                             @endforeach
@@ -132,9 +132,9 @@
                                     </flux:field>
 
                                     <flux:field>
-                                        <flux:label>{{ __('app.city') }}</flux:label>
+                                        <flux:label>{{ __('general.city') }}</flux:label>
                                         <flux:select wire:model="city_id" variant="combobox">
-                                            <flux:select.option value="">{{ __('app.select_city') }}</flux:select.option>
+                                            <flux:select.option value="">{{ __('general.select_city') }}</flux:select.option>
                                             @if(count($this->cities) > 0)
                                                 @php
                                                     // Ensure we iterate with string keys preserved
@@ -152,20 +152,20 @@
                                 </div>
 
                                 <flux:field>
-                                    <flux:label>{{ __('app.address') }}</flux:label>
+                                    <flux:label>{{ __('general.address') }}</flux:label>
                                     <flux:textarea wire:model="address" rows="3" />
                                     <flux:error name="address" />
                                 </flux:field>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <flux:field>
-                                        <flux:label>{{ __('app.postal_code') }}</flux:label>
+                                        <flux:label>{{ __('general.postal_code') }}</flux:label>
                                         <flux:input wire:model="postal_code" dir="ltr" />
                                         <flux:error name="postal_code" />
                                     </flux:field>
 
                                     <flux:field>
-                                        <flux:label>{{ __('app.emergency_contact') }} <flux:badge variant="ghost" size="sm">{{ __('app.optional') }}</flux:badge></flux:label>
+                                        <flux:label>{{ __('general.emergency_contact') }} <flux:badge variant="ghost" size="sm">{{ __('general.optional') }}</flux:badge></flux:label>
                                         <flux:input wire:model="emergency_contact" dir="ltr" />
                                         <flux:error name="emergency_contact" />
                                     </flux:field>
@@ -173,7 +173,7 @@
 
                                 <flux:field>
                                     <flux:checkbox wire:model="is_default" />
-                                    <flux:label>{{ __('app.set_as_default_address') }}</flux:label>
+                                    <flux:label>{{ __('general.set_as_default_address') }}</flux:label>
                                 </flux:field>
 
                                 <div class="flex gap-3">
@@ -183,7 +183,7 @@
                             </form>
                         @else
                             <flux:button wire:click="toggleNewAddressForm" variant="ghost" class="w-full">
-                                {{ __('app.add_new_address') }}
+                                {{ __('general.add_new_address') }}
                             </flux:button>
                         @endif
                     </div>
@@ -191,7 +191,7 @@
                     @if($selectedAddressId && count($this->availableShippingMethods) > 0)
                         {{-- Shipping Methods Section --}}
                         <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
-                            <flux:heading size="lg" class="mb-6">{{ __('app.shipping_method') }}</flux:heading>
+                            <flux:heading size="lg" class="mb-6">{{ __('general.shipping_method') }}</flux:heading>
 
                             <div class="space-y-4">
                                 @foreach($this->availableShippingMethods as $method)
@@ -204,7 +204,7 @@
                                             <div class="text-sm text-zinc-600 dark:text-zinc-400">
                                                 {{ number_format($method['cost'], 0) }} {{ __('general.toman') }}
                                                 @if($method['estimated_days'])
-                                                    • {{ __('app.estimated_delivery') }}: {{ $method['estimated_days'] }}
+                                                    • {{ __('general.estimated_delivery') }}: {{ $method['estimated_days'] }}
                                                 @endif
                                             </div>
                                         </div>
@@ -217,16 +217,16 @@
                     @if($selectedAddressId && count($this->availableShippingMethods) == 0)
                         <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
                             <flux:text class="text-yellow-800 dark:text-yellow-200">
-                                {{ __('app.no_shipping_methods_available') }}
+                                {{ __('general.no_shipping_methods_available') }}
                             </flux:text>
                         </div>
                     @endif
 
                     {{-- Customer Note --}}
                     <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
-                        <flux:heading size="lg" class="mb-4">{{ __('app.customer_note') }}</flux:heading>
+                        <flux:heading size="lg" class="mb-4">{{ __('general.customer_note') }}</flux:heading>
                         <flux:field>
-                            <flux:textarea wire:model="customerNote" rows="3" placeholder="{{ __('app.customer_note_placeholder') }}" />
+                            <flux:textarea wire:model="customerNote" rows="3" placeholder="{{ __('general.customer_note_placeholder') }}" />
                         </flux:field>
                     </div>
                 </div>
@@ -234,11 +234,11 @@
                 {{-- Order Summary Sidebar --}}
                 <div class="lg:col-span-1">
                     <div class="sticky top-4 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
-                        <flux:heading size="lg" class="mb-6">{{ __('app.order_summary') }}</flux:heading>
+                        <flux:heading size="lg" class="mb-6">{{ __('general.order_summary') }}</flux:heading>
 
                         <div class="space-y-4 mb-6">
                             <div class="flex items-center justify-between">
-                                <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('app.subtotal') }}</flux:text>
+                                <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('general.subtotal') }}</flux:text>
                                 <flux:text class="font-medium text-zinc-900 dark:text-zinc-100">
                                     {{ number_format($this->subtotal, 0) }} {{ __('general.toman') }}
                                 </flux:text>
@@ -249,16 +249,16 @@
                                     $selectedMethod = $this->availableShippingMethods->firstWhere('id', $selectedShippingRateId);
                                 @endphp
                                 <div class="flex items-center justify-between">
-                                    <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('app.shipping') }}</flux:text>
+                                    <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('general.shipping') }}</flux:text>
                                     <flux:text class="font-medium text-zinc-900 dark:text-zinc-100">
                                         {{ number_format($selectedMethod['cost'], 0) }} {{ __('general.toman') }}
                                     </flux:text>
                                 </div>
                             @else
                                 <div class="flex items-center justify-between">
-                                    <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('app.shipping') }}</flux:text>
+                                    <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('general.shipping') }}</flux:text>
                                     <flux:text class="font-medium text-zinc-600 dark:text-zinc-400">
-                                        {{ __('app.select_shipping_method') }}
+                                        {{ __('general.select_shipping_method') }}
                                     </flux:text>
                                 </div>
                             @endif
@@ -266,7 +266,7 @@
                             <div class="border-t border-zinc-200 dark:border-zinc-700 pt-4">
                                 <div class="flex items-center justify-between">
                                     <flux:heading size="md" class="text-zinc-900 dark:text-zinc-100">
-                                        {{ __('app.total') }}
+                                        {{ __('general.total') }}
                                     </flux:heading>
                                     <flux:heading size="lg" class="text-zinc-900 dark:text-zinc-100">
                                         @if($selectedShippingRateId && $this->availableShippingMethods->firstWhere('id', $selectedShippingRateId))
@@ -289,7 +289,7 @@
                             class="w-full"
                             :disabled="!$this->canCompleteOrder"
                         >
-                            {{ __('app.complete_order') }}
+                            {{ __('general.complete_order') }}
                         </flux:button>
 
                         @if(count($this->completeOrderBlockers) > 0)

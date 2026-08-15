@@ -12,7 +12,7 @@
                     </a>
                     <span>/</span>
                     <a href="{{ route('post.index') }}" wire:navigate class="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100">
-                        {{ __('app.blog') }}
+                        {{ __('general.blog') }}
                     </a>
                     <span>/</span>
                     <span class="font-medium text-zinc-900 dark:text-zinc-100">{{ $this->post->title }}</span>
@@ -56,7 +56,7 @@
 
                 @if ($this->post->products->isNotEmpty())
                     <div class="mt-12">
-                        <flux:heading size="lg" class="mb-4">{{ __('app.related_products') }}</flux:heading>
+                        <flux:heading size="lg" class="mb-4">{{ __('general.related_products') }}</flux:heading>
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                             @foreach ($this->post->products as $product)
                                 <a href="{{ $product->url }}" wire:navigate class="group block transition-opacity hover:opacity-90">

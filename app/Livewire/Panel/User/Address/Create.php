@@ -31,7 +31,7 @@ class Create extends Component
 
         Flux::modal('panel.user.address.create.modal')->close();
         $this->dispatch('panel.user.address.index.render');
-        Flux::toast(variant: 'success', text: __('app.address_saved'));
+        Flux::toast(variant: 'success', text: __('general.address_saved'));
         $this->form->reset();
     }
 

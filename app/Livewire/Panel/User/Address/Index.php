@@ -78,7 +78,7 @@ class Index extends Component
 
         Cache::forget('panel.user.dashboard.stats.'.auth()->id());
         $this->dispatch('panel.user.address.index.render');
-        Flux::toast(variant: 'success', text: __('app.address_deleted'));
+        Flux::toast(variant: 'success', text: __('general.address_deleted'));
     }
 
     public function setDefault(int $id): void
@@ -98,7 +98,7 @@ class Index extends Component
 
         Cache::forget('panel.user.dashboard.stats.'.auth()->id());
         $this->dispatch('panel.user.address.index.render');
-        Flux::toast(variant: 'success', text: __('app.default_address_updated'));
+        Flux::toast(variant: 'success', text: __('general.default_address_updated'));
     }
 
     #[Layout('layouts.panels.user')]

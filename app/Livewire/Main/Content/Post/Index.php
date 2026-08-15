@@ -44,8 +44,8 @@ class Index extends Component
     public function seo(): Seo
     {
         return new Seo(
-            title: __('app.blog'),
-            description: __('app.blog_description'),
+            title: __('general.blog'),
+            description: __('general.blog_description'),
             canonical: route('post.index'),
         );
     }

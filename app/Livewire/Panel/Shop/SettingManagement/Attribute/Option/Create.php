@@ -44,7 +44,7 @@ class Create extends Component
 
         Flux::modal('panel.shop.setting-management.attribute.option.create.modal')->close();
         $this->dispatch('panel.shop.setting-management.attribute.option.index.refresh');
-        Flux::toast(variant: 'success', text: __('app.attribute_option_created'));
+        Flux::toast(variant: 'success', text: __('general.attribute_option_created'));
         $this->reset(['value', 'label', 'sort_order']);
     }
 

@@ -46,7 +46,7 @@ class Attributes extends Component
 
         $this->category->attributes()->sync($attributesToSync);
 
-        Flux::toast(variant: 'success', text: __('app.category_attributes_updated'));
+        Flux::toast(variant: 'success', text: __('general.category_attributes_updated'));
         $this->loadCategory();
     }
 

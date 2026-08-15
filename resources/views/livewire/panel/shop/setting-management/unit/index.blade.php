@@ -2,11 +2,11 @@
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.units') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.units_description') }}</flux:subheading>
+                <flux:heading size="xl" level="1">{{ __('general.units') }}</flux:heading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.units_description') }}</flux:subheading>
             </div>
             <flux:modal.trigger name="panel.shop.setting-management.unit.create.modal">
-                <flux:button variant="primary">{{ __('app.create_unit') }}</flux:button>
+                <flux:button variant="primary">{{ __('general.create_unit') }}</flux:button>
             </flux:modal.trigger>
         </div>
 
@@ -18,8 +18,8 @@
 
     <flux:table>
         <flux:table.columns>
-            <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('app.name') }}</flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')">{{ __('app.date') }}</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('general.name') }}</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')">{{ __('general.date') }}</flux:table.column>
             <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 

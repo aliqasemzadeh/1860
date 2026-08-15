@@ -58,7 +58,7 @@ class Shipping extends Component
         }
 
         if (! $this->cart || $this->cartItems->isEmpty()) {
-            Flux::toast(variant: 'warning', text: __('app.cart_is_empty'));
+            Flux::toast(variant: 'warning', text: __('general.cart_is_empty'));
 
             return $this->redirect(route('order.cart'), navigate: true);
         }
@@ -92,18 +92,18 @@ class Shipping extends Component
             if (blank($this->profileForm->first_name)
                 || blank($this->profileForm->last_name)
                 || blank($this->profileForm->national_code)) {
-                $reasons[] = __('app.complete_profile_to_order');
+                $reasons[] = __('general.complete_profile_to_order');
             } elseif (! $this->isNationalCodeValid($this->profileForm->national_code)) {
-                $reasons[] = __('app.invalid_national_code');
+                $reasons[] = __('general.invalid_national_code');
             }
         }
 
         if (! $this->selectedAddressId) {
-            $reasons[] = __('app.select_shipping_address');
+            $reasons[] = __('general.select_shipping_address');
         } elseif ($this->availableShippingMethods->isEmpty()) {
-            $reasons[] = __('app.no_shipping_methods_available');
+            $reasons[] = __('general.no_shipping_methods_available');
         } elseif (! $this->selectedShippingRateId) {
-            $reasons[] = __('app.select_shipping_method');
+            $reasons[] = __('general.select_shipping_method');
         }
 
         return $reasons;
@@ -520,7 +520,7 @@ class Shipping extends Component
         $this->showNewAddressForm = false;
         $this->resetNewAddressFields();
 
-        Flux::toast(variant: 'success', text: __('app.address_saved'));
+        Flux::toast(variant: 'success', text: __('general.address_saved'));
     }
 
     protected function resetNewAddressFields()
@@ -547,7 +547,7 @@ class Shipping extends Component
                 $this->selectedShippingRateId = null;
             }
 
-            Flux::toast(variant: 'success', text: __('app.address_deleted'));
+            Flux::toast(variant: 'success', text: __('general.address_deleted'));
         }
     }
 
@@ -564,7 +564,7 @@ class Shipping extends Component
         if (! $this->canCompleteOrder) {
             Flux::toast(
                 variant: 'danger',
-                text: $this->completeOrderBlockers[0] ?? __('app.complete_profile_to_order')
+                text: $this->completeOrderBlockers[0] ?? __('general.complete_profile_to_order')
             );
 
             return;
@@ -577,7 +577,7 @@ class Shipping extends Component
 
         $address = CustomerShippingAddress::find($this->selectedAddressId);
         if (! $address || $address->user_id !== auth()->id()) {
-            Flux::toast(variant: 'danger', text: __('app.invalid_address'));
+            Flux::toast(variant: 'danger', text: __('general.invalid_address'));
 
             return;
         }
@@ -585,14 +585,14 @@ class Shipping extends Component
         // Find the selected shipping option
         $selectedOption = $this->availableShippingMethods->firstWhere('id', $this->selectedShippingRateId);
         if (! $selectedOption) {
-            Flux::toast(variant: 'danger', text: __('app.invalid_shipping_method'));
+            Flux::toast(variant: 'danger', text: __('general.invalid_shipping_method'));
 
             return;
         }
 
         $rate = ShippingRate::find($this->selectedShippingRateId);
         if (! $rate) {
-            Flux::toast(variant: 'danger', text: __('app.invalid_shipping_rate'));
+            Flux::toast(variant: 'danger', text: __('general.invalid_shipping_rate'));
 
             return;
         }
@@ -670,10 +670,10 @@ class Shipping extends Component
         $this->cart->delete();
 
         // Send SMS notification
-        $smsMessage = __('app.order_created_sms', ['order_number' => $order->order_number]);
+        $smsMessage = __('general.order_created_sms', ['order_number' => $order->order_number]);
         dispatch(new SendSmsMessageJob(auth()->user()->mobile, $smsMessage));
 
-        Flux::toast(variant: 'success', text: __('app.order_created'));
+        Flux::toast(variant: 'success', text: __('general.order_created'));
         $this->redirect(route('order.view', ['id' => $order->id]), navigate: true);
     }
 

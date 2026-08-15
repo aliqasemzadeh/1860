@@ -35,7 +35,7 @@ class Create extends Component
         $this->dispatch('panel.shop.setting-management.brand.index.render');
         \Illuminate\Support\Facades\Log::info("Brand Created:",[$brand->id]);
         $this->dispatch('panel.shop.product.brand.refresh', ['id' => $brand->id]);
-        Flux::toast(variant: 'success', text: __('app.brand_created', ['name' => $validated['name']]));
+        Flux::toast(variant: 'success', text: __('general.brand_created', ['name' => $validated['name']]));
         $this->reset(['name', 'slug', 'slug_fa']);
     }
 

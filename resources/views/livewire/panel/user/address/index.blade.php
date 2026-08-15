@@ -2,12 +2,12 @@
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.my_addresses') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.my_addresses_description') }}</flux:subheading>
+                <flux:heading size="xl" level="1">{{ __('general.my_addresses') }}</flux:heading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.my_addresses_description') }}</flux:subheading>
             </div>
             @can('user_address_create')
                 <flux:modal.trigger name="panel.user.address.create.modal">
-                    <flux:button variant="primary" color="teal" icon="plus">{{ __('app.create_address') }}</flux:button>
+                    <flux:button variant="primary" color="teal" icon="plus">{{ __('general.create_address') }}</flux:button>
                 </flux:modal.trigger>
             @endcan
         </div>
@@ -18,7 +18,7 @@
     <flux:card class="mb-6">
         <flux:field>
             <flux:label>{{ __('general.search') }}</flux:label>
-            <flux:input wire:model.live.debounce.500ms="search" type="text" placeholder="{{ __('general.search') }}" />
+            <flux:input wire:model.live.debounce.300ms="search" clearable type="text" placeholder="{{ __('general.search') }}" />
         </flux:field>
     </flux:card>
 
@@ -27,12 +27,12 @@
 
     <flux:table :paginate="$this->addresses">
         <flux:table.columns>
-            <flux:table.column>{{ __('app.address_name') }}</flux:table.column>
-            <flux:table.column>{{ __('app.province') }}</flux:table.column>
-            <flux:table.column>{{ __('app.city') }}</flux:table.column>
-            <flux:table.column>{{ __('app.address') }}</flux:table.column>
-            <flux:table.column>{{ __('app.postal_code') }}</flux:table.column>
-            <flux:table.column>{{ __('app.default_address') }}</flux:table.column>
+            <flux:table.column>{{ __('general.address_name') }}</flux:table.column>
+            <flux:table.column>{{ __('general.province') }}</flux:table.column>
+            <flux:table.column>{{ __('general.city') }}</flux:table.column>
+            <flux:table.column>{{ __('general.address') }}</flux:table.column>
+            <flux:table.column>{{ __('general.postal_code') }}</flux:table.column>
+            <flux:table.column>{{ __('general.default_address') }}</flux:table.column>
             <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 
@@ -55,7 +55,7 @@
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     @if ($address->is_default)
-                        <flux:badge color="green">{{ __('app.default') }}</flux:badge>
+                        <flux:badge color="green">{{ __('general.default') }}</flux:badge>
                     @else
                         -
                     @endif
@@ -75,7 +75,7 @@
                             </flux:tooltip>
 
                             @unless ($address->is_default)
-                                <flux:tooltip content="{{ __('app.set_as_default') }}">
+                                <flux:tooltip content="{{ __('general.set_as_default') }}">
                                     <flux:button
                                         size="xs"
                                         variant="primary"
@@ -107,7 +107,7 @@
         @empty
             <flux:table.row>
                 <flux:table.cell colspan="7">
-                    {{ __('app.no_addresses_found') }}
+                    {{ __('general.no_addresses_found') }}
                 </flux:table.cell>
             </flux:table.row>
         @endforelse

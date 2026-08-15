@@ -98,7 +98,7 @@ class Index extends Component
         app(SitemapService::class)->forget();
 
         $this->dispatch('panel.content.post.index.render');
-        Flux::toast(variant: 'success', text: __('app.post_deleted'));
+        Flux::toast(variant: 'success', text: __('general.post_deleted'));
     }
 
     #[Layout('layouts.panels.content')]

@@ -50,7 +50,7 @@ class Create extends Component
 
         Flux::modal('panel.shop.shipping.rate.create.modal')->close();
         $this->dispatch('panel.shop.shipping.rate.index.render');
-        Flux::toast(variant: 'success', text: __('app.shipping_rate_created'));
+        Flux::toast(variant: 'success', text: __('general.shipping_rate_created'));
 
         $this->reset([
             'shipping_method_id',

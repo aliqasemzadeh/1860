@@ -100,7 +100,7 @@ class Create extends Component
         }
 
         $this->featured_file = null;
-        Flux::toast(variant: 'success', text: __('app.file_removed'));
+        Flux::toast(variant: 'success', text: __('general.file_removed'));
     }
 
     public function create(): void
@@ -116,7 +116,7 @@ class Create extends Component
 
         Flux::modal('panel.content.post.create.modal')->close();
         $this->dispatch('panel.content.post.index.render');
-        Flux::toast(variant: 'success', text: __('app.post_created'));
+        Flux::toast(variant: 'success', text: __('general.post_created'));
 
         $this->form->reset();
         $this->reset(['featured_file', 'product_search', 'tag_search']);

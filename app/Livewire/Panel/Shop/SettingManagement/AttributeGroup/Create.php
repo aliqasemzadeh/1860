@@ -24,7 +24,7 @@ class Create extends Component
 
         Flux::modal('panel.shop.setting-management.attribute-group.create.modal')->close();
         $this->dispatch('panel.shop.setting-management.attribute-group.index.render');
-        Flux::toast(variant: 'success', text: __('app.attribute_group_created'));
+        Flux::toast(variant: 'success', text: __('general.attribute_group_created'));
         $this->reset(['name', 'sort_order']);
     }
 

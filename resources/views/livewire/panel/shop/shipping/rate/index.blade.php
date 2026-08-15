@@ -1,16 +1,16 @@
 <x-slot name="title">
-    {{ __('app.shipping_rates') }}
+    {{ __('general.shipping_rates') }}
 </x-slot>
 <div>
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.shipping_rates') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.shipping_rates_description') }}</flux:subheading>
+                <flux:heading size="xl" level="1">{{ __('general.shipping_rates') }}</flux:heading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.shipping_rates_description') }}</flux:subheading>
             </div>
 
             <flux:modal.trigger name="panel.shop.shipping.rate.create.modal">
-                <flux:button variant="primary">{{ __('app.create_shipping_rate') }}</flux:button>
+                <flux:button variant="primary">{{ __('general.create_shipping_rate') }}</flux:button>
             </flux:modal.trigger>
         </div>
 
@@ -34,14 +34,14 @@
         </flux:table.columns>
 
         <flux:table.columns>
-            <flux:table.column>{{ __('app.shipping_method') }}</flux:table.column>
-            <flux:table.column>{{ __('app.shipping_zone') }}</flux:table.column>
-            <flux:table.column>{{ __('app.rate_type') }}</flux:table.column>
-            <flux:table.column>{{ __('app.min') }}</flux:table.column>
-            <flux:table.column>{{ __('app.max') }}</flux:table.column>
-            <flux:table.column>{{ __('app.amount') }}</flux:table.column>
-            <flux:table.column>{{ __('app.status') }}</flux:table.column>
-            <flux:table.column sortable>{{ __('app.date') }}</flux:table.column>
+            <flux:table.column>{{ __('general.shipping_method') }}</flux:table.column>
+            <flux:table.column>{{ __('general.shipping_zone') }}</flux:table.column>
+            <flux:table.column>{{ __('general.rate_type') }}</flux:table.column>
+            <flux:table.column>{{ __('general.min') }}</flux:table.column>
+            <flux:table.column>{{ __('general.max') }}</flux:table.column>
+            <flux:table.column>{{ __('general.amount') }}</flux:table.column>
+            <flux:table.column>{{ __('general.status') }}</flux:table.column>
+            <flux:table.column sortable>{{ __('general.date') }}</flux:table.column>
             <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 
@@ -55,7 +55,7 @@
                         {{ optional($rate->zone)->name }}
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap text-xs">
-                        {{ __('app.rate_type_'.$rate->rate_type) }}
+                        {{ __('general.rate_type_'.$rate->rate_type) }}
                     </flux:table.cell>
 
                     @if($rate->rate_type === 'weight')

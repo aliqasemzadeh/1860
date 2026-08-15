@@ -45,7 +45,7 @@ class Payment extends Component
         }
 
         if ($order->paid_at) {
-            Flux::toast(variant: 'info', text: __('app.order_already_paid'));
+            Flux::toast(variant: 'info', text: __('general.order_already_paid'));
 
             return $this->redirect(route('order.view', ['id' => $order->id]), navigate: true);
         }
@@ -55,7 +55,7 @@ class Payment extends Component
             $invoice = (new Invoice)->amount($order->total_amount)
                 ->detail([
                     'order_number' => $order->order_number,
-                    'description' => __('app.payment_for_order', ['order_number' => $order->order_number]),
+                    'description' => __('general.payment_for_order', ['order_number' => $order->order_number]),
                 ]);
 
             // Store order ID in session for callback

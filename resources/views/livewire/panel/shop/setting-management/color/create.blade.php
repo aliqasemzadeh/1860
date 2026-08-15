@@ -1,32 +1,32 @@
 <flux:modal name="panel.shop.setting-management.color.create.modal" class="md:w-96" flyout position="right">
     <div class="space-y-6">
         <div>
-            <flux:heading size="lg">{{ __('app.create_color') }}</flux:heading>
-            <flux:text class="mt-2">{{ __('app.create_color_description') }}</flux:text>
+            <flux:heading size="lg">{{ __('general.create_color') }}</flux:heading>
+            <flux:text class="mt-2">{{ __('general.create_color_description') }}</flux:text>
         </div>
 
         <form wire:submit="create" method="post">
             <div class="pb-2 space-y-3">
                 <flux:field>
-                    <flux:label>{{ __('app.name') }}</flux:label>
+                    <flux:label>{{ __('general.name') }}</flux:label>
                     <flux:input wire:model.live="name" type="text" />
                     <flux:error name="name" />
                 </flux:field>
 
                 <flux:field>
-                    <flux:label>{{ __('app.slug') }}</flux:label>
+                    <flux:label>{{ __('general.slug') }}</flux:label>
                     <flux:input wire:model.live="slug" type="text" />
                     <flux:error name="slug" />
                 </flux:field>
 
                 <flux:field>
-                    <flux:label>{{ __('app.slug_fa') }}</flux:label>
+                    <flux:label>{{ __('general.slug_fa') }}</flux:label>
                     <flux:input wire:model.live="slug_fa" type="text" />
                     <flux:error name="slug_fa" />
                 </flux:field>
 
                 <flux:field>
-                    <flux:label>{{ __('app.hex') }}</flux:label>
+                    <flux:label>{{ __('general.hex') }}</flux:label>
                     <div
                         x-data="{
                           defaultColor: '#14b8a6',
@@ -44,7 +44,7 @@
                                 $wire.hex = hexColor;
                                 this.message = null;
                               } else {
-                                this.message = '{{ __('app.invalid_color') }}';
+                                this.message = '{{ __('general.invalid_color') }}';
                               }
                             });
                             this.$watch('color', value => {
@@ -109,7 +109,7 @@
                             </div>
                             <input type="text" id="color-picker-input" x-model="textInput" class="block w-full rounded-lg border border-zinc-200 py-2 pe-3 ps-11 text-sm/6 placeholder-zinc-500 focus:border-zinc-500 focus:ring-3 focus:ring-zinc-500/50 dark:border-zinc-600 dark:bg-transparent dark:placeholder-zinc-400 dark:focus:border-zinc-500" required />
                         </div>
-                        <p x-text="message || '{{ __('app.color_picker_help') }}'" class="mt-1.5 text-sm font-medium text-zinc-500 dark:text-zinc-400"></p>
+                        <p x-text="message || '{{ __('general.color_picker_help') }}'" class="mt-1.5 text-sm font-medium text-zinc-500 dark:text-zinc-400"></p>
                     </div>
                     <flux:error name="hex" />
                 </flux:field>

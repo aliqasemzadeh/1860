@@ -123,13 +123,13 @@ class Edit extends Component
         if ($this->featured_file) {
             $this->featured_file->delete();
             $this->featured_file = null;
-            Flux::toast(variant: 'success', text: __('app.file_removed'));
+            Flux::toast(variant: 'success', text: __('general.file_removed'));
 
             return;
         }
 
         $this->form->featured_image = null;
-        Flux::toast(variant: 'success', text: __('app.file_removed'));
+        Flux::toast(variant: 'success', text: __('general.file_removed'));
     }
 
     public function edit(): void
@@ -160,7 +160,7 @@ class Edit extends Component
 
         Flux::modal('panel.content.post.edit.modal')->close();
         $this->dispatch('panel.content.post.index.render');
-        Flux::toast(variant: 'success', text: __('app.post_updated'));
+        Flux::toast(variant: 'success', text: __('general.post_updated'));
 
         $this->reset(['featured_file', 'product_search', 'tag_search']);
         unset($this->products, $this->tags);

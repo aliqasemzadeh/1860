@@ -139,7 +139,7 @@ class Index extends Component
         $this->generalForm->logo_path = $settings->logo_path;
         $this->generalForm->reset(['favicon', 'logo']);
 
-        Flux::toast(__('app.settings_updated'));
+        Flux::toast(__('general.settings_updated'));
     }
 
     public function removeLogo(GeneralSettings $settings): void
@@ -153,7 +153,7 @@ class Index extends Component
         }
 
         $this->generalForm->logo_path = null;
-        Flux::toast(__('app.file_removed'));
+        Flux::toast(__('general.file_removed'));
     }
 
     public function removeFavicon(GeneralSettings $settings): void
@@ -167,7 +167,7 @@ class Index extends Component
         }
 
         $this->generalForm->favicon_path = null;
-        Flux::toast(__('app.file_removed'));
+        Flux::toast(__('general.file_removed'));
     }
 
     public function saveContact(ContactSettings $settings): void
@@ -182,7 +182,7 @@ class Index extends Component
         $settings->email = $this->contactForm->email;
         $settings->save();
 
-        Flux::toast(__('app.settings_updated'));
+        Flux::toast(__('general.settings_updated'));
     }
 
     public function saveSocial(SocialSettings $settings): void
@@ -197,7 +197,7 @@ class Index extends Component
         );
         $settings->save();
 
-        Flux::toast(__('app.settings_updated'));
+        Flux::toast(__('general.settings_updated'));
     }
 
     public function saveMaintenance(MaintenanceSettings $settings): void
@@ -212,7 +212,7 @@ class Index extends Component
         $settings->refresh = $this->maintenanceForm->refresh;
         $settings->save();
 
-        Flux::toast(__('app.settings_updated'));
+        Flux::toast(__('general.settings_updated'));
     }
 
     public function saveSms(SmsSettings $settings): void
@@ -225,7 +225,7 @@ class Index extends Component
         $settings->gateway = $this->smsForm->gateway;
         $settings->save();
 
-        Flux::toast(__('app.settings_updated'));
+        Flux::toast(__('general.settings_updated'));
     }
 
     public function generateSecret(): void
@@ -257,7 +257,7 @@ class Index extends Component
 
         unset($this->isDown, $this->bypassUrl);
 
-        Flux::toast(__('app.maintenance_enabled'));
+        Flux::toast(__('general.maintenance_enabled'));
     }
 
     public function disableMaintenance(): void
@@ -268,7 +268,7 @@ class Index extends Component
 
         unset($this->isDown, $this->bypassUrl);
 
-        Flux::toast(__('app.maintenance_disabled'));
+        Flux::toast(__('general.maintenance_disabled'));
     }
 
     protected function storeUpload($file, string $prefix, ?string $previous): string

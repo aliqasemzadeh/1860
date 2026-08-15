@@ -35,7 +35,7 @@ class OrderStatusService
             if ($adminMobile) {
                 dispatch(new SendSmsMessageJob(
                     $adminMobile,
-                    __('app.order_paid_admin_sms', [
+                    __('general.order_paid_admin_sms', [
                         'order_number' => $order->order_number,
                         'amount' => number_format((float) $order->total_amount),
                     ])
@@ -51,11 +51,11 @@ class OrderStatusService
         $currentStatus = OrderStatusEnum::tryFromSafe($order->status);
 
         if (! $currentStatus->canTransitionTo(OrderStatusEnum::Shipped)) {
-            throw new \InvalidArgumentException(__('app.order_cannot_be_shipped'));
+            throw new \InvalidArgumentException(__('general.order_cannot_be_shipped'));
         }
 
         if ($order->paid_at === null) {
-            throw new \InvalidArgumentException(__('app.order_must_be_paid_to_ship'));
+            throw new \InvalidArgumentException(__('general.order_must_be_paid_to_ship'));
         }
 
         DB::transaction(function () use ($order, $trackingCode) {
@@ -70,7 +70,7 @@ class OrderStatusService
             if ($order->user?->mobile) {
                 dispatch(new SendSmsMessageJob(
                     $order->user->mobile,
-                    __('app.order_shipped_sms', [
+                    __('general.order_shipped_sms', [
                         'order_number' => $order->order_number,
                         'tracking_code' => $trackingCode,
                     ])

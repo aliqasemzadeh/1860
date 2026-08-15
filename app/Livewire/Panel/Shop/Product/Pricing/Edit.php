@@ -73,13 +73,13 @@ class Edit extends Component
             'warranty_id' => ['nullable', 'exists:warranties,id'],
             'is_default' => ['boolean'],
         ], [
-            'price.required' => __('app.price_required'),
-            'price.numeric' => __('app.price_must_be_numeric'),
-            'sale_price.numeric' => __('app.sale_price_must_be_numeric'),
-            'quantity.required' => __('app.quantity_required'),
-            'quantity.numeric' => __('app.quantity_must_be_numeric'),
-            'color_id.exists' => __('app.color_not_found'),
-            'warranty_id.exists' => __('app.warranty_not_found'),
+            'price.required' => __('general.price_required'),
+            'price.numeric' => __('general.price_must_be_numeric'),
+            'sale_price.numeric' => __('general.sale_price_must_be_numeric'),
+            'quantity.required' => __('general.quantity_required'),
+            'quantity.numeric' => __('general.quantity_must_be_numeric'),
+            'color_id.exists' => __('general.color_not_found'),
+            'warranty_id.exists' => __('general.warranty_not_found'),
         ]);
 
         // If setting as default, unset other defaults for this product with same color/warranty combination
@@ -101,7 +101,7 @@ class Edit extends Component
             'is_default' => $validated['is_default'],
         ]);
 
-        Flux::toast(variant: 'success', text: __('app.price_updated'));
+        Flux::toast(variant: 'success', text: __('general.price_updated'));
         Flux::modal('panel.shop.product.pricing.edit.modal')->close();
 
         $this->dispatch('panel.shop.product.pricing.index.render');

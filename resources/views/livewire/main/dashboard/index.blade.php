@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\Storage;
             @if($this->products->isEmpty())
                 <div class="flex flex-col items-center justify-center py-16">
                     <flux:heading size="lg" class="text-zinc-500 dark:text-zinc-400 mb-2">
-                        {{ __('app.no_products_found') }}
+                        {{ __('general.no_products_found') }}
                     </flux:heading>
                     <flux:text class="text-zinc-400 dark:text-zinc-500">
-                        {{ __('app.no_products_found_description') }}
+                        {{ __('general.no_products_found_description') }}
                     </flux:text>
                 </div>
             @else

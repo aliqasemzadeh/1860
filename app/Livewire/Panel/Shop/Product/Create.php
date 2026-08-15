@@ -83,13 +83,13 @@ class Create extends Component
             'brand_id' => ['required', 'integer', 'exists:brands,id'],
             'unit_id' => ['required', 'integer', 'exists:units,id'],
         ], [], [
-            'file' => __('app.file'),
-            'selectedImageUrl' => __('app.image'),
+            'file' => __('general.file'),
+            'selectedImageUrl' => __('general.image'),
         ]);
 
         // Validate that either file or selectedImageUrl is provided
         if (! $this->file && ! $this->selectedImageUrl) {
-            Flux::toast(variant: 'warning', text: __('app.file_or_image_required'));
+            Flux::toast(variant: 'warning', text: __('general.file_or_image_required'));
             return;
         }
 
@@ -111,7 +111,7 @@ class Create extends Component
                 $imageResponse = Http::timeout(60)->get($this->selectedImageUrl);
 
                 if (! $imageResponse->successful()) {
-                    Flux::toast(variant: 'danger', text: __('app.error_downloading_image'));
+                    Flux::toast(variant: 'danger', text: __('general.error_downloading_image'));
 
                     return;
                 }
@@ -120,7 +120,7 @@ class Create extends Component
                 $filePath = $paths['file_path'];
                 $fileName = $paths['file_name'];
             } catch (\Exception $e) {
-                Flux::toast(variant: 'danger', text: __('app.error_downloading_image').': '.$e->getMessage());
+                Flux::toast(variant: 'danger', text: __('general.error_downloading_image').': '.$e->getMessage());
 
                 return;
             }
@@ -149,7 +149,7 @@ class Create extends Component
 
         Flux::modal('panel.shop.product.create.modal')->close();
         $this->dispatch('panel.shop.product.index.render');
-        Flux::toast(variant: 'success', text: __('app.product_created'));
+        Flux::toast(variant: 'success', text: __('general.product_created'));
         $this->reset(['name', 'en_name', 'description', 'tags', 'slug', 'slug_fa', 'file', 'selectedImageUrl', 'weight', 'x_dimension', 'y_dimension', 'z_dimension', 'category_id', 'brand_id', 'unit_id', 'category_search', 'brand_search', 'unit_search']);
     }
 
@@ -158,14 +158,14 @@ class Create extends Component
         if ($this->file) {
             $this->file->delete();
             $this->file = null;
-            Flux::toast(variant: 'success', text: __('app.file_removed'));
+            Flux::toast(variant: 'success', text: __('general.file_removed'));
         }
     }
 
     public function removeSelectedImage(): void
     {
         $this->selectedImageUrl = null;
-        Flux::toast(variant: 'success', text: __('app.image_removed'));
+        Flux::toast(variant: 'success', text: __('general.image_removed'));
     }
 
     #[On('panel.shop.product.create.image-selected')]

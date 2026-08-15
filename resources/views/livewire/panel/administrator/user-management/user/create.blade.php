@@ -1,8 +1,8 @@
 <flux:modal name="panel.administrator.user-management.user.create.modal" class="md:w-96" flyout position="right">
     <div class="space-y-6">
     <div>
-        <flux:heading size="lg">{{ __('app.create_user') }}</flux:heading>
-        <flux:text class="mt-2">{{ __('app.create_user_description') }}</flux:text>
+        <flux:heading size="lg">{{ __('general.create_user') }}</flux:heading>
+        <flux:text class="mt-2">{{ __('general.create_user_description') }}</flux:text>
     </div>
             <!-- Modal body -->
             <form wire:submit="create" method="post">

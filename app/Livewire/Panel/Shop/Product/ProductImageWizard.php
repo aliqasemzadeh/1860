@@ -63,8 +63,8 @@ class ProductImageWizard extends Component
             'site_type' => 'required|string|in:logitech,logikey,gigabyte,xvision,matin,green,fater,avajang,generic,nova,fafait',
             'url' => 'required|url',
         ], [], [
-            'site_type' => __('app.site_type'),
-            'url' => __('app.url'),
+            'site_type' => __('general.site_type'),
+            'url' => __('general.url'),
         ]);
 
         $this->isLoading = true;
@@ -73,7 +73,7 @@ class ProductImageWizard extends Component
             $imageUrls = BaseImageFetcher::fetchBySiteType($this->site_type, $this->url);
 
             if (empty($imageUrls)) {
-                Flux::toast(variant: 'warning', text: __('app.no_images_found'));
+                Flux::toast(variant: 'warning', text: __('general.no_images_found'));
                 $this->isLoading = false;
                 return;
             }
@@ -104,9 +104,9 @@ class ProductImageWizard extends Component
                 }
             }
 
-            Flux::toast(variant: 'success', text: __('app.images_fetched', ['count' => count($imageUrls)]));
+            Flux::toast(variant: 'success', text: __('general.images_fetched', ['count' => count($imageUrls)]));
         } catch (\Exception $e) {
-            Flux::toast(variant: 'danger', text: __('app.error_fetching_images') . ': ' . $e->getMessage());
+            Flux::toast(variant: 'danger', text: __('general.error_fetching_images') . ': ' . $e->getMessage());
         } finally {
             $this->isLoading = false;
         }
@@ -136,7 +136,7 @@ class ProductImageWizard extends Component
         }
 
         if (empty($this->images)) {
-            Flux::toast(variant: 'warning', text: __('app.no_images_selected'));
+            Flux::toast(variant: 'warning', text: __('general.no_images_selected'));
             return;
         }
 
@@ -184,16 +184,16 @@ class ProductImageWizard extends Component
 
             if ($successCount > 0) {
                 $this->product->refresh();
-                Flux::toast(variant: 'success', text: __('app.images_uploaded', ['count' => $successCount]));
+                Flux::toast(variant: 'success', text: __('general.images_uploaded', ['count' => $successCount]));
                 Flux::modal('panel.shop.product.images.wizard.modal')->close();
                 $this->dispatch('panel.shop.product.images.refresh');
             }
 
             if ($failCount > 0) {
-                Flux::toast(variant: 'warning', text: __('app.some_images_failed', ['count' => $failCount]));
+                Flux::toast(variant: 'warning', text: __('general.some_images_failed', ['count' => $failCount]));
             }
         } catch (\Exception $e) {
-            Flux::toast(variant: 'danger', text: __('app.error_uploading_images') . ': ' . $e->getMessage());
+            Flux::toast(variant: 'danger', text: __('general.error_uploading_images') . ': ' . $e->getMessage());
         } finally {
             $this->isLoading = false;
         }

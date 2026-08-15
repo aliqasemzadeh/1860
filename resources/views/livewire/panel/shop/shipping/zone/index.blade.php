@@ -1,16 +1,16 @@
 <x-slot name="title">
-    {{ __('app.shipping_zones') }}
+    {{ __('general.shipping_zones') }}
 </x-slot>
 <div>
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.shipping_zones') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.shipping_zones_description') }}</flux:subheading>
+                <flux:heading size="xl" level="1">{{ __('general.shipping_zones') }}</flux:heading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.shipping_zones_description') }}</flux:subheading>
             </div>
 
             <flux:modal.trigger name="panel.shop.shipping.zone.create.modal">
-                <flux:button variant="primary">{{ __('app.create_shipping_zone') }}</flux:button>
+                <flux:button variant="primary">{{ __('general.create_shipping_zone') }}</flux:button>
             </flux:modal.trigger>
         </div>
 
@@ -34,12 +34,12 @@
         </flux:table.columns>
 
         <flux:table.columns>
-            <flux:table.column sortable>{{ __('app.name') }}</flux:table.column>
-            <flux:table.column>{{ __('app.countries') }}</flux:table.column>
-            <flux:table.column>{{ __('app.states') }}</flux:table.column>
-            <flux:table.column>{{ __('app.cities') }}</flux:table.column>
-            <flux:table.column>{{ __('app.areas') }}</flux:table.column>
-            <flux:table.column sortable>{{ __('app.date') }}</flux:table.column>
+            <flux:table.column sortable>{{ __('general.name') }}</flux:table.column>
+            <flux:table.column>{{ __('general.countries') }}</flux:table.column>
+            <flux:table.column>{{ __('general.states') }}</flux:table.column>
+            <flux:table.column>{{ __('general.cities') }}</flux:table.column>
+            <flux:table.column>{{ __('general.areas') }}</flux:table.column>
+            <flux:table.column sortable>{{ __('general.date') }}</flux:table.column>
             <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 
@@ -59,7 +59,7 @@
 
                         @if (count($stateNames) > 3)
                             <flux:heading class="flex items-center gap-2">
-                                {{ __('app.x_provinces', ['count' => count($stateNames)]) }}
+                                {{ __('general.x_provinces', ['count' => count($stateNames)]) }}
                                 <flux:tooltip toggleable>
                                     <flux:button icon="information-circle" size="sm" variant="ghost" />
                                     <flux:tooltip.content class="max-w-[20rem] space-y-2">
@@ -68,7 +68,7 @@
                                 </flux:tooltip>
                             </flux:heading>
                         @else
-                            {{ empty($stateNames) ? __('app.all') : implode(', ', $stateNames) }}
+                            {{ empty($stateNames) ? __('general.all') : implode(', ', $stateNames) }}
                         @endif
                     </flux:table.cell>
                     <flux:table.cell class="whitespace-nowrap text-xs">

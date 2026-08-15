@@ -10,21 +10,22 @@
                     {{ __('general.home') }}
                 </a>
                 <span>/</span>
-                <span class="font-medium text-zinc-900 dark:text-zinc-100">{{ __('app.blog') }}</span>
+                <span class="font-medium text-zinc-900 dark:text-zinc-100">{{ __('general.blog') }}</span>
             </nav>
 
             <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
-                    <flux:heading size="xl" level="1" class="mb-2">{{ __('app.blog') }}</flux:heading>
-                    <flux:subheading>{{ __('app.blog_description') }}</flux:subheading>
+                    <flux:heading size="xl" level="1" class="mb-2">{{ __('general.blog') }}</flux:heading>
+                    <flux:subheading>{{ __('general.blog_description') }}</flux:subheading>
                 </div>
 
                 <flux:field class="w-full md:max-w-sm">
                     <flux:label>{{ __('general.search') }}</flux:label>
                     <flux:input
-                        wire:model.live.debounce.500ms="search"
+                        wire:model.live.debounce.300ms="search"
+                        clearable
                         type="text"
-                        placeholder="{{ __('app.search_in_posts') }}"
+                        placeholder="{{ __('general.search_in_posts') }}"
                     />
                 </flux:field>
             </div>
@@ -62,7 +63,7 @@
                     {{ $this->posts->links() }}
                 </div>
             @else
-                <flux:text class="text-zinc-500">{{ __('app.no_posts_found') }}</flux:text>
+                <flux:text class="text-zinc-500">{{ __('general.no_posts_found') }}</flux:text>
             @endif
         </div>
     </section>

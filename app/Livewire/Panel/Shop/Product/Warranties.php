@@ -55,7 +55,7 @@ class Warranties extends Component
         $this->product->refresh();
         $this->selectedWarrantyId = null;
         $this->warrantySearch = '';
-        Flux::toast(variant: 'success', text: __('app.warranty_added'));
+        Flux::toast(variant: 'success', text: __('general.warranty_added'));
     }
 
     public function removeWarranty(int $warrantyId): void
@@ -69,7 +69,7 @@ class Warranties extends Component
             ->delete();
 
         $this->product->refresh();
-        Flux::toast(variant: 'success', text: __('app.warranty_removed'));
+        Flux::toast(variant: 'success', text: __('general.warranty_removed'));
     }
 
     #[Computed]

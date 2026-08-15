@@ -74,10 +74,10 @@ class Seo
             title: $title ?: $siteName,
             description: filled($general->description)
                 ? $general->description
-                : self::clean(__('app.seo_home_description', ['name' => $siteName])),
+                : self::clean(__('general.seo_home_description', ['name' => $siteName])),
             keywords: filled($general->keywords)
                 ? $general->keywords
-                : __('app.seo_home_keywords'),
+                : __('general.seo_home_keywords'),
             canonical: route('home'),
             image: self::defaultImage($general),
             noindex: $noindex,
@@ -91,12 +91,12 @@ class Seo
         $siteTitle = self::siteName();
 
         $title = $page > 1
-            ? __('app.seo_page', ['page' => $page])
-            : __('app.seo_home_title', ['name' => $siteTitle]);
+            ? __('general.seo_page', ['page' => $page])
+            : __('general.seo_home_title', ['name' => $siteTitle]);
 
         $description = filled($general->description)
             ? $general->description
-            : __('app.seo_home_description', ['name' => $siteTitle]);
+            : __('general.seo_home_description', ['name' => $siteTitle]);
 
         $canonical = $page > 1
             ? route('home', ['page' => $page])
@@ -107,7 +107,7 @@ class Seo
             description: self::clean($description),
             keywords: filled($general->keywords)
                 ? $general->keywords
-                : __('app.seo_home_keywords'),
+                : __('general.seo_home_keywords'),
             canonical: $canonical,
             image: self::defaultImage($general),
             prev: $page > 1
@@ -123,11 +123,11 @@ class Seo
         $general = app(GeneralSettings::class);
 
         return new self(
-            title: __('app.seo_contact_title'),
-            description: self::clean(__('app.contact_description')),
+            title: __('general.seo_contact_title'),
+            description: self::clean(__('general.contact_description')),
             keywords: filled($general->keywords)
                 ? $general->keywords
-                : __('app.seo_home_keywords'),
+                : __('general.seo_home_keywords'),
             canonical: route('contact.index'),
             image: self::defaultImage($general),
             schemas: [
@@ -242,11 +242,11 @@ class Seo
 
         $title = $category->name;
         if ($page > 1 && ! $filtered) {
-            $title .= ' | '.__('app.seo_page', ['page' => $page]);
+            $title .= ' | '.__('general.seo_page', ['page' => $page]);
         }
 
         $description = self::clean(
-            __('app.category_seo_description', ['name' => $category->name]),
+            __('general.category_seo_description', ['name' => $category->name]),
             (int) config('seo.description_limit', 160)
         );
 

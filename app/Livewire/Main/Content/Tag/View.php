@@ -62,7 +62,7 @@ class View extends Component
     public function seo(): Seo
     {
         $tag = $this->tag;
-        $title = $tag ? __('app.posts_with_tag', ['tag' => $tag->name]) : Seo::siteName();
+        $title = $tag ? __('general.posts_with_tag', ['tag' => $tag->name]) : Seo::siteName();
 
         return new Seo(
             title: $title,

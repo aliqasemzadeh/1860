@@ -44,7 +44,7 @@ class Index extends Component
         $option = AttributeOption::query()->find($id);
         if ($option !== null) {
             $option->delete();
-            \Flux\Flux::toast(variant: 'success', text: __('app.attribute_option_deleted'));
+            \Flux\Flux::toast(variant: 'success', text: __('general.attribute_option_deleted'));
             $this->dispatch('panel.shop.setting-management.attribute.option.index.refresh');
         }
     }

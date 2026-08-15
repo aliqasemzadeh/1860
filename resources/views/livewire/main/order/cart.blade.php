@@ -1,5 +1,5 @@
 <x-slot name="title">
-    {{ __('app.shopping_cart') }}
+    {{ __('general.shopping_cart') }}
 </x-slot>
 
 <div>
@@ -12,13 +12,13 @@
                         {{ __('general.dashboard') }}
                     </a>
                     <span>/</span>
-                    <span class="text-zinc-900 dark:text-zinc-100 font-medium">{{ __('app.shopping_cart') }}</span>
+                    <span class="text-zinc-900 dark:text-zinc-100 font-medium">{{ __('general.shopping_cart') }}</span>
                 </nav>
 
                 {{-- Page Header --}}
                 <div class="mb-8">
-                    <flux:heading size="xl">{{ __('app.shopping_cart') }}</flux:heading>
-                    <flux:text class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('app.shopping_cart_description') }}</flux:text>
+                    <flux:heading size="xl">{{ __('general.shopping_cart') }}</flux:heading>
+                    <flux:text class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('general.shopping_cart_description') }}</flux:text>
                 </div>
 
                 @if($this->cartItems && $this->cartItems->count() > 0)
@@ -45,7 +45,7 @@
                                         <div class="flex-1 min-w-0">
                                             <a href="{{ $item->itemable->url }}">
                                                 <flux:heading size="md" class="mb-2 text-zinc-900 dark:text-zinc-100 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors">
-                                                    {{ $item->itemable->name ?? __('app.product') }}
+                                                    {{ $item->itemable->name ?? __('general.product') }}
                                                 </flux:heading>
                                             </a>
 
@@ -68,7 +68,7 @@
                                                     @endif
                                                     @if(isset($options['warranty']))
                                                         <flux:text class="text-sm text-zinc-600 dark:text-zinc-400">
-                                                            {{ __('app.warranty') }}: {{ $options['warranty']['name'] ?? '' }}
+                                                            {{ __('general.warranty') }}: {{ $options['warranty']['name'] ?? '' }}
                                                         </flux:text>
                                                     @endif
                                                 </div>
@@ -106,7 +106,7 @@
                                                 type="button"
                                                 wire:click="removeItem({{ $item->id }})"
                                                 class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors p-2"
-                                                title="{{ __('app.remove_item') }}"
+                                                title="{{ __('general.remove_item') }}"
                                             >
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -144,25 +144,25 @@
                         {{-- Order Summary --}}
                         <div class="lg:col-span-1">
                             <div class="sticky top-4 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
-                                <flux:heading size="lg" class="mb-6">{{ __('app.order_summary') }}</flux:heading>
+                                <flux:heading size="lg" class="mb-6">{{ __('general.order_summary') }}</flux:heading>
 
                                 <div class="space-y-4 mb-6">
                                     <div class="flex items-center justify-between">
-                                        <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('app.subtotal') }}</flux:text>
+                                        <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('general.subtotal') }}</flux:text>
                                         <flux:text class="font-medium text-zinc-900 dark:text-zinc-100">
                                             {{ number_format($this->totalAmount, 0) }} {{ __('general.toman') }}
                                         </flux:text>
                                     </div>
                                     <div class="flex items-center justify-between">
-                                        <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('app.shipping') }}</flux:text>
+                                        <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('general.shipping') }}</flux:text>
                                         <flux:text class="font-medium text-zinc-900 dark:text-zinc-100">
-                                            {{ __('app.calculated_at_checkout') }}
+                                            {{ __('general.calculated_at_checkout') }}
                                         </flux:text>
                                     </div>
                                     <div class="border-t border-zinc-200 dark:border-zinc-700 pt-4">
                                         <div class="flex items-center justify-between">
                                             <flux:heading size="md" class="text-zinc-900 dark:text-zinc-100">
-                                                {{ __('app.total') }}
+                                                {{ __('general.total') }}
                                             </flux:heading>
                                             <flux:heading size="lg" class="text-zinc-900 dark:text-zinc-100">
                                                 {{ number_format($this->totalAmount, 0) }} {{ __('general.toman') }}
@@ -177,7 +177,7 @@
                                     class="w-full"
                                     wire:navigate
                                 >
-                                    {{ __('app.proceed_to_checkout') }}
+                                    {{ __('general.proceed_to_checkout') }}
                                 </flux:button>
 
                                 <flux:button 
@@ -186,7 +186,7 @@
                                     class="w-full mt-3"
                                     wire:navigate
                                 >
-                                    {{ __('app.continue_shopping') }}
+                                    {{ __('general.continue_shopping') }}
                                 </flux:button>
                             </div>
                         </div>
@@ -195,12 +195,12 @@
                     <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-12">
                         <div class="text-center">
                             <flux:icon.shopping-cart class="w-24 h-24 mx-auto text-zinc-400 dark:text-zinc-600 mb-6" />
-                            <flux:heading size="xl" class="mb-4">{{ __('app.cart_is_empty') }}</flux:heading>
+                            <flux:heading size="xl" class="mb-4">{{ __('general.cart_is_empty') }}</flux:heading>
                             <flux:text class="text-zinc-600 dark:text-zinc-400 mb-8">
-                                {{ __('app.cart_is_empty_description') }}
+                                {{ __('general.cart_is_empty_description') }}
                             </flux:text>
                             <flux:button href="{{ route('home') }}" variant="primary" wire:navigate>
-                                {{ __('app.continue_shopping') }}
+                                {{ __('general.continue_shopping') }}
                             </flux:button>
                         </div>
                     </div>
@@ -212,12 +212,12 @@
             <div class="mx-auto max-w-7xl px-4 2xl:px-0">
                 <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-12">
                     <div class="text-center">
-                        <flux:heading size="xl" class="mb-4">{{ __('app.please_login') }}</flux:heading>
+                        <flux:heading size="xl" class="mb-4">{{ __('general.please_login') }}</flux:heading>
                         <flux:text class="text-zinc-600 dark:text-zinc-400 mb-8">
-                            {{ __('app.please_login_to_view_cart') }}
+                            {{ __('general.please_login_to_view_cart') }}
                         </flux:text>
                         <flux:button href="{{ route('login') }}" variant="primary" wire:navigate>
-                            {{ __('app.login') }}
+                            {{ __('general.login') }}
                         </flux:button>
                     </div>
                 </div>

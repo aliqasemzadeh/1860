@@ -32,7 +32,7 @@ class Index extends Component
         $attribute = AttributeModel::query()->find($id);
         if ($attribute !== null) {
             $attribute->delete();
-            \Flux\Flux::toast(variant: 'success', text: __('app.attribute_deleted'));
+            \Flux\Flux::toast(variant: 'success', text: __('general.attribute_deleted'));
             $this->dispatch('panel.shop.setting-management.attribute.index.render');
         }
     }

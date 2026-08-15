@@ -74,7 +74,7 @@ class Index extends Component
 
         unset($this->backups);
         Flux::modals()->close();
-        Flux::toast(__('app.backup_deleted'));
+        Flux::toast(__('general.backup_deleted'));
     }
 
     protected function collectBackups(): Collection

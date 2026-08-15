@@ -28,7 +28,7 @@ class Ship extends Component
         }
 
         if ($this->order->status !== OrderStatusEnum::Processing->value || $this->order->paid_at === null) {
-            Flux::toast(variant: 'danger', text: __('app.order_cannot_be_shipped'));
+            Flux::toast(variant: 'danger', text: __('general.order_cannot_be_shipped'));
 
             return;
         }
@@ -61,7 +61,7 @@ class Ship extends Component
 
         $this->dispatch('panel.shop.order.index.render');
         Flux::modal('panel.shop.order.ship.modal')->close();
-        Flux::toast(variant: 'success', text: __('app.order_shipped'));
+        Flux::toast(variant: 'success', text: __('general.order_shipped'));
     }
 
     public function render(): View

@@ -3,15 +3,15 @@
         <div class="flex items-center justify-between">
             <div>
                 <flux:heading size="xl" level="1">
-                    {{ __('app.attribute_options') }} - {{ $attribute->label }}
+                    {{ __('general.attribute_options') }} - {{ $attribute->label }}
                 </flux:heading>
                 <flux:subheading size="lg" class="mb-6">
-                    {{ __('app.create_attribute_option_description') }}
+                    {{ __('general.create_attribute_option_description') }}
                 </flux:subheading>
             </div>
             <div class="flex gap-2">
                 <flux:modal.trigger name="panel.shop.setting-management.attribute.option.create.modal">
-                    <flux:button variant="primary">{{ __('app.add_option') }}</flux:button>
+                    <flux:button variant="primary">{{ __('general.add_option') }}</flux:button>
                 </flux:modal.trigger>
             </div>
         </div>
@@ -24,9 +24,9 @@
 
     <flux:table :paginate="$this->optionsList">
         <flux:table.columns>
-            <flux:table.column sortable wire:click="sort('value')">{{ __('app.option_value') }}</flux:table.column>
-            <flux:table.column sortable wire:click="sort('label')">{{ __('app.option_label') }}</flux:table.column>
-            <flux:table.column sortable wire:click="sort('sort_order')">{{ __('app.sort_order') }}</flux:table.column>
+            <flux:table.column sortable wire:click="sort('value')">{{ __('general.option_value') }}</flux:table.column>
+            <flux:table.column sortable wire:click="sort('label')">{{ __('general.option_label') }}</flux:table.column>
+            <flux:table.column sortable wire:click="sort('sort_order')">{{ __('general.sort_order') }}</flux:table.column>
             <flux:table.column>{{ __('general.actions') }}</flux:table.column>
         </flux:table.columns>
 

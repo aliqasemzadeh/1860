@@ -37,7 +37,7 @@ enum StatusEnum: string
      */
     public function label(): string
     {
-        return __('app.'.$this->translationKey());
+        return __('general.'.$this->translationKey());
     }
 
     /**

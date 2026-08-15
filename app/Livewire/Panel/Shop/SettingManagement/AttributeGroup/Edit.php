@@ -43,7 +43,7 @@ class Edit extends Component
 
         $this->dispatch('panel.shop.setting-management.attribute-group.index.render');
         Flux::modal('panel.shop.setting-management.attribute-group.edit.modal')->close();
-        Flux::toast(variant: 'success', text: __('app.attribute_group_updated'));
+        Flux::toast(variant: 'success', text: __('general.attribute_group_updated'));
     }
 
     public function render(): View

@@ -54,7 +54,7 @@ class Edit extends Component
 
         $this->dispatch('panel.shop.shipping.method.index.render');
         Flux::modal('panel.shop.shipping.method.edit.modal')->close();
-        Flux::toast(variant: 'success', text: __('app.shipping_method_updated'));
+        Flux::toast(variant: 'success', text: __('general.shipping_method_updated'));
     }
 
     public function render(): View

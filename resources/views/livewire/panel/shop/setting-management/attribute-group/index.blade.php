@@ -2,11 +2,11 @@
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.attribute_groups') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.attribute_groups_description') }}</flux:subheading>
+                <flux:heading size="xl" level="1">{{ __('general.attribute_groups') }}</flux:heading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.attribute_groups_description') }}</flux:subheading>
             </div>
             <flux:modal.trigger name="panel.shop.setting-management.attribute-group.create.modal">
-                <flux:button variant="primary">{{ __('app.create_attribute_group') }}</flux:button>
+                <flux:button variant="primary">{{ __('general.create_attribute_group') }}</flux:button>
             </flux:modal.trigger>
         </div>
 
@@ -18,9 +18,9 @@
 
     <flux:table :paginate="$this->attributeGroups">
         <flux:table.columns>
-            <flux:table.column sortable wire:click="sort('name')">{{ __('app.name') }}</flux:table.column>
-            <flux:table.column sortable wire:click="sort('attributes_count')">{{ __('app.attributes_count') }}</flux:table.column>
-            <flux:table.column sortable wire:click="sort('sort_order')">{{ __('app.sort_order') }}</flux:table.column>
+            <flux:table.column sortable wire:click="sort('name')">{{ __('general.name') }}</flux:table.column>
+            <flux:table.column sortable wire:click="sort('attributes_count')">{{ __('general.attributes_count') }}</flux:table.column>
+            <flux:table.column sortable wire:click="sort('sort_order')">{{ __('general.sort_order') }}</flux:table.column>
             <flux:table.column>{{ __('general.actions') }}</flux:table.column>
         </flux:table.columns>
 

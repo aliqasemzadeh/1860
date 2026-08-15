@@ -2,7 +2,7 @@
     <div class="space-y-6">
     <div>
         <flux:heading size="lg">{{ __('general.permissions') }}: {{ isset($user) ? $user->mobile : '' }}</flux:heading>
-        <flux:text class="mt-2">{{ __('app.permissions_description') }}</flux:text>
+        <flux:text class="mt-2">{{ __('general.permissions_description') }}</flux:text>
     </div>
 
 

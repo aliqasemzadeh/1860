@@ -54,7 +54,7 @@ $hasActiveFilters = $this->brandId
                         icon="funnel"
                         x-on:click="filtersOpen = !filtersOpen"
                     >
-                        {{ __('app.filter') }}
+                        {{ __('general.filter') }}
                     </flux:button>
                 </div>
 
@@ -65,21 +65,21 @@ $hasActiveFilters = $this->brandId
                 >
                     <flux:radio.group
                         wire:model.live="stockFilter"
-                        label="{{ __('app.stock_filter') }}"
+                        label="{{ __('general.stock_filter') }}"
                     >
-                        <flux:radio value="available" label="{{ __('app.stock_filter_available') }}" />
-                        <flux:radio value="unavailable" label="{{ __('app.stock_filter_unavailable') }}" />
-                        <flux:radio value="all" label="{{ __('app.stock_filter_all') }}" />
+                        <flux:radio value="available" label="{{ __('general.stock_filter_available') }}" />
+                        <flux:radio value="unavailable" label="{{ __('general.stock_filter_unavailable') }}" />
+                        <flux:radio value="all" label="{{ __('general.stock_filter_all') }}" />
                     </flux:radio.group>
 
                     @if($this->brands->isNotEmpty())
                         <flux:select
                             label="{{ __('general.brand') }}"
-                            placeholder="{{ __('app.select_brand') }}"
+                            placeholder="{{ __('general.select_brand') }}"
                             wire:model.live="brandId"
                             searchable
                         >
-                            <option value="">{{ __('app.all') }}</option>
+                            <option value="">{{ __('general.all') }}</option>
                             @foreach($this->brands as $brand)
                                 <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                             @endforeach
@@ -89,13 +89,13 @@ $hasActiveFilters = $this->brandId
                     <div class="space-y-2">
                         <flux:input
                             type="number"
-                            label="{{ __('app.min_price') }}"
+                            label="{{ __('general.min_price') }}"
                             placeholder="0"
                             wire:model.live.debounce.500ms="minPrice"
                         />
                         <flux:input
                             type="number"
-                            label="{{ __('app.max_price') }}"
+                            label="{{ __('general.max_price') }}"
                             placeholder="∞"
                             wire:model.live.debounce.500ms="maxPrice"
                         />
@@ -106,13 +106,13 @@ $hasActiveFilters = $this->brandId
 
                     <div>
                         <flux:select
-                            label="{{ __('app.sort_by') }}"
+                            label="{{ __('general.sort_by') }}"
                             wire:model.live="sortBy"
                         >
-                            <option value="created_at">{{ __('app.sort_newest') }}</option>
-                            <option value="name">{{ __('app.sort_name') }}</option>
-                            <option value="price_asc">{{ __('app.sort_price_low_high') }}</option>
-                            <option value="price_desc">{{ __('app.sort_price_high_low') }}</option>
+                            <option value="created_at">{{ __('general.sort_newest') }}</option>
+                            <option value="name">{{ __('general.sort_name') }}</option>
+                            <option value="price_asc">{{ __('general.sort_price_low_high') }}</option>
+                            <option value="price_desc">{{ __('general.sort_price_high_low') }}</option>
                         </flux:select>
                     </div>
 
@@ -123,7 +123,7 @@ $hasActiveFilters = $this->brandId
                             wire:click="clearFilters"
                             icon="x-mark"
                         >
-                            {{ __('app.clear_filter') }}
+                            {{ __('general.clear_filter') }}
                         </flux:button>
                     @endif
                 </aside>
@@ -133,10 +133,10 @@ $hasActiveFilters = $this->brandId
                     @if($this->products->isEmpty())
                         <div class="flex flex-col items-center justify-center py-16">
                             <flux:heading size="lg" class="text-zinc-500 dark:text-zinc-400 mb-2">
-                                {{ __('app.no_products_found') }}
+                                {{ __('general.no_products_found') }}
                             </flux:heading>
                             <flux:text class="text-zinc-400 dark:text-zinc-500">
-                                {{ __('app.no_products_found_description') }}
+                                {{ __('general.no_products_found_description') }}
                             </flux:text>
                         </div>
                     @else

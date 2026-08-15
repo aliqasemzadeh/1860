@@ -54,7 +54,7 @@
                     @if(!empty($this->query))
                         <flux:command.item disabled>
                             <div class="text-sm text-zinc-500 dark:text-zinc-400 text-center py-2">
-                                {{ __('app.no_results') }}
+                                {{ __('general.no_results') }}
                             </div>
                         </flux:command.item>
                     @endif

@@ -1,16 +1,16 @@
 <x-slot name="title">
-    {{ __('app.shipping_methods') }}
+    {{ __('general.shipping_methods') }}
 </x-slot>
 <div>
     <div class="relative mb-6 w-full">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading size="xl" level="1">{{ __('app.shipping_methods') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.shipping_methods_description') }}</flux:subheading>
+                <flux:heading size="xl" level="1">{{ __('general.shipping_methods') }}</flux:heading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.shipping_methods_description') }}</flux:subheading>
             </div>
 
             <flux:modal.trigger name="panel.shop.shipping.method.create.modal">
-                <flux:button variant="primary">{{ __('app.create_shipping_method') }}</flux:button>
+                <flux:button variant="primary">{{ __('general.create_shipping_method') }}</flux:button>
             </flux:modal.trigger>
         </div>
 
@@ -34,10 +34,10 @@
         </flux:table.columns>
 
         <flux:table.columns>
-            <flux:table.column sortable>{{ __('app.name') }}</flux:table.column>
-            <flux:table.column sortable>{{ __('app.slug') }}</flux:table.column>
-            <flux:table.column sortable>{{ __('app.status') }}</flux:table.column>
-            <flux:table.column sortable>{{ __('app.date') }}</flux:table.column>
+            <flux:table.column sortable>{{ __('general.name') }}</flux:table.column>
+            <flux:table.column sortable>{{ __('general.slug') }}</flux:table.column>
+            <flux:table.column sortable>{{ __('general.status') }}</flux:table.column>
+            <flux:table.column sortable>{{ __('general.date') }}</flux:table.column>
             <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 

@@ -6,11 +6,11 @@
         <div class="flex items-center justify-between">
             <div>
                 <flux:heading size="xl" level="1">{{ __('general.users') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.users_description') }}</flux:subheading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.users_description') }}</flux:subheading>
             </div>
             @can('administrator_user_management_create')
                 <flux:modal.trigger name="administrator.user-management.user.create.modal">
-                    <flux:button variant="primary">{{ __('app.create_user') }}</flux:button>
+                    <flux:button variant="primary">{{ __('general.create_user') }}</flux:button>
                 </flux:modal.trigger>
             @endcan
         </div>
@@ -36,8 +36,8 @@
         </flux:table.columns>
         <flux:table.columns>
             <flux:table.column>{{ __('general.mobile') }}</flux:table.column>
-            <flux:table.column>{{ __('app.name') }}</flux:table.column>
-            <flux:table.column sortable sorted direction="desc">{{ __('app.date') }}</flux:table.column>
+            <flux:table.column>{{ __('general.name') }}</flux:table.column>
+            <flux:table.column sortable sorted direction="desc">{{ __('general.date') }}</flux:table.column>
             <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
         <flux:table.rows>

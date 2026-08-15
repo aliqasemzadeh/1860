@@ -5,14 +5,14 @@
 
     <div class="relative mb-6 w-full">
         <flux:breadcrumbs class="mb-6">
-            <flux:breadcrumbs.item href="{{ route('panel.content.post.index') }}" wire:navigate>{{ __('app.content') }}</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item href="{{ route('panel.content.post.index') }}" wire:navigate>{{ __('general.content') }}</flux:breadcrumbs.item>
             <flux:breadcrumbs.item>{{ __('general.boxes') }}</flux:breadcrumbs.item>
         </flux:breadcrumbs>
 
         <div class="flex items-center justify-between">
             <div>
                 <flux:heading size="xl" level="1">{{ __('general.boxes') }}</flux:heading>
-                <flux:subheading size="lg" class="mb-6">{{ __('app.manage_boxes_description') }}</flux:subheading>
+                <flux:subheading size="lg" class="mb-6">{{ __('general.manage_boxes_description') }}</flux:subheading>
             </div>
 
             @can('content_box_create')

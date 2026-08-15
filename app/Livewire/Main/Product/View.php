@@ -222,7 +222,7 @@ class View extends Component
         Flux::modal('main.sidebar.basket.modal')->show();
 
         if (! auth()->check()) {
-            Flux::toast(variant: 'danger', text: __('app.please_login_to_add_to_cart'));
+            Flux::toast(variant: 'danger', text: __('general.please_login_to_add_to_cart'));
 
             return $this->redirect(route('login'), navigate: true);
         }
