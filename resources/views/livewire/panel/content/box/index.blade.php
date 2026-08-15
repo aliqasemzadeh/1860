@@ -57,6 +57,9 @@
                     <flux:table.cell align="end">
                         <div class="flex justify-end gap-2">
                             @can('content_box_edit')
+                                <flux:tooltip content="{{ __('general.products') }}">
+                                    <flux:button size="xs" variant="primary" color="sky" icon="package" icon:variant="outline" wire:click="$dispatch('panels.administrator.content.box.products.assign-data', { id: {{ $box->id }} })" />
+                                </flux:tooltip>
                                 <flux:tooltip content="{{ __('general.edit') }}">
                                     <flux:button size="xs" variant="primary" color="blue" icon="pencil" icon:variant="outline" wire:click="$dispatch('panels.administrator.content.box.edit.assign-data', { id: {{ $box->id }} })" />
                                 </flux:tooltip>
@@ -96,4 +99,5 @@
 
     <livewire:panel.content.box.create :key="'box-create-modal'" />
     <livewire:panel.content.box.edit :key="'box-edit-modal'" />
+    <livewire:panel.content.box.products :key="'box-products-modal'" />
 </div>
