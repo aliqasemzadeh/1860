@@ -426,6 +426,8 @@ return [
     'filter' => 'فیلتر',
     'filter_status' => 'فیلتر وضعیت',
     'first_name' => 'نام',
+    'follow_us' => 'ما را دنبال کنید',
+    'follow_us_description' => 'در شبکه‌های اجتماعی همراه ما باشید.',
     'full_update' => 'به‌روزرسانی کامل',
     'function' => 'توابع سیستم',
     'function_description' => 'از این بخش می‌توانید عملیات مدیریتی سیستم را انجام دهید.',

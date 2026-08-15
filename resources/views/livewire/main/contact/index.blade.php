@@ -60,22 +60,37 @@
 
             @if (count($this->socials) > 0)
                 <flux:separator variant="subtle" />
-                <div class="flex flex-wrap gap-3">
-                    @foreach ($this->socials as $key => $url)
-                        @php($network = \App\Enums\SocialNetworkEnum::from($key))
-                        <flux:tooltip content="{{ $network->label() }}">
+
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+                                <flux:icon name="share-2" class="size-6 text-zinc-500" />
+                            </div>
+                            <div>
+                                <flux:heading size="lg">{{ __('general.follow_us') }}</flux:heading>
+                                <flux:text class="mt-1">{{ __('general.follow_us_description') }}</flux:text>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3">
+                        @foreach ($this->socials as $key => $url)
+                            @php($network = \App\Enums\SocialNetworkEnum::from($key))
                             <flux:button
                                 :href="$url"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 size="sm"
                                 variant="primary"
-                                color="sky"
+                                :color="$network->color()"
                                 :icon="$network->icon()"
                                 icon:variant="outline"
-                            />
-                        </flux:tooltip>
-                    @endforeach
+                            >
+                                {{ $network->label() }}
+                            </flux:button>
+                        @endforeach
+                    </div>
                 </div>
             @endif
         </div>

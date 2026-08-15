@@ -171,7 +171,7 @@
                                         wire:model="socialForm.links.{{ $network->value }}"
                                         icon="{{ $network->icon() }}"
                                         dir="ltr"
-                                        placeholder="https://"
+                                        placeholder="https://..."
                                     />
                                     <flux:error name="socialForm.links.{{ $network->value }}" />
                                 </flux:field>
@@ -190,7 +190,7 @@
                                         wire:model="socialForm.links.{{ $network->value }}"
                                         icon="{{ $network->icon() }}"
                                         dir="ltr"
-                                        placeholder="https://"
+                                        placeholder="https://..."
                                     />
                                     <flux:error name="socialForm.links.{{ $network->value }}" />
                                 </flux:field>
