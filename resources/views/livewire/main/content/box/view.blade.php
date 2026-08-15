@@ -32,11 +32,13 @@
     </div>
 
     <div class="mx-auto max-w-7xl px-4 2xl:px-0 mb-16">
-        <flux:tabs variant="segmented">
-            <flux:tabs.item name="products" icon="package" selected>{{ __('general.products') }}</flux:tabs.item>
-            <flux:tabs.item name="articles" icon="book-open">{{ __('general.articles') }}</flux:tabs.item>
+        <flux:tab.group>
+            <flux:tabs variant="segmented">
+                <flux:tab name="products" icon="package" selected>{{ __('general.products') }}</flux:tab>
+                <flux:tab name="articles" icon="book-open">{{ __('general.articles') }}</flux:tab>
+            </flux:tabs>
 
-            <flux:tabs.panel name="products">
+            <flux:tab.panel name="products">
                 <div class="mt-8 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     @forelse($this->products as $product)
                         <a
@@ -85,7 +87,7 @@
                 </div>
             </flux:tabs.panel>
 
-            <flux:tabs.panel name="articles">
+            <flux:tab.panel name="articles">
                 <div class="mt-8 space-y-6">
                     @forelse($this->articles as $article)
                         <a
@@ -121,7 +123,7 @@
                 <div class="mt-12">
                     {{ $this->articles->links() }}
                 </div>
-            </flux:tabs.panel>
-        </flux:tabs>
+            </flux:tab.panel>
+        </flux:tab.group>
     </div>
 </div>
