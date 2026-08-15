@@ -3,6 +3,7 @@
 namespace App\Livewire\Panel\Administrator\SettingManagement\Function;
 
 use App\Jobs\System\UpdateProjectJob;
+use App\Jobs\System\RunArtisanCommandJob;
 use App\Services\Shop\SitemapService;
 use Flux\Flux;
 use Illuminate\Support\Facades\Artisan;
@@ -33,7 +34,21 @@ class Index extends Component
                 'signature' => 'cache:clear',
                 'category' => __('general.category_cache'),
                 'icon' => 'trash',
-                'action' => fn() => Artisan::call('cache:clear'),
+                'action' => function () {
+                    RunArtisanCommandJob::dispatch('cache:clear');
+                    return __('general.update_dispatched');
+                },
+            ],
+            'optimize' => [
+                'name' => __('general.cmd_optimize_title'),
+                'description' => __('general.cmd_optimize_desc'),
+                'signature' => 'optimize',
+                'category' => __('general.category_cache'),
+                'icon' => 'zap',
+                'action' => function () {
+                    RunArtisanCommandJob::dispatch('optimize');
+                    return __('general.update_dispatched');
+                },
             ],
             'optimize_clear' => [
                 'name' => __('general.cmd_optimize_clear_title'),
@@ -41,7 +56,10 @@ class Index extends Component
                 'signature' => 'optimize:clear',
                 'category' => __('general.category_cache'),
                 'icon' => 'rotate-cw',
-                'action' => fn() => Artisan::call('optimize:clear'),
+                'action' => function () {
+                    RunArtisanCommandJob::dispatch('optimize:clear');
+                    return __('general.update_dispatched');
+                },
             ],
             'config_cache' => [
                 'name' => __('general.cmd_config_cache_title'),
@@ -49,7 +67,10 @@ class Index extends Component
                 'signature' => 'config:cache',
                 'category' => __('general.category_cache'),
                 'icon' => 'settings',
-                'action' => fn() => Artisan::call('config:cache'),
+                'action' => function () {
+                    RunArtisanCommandJob::dispatch('config:cache');
+                    return __('general.update_dispatched');
+                },
             ],
             'route_cache' => [
                 'name' => __('general.cmd_route_cache_title'),
@@ -57,7 +78,10 @@ class Index extends Component
                 'signature' => 'route:cache',
                 'category' => __('general.category_cache'),
                 'icon' => 'link',
-                'action' => fn() => Artisan::call('route:cache'),
+                'action' => function () {
+                    RunArtisanCommandJob::dispatch('route:cache');
+                    return __('general.update_dispatched');
+                },
             ],
             'view_cache' => [
                 'name' => __('general.cmd_view_cache_title'),
@@ -65,7 +89,10 @@ class Index extends Component
                 'signature' => 'view:cache',
                 'category' => __('general.category_cache'),
                 'icon' => 'eye',
-                'action' => fn() => Artisan::call('view:cache'),
+                'action' => function () {
+                    RunArtisanCommandJob::dispatch('view:cache');
+                    return __('general.update_dispatched');
+                },
             ],
             'create_permissions' => [
                 'name' => __('general.update_permissions'),
@@ -73,7 +100,10 @@ class Index extends Component
                 'signature' => 'system:administrator:create-permissions-command',
                 'category' => __('general.category_system'),
                 'icon' => 'shield-check',
-                'action' => fn() => Artisan::call('system:administrator:create-permissions-command'),
+                'action' => function () {
+                    RunArtisanCommandJob::dispatch('system:administrator:create-permissions-command');
+                    return __('general.update_dispatched');
+                },
             ],
             'create_roles' => [
                 'name' => __('general.cmd_roles_title'),
@@ -81,7 +111,10 @@ class Index extends Component
                 'signature' => 'system:administrator:create-roles-command',
                 'category' => __('general.category_system'),
                 'icon' => 'shield-check',
-                'action' => fn() => Artisan::call('system:administrator:create-roles-command'),
+                'action' => function () {
+                    RunArtisanCommandJob::dispatch('system:administrator:create-roles-command');
+                    return __('general.update_dispatched');
+                },
             ],
             'rebuild_sitemap' => [
                 'name' => __('general.rebuild_sitemap'),
@@ -90,8 +123,8 @@ class Index extends Component
                 'category' => __('general.category_system'),
                 'icon' => 'network',
                 'action' => function () {
-                    $urls = app(SitemapService::class)->refresh();
-                    return 'Sitemap rebuilt successfully with ' . count($urls) . ' URLs.';
+                    RunArtisanCommandJob::dispatch('sitemap:refresh');
+                    return __('general.update_dispatched');
                 },
             ],
             'add_watermarks' => [
@@ -100,7 +133,10 @@ class Index extends Component
                 'signature' => 'app:add-water-mark-to-images-command',
                 'category' => __('general.category_media'),
                 'icon' => 'image',
-                'action' => fn() => Artisan::call('app:add-water-mark-to-images-command'),
+                'action' => function () {
+                    RunArtisanCommandJob::dispatch('app:add-water-mark-to-images-command');
+                    return __('general.update_dispatched');
+                },
             ],
             'optimize_images' => [
                 'name' => __('general.optimize_images'),
@@ -108,7 +144,10 @@ class Index extends Component
                 'signature' => 'app:optimize-images-command',
                 'category' => __('general.category_media'),
                 'icon' => 'sparkles',
-                'action' => fn() => Artisan::call('app:optimize-images-command'),
+                'action' => function () {
+                    RunArtisanCommandJob::dispatch('app:optimize-images-command');
+                    return __('general.update_dispatched');
+                },
             ],
             'about' => [
                 'name' => __('general.cmd_about_title'),
@@ -116,7 +155,10 @@ class Index extends Component
                 'signature' => 'about',
                 'category' => __('general.category_info'),
                 'icon' => 'circle-gauge',
-                'action' => fn() => Artisan::call('about'),
+                'action' => function () {
+                    RunArtisanCommandJob::dispatch('about');
+                    return __('general.update_dispatched');
+                },
             ],
             'schedule_list' => [
                 'name' => __('general.cmd_schedule_list_title'),
@@ -124,7 +166,10 @@ class Index extends Component
                 'signature' => 'schedule:list',
                 'category' => __('general.category_info'),
                 'icon' => 'chart-bar-stacked',
-                'action' => fn() => Artisan::call('schedule:list'),
+                'action' => function () {
+                    RunArtisanCommandJob::dispatch('schedule:list');
+                    return __('general.update_dispatched');
+                },
             ],
             'queue_failed' => [
                 'name' => __('general.cmd_queue_failed_title'),
@@ -132,7 +177,10 @@ class Index extends Component
                 'signature' => 'queue:failed',
                 'category' => __('general.category_maintenance'),
                 'icon' => 'triangle-alert',
-                'action' => fn() => Artisan::call('queue:failed'),
+                'action' => function () {
+                    RunArtisanCommandJob::dispatch('queue:failed');
+                    return __('general.update_dispatched');
+                },
             ],
             'update_quick' => [
                 'name' => __('general.quick_update'),
@@ -159,7 +207,7 @@ class Index extends Component
         ];
 
         if (empty($this->search)) {
-            return $allCommands;
+            return [];
         }
 
         return array_filter($allCommands, function ($command) {

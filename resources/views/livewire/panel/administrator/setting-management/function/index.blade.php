@@ -28,34 +28,28 @@
             </div>
 
             <flux:card>
-                <flux:command>
-                    <flux:command.input
-                        wire:model.live.debounce.300ms="search"
-                        placeholder="{{ __('general.command_palette') }}..."
-                        icon="search"
-                        clearable
-                    />
+                <flux:autocomplete wire:model.live.debounce.300ms="search" icon="search" placeholder="{{ __('general.command_palette') }}..." clearable>
+                    @foreach(collect($this->commands)->groupBy('category') as $category => $items)
+                        <flux:autocomplete.item
+                            class="px-2 py-1.5 text-xs font-semibold text-zinc-500 uppercase tracking-wider bg-zinc-50 dark:bg-zinc-800/50"
+                            disabled
+                        >
+                            {{ $category }}
+                        </flux:autocomplete.item>
 
-                    <flux:command.items>
-                        @foreach(collect($this->commands)->groupBy('category') as $category => $items)
-                            <div class="px-2 py-1.5 text-xs font-semibold text-zinc-500 uppercase tracking-wider bg-zinc-50 dark:bg-zinc-800/50">
-                                {{ $category }}
-                            </div>
-
-                            @foreach($items as $key => $command)
-                                <flux:command.item
-                                    wire:click="runCommand('{{ $key }}')"
-                                    icon="{{ $command['icon'] }}"
-                                >
-                                    <div class="flex flex-col">
-                                        <span>{{ $command['name'] }}</span>
-                                        <span class="text-xs text-zinc-500">php artisan {{ $command['signature'] }}</span>
-                                    </div>
-                                </flux:command.item>
-                            @endforeach
+                        @foreach($items as $key => $command)
+                            <flux:autocomplete.item
+                                wire:click="runCommand('{{ $key }}')"
+                                icon="{{ $command['icon'] }}"
+                            >
+                                <div class="flex flex-col">
+                                    <span>{{ $command['name'] }}</span>
+                                    <span class="text-xs text-zinc-500">php artisan {{ $command['signature'] }}</span>
+                                </div>
+                            </flux:autocomplete.item>
                         @endforeach
-                    </flux:command.items>
-                </flux:command>
+                    @endforeach
+                </flux:autocomplete>
             </flux:card>
 
             <div wire:loading.flex class="items-center gap-2 text-sm text-zinc-500">

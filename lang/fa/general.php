@@ -146,4 +146,7 @@ return [
     'category_maintenance' => 'نگهداری',
     'en_name' => 'نام انگلیسی',
     'tags' => 'تگ‌ها',
+    'optimize' => 'بهینه‌سازی',
+    'cmd_optimize_title' => 'بهینه‌سازی کل پروژه',
+    'cmd_optimize_desc' => 'کش کردن تمامی تنظیمات، مسیرها و قالب‌ها برای حداکثر سرعت',
 ];
