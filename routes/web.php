@@ -82,6 +82,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/panel/administrator/user-management/role/index', \App\Livewire\Panel\Administrator\UserManagement\Role\Index::class)->name('panel.administrator.user-management.role.index');
     Route::get('/panel/administrator/user-management/permission/index', \App\Livewire\Panel\Administrator\UserManagement\Permission\Index::class)->name('panel.administrator.user-management.permission.index');
 
+    Route::get('/panel/administrator/content-management/box/index', \App\Livewire\Panel\Content\Box\Index::class)->name('panel.administrator.content-management.box.index');
+
     Route::get('/panel/administrator/setting-management/function/index', \App\Livewire\Panel\Administrator\SettingManagement\Function\Index::class)->name('panel.administrator.setting-management.function.index');
     Route::get('/panel/administrator/setting-management/backup/index', \App\Livewire\Panel\Administrator\SettingManagement\Backup\Index::class)->name('panel.administrator.setting-management.backup.index');
     Route::get('/panel/administrator/setting-management/option/index', \App\Livewire\Panel\Administrator\SettingManagement\Option\Index::class)->name('panel.administrator.setting-management.option.index');

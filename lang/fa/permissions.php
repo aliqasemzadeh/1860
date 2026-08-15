@@ -177,5 +177,10 @@ return [
         'content_post_create' => 'ایجاد نوشته',
         'content_post_edit' => 'ویرایش نوشته',
         'content_post_delete' => 'حذف نوشته',
+
+        'content_box_index' => 'فهرست باکس‌های برند و محصول',
+        'content_box_create' => 'ایجاد باکس برند و محصول',
+        'content_box_edit' => 'ویرایش باکس برند و محصول',
+        'content_box_delete' => 'حذف باکس برند و محصول',
     ],
 ];
