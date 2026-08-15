@@ -54,7 +54,9 @@
                             @endforeach
                         </div>
                     @else
-                        <flux:text class="text-zinc-500 dark:text-zinc-400">{{ __('general.no_products_added') }}</flux:text>
+                        <flux:text class="text-zinc-500 dark:text-zinc-400">
+                            {{ $listSearch !== '' ? __('general.no_results') : __('general.no_products_added') }}
+                        </flux:text>
                     @endif
                 </div>
             </div>
