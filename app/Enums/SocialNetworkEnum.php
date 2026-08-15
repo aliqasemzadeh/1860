@@ -25,9 +25,31 @@ enum SocialNetworkEnum: string
     {
         return match ($this) {
             self::Telegram => 'send',
+            self::Eitaa, self::Bale => 'message-square',
+            self::Rubika => 'smartphone',
+            self::Aparat, self::Youtube => 'video',
+            self::Instagram => 'camera',
             self::Whatsapp => 'message-circle',
-            self::Youtube, self::Aparat => 'play',
-            default => 'link',
+            self::X => 'at-sign',
+            self::Facebook => 'users',
+            self::Linkedin => 'briefcase',
+        };
+    }
+
+    public function color(): string
+    {
+        return match ($this) {
+            self::Telegram => 'sky',
+            self::Eitaa => 'orange',
+            self::Bale => 'green',
+            self::Rubika => 'rose',
+            self::Aparat => 'red',
+            self::Instagram => 'pink',
+            self::Whatsapp => 'lime',
+            self::X => 'zinc',
+            self::Facebook => 'blue',
+            self::Linkedin => 'indigo',
+            self::Youtube => 'red',
         };
     }
 

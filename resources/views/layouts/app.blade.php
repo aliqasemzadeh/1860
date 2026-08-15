@@ -21,6 +21,7 @@
             <flux:sidebar.item icon="mail" href="{{ route('contact.index') }}">{{ __('general.contact_us') }}</flux:sidebar.item>
     </flux:sidebar.nav>
 
+    <livewire:main.sidebar.socials />
 
     @include('partials.panels')
     @include('partials.user-dropdown')

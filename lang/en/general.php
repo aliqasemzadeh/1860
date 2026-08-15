@@ -426,6 +426,8 @@ return [
     'filter' => 'Filter',
     'filter_status' => 'Filter Status',
     'first_name' => 'First Name',
+    'follow_us' => 'Follow Us',
+    'follow_us_description' => 'Stay connected with us on social media.',
     'full_update' => 'Full Update',
     'function' => 'System Functions',
     'function_description' => 'Perform system management operations from this section.',
