@@ -144,4 +144,6 @@ return [
     'category_media' => 'رسانه و تصاویر',
     'category_info' => 'اطلاعات و وضعیت',
     'category_maintenance' => 'نگهداری',
+    'en_name' => 'نام انگلیسی',
+    'tags' => 'تگ‌ها',
 ];

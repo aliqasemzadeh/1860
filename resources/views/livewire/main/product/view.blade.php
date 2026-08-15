@@ -202,6 +202,18 @@
                             <flux:heading size="xl" class="mb-3 text-zinc-900 dark:text-zinc-100">
                                 {{ $this->product->name }}
                             </flux:heading>
+                            @if($this->product->en_name)
+                                <h2 class="text-xl font-semibold mb-3 text-zinc-500 dark:text-zinc-400">
+                                    {{ $this->product->en_name }}
+                                </h2>
+                            @endif
+                            @if($this->product->tags->isNotEmpty())
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    @foreach($this->product->tags as $tag)
+                                        <flux:badge size="sm" color="zinc" inset="top">{{ $tag->name }}</flux:badge>
+                                    @endforeach
+                                </div>
+                            @endif
                             @if($this->product->brand)
                                 <flux:text class="text-zinc-600 dark:text-zinc-400 text-lg">
                                     {{ __('general.brand') }}: <span class="font-medium">{{ $this->product->brand->name }}</span>

@@ -144,4 +144,6 @@ return [
     'category_media' => 'Media & Images',
     'category_info' => 'Info & Status',
     'category_maintenance' => 'Maintenance',
+    'en_name' => 'English Name',
+    'tags' => 'Tags',
 ];
