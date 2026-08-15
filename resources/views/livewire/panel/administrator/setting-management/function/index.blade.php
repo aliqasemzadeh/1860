@@ -98,6 +98,72 @@
                     </div>
                 </flux:card>
             @endif
+
+            @if(count($this->recentLogs) > 0)
+                <div class="mt-8">
+                    <flux:heading size="lg" class="mb-4">{{ __('general.recent_logs') }}</flux:heading>
+                    <flux:card class="!p-0">
+                        <flux:table>
+                            <flux:table.columns>
+                                <flux:table.column>{{ __('general.command') }}</flux:table.column>
+                                <flux:table.column>{{ __('general.status') }}</flux:table.column>
+                                <flux:table.column>{{ __('general.execution_time') }}</flux:table.column>
+                                <flux:table.column>{{ __('general.date') }}</flux:table.column>
+                                <flux:table.column align="end"></flux:table.column>
+                            </flux:table.columns>
+                            <flux:table.rows>
+                                @foreach($this->recentLogs as $log)
+                                    <flux:table.row :key="$log->id">
+                                        <flux:table.cell class="font-mono text-xs">
+                                            {{ $log->command }}
+                                        </flux:table.cell>
+                                        <flux:table.cell>
+                                            <flux:badge size="sm" :color="$log->status === 'success' ? 'teal' : ($log->status === 'running' ? 'blue' : 'red')">
+                                                {{ __('general.' . $log->status) }}
+                                            </flux:badge>
+                                        </flux:table.cell>
+                                        <flux:table.cell class="text-xs">
+                                            {{ $log->execution_time_ms ? $log->execution_time_ms . 'ms' : '-' }}
+                                        </flux:table.cell>
+                                        <flux:table.cell class="text-xs">
+                                            {{ $log->created_at->diffForHumans() }}
+                                        </flux:table.cell>
+                                        <flux:table.cell align="end">
+                                            <flux:modal.trigger name="command.log.detail.{{ $log->id }}">
+                                                <flux:button size="xs" variant="ghost" icon="eye" />
+                                            </flux:modal.trigger>
+
+                                            <flux:modal name="command.log.detail.{{ $log->id }}" variant="large">
+                                                <div class="space-y-4">
+                                                    <flux:heading size="lg">{{ __('general.log_details') }}</flux:heading>
+                                                    <div class="grid grid-cols-2 gap-4 text-sm">
+                                                        <div>
+                                                            <span class="text-zinc-500">{{ __('general.command') }}:</span>
+                                                            <span class="font-mono">{{ $log->command }}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-zinc-500">{{ __('general.status') }}:</span>
+                                                            <span>{{ $log->status }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="max-h-[400px] overflow-auto rounded bg-zinc-950 p-4 font-mono text-xs text-zinc-300">
+                                                        <pre class="whitespace-pre-wrap">{{ $log->output }}</pre>
+                                                    </div>
+                                                    <div class="flex justify-end">
+                                                        <flux:modal.close>
+                                                            <flux:button variant="ghost">{{ __('general.close') }}</flux:button>
+                                                        </flux:modal.close>
+                                                    </div>
+                                                </div>
+                                            </flux:modal>
+                                        </flux:table.cell>
+                                    </flux:table.row>
+                                @endforeach
+                            </flux:table.rows>
+                        </flux:table>
+                    </flux:card>
+                </div>
+            @endif
         </div>
     </div>
 </div>
