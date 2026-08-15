@@ -18,7 +18,7 @@ new class extends Component {
             ->ordered()
             ->with([
                 'products' => function ($query) use ($productCount) {
-                    $query->inRandomOrder()->take($productCount)->withEffectivePrice();
+                    $query->select('products.*')->inRandomOrder()->take($productCount)->withEffectivePrice();
                 }
             ])
             ->get();
@@ -26,7 +26,7 @@ new class extends Component {
 }; ?>
 
 <div>
-    @foreach($this->boxes as $box)
+    @foreach($this->boxes() as $box)
         @php
             $theme = $box->color_theme ?? [];
             $bgColor = $theme['bg'] ?? '#ffffff';
