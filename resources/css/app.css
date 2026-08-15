@@ -17,3 +17,33 @@
 [data-flux-main] {
     @apply  p-1 md:p-6 lg:p-8;
 }
+
+.prose table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-block: 1em;
+    overflow: hidden;
+}
+
+.prose table th,
+.prose table td {
+    border: 1px solid #d4d4d8;
+    padding: 0.5rem 0.75rem;
+    vertical-align: top;
+    min-width: 100px;
+}
+
+.prose table th {
+    font-weight: 600;
+    background-color: #f4f4f5;
+}
+
+.dark .prose table th,
+.dark .prose table td {
+    border-color: #3f3f46;
+}
+
+.dark .prose table th {
+    background-color: #27272a;
+}
