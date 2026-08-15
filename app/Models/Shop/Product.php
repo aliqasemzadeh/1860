@@ -139,7 +139,7 @@ class Product extends Model implements Cartable
     /**
      * Correlated subquery selecting a column from the product's default price row.
      */
-    protected function defaultPriceColumnSubquery(string $column): QueryBuilder
+    protected function defaultPriceColumnSubquery(string|\Illuminate\Contracts\Database\Query\Expression $column): QueryBuilder
     {
         return DB::table('product_prices')
             ->select($column)
