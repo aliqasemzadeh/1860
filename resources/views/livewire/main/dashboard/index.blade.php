@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Storage;
 <div>
     <section class="py-8 antialiased md:py-12">
         <div class="mx-auto max-w-7xl px-4 2xl:px-0">
+            <livewire:main.content.box.index :key="'home-brand-boxes'" />
+
             @if($this->products->isEmpty())
                 <div class="flex flex-col items-center justify-center py-16">
                     <flux:heading size="lg" class="text-zinc-500 dark:text-zinc-400 mb-2">
