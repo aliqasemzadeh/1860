@@ -11,19 +11,21 @@
 
                     <flux:command.items>
                         @foreach(collect($this->commands)->groupBy('category') as $category => $items)
-                            <flux:command.group heading="{{ $category }}">
-                                @foreach($items as $key => $command)
-                                    <flux:command.item
-                                        wire:click="runCommand('{{ $key }}')"
-                                        icon="{{ $command['icon'] }}"
-                                    >
-                                        <div class="flex flex-col">
-                                            <span>{{ $command['name'] }}</span>
-                                            <span class="text-xs text-zinc-500">php artisan {{ $command['signature'] }}</span>
-                                        </div>
-                                    </flux:command.item>
-                                @endforeach
-                            </flux:command.group>
+                            <div class="px-2 py-1.5 text-xs font-semibold text-zinc-500 uppercase tracking-wider bg-zinc-50 dark:bg-zinc-800/50">
+                                {{ $category }}
+                            </div>
+
+                            @foreach($items as $key => $command)
+                                <flux:command.item
+                                    wire:click="runCommand('{{ $key }}')"
+                                    icon="{{ $command['icon'] }}"
+                                >
+                                    <div class="flex flex-col">
+                                        <span>{{ $command['name'] }}</span>
+                                        <span class="text-xs text-zinc-500">php artisan {{ $command['signature'] }}</span>
+                                    </div>
+                                </flux:command.item>
+                            @endforeach
                         @endforeach
                     </flux:command.items>
                 </flux:command>
