@@ -16,55 +16,60 @@
                         <div class="w-2 h-8 rounded-full" style="background-color: {{ $accentColor }};"></div>
                         <flux:heading size="xl" style="color: {{ $textColor }};">{{ $box->title_fa }}</flux:heading>
                     </div>
-                    <flux:button
-                        href="{{ route('content.box.view', ['id' => $box->id, 'slug' => $box->title_en]) }}"
-                        wire:navigate
-                        variant="ghost"
-                        icon-trailing="chevron-left"
-                        style="color: {{ $textColor }};"
-                    >
-                        {{ __('general.view_all') }}
-                    </flux:button>
-                </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    @foreach($box->products as $product)
-                        <a
-                            href="{{ $product->url }}"
+                    <div class="flex items-center gap-2">
+                        <flux:carousel.controls name="box-{{ $box->id }}-carousel" style="color: {{ $textColor }};" />
+                        <flux:button
+                            href="{{ route('content.box.view', ['id' => $box->id, 'slug' => $box->title_en]) }}"
                             wire:navigate
-                            wire:key="box-{{ $box->id }}-product-{{ $product->id }}"
-                            class="group relative bg-white/10 backdrop-blur-md rounded-xl p-2 border border-white/20 hover:border-white/40 transition-all duration-300"
+                            variant="ghost"
+                            icon-trailing="chevron-left"
+                            style="color: {{ $textColor }};"
                         >
-                            <div class="aspect-square rounded-lg overflow-hidden mb-3 bg-white">
-                                @if($product->file_path)
-                                    <img
-                                        src="{{ Storage::url($product->file_path) }}"
-                                        alt="{{ $product->name }}"
-                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                    />
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center text-zinc-300">
-                                        <flux:icon.image size="lg" />
-                                    </div>
-                                @endif
-                            </div>
-                            <flux:heading size="sm" class="line-clamp-2 h-10 text-center" style="color: {{ $textColor }};">
-                                {{ $product->name }}
-                            </flux:heading>
-
-                            <div class="mt-2 text-center">
-                                @if($product->effective_price)
-                                    <div class="font-bold text-lg">
-                                        {{ number_format($product->effective_price, 0) }}
-                                        <span class="text-xs opacity-70">{{ __('general.toman') }}</span>
-                                    </div>
-                                @else
-                                    <div class="text-sm opacity-50">{{ __('general.unavailable') }}</div>
-                                @endif
-                            </div>
-                        </a>
-                    @endforeach
+                            {{ __('general.view_all') }}
+                        </flux:button>
+                    </div>
                 </div>
+
+                <flux:carousel name="box-{{ $box->id }}-carousel" class="-mx-4" :arrows="false" track:class="px-4 scroll-px-4">
+                    @foreach($box->products as $product)
+                        <flux:carousel.slide class="w-4/5 sm:w-1/2 md:w-1/3 lg:w-1/5 pr-4">
+                            <a
+                                href="{{ $product->url }}"
+                                wire:navigate
+                                wire:key="box-{{ $box->id }}-product-{{ $product->id }}"
+                                class="group relative bg-white/10 backdrop-blur-md rounded-xl p-2 border border-white/20 hover:border-white/40 transition-all duration-300 block h-full"
+                            >
+                                <div class="aspect-square rounded-lg overflow-hidden mb-3 bg-white">
+                                    @if($product->file_path)
+                                        <img
+                                            src="{{ Storage::url($product->file_path) }}"
+                                            alt="{{ $product->name }}"
+                                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                        />
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center text-zinc-300">
+                                            <flux:icon.image size="lg" />
+                                        </div>
+                                    @endif
+                                </div>
+                                <flux:heading size="sm" class="line-clamp-2 h-10 text-center" style="color: {{ $textColor }};">
+                                    {{ $product->name }}
+                                </flux:heading>
+
+                                <div class="mt-2 text-center">
+                                    @if($product->effective_price)
+                                        <div class="font-bold text-lg">
+                                            {{ number_format($product->effective_price, 0) }}
+                                            <span class="text-xs opacity-70">{{ __('general.toman') }}</span>
+                                        </div>
+                                    @else
+                                        <div class="text-sm opacity-50">{{ __('general.unavailable') }}</div>
+                                    @endif
+                                </div>
+                            </a>
+                        </flux:carousel.slide>
+                    @endforeach
+                </flux:carousel>
             </div>
         </section>
     @empty
