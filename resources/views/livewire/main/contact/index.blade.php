@@ -24,7 +24,7 @@
                 @if (filled($this->contact->mobile))
                     <div class="flex items-start gap-4">
                         <div class="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
-                            <flux:icon name="device-phone-mobile" class="size-6 text-zinc-500" />
+                            <flux:icon name="smartphone" class="size-6 text-zinc-500" />
                         </div>
                         <div>
                             <flux:heading size="lg">{{ __('general.mobile') }}</flux:heading>
@@ -36,7 +36,7 @@
                 @if (filled($this->contact->email))
                     <div class="flex items-start gap-4">
                         <div class="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
-                            <flux:icon name="envelope" class="size-6 text-zinc-500" />
+                            <flux:icon name="mail" class="size-6 text-zinc-500" />
                         </div>
                         <div>
                             <flux:heading size="lg">{{ __('app.email') }}</flux:heading>
