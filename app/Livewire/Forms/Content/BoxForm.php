@@ -26,9 +26,6 @@ class BoxForm extends Form
     #[Validate('boolean')]
     public $is_active = true;
 
-    #[Validate('nullable|array')]
-    public $product_ids = [];
-
     #[Validate('nullable|image|max:2048')]
     public $image;
 
@@ -43,7 +40,6 @@ class BoxForm extends Form
             'accent' => '#3b82f6',
         ];
         $this->is_active = $box->is_active;
-        $this->product_ids = $box->products()->pluck('products.id')->toArray();
     }
 
     public function store()
@@ -61,9 +57,7 @@ class BoxForm extends Form
             $box->addMedia($this->image)->toMediaCollection('box_images');
         }
 
-        $box->products()->sync($this->product_ids);
-
-        $this->reset(['title_fa', 'title_en', 'color_theme', 'is_active', 'product_ids', 'image']);
+        $this->reset(['title_fa', 'title_en', 'color_theme', 'is_active', 'image']);
     }
 
     public function update()
@@ -81,7 +75,5 @@ class BoxForm extends Form
             $this->box->clearMediaCollection('box_images');
             $this->box->addMedia($this->image)->toMediaCollection('box_images');
         }
-
-        $this->box->products()->sync($this->product_ids);
     }
 }

@@ -14,16 +14,6 @@
             <flux:input type="color" wire:model="form.color_theme.accent" label="{{ __('general.accent_color') }}" />
         </div>
 
-        <flux:pillbox wire:model="form.product_ids" label="{{ __('general.products') }}" variant="combobox" multiple :filter="false">
-            <x-slot name="input">
-                <flux:pillbox.input wire:model.live="search" />
-            </x-slot>
-
-            @foreach($this->products as $product)
-                <flux:pillbox.option :value="$product->id" wire:key="{{ $product->id }}">{{ $product->name }}</flux:pillbox.option>
-            @endforeach
-        </flux:pillbox>
-
         <flux:file-upload wire:model="form.image" label="{{ __('general.image') }}" variant="inline" />
 
         <flux:field variant="inline">
