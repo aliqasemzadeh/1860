@@ -19,6 +19,15 @@
         >
             {{ __('app.posts') }}
         </flux:sidebar.item>
+
+        <flux:sidebar.item
+            icon="layout-grid"
+            href="{{ route('panel.content.box.index') }}"
+            wire:navigate
+            :current="request()->routeIs('panel.content.box.*')"
+        >
+            {{ __('general.boxes') }}
+        </flux:sidebar.item>
     </flux:sidebar.nav>
 
     <flux:sidebar.spacer />

@@ -177,5 +177,9 @@ return [
         'content_post_create' => 'Create Post',
         'content_post_edit' => 'Edit Post',
         'content_post_delete' => 'Delete Post',
+        'content_box_index' => 'Boxes List',
+        'content_box_create' => 'Create Box',
+        'content_box_edit' => 'Edit Box',
+        'content_box_delete' => 'Delete Box',
     ],
 ];
