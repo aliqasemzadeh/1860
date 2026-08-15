@@ -19,7 +19,7 @@
                 <flux:button
                     variant="primary"
                     color="blue"
-                    icon="arrow-path"
+                    icon="refresh-cw"
                     class="w-full"
                     wire:click="runCommand('update_full')"
                 >
