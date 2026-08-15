@@ -2,12 +2,13 @@
 
 namespace App\Jobs\System;
 
+use App\Models\System\CommandLog;
+use App\Support\SystemCommandGuard;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
-use App\Models\System\CommandLog;
 use Throwable;
 
 class UpdateProjectJob implements ShouldQueue
@@ -19,22 +20,20 @@ class UpdateProjectJob implements ShouldQueue
     public function __construct(
         public bool $runComposer = false,
         public bool $runNpmBuild = false,
+        public ?int $logId = null,
     ) {}
 
     public function handle(): void
     {
         $start = microtime(true);
-        $this->currentLog = CommandLog::create([
-            'command' => 'UpdateProjectJob',
-            'parameters' => ['runComposer' => $this->runComposer, 'runNpmBuild' => $this->runNpmBuild],
-            'status' => 'running',
-        ]);
+        $this->currentLog = $this->resolveLog();
 
         Log::channel('commands')->info('Starting project update job...', ['log_id' => $this->currentLog->id]);
 
         try {
             if (! $this->gitPull()) {
-                $this->failJob('Git pull failed');
+                $this->failJob('Git pull failed', $start);
+
                 return;
             }
 
@@ -60,10 +59,37 @@ class UpdateProjectJob implements ShouldQueue
                 'status_code' => 0,
             ]);
             Log::channel('commands')->info('Project update job completed successfully.', ['duration_ms' => $duration]);
-
         } catch (Throwable $e) {
             $this->failJob($e->getMessage(), $start);
         }
+    }
+
+    protected function resolveLog(): CommandLog
+    {
+        if ($this->logId) {
+            $log = CommandLog::find($this->logId);
+
+            if ($log) {
+                $log->update([
+                    'status' => 'running',
+                    'parameters' => [
+                        'runComposer' => $this->runComposer,
+                        'runNpmBuild' => $this->runNpmBuild,
+                    ],
+                ]);
+
+                return $log;
+            }
+        }
+
+        return CommandLog::create([
+            'command' => 'UpdateProjectJob',
+            'parameters' => [
+                'runComposer' => $this->runComposer,
+                'runNpmBuild' => $this->runNpmBuild,
+            ],
+            'status' => 'running',
+        ]);
     }
 
     protected function failJob(string $message, ?float $startTime = null): void
@@ -71,11 +97,11 @@ class UpdateProjectJob implements ShouldQueue
         $duration = $startTime ? (int) ((microtime(true) - $startTime) * 1000) : null;
         $this->currentLog?->update([
             'status' => 'failed',
-            'output' => ($this->currentLog->output ?? '') . "\nFATAL ERROR: " . $message,
+            'output' => SystemCommandGuard::stripAnsi(($this->currentLog->output ?? '')."\nFATAL ERROR: ".$message),
             'status_code' => 1,
             'execution_time_ms' => $duration,
         ]);
-        Log::channel('commands')->error('Project update job failed: ' . $message);
+        Log::channel('commands')->error('Project update job failed: '.$message);
     }
 
     protected function gitPull(): bool
@@ -86,13 +112,9 @@ class UpdateProjectJob implements ShouldQueue
             ->path(base_path())
             ->run('git pull');
 
-        $this->appendToOutput("Git Pull:\n" . ($process->successful() ? $process->output() : $process->errorOutput()));
+        $this->appendToOutput('Git Pull:'."\n".($process->successful() ? $process->output() : $process->errorOutput()));
 
-        if ($process->successful()) {
-            return true;
-        }
-
-        return false;
+        return $process->successful();
     }
 
     protected function runMigrations(): void
@@ -109,9 +131,9 @@ class UpdateProjectJob implements ShouldQueue
                 ->path(base_path())
                 ->run($this->composerCommand().' install --no-dev --optimize-autoloader --no-interaction');
 
-            $this->appendToOutput("Composer Install:\n" . ($process->successful() ? $process->output() : $process->errorOutput()));
+            $this->appendToOutput('Composer Install:'."\n".($process->successful() ? $process->output() : $process->errorOutput()));
         } catch (Throwable $exception) {
-            $this->appendToOutput("Composer Install Exception: " . $exception->getMessage());
+            $this->appendToOutput('Composer Install Exception: '.$exception->getMessage());
         }
     }
 
@@ -139,9 +161,9 @@ class UpdateProjectJob implements ShouldQueue
                 ->path(base_path())
                 ->run($this->npmCommand().' run build');
 
-            $this->appendToOutput("NPM Build:\n" . ($process->successful() ? $process->output() : $process->errorOutput()));
+            $this->appendToOutput('NPM Build:'."\n".($process->successful() ? $process->output() : $process->errorOutput()));
         } catch (Throwable $exception) {
-            $this->appendToOutput("NPM Build Exception: " . $exception->getMessage());
+            $this->appendToOutput('NPM Build Exception: '.$exception->getMessage());
         }
     }
 
@@ -155,16 +177,17 @@ class UpdateProjectJob implements ShouldQueue
         Log::channel('commands')->info("Running artisan {$command}...");
 
         Artisan::call($command, $parameters);
-        $output = Artisan::output();
+        $output = SystemCommandGuard::stripAnsi(Artisan::output());
 
-        $this->appendToOutput("Artisan {$command}:\n" . $output);
+        $this->appendToOutput("Artisan {$command}:"."\n".$output);
     }
 
     protected function appendToOutput(string $text): void
     {
         $this->currentLog?->update([
-            'output' => ($this->currentLog->output ?? '') . "\n" . $text
+            'output' => SystemCommandGuard::stripAnsi(($this->currentLog->output ?? '')."\n".$text),
         ]);
+        $this->currentLog?->refresh();
     }
 
     protected function npmCommand(): string

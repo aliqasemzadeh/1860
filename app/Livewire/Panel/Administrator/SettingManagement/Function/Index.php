@@ -2,44 +2,54 @@
 
 namespace App\Livewire\Panel\Administrator\SettingManagement\Function;
 
-use App\Jobs\System\UpdateProjectJob;
 use App\Jobs\System\RunArtisanCommandJob;
+use App\Jobs\System\UpdateProjectJob;
 use App\Models\System\CommandLog;
-use App\Services\Shop\SitemapService;
+use App\Support\SystemCommandGuard;
 use Flux\Flux;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Artisan;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Livewire\Attributes\On;
+use Livewire\WithPagination;
 
 class Index extends Component
 {
+    use WithPagination;
+
     public string $lastCommand = '';
+
     public string $lastOutput = '';
+
     public int $executionDuration = 0;
+
     public int $lastStatus = 0;
+
     public string $search = '';
+
+    public ?int $selectedLogId = null;
+
+    public ?int $activeLogId = null;
 
     public function mount(): void
     {
         $this->authorize('administrator_setting_function_index');
     }
 
-    #[Computed]
-    public function commands(): array
+    /**
+     * @return array<string, array{name: string, description: string, signature: string, category: string, icon: string, mode: string, job?: string}>
+     */
+    protected function commandCatalog(): array
     {
-        $allCommands = [
+        return [
             'cache_clear' => [
                 'name' => __('general.cmd_cache_clear_title'),
                 'description' => __('general.cmd_cache_clear_desc'),
                 'signature' => 'cache:clear',
                 'category' => __('general.category_cache'),
                 'icon' => 'trash',
-                'action' => function () {
-                    RunArtisanCommandJob::dispatch('cache:clear');
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'sync',
             ],
             'optimize' => [
                 'name' => __('general.cmd_optimize_title'),
@@ -47,10 +57,7 @@ class Index extends Component
                 'signature' => 'optimize',
                 'category' => __('general.category_cache'),
                 'icon' => 'zap',
-                'action' => function () {
-                    RunArtisanCommandJob::dispatch('optimize');
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'sync',
             ],
             'optimize_clear' => [
                 'name' => __('general.cmd_optimize_clear_title'),
@@ -58,10 +65,7 @@ class Index extends Component
                 'signature' => 'optimize:clear',
                 'category' => __('general.category_cache'),
                 'icon' => 'rotate-cw',
-                'action' => function () {
-                    RunArtisanCommandJob::dispatch('optimize:clear');
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'sync',
             ],
             'config_cache' => [
                 'name' => __('general.cmd_config_cache_title'),
@@ -69,10 +73,7 @@ class Index extends Component
                 'signature' => 'config:cache',
                 'category' => __('general.category_cache'),
                 'icon' => 'settings',
-                'action' => function () {
-                    RunArtisanCommandJob::dispatch('config:cache');
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'sync',
             ],
             'route_cache' => [
                 'name' => __('general.cmd_route_cache_title'),
@@ -80,10 +81,7 @@ class Index extends Component
                 'signature' => 'route:cache',
                 'category' => __('general.category_cache'),
                 'icon' => 'link',
-                'action' => function () {
-                    RunArtisanCommandJob::dispatch('route:cache');
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'sync',
             ],
             'view_cache' => [
                 'name' => __('general.cmd_view_cache_title'),
@@ -91,10 +89,7 @@ class Index extends Component
                 'signature' => 'view:cache',
                 'category' => __('general.category_cache'),
                 'icon' => 'eye',
-                'action' => function () {
-                    RunArtisanCommandJob::dispatch('view:cache');
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'sync',
             ],
             'create_permissions' => [
                 'name' => __('general.update_permissions'),
@@ -102,10 +97,7 @@ class Index extends Component
                 'signature' => 'system:administrator:create-permissions-command',
                 'category' => __('general.category_system'),
                 'icon' => 'shield-check',
-                'action' => function () {
-                    RunArtisanCommandJob::dispatch('system:administrator:create-permissions-command');
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'sync',
             ],
             'create_roles' => [
                 'name' => __('general.cmd_roles_title'),
@@ -113,10 +105,7 @@ class Index extends Component
                 'signature' => 'system:administrator:create-roles-command',
                 'category' => __('general.category_system'),
                 'icon' => 'shield-check',
-                'action' => function () {
-                    RunArtisanCommandJob::dispatch('system:administrator:create-roles-command');
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'sync',
             ],
             'rebuild_sitemap' => [
                 'name' => __('general.rebuild_sitemap'),
@@ -124,10 +113,7 @@ class Index extends Component
                 'signature' => 'sitemap:refresh',
                 'category' => __('general.category_system'),
                 'icon' => 'network',
-                'action' => function () {
-                    RunArtisanCommandJob::dispatch('sitemap:refresh');
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'sync',
             ],
             'add_watermarks' => [
                 'name' => __('general.add_watermarks'),
@@ -135,10 +121,7 @@ class Index extends Component
                 'signature' => 'app:add-water-mark-to-images-command',
                 'category' => __('general.category_media'),
                 'icon' => 'image',
-                'action' => function () {
-                    RunArtisanCommandJob::dispatch('app:add-water-mark-to-images-command');
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'queue',
             ],
             'optimize_images' => [
                 'name' => __('general.optimize_images'),
@@ -146,10 +129,7 @@ class Index extends Component
                 'signature' => 'app:optimize-images-command',
                 'category' => __('general.category_media'),
                 'icon' => 'sparkles',
-                'action' => function () {
-                    RunArtisanCommandJob::dispatch('app:optimize-images-command');
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'queue',
             ],
             'about' => [
                 'name' => __('general.cmd_about_title'),
@@ -157,10 +137,7 @@ class Index extends Component
                 'signature' => 'about',
                 'category' => __('general.category_info'),
                 'icon' => 'circle-gauge',
-                'action' => function () {
-                    RunArtisanCommandJob::dispatch('about');
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'sync',
             ],
             'schedule_list' => [
                 'name' => __('general.cmd_schedule_list_title'),
@@ -168,10 +145,7 @@ class Index extends Component
                 'signature' => 'schedule:list',
                 'category' => __('general.category_info'),
                 'icon' => 'chart-bar-stacked',
-                'action' => function () {
-                    RunArtisanCommandJob::dispatch('schedule:list');
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'sync',
             ],
             'queue_failed' => [
                 'name' => __('general.cmd_queue_failed_title'),
@@ -179,10 +153,7 @@ class Index extends Component
                 'signature' => 'queue:failed',
                 'category' => __('general.category_maintenance'),
                 'icon' => 'triangle-alert',
-                'action' => function () {
-                    RunArtisanCommandJob::dispatch('queue:failed');
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'sync',
             ],
             'update_quick' => [
                 'name' => __('general.quick_update'),
@@ -190,10 +161,8 @@ class Index extends Component
                 'signature' => 'Job: UpdateProject(Quick)',
                 'category' => __('general.category_maintenance'),
                 'icon' => 'play',
-                'action' => function () {
-                    UpdateProjectJob::dispatch(runComposer: false, runNpmBuild: false);
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'queue',
+                'job' => 'update_quick',
             ],
             'update_full' => [
                 'name' => __('general.full_update'),
@@ -201,21 +170,27 @@ class Index extends Component
                 'signature' => 'Job: UpdateProject(Full)',
                 'category' => __('general.category_maintenance'),
                 'icon' => 'play',
-                'action' => function () {
-                    UpdateProjectJob::dispatch(runComposer: true, runNpmBuild: true);
-                    return __('general.update_dispatched');
-                },
+                'mode' => 'queue',
+                'job' => 'update_full',
             ],
         ];
+    }
 
-        if (empty($this->search)) {
-            return [];
+    #[Computed]
+    public function commands(): array
+    {
+        $catalog = $this->commandCatalog();
+
+        if ($this->search === '') {
+            return $catalog;
         }
 
-        return array_filter($allCommands, function ($command) {
-            return str_contains(strtolower($command['name']), strtolower($this->search)) ||
-                   str_contains(strtolower($command['signature']), strtolower($this->search)) ||
-                   str_contains(strtolower($command['category']), strtolower($this->search));
+        return array_filter($catalog, function (array $command): bool {
+            $needle = mb_strtolower($this->search);
+
+            return str_contains(mb_strtolower($command['name']), $needle)
+                || str_contains(mb_strtolower($command['signature']), $needle)
+                || str_contains(mb_strtolower($command['category']), $needle);
         });
     }
 
@@ -223,53 +198,159 @@ class Index extends Component
     {
         $this->authorize('administrator_setting_function_index');
 
-        if (! array_key_exists($key, $this->commands)) {
+        $catalog = $this->commandCatalog();
+
+        if (! array_key_exists($key, $catalog)) {
             Flux::toast(__('general.error'), variant: 'danger');
+
             return;
         }
 
-        $command = $this->commands[$key];
-        $start = microtime(true);
+        $command = $catalog[$key];
+        $displayCommand = str_starts_with($command['signature'], 'Job:')
+            ? $command['signature']
+            : 'php artisan '.$command['signature'];
 
+        if (($command['mode'] ?? 'sync') === 'sync' && ! SystemCommandGuard::isAllowed($command['signature'])) {
+            Flux::toast(__('general.command_not_allowed'), variant: 'danger');
+
+            return;
+        }
+
+        $start = microtime(true);
         $log = null;
+
         try {
             $log = CommandLog::create([
-                'command' => 'php artisan ' . $command['signature'],
+                'command' => $displayCommand,
                 'status' => 'running',
+                'output' => __('general.command_queued'),
             ]);
 
-            $result = $command['action']();
+            $this->activeLogId = $log->id;
+            $this->lastCommand = $displayCommand;
 
-            $this->lastStatus = is_int($result) ? $result : 0;
-            $this->lastOutput = is_string($result) ? $result : Artisan::output();
-            $this->lastCommand = 'php artisan ' . $command['signature'];
-            $this->executionDuration = (int) ((microtime(true) - $start) * 1000);
+            if (($command['mode'] ?? 'sync') === 'queue') {
+                $this->dispatchQueuedCommand($command, $log->id);
+
+                $this->lastStatus = 0;
+                $this->lastOutput = __('general.command_queued');
+                $this->executionDuration = (int) ((microtime(true) - $start) * 1000);
+
+                $log->update([
+                    'output' => $this->lastOutput,
+                    'status_code' => 0,
+                    'execution_time_ms' => $this->executionDuration,
+                    'status' => 'running',
+                ]);
+
+                unset($this->logs, $this->hasRunningLogs, $this->selectedLog);
+                Flux::toast(__('general.update_dispatched'));
+
+                return;
+            }
+
+            $statusCode = Artisan::call($command['signature']);
+            $output = SystemCommandGuard::stripAnsi(Artisan::output());
+            $duration = (int) ((microtime(true) - $start) * 1000);
+
+            $this->lastStatus = $statusCode;
+            $this->lastOutput = $output !== '' ? $output : __('general.command_completed_no_output');
+            $this->executionDuration = $duration;
 
             $log->update([
                 'output' => $this->lastOutput,
-                'status_code' => $this->lastStatus,
-                'execution_time_ms' => $this->executionDuration,
-                'status' => $this->lastStatus === 0 ? 'success' : 'failed',
+                'status_code' => $statusCode,
+                'execution_time_ms' => $duration,
+                'status' => $statusCode === 0 ? 'success' : 'failed',
             ]);
 
-            Flux::toast(__('general.success'));
-        } catch (\Exception $e) {
+            $this->activeLogId = null;
+            unset($this->logs, $this->hasRunningLogs, $this->selectedLog);
+
+            Flux::toast(
+                variant: $statusCode === 0 ? 'success' : 'danger',
+                text: $statusCode === 0 ? __('general.success') : __('general.error'),
+            );
+        } catch (\Throwable $e) {
             $this->lastStatus = 1;
             $this->lastOutput = $e->getMessage();
-            $this->lastCommand = 'php artisan ' . $command['signature'];
+            $this->lastCommand = $displayCommand;
             $this->executionDuration = (int) ((microtime(true) - $start) * 1000);
+            $this->activeLogId = null;
 
-            if ($log) {
-                $log->update([
-                    'output' => $this->lastOutput,
-                    'status_code' => $this->lastStatus,
-                    'execution_time_ms' => $this->executionDuration,
-                    'status' => 'failed',
-                ]);
-            }
+            $log?->update([
+                'output' => $this->lastOutput,
+                'status_code' => 1,
+                'execution_time_ms' => $this->executionDuration,
+                'status' => 'failed',
+            ]);
 
+            unset($this->logs, $this->hasRunningLogs, $this->selectedLog);
             Flux::toast(__('general.error'), variant: 'danger');
         }
+    }
+
+    /**
+     * @param  array{signature: string, job?: string}  $command
+     */
+    protected function dispatchQueuedCommand(array $command, int $logId): void
+    {
+        if (($command['job'] ?? null) === 'update_quick') {
+            UpdateProjectJob::dispatch(runComposer: false, runNpmBuild: false, logId: $logId);
+
+            return;
+        }
+
+        if (($command['job'] ?? null) === 'update_full') {
+            UpdateProjectJob::dispatch(runComposer: true, runNpmBuild: true, logId: $logId);
+
+            return;
+        }
+
+        if (! SystemCommandGuard::isAllowed($command['signature'])) {
+            throw new \RuntimeException(__('general.command_not_allowed'));
+        }
+
+        RunArtisanCommandJob::dispatch($command['signature'], [], $logId);
+    }
+
+    public function refreshActiveLog(): void
+    {
+        if ($this->activeLogId) {
+            $log = CommandLog::find($this->activeLogId);
+
+            if (! $log) {
+                $this->activeLogId = null;
+            } else {
+                $this->lastCommand = $log->command;
+                $this->lastOutput = SystemCommandGuard::stripAnsi($log->output);
+                $this->lastStatus = (int) $log->status_code;
+                $this->executionDuration = (int) ($log->execution_time_ms ?? 0);
+
+                if (in_array($log->status, ['success', 'failed'], true)) {
+                    $this->activeLogId = null;
+                }
+            }
+        }
+
+        unset($this->logs, $this->hasRunningLogs, $this->selectedLog);
+    }
+
+    public function viewLog(int $id): void
+    {
+        $this->authorize('administrator_setting_function_index');
+
+        $log = CommandLog::findOrFail($id);
+
+        $this->selectedLogId = $log->id;
+        $this->lastCommand = $log->command;
+        $this->lastOutput = SystemCommandGuard::stripAnsi($log->output);
+        $this->lastStatus = (int) $log->status_code;
+        $this->executionDuration = (int) ($log->execution_time_ms ?? 0);
+
+        unset($this->selectedLog);
+        Flux::modal('panels.administrator.setting-management.function.command-log.detail')->show();
     }
 
     public function clearConsole(): void
@@ -278,12 +359,31 @@ class Index extends Component
         $this->lastOutput = '';
         $this->executionDuration = 0;
         $this->lastStatus = 0;
+        $this->activeLogId = null;
     }
 
     #[Computed]
-    public function recentLogs()
+    public function logs(): LengthAwarePaginator
     {
-        return CommandLog::latest()->take(10)->get();
+        return CommandLog::query()
+            ->latest()
+            ->paginate(config('general.per_page', 10));
+    }
+
+    #[Computed]
+    public function hasRunningLogs(): bool
+    {
+        return CommandLog::query()->where('status', 'running')->exists();
+    }
+
+    #[Computed]
+    public function selectedLog(): ?CommandLog
+    {
+        if (! $this->selectedLogId) {
+            return null;
+        }
+
+        return CommandLog::find($this->selectedLogId);
     }
 
     #[Layout('layouts.panels.administrator')]
