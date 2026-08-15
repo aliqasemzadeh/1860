@@ -500,6 +500,7 @@ return [
     'log_description' => 'توضیحات تغییرات',
     'log_details' => 'جزئیات لاگ',
     'log_status' => 'وضعیت',
+    'log_viewer' => 'لاگ‌ویور (LogViewer)',
     'login' => 'ورود',
     'login_successful' => 'ورود با موفقیت انجام شد.',
     'login_with_mobile' => 'ورود با موبایل',

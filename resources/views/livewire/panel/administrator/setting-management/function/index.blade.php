@@ -130,19 +130,31 @@
             </flux:card>
         @endif
 
-        <div>
-            <flux:heading size="lg" class="mb-4">{{ __('general.recent_logs') }}</flux:heading>
-            <flux:card class="!p-0">
-                <flux:table>
+        <flux:card class="space-y-4">
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <flux:heading size="lg">{{ __('general.recent_commands') }}</flux:heading>
+                    @if ($this->runningCommands > 0)
+                        <flux:badge size="sm" color="amber">
+                            {{ __('general.running_commands') }}: {{ $this->runningCommands }}
+                        </flux:badge>
+                    @endif
+                </div>
+            </div>
+
+            @if ($this->logs->isEmpty())
+                <flux:text class="text-sm text-zinc-500">{{ __('general.no_command_logs') }}</flux:text>
+            @else
+                <flux:table :paginate="$this->logs">
                     <flux:table.columns>
                         <flux:table.column>{{ __('general.command') }}</flux:table.column>
                         <flux:table.column>{{ __('general.status') }}</flux:table.column>
                         <flux:table.column>{{ __('general.execution_time') }}</flux:table.column>
                         <flux:table.column>{{ __('general.date') }}</flux:table.column>
-                        <flux:table.column align="end"></flux:table.column>
+                        <flux:table.column align="end">{{ __('general.actions') }}</flux:table.column>
                     </flux:table.columns>
                     <flux:table.rows>
-                        @forelse($this->logs as $log)
+                        @foreach ($this->logs as $log)
                             <flux:table.row :key="$log->id">
                                 <flux:table.cell class="max-w-xs truncate font-mono text-xs" title="{{ $log->command }}">
                                     {{ $log->command }}
@@ -150,25 +162,25 @@
                                 <flux:table.cell>
                                     <flux:badge
                                         size="sm"
-                                        :color="$log->status === 'success' ? 'teal' : ($log->status === 'running' ? 'blue' : 'red')"
+                                        :color="$log->status === 'success' ? 'teal' : ($log->status === 'running' ? 'amber' : 'red')"
                                     >
                                         {{ __('general.' . $log->status) }}
                                     </flux:badge>
                                 </flux:table.cell>
-                                <flux:table.cell class="text-xs">
+                                <flux:table.cell>
                                     {{ $log->execution_time_ms ? $log->execution_time_ms . 'ms' : '-' }}
                                 </flux:table.cell>
-                                <flux:table.cell class="whitespace-nowrap text-xs">
-                                    {{ jalali($log->created_at) }}
+                                <flux:table.cell class="whitespace-nowrap">
+                                    {{ jalali($log->created_at, 'Y/m/d H:i') }}
                                 </flux:table.cell>
                                 <flux:table.cell align="end">
-                                    <div class="flex items-center justify-end gap-1">
+                                    <div class="flex items-center justify-end gap-2">
                                         @if($log->status !== 'running')
                                             <flux:tooltip content="{{ __('general.rerun') }}">
                                                 <flux:button
                                                     size="xs"
                                                     variant="primary"
-                                                    color="orange"
+                                                    color="blue"
                                                     icon="rotate-cw"
                                                     icon:variant="outline"
                                                     wire:click="rerunLog({{ $log->id }})"
@@ -180,7 +192,7 @@
                                             <flux:button
                                                 size="xs"
                                                 variant="primary"
-                                                color="cyan"
+                                                color="teal"
                                                 icon="eye"
                                                 icon:variant="outline"
                                                 wire:click="viewLog({{ $log->id }})"
@@ -189,21 +201,11 @@
                                     </div>
                                 </flux:table.cell>
                             </flux:table.row>
-                        @empty
-                            <flux:table.row>
-                                <flux:table.cell colspan="5" class="text-center text-sm text-zinc-500">
-                                    {{ __('general.no_command_logs') }}
-                                </flux:table.cell>
-                            </flux:table.row>
-                        @endforelse
+                        @endforeach
                     </flux:table.rows>
                 </flux:table>
-            </flux:card>
-
-            <div class="mt-4">
-                {{ $this->logs->links() }}
-            </div>
-        </div>
+            @endif
+        </flux:card>
     </div>
 
     <flux:modal name="panels.administrator.setting-management.function.command-log.detail" class="md:w-[42rem]" flyout position="right">

@@ -500,6 +500,7 @@ return [
     'log_description' => 'Log Description',
     'log_details' => 'Log Details',
     'log_status' => 'Log Status',
+    'log_viewer' => 'LogViewer',
     'login' => 'Login',
     'login_successful' => 'Login successful.',
     'login_with_mobile' => 'Login with Mobile',

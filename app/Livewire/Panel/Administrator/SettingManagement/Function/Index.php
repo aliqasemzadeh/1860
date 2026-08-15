@@ -505,6 +505,14 @@ class Index extends Component
     }
 
     #[Computed]
+    public function runningCommands(): int
+    {
+        return CommandLog::query()
+            ->where('status', 'running')
+            ->count();
+    }
+
+    #[Computed]
     public function selectedLog(): ?CommandLog
     {
         if (! $this->selectedLogId) {

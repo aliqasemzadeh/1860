@@ -21,6 +21,7 @@
             <flux:sidebar.item href="{{ route('panel.administrator.setting-management.function.index') }}" wire:navigate>{{ __('general.function') }}</flux:sidebar.item>
             <flux:sidebar.item href="{{ route('panel.administrator.setting-management.backup.index') }}" wire:navigate>{{ __('general.backup') }}</flux:sidebar.item>
             <flux:sidebar.item href="{{ route('panel.administrator.setting-management.option.index') }}" wire:navigate>{{ __('general.options') }}</flux:sidebar.item>
+            <flux:sidebar.item href="{{ route('log-viewer.index') }}" target="_blank">{{ __('general.log_viewer') }}</flux:sidebar.item>
         </flux:sidebar.group>
     </flux:sidebar.nav>
 

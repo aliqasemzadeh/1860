@@ -36,5 +36,15 @@ class AppServiceProvider extends ServiceProvider
 
             return null;
         });
+
+        Gate::define('viewLogViewer', function ($user = null) {
+            if ($user === null) {
+                return app()->environment('local');
+            }
+
+            return $user->can('administrator_access')
+                || $user->hasRole('administrator')
+                || app()->environment('local');
+        });
     }
 }
