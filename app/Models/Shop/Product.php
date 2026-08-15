@@ -5,6 +5,7 @@ namespace App\Models\Shop;
 use App\Models\Shop\PriceFetcher;
 use App\Services\Shop\SitemapService;
 use Binafy\LaravelCart\Cartable;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,10 +15,27 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Spatie\Tags\HasTags;
 
+#[Fillable([
+    'name',
+    'en_name',
+    'description',
+    'slug',
+    'slug_fa',
+    'file_path',
+    'file_name',
+    'weight',
+    'x_dimension',
+    'y_dimension',
+    'z_dimension',
+    'category_id',
+    'brand_id',
+    'unit_id',
+])]
 class Product extends Model implements Cartable
 {
-    use SoftDeletes;
+    use SoftDeletes, HasTags;
 
     protected static function booted(): void
     {
@@ -28,27 +46,6 @@ class Product extends Model implements Cartable
         static::restored($invalidateSitemap);
         static::forceDeleted($invalidateSitemap);
     }
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'description',
-        'slug',
-        'slug_fa',
-        'file_path',
-        'file_name',
-        'weight',
-        'x_dimension',
-        'y_dimension',
-        'z_dimension',
-        'category_id',
-        'brand_id',
-        'unit_id',
-    ];
 
     /**
      * Get the category that owns the product.
