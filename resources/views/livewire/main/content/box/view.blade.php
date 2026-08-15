@@ -26,7 +26,7 @@ new class extends Component {
     #[Computed]
     public function products()
     {
-        return $this->box->products()->withEffectivePrice()->paginate(12, pageName: 'products-page');
+        return $this->box->products()->select('products.*')->withEffectivePrice()->paginate(12, pageName: 'products-page');
     }
 
     #[Computed]
