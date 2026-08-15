@@ -128,6 +128,7 @@ return [
     'content' => 'Content',
     'posts' => 'Posts',
     'posts_description' => 'Manage posts, tags, and product relationships.',
+    'manage_boxes_description' => 'Manage brand and product display boxes on the home page.',
     'create_post' => 'Create Post',
     'edit_post' => 'Edit Post',
     'create_post_description' => 'Create a new post.',

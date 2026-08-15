@@ -1012,6 +1012,7 @@ return [
     'content' => 'محتوا',
     'posts' => 'نوشته‌ها',
     'posts_description' => 'مدیریت نوشته‌ها، برچسب‌ها و ارتباط با محصولات.',
+    'manage_boxes_description' => 'مدیریت باکس‌های نمایشی برند و محصول در صفحه اصلی.',
     'create_post' => 'ایجاد نوشته',
     'edit_post' => 'ویرایش نوشته',
     'create_post_description' => 'یک نوشته جدید ایجاد کنید.',
