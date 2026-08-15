@@ -4,12 +4,14 @@ namespace App\Livewire\Panel\Administrator\SettingManagement\Function;
 
 use App\Jobs\System\UpdateProjectJob;
 use App\Jobs\System\RunArtisanCommandJob;
+use App\Models\System\CommandLog;
 use App\Services\Shop\SitemapService;
 use Flux\Flux;
 use Illuminate\Support\Facades\Artisan;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\Attributes\On;
 
 class Index extends Component
 {
@@ -254,6 +256,18 @@ class Index extends Component
         $this->lastOutput = '';
         $this->executionDuration = 0;
         $this->lastStatus = 0;
+    }
+
+    #[Computed]
+    public function recentLogs()
+    {
+        return CommandLog::latest()->take(10)->get();
+    }
+
+    #[On('echo:commands,System.CommandLogUpdated')]
+    public function refreshLogs(): void
+    {
+        // This will trigger a re-render and refresh the computed property
     }
 
     #[Layout('layouts.panels.administrator')]

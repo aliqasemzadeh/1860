@@ -7,11 +7,14 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
+use App\Models\System\CommandLog;
 use Throwable;
 
 class UpdateProjectJob implements ShouldQueue
 {
     use Queueable;
+
+    protected ?CommandLog $currentLog = null;
 
     public function __construct(
         public bool $runComposer = false,
@@ -20,41 +23,74 @@ class UpdateProjectJob implements ShouldQueue
 
     public function handle(): void
     {
-        if (! $this->gitPull()) {
-            return;
+        $start = microtime(true);
+        $this->currentLog = CommandLog::create([
+            'command' => 'UpdateProjectJob',
+            'parameters' => ['runComposer' => $this->runComposer, 'runNpmBuild' => $this->runNpmBuild],
+            'status' => 'running',
+        ]);
+
+        Log::channel('commands')->info('Starting project update job...', ['log_id' => $this->currentLog->id]);
+
+        try {
+            if (! $this->gitPull()) {
+                $this->failJob('Git pull failed');
+                return;
+            }
+
+            if ($this->runComposer) {
+                $this->runComposerUpdate();
+            }
+
+            $this->runMigrations();
+            $this->clearCache();
+            $this->clearRoute();
+            $this->clearView();
+
+            if ($this->runNpmBuild) {
+                $this->addTheme();
+            }
+
+            $this->restartQueue();
+
+            $duration = (int) ((microtime(true) - $start) * 1000);
+            $this->currentLog->update([
+                'status' => 'success',
+                'execution_time_ms' => $duration,
+                'status_code' => 0,
+            ]);
+            Log::channel('commands')->info('Project update job completed successfully.', ['duration_ms' => $duration]);
+
+        } catch (Throwable $e) {
+            $this->failJob($e->getMessage(), $start);
         }
+    }
 
-        if ($this->runComposer) {
-            $this->runComposerUpdate();
-        }
-
-        $this->runMigrations();
-        $this->clearCache();
-        $this->clearRoute();
-        $this->clearView();
-
-        if ($this->runNpmBuild) {
-            $this->addTheme();
-        }
-
-        $this->restartQueue();
+    protected function failJob(string $message, ?float $startTime = null): void
+    {
+        $duration = $startTime ? (int) ((microtime(true) - $startTime) * 1000) : null;
+        $this->currentLog?->update([
+            'status' => 'failed',
+            'output' => ($this->currentLog->output ?? '') . "\nFATAL ERROR: " . $message,
+            'status_code' => 1,
+            'execution_time_ms' => $duration,
+        ]);
+        Log::channel('commands')->error('Project update job failed: ' . $message);
     }
 
     protected function gitPull(): bool
     {
-        Log::info('Starting project update (git pull)...');
+        Log::channel('commands')->info('Executing git pull...');
 
         $process = Process::forever()
             ->path(base_path())
             ->run('git pull');
 
-        if ($process->successful()) {
-            Log::info("Git pull successful:\n".$process->output());
+        $this->appendToOutput("Git Pull:\n" . ($process->successful() ? $process->output() : $process->errorOutput()));
 
+        if ($process->successful()) {
             return true;
         }
-
-        Log::error("Git pull failed:\n".$process->errorOutput());
 
         return false;
     }
@@ -66,22 +102,16 @@ class UpdateProjectJob implements ShouldQueue
 
     protected function runComposerUpdate(): void
     {
-        Log::info('Running composer install...');
+        Log::channel('commands')->info('Running composer install...');
 
         try {
             $process = Process::forever()
                 ->path(base_path())
                 ->run($this->composerCommand().' install --no-dev --optimize-autoloader --no-interaction');
 
-            if ($process->successful()) {
-                Log::info("Composer install successful:\n".$process->output());
-
-                return;
-            }
-
-            Log::error("Composer install failed:\n".$process->errorOutput());
+            $this->appendToOutput("Composer Install:\n" . ($process->successful() ? $process->output() : $process->errorOutput()));
         } catch (Throwable $exception) {
-            Log::error('Composer install failed: '.$exception->getMessage());
+            $this->appendToOutput("Composer Install Exception: " . $exception->getMessage());
         }
     }
 
@@ -102,22 +132,16 @@ class UpdateProjectJob implements ShouldQueue
 
     protected function addTheme(): void
     {
-        Log::info('Building theme assets (npm run build)...');
+        Log::channel('commands')->info('Building theme assets...');
 
         try {
             $process = Process::forever()
                 ->path(base_path())
                 ->run($this->npmCommand().' run build');
 
-            if ($process->successful()) {
-                Log::info("Theme build successful:\n".$process->output());
-
-                return;
-            }
-
-            Log::error("Theme build failed:\n".$process->errorOutput());
+            $this->appendToOutput("NPM Build:\n" . ($process->successful() ? $process->output() : $process->errorOutput()));
         } catch (Throwable $exception) {
-            Log::error('Theme build failed: '.$exception->getMessage());
+            $this->appendToOutput("NPM Build Exception: " . $exception->getMessage());
         }
     }
 
@@ -128,11 +152,19 @@ class UpdateProjectJob implements ShouldQueue
 
     protected function runArtisan(string $command, array $parameters = []): void
     {
-        Log::info("{$command}...");
+        Log::channel('commands')->info("Running artisan {$command}...");
 
         Artisan::call($command, $parameters);
+        $output = Artisan::output();
 
-        Log::info("{$command}:\n".Artisan::output());
+        $this->appendToOutput("Artisan {$command}:\n" . $output);
+    }
+
+    protected function appendToOutput(string $text): void
+    {
+        $this->currentLog?->update([
+            'output' => ($this->currentLog->output ?? '') . "\n" . $text
+        ]);
     }
 
     protected function npmCommand(): string
