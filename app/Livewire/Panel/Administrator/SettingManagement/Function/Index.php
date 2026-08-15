@@ -43,7 +43,7 @@ class Index extends Component
      */
     protected function commandCatalog(): array
     {
-        return [
+        $catalog = [
             'cache_clear' => [
                 'name' => __('general.cmd_cache_clear_title'),
                 'description' => __('general.cmd_cache_clear_desc'),
@@ -57,7 +57,7 @@ class Index extends Component
                 'description' => __('general.cmd_optimize_desc'),
                 'signature' => 'optimize',
                 'category' => __('general.category_cache'),
-                'icon' => 'zap',
+                'icon' => 'sparkles',
                 'mode' => 'sync',
             ],
             'optimize_clear' => [
@@ -162,7 +162,7 @@ class Index extends Component
                 'description' => __('general.are_you_sure'),
                 'signature' => 'Job: UpdateProject(Quick)',
                 'category' => __('general.category_maintenance'),
-                'icon' => 'play',
+                'icon' => 'zap',
                 'mode' => 'queue',
                 'job' => 'update_quick',
             ],
@@ -171,11 +171,17 @@ class Index extends Component
                 'description' => __('general.are_you_sure'),
                 'signature' => 'Job: UpdateProject(Full)',
                 'category' => __('general.category_maintenance'),
-                'icon' => 'play',
+                'icon' => 'refresh-cw',
                 'mode' => 'queue',
                 'job' => 'update_full',
             ],
         ];
+
+        foreach ($catalog as $key => $command) {
+            $catalog[$key]['key'] = $key;
+        }
+
+        return $catalog;
     }
 
     #[Computed]
@@ -196,14 +202,28 @@ class Index extends Component
         });
     }
 
+    public function runQuickUpdate(): void
+    {
+        $this->runCommand('update_quick');
+    }
+
+    public function runFullUpdate(): void
+    {
+        $this->runCommand('update_full');
+    }
+
     public function runCommand(string $key): void
     {
         $this->authorize('administrator_setting_function_index');
 
+        $key = trim($key);
         $catalog = $this->commandCatalog();
 
-        if (! array_key_exists($key, $catalog)) {
-            Flux::toast(__('general.error'), variant: 'danger');
+        if ($key === '' || ! array_key_exists($key, $catalog)) {
+            Flux::toast(
+                variant: 'danger',
+                text: __('general.command_not_found', ['key' => $key !== '' ? $key : '-']),
+            );
 
             return;
         }

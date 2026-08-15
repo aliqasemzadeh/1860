@@ -13,9 +13,10 @@
                 <flux:button
                     variant="primary"
                     color="teal"
-                    icon="bolt"
-                    class="w-full"
-                    wire:click="runCommand('update_quick')"
+                    size="lg"
+                    icon="zap"
+                    class="w-full py-4 text-base"
+                    wire:click="runQuickUpdate"
                     wire:confirm="{{ __('general.are_you_sure') }}"
                 >
                     {{ __('general.quick_update') }}
@@ -24,9 +25,10 @@
                 <flux:button
                     variant="primary"
                     color="blue"
+                    size="lg"
                     icon="refresh-cw"
-                    class="w-full"
-                    wire:click="runCommand('update_full')"
+                    class="w-full py-4 text-base"
+                    wire:click="runFullUpdate"
                     wire:confirm="{{ __('general.are_you_sure') }}"
                 >
                     {{ __('general.full_update') }}
@@ -43,9 +45,9 @@
                             {{ $category }}
                         </flux:autocomplete.item>
 
-                        @foreach($items as $key => $command)
+                        @foreach($items as $command)
                             <flux:autocomplete.item
-                                wire:click="runCommand('{{ $key }}')"
+                                wire:click="runCommand('{{ $command['key'] }}')"
                                 icon="{{ $command['icon'] }}"
                             >
                                 <div class="flex flex-col">
@@ -64,7 +66,7 @@
                 </flux:autocomplete>
             </flux:card>
 
-            <div wire:loading.flex wire:target="runCommand" class="items-center gap-2 text-sm text-zinc-500">
+            <div wire:loading.flex wire:target="runCommand, runQuickUpdate, runFullUpdate" class="items-center gap-2 text-sm text-zinc-500">
                 <flux:icon.rotate-cw class="h-4 w-4 animate-spin" />
                 <span>{{ __('general.run_command') }}...</span>
             </div>
@@ -76,11 +78,11 @@
                             <flux:icon.terminal class="h-4 w-4 text-zinc-500" />
                             <span class="text-xs font-medium text-zinc-700 dark:text-zinc-300">{{ __('general.terminal') }}</span>
                             @if($activeLogId)
-                                <flux:badge size="sm" :inset="false" color="blue">
+                                <flux:badge size="sm" color="blue">
                                     {{ __('general.running') }}
                                 </flux:badge>
                             @else
-                                <flux:badge size="sm" :inset="false" :color="$lastStatus === 0 ? 'teal' : 'red'">
+                                <flux:badge size="sm" :color="$lastStatus === 0 ? 'teal' : 'red'">
                                     {{ $lastStatus === 0 ? __('general.success') : __('general.error') }}
                                 </flux:badge>
                             @endif

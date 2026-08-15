@@ -161,6 +161,7 @@ return [
     'command_queued' => 'دستور در صف اجرا قرار گرفت. نتیجه به‌زودی در تاریخچه و ترمینال نمایش داده می‌شود.',
     'command_completed_no_output' => 'دستور با موفقیت اجرا شد (بدون خروجی).',
     'command_not_allowed' => 'این دستور مجاز نیست.',
+    'command_not_found' => 'دستور پیدا نشد (:key).',
     'view_output' => 'مشاهده خروجی',
     'no_command_logs' => 'هنوز تاریخچه اجرایی ثبت نشده است.',
     'status_code' => 'کد وضعیت',

@@ -160,6 +160,7 @@ return [
     'command_queued' => 'Command queued. Output will appear in history and the terminal shortly.',
     'command_completed_no_output' => 'Command completed successfully (no output).',
     'command_not_allowed' => 'This command is not allowed.',
+    'command_not_found' => 'Command not found (:key).',
     'view_output' => 'View Output',
     'no_command_logs' => 'No command history yet.',
     'status_code' => 'Status Code',
