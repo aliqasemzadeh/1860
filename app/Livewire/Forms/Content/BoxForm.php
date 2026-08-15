@@ -63,7 +63,7 @@ class BoxForm extends Form
 
         $box->products()->sync($this->product_ids);
 
-        $this->reset();
+        $this->reset(['title_fa', 'title_en', 'color_theme', 'is_active', 'product_ids', 'image']);
     }
 
     public function update()

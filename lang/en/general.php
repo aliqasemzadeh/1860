@@ -39,6 +39,8 @@ return [
     'accent_color' => 'Accent Color',
     'sort_order' => 'Sort Order',
     'is_active' => 'Is Active',
+    'title_fa' => 'Farsi Title',
+    'title_en' => 'English Title',
     'save' => 'Save',
     'edit' => 'Edit',
     'delete' => 'Delete',

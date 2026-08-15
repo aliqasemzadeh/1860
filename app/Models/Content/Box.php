@@ -12,16 +12,17 @@ use Spatie\EloquentSortable\SortableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-#[Fillable([
-    'title_fa',
-    'title_en',
-    'color_theme',
-    'is_active',
-    'sort_order',
-])]
 class Box extends Model implements HasMedia, Sortable
 {
     use InteractsWithMedia, SortableTrait;
+
+    protected $fillable = [
+        'title_fa',
+        'title_en',
+        'color_theme',
+        'is_active',
+        'sort_order',
+    ];
 
     protected $casts = [
         'color_theme' => 'json',

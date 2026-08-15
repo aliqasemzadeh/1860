@@ -39,6 +39,8 @@ return [
     'accent_color' => 'رنگ تاکید',
     'sort_order' => 'ترتیب نمایش',
     'is_active' => 'وضعیت فعال',
+    'title_fa' => 'عنوان فارسی',
+    'title_en' => 'عنوان انگلیسی',
     'save' => 'ذخیره',
     'edit' => 'ویرایش',
     'delete' => 'حذف',
