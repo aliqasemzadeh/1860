@@ -183,4 +183,12 @@ return [
         'shop_shipping_rate_edit' => 'Edit Shipping Rate',
         'shop_shipping_rate_delete' => 'Delete Shipping Rate',
     ],
+
+    'content' => [
+        'content_access' => 'Content Management',
+        'content_post_index' => 'Posts List',
+        'content_post_create' => 'Create Post',
+        'content_post_edit' => 'Edit Post',
+        'content_post_delete' => 'Delete Post',
+    ],
 ];

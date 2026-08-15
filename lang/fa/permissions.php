@@ -184,4 +184,12 @@ return [
         'shop_shipping_rate_edit' => 'ویرایش نرخ ارسال',
         'shop_shipping_rate_delete' => 'حذف نرخ ارسال',
     ],
+
+    'content' => [
+        'content_access' => 'مدیریت محتوا',
+        'content_post_index' => 'فهرست نوشته‌ها',
+        'content_post_create' => 'ایجاد نوشته',
+        'content_post_edit' => 'ویرایش نوشته',
+        'content_post_delete' => 'حذف نوشته',
+    ],
 ];

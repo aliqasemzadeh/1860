@@ -2,10 +2,9 @@
 
 namespace App\Models\Shop;
 
-use App\Models\Shop\PriceFetcher;
+use App\Models\Content\Post;
 use App\Services\Shop\SitemapService;
 use Binafy\LaravelCart\Cartable;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,7 +35,7 @@ class Product extends Model implements Cartable
         'unit_id',
     ];
 
-    use SoftDeletes, HasTags;
+    use HasTags, SoftDeletes;
 
     protected static function booted(): void
     {
@@ -90,6 +89,14 @@ class Product extends Model implements Cartable
         return $this->belongsToMany(Warranty::class, 'product_warranties')
             ->using(ProductWarranty::class)
             ->withTimestamps();
+    }
+
+    /**
+     * Get the content posts related to the product.
+     */
+    public function posts(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'post_product')->withTimestamps();
     }
 
     public function prices(): HasMany

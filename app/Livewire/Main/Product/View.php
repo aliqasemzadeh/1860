@@ -190,13 +190,13 @@ class View extends Component
     public function currentImage()
     {
         $images = $this->allImages();
-        
+
         if ($images->isEmpty()) {
             return null;
         }
 
         $index = min($this->selectedImageIndex, $images->count() - 1);
-        
+
         return $images->get($index);
     }
 
@@ -300,8 +300,24 @@ class View extends Component
             Flux::modal('main.sidebar.basket.modal')->show();
         } catch (\Exception $e) {
             Flux::toast(variant: 'danger', text: $e->getMessage());
-            //Flux::toast(variant: 'danger', text: __('general.failed_to_add_to_cart'));
+            // Flux::toast(variant: 'danger', text: __('general.failed_to_add_to_cart'));
         }
+    }
+
+    #[Computed]
+    public function relatedPosts()
+    {
+        if (! $this->product) {
+            return collect();
+        }
+
+        return $this->product
+            ->posts()
+            ->published()
+            ->with('tags')
+            ->orderByDesc('published_at')
+            ->limit(4)
+            ->get();
     }
 
     public function render()

@@ -546,6 +546,34 @@
                 </div>
             </div>
         </section>
+
+        @if ($this->relatedPosts->isNotEmpty())
+            <section class="border-t border-zinc-200 py-10 antialiased dark:border-zinc-700 md:py-12">
+                <div class="mx-auto max-w-7xl px-4 2xl:px-0">
+                    <flux:heading size="lg" class="mb-6">{{ __('app.related_posts') }}</flux:heading>
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                        @foreach ($this->relatedPosts as $post)
+                            <a href="{{ $post->url }}" wire:navigate class="group block space-y-3 transition-opacity hover:opacity-90">
+                                @if ($post->featured_image_url)
+                                    <img
+                                        src="{{ $post->featured_image_url }}"
+                                        alt="{{ $post->title }}"
+                                        class="h-40 w-full rounded-xl object-cover"
+                                    />
+                                @endif
+                                <flux:heading size="sm">{{ $post->title }}</flux:heading>
+                                @if ($post->published_at)
+                                    <flux:text class="text-sm text-zinc-500">{{ jalali($post->published_at, 'Y/m/d') }}</flux:text>
+                                @endif
+                                @if ($post->summary)
+                                    <flux:text class="line-clamp-2 text-zinc-600 dark:text-zinc-300">{{ $post->summary }}</flux:text>
+                                @endif
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            </section>
+        @endif
     @else
         <section class="py-16 antialiased">
             <div class="mx-auto max-w-7xl px-4 2xl:px-0">

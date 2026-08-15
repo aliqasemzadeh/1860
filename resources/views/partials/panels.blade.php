@@ -5,6 +5,9 @@
     @can('shop_access')
     <flux:sidebar.item icon="boxes" href="{{ route('panel.shop.dashboard.index') }}">{{ __('app.shop') }}</flux:sidebar.item>
     @endcan
+    @can('content_access')
+        <flux:sidebar.item icon="newspaper" href="{{ route('panel.content.post.index') }}">{{ __('app.content') }}</flux:sidebar.item>
+    @endcan
     @can('administrator_access')
     <flux:sidebar.item icon="settings" href="{{ route('panel.administrator.dashboard.index') }}">{{ __('app.administrator') }}</flux:sidebar.item>
     @endcan

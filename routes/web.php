@@ -12,6 +12,13 @@ Route::get('/product/{id}/{slug?}', \App\Livewire\Main\Product\View::class)
     ->whereNumber('id')
     ->name('product.view');
 
+Route::get('/post/{slug}', \App\Livewire\Main\Content\Post\View::class)
+    ->name('post.view');
+
+Route::get('/tag/{id}/{slug?}', \App\Livewire\Main\Content\Tag\View::class)
+    ->whereNumber('id')
+    ->name('tag.view');
+
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
@@ -97,6 +104,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/panel/shop/shipping/method/index', \App\Livewire\Panel\Shop\Shipping\Method\Index::class)->name('panel.shop.shipping.method.index');
     Route::get('/panel/shop/shipping/zone/index', \App\Livewire\Panel\Shop\Shipping\Zone\Index::class)->name('panel.shop.shipping.zone.index');
     Route::get('/panel/shop/shipping/rate/index', \App\Livewire\Panel\Shop\Shipping\Rate\Index::class)->name('panel.shop.shipping.rate.index');
+
+    Route::get('/panel/content/post/index', \App\Livewire\Panel\Content\Post\Index::class)
+        ->name('panel.content.post.index');
 
 });
 
