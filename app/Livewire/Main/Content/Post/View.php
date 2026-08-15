@@ -30,7 +30,7 @@ class View extends Component
 
         return Post::query()
             ->published()
-            ->with(['tags', 'products'])
+            ->with(['tags', 'products' => fn ($q) => $q->select('products.*')->withEffectivePrice()])
             ->where('slug', $this->slug)
             ->first();
     }

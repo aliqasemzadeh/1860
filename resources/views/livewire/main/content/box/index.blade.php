@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
             $logoUrl = $box->getFirstMediaUrl('box_images');
         @endphp
         <section
-            class="py-8 my-8 rounded-2xl overflow-hidden transition-all duration-500 bg-[var(--box-bg)] text-[var(--box-text)] dark:bg-zinc-900 dark:text-zinc-100"
+            class="py-8 my-8 rounded-3xl overflow-hidden transition-all duration-300 bg-[var(--box-bg)] text-[var(--box-text)] dark:bg-zinc-900 dark:text-zinc-100 border border-transparent dark:border-zinc-800 shadow-sm"
             style="--box-bg: {{ $bgColor }}; --box-text: {{ $textColor }};"
         >
             <div class="mx-auto max-w-7xl px-4 2xl:px-0">
@@ -25,12 +25,14 @@ use Illuminate\Support\Facades\Storage;
                             <img
                                 src="{{ $logoUrl }}"
                                 alt="{{ $box->title_fa }}"
-                                class="h-10 w-10 md:h-12 md:w-12 object-contain rounded-lg bg-white/90 dark:bg-zinc-800/90 p-1 shadow-sm group-hover/title:scale-105 transition-transform"
+                                class="h-10 w-10 md:h-12 md:w-12 object-contain rounded-xl bg-white/95 dark:bg-zinc-800/95 p-1.5 shadow-sm border border-zinc-200/50 dark:border-zinc-700/60 group-hover/title:scale-105 transition-transform"
                             />
                         @else
                             <div class="w-2 h-8 rounded-full" style="background-color: {{ $accentColor }};"></div>
                         @endif
-                        <flux:heading size="xl" class="text-[var(--box-text)] dark:text-zinc-100 group-hover/title:underline">{{ $box->title_fa }}</flux:heading>
+                        <flux:heading size="xl" class="text-[var(--box-text)] dark:text-zinc-100 group-hover/title:underline font-bold">
+                            {{ $box->title_fa }}
+                        </flux:heading>
                     </a>
                     <div class="flex items-center gap-2">
                         <flux:carousel.controls name="box-{{ $box->id }}-carousel" class="text-[var(--box-text)] dark:text-zinc-100" />
@@ -39,7 +41,7 @@ use Illuminate\Support\Facades\Storage;
                             wire:navigate
                             variant="ghost"
                             icon-trailing="chevron-left"
-                            class="text-[var(--box-text)] dark:text-zinc-100"
+                            class="text-[var(--box-text)] dark:text-zinc-100 hover:bg-black/5 dark:hover:bg-white/10"
                         >
                             {{ __('general.view_all') }}
                         </flux:button>
@@ -53,10 +55,10 @@ use Illuminate\Support\Facades\Storage;
                                 href="{{ $product->url }}"
                                 wire:navigate
                                 wire:key="box-{{ $box->id }}-product-{{ $product->id }}"
-                                class="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col h-full block"
+                                class="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col h-full block rounded-2xl"
                             >
-                                <flux:card class="h-full flex flex-col p-1">
-                                    <div class="relative aspect-square w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 rounded-t-lg">
+                                <flux:card class="h-full flex flex-col p-3 bg-white dark:bg-zinc-800/90 border border-zinc-200/80 dark:border-zinc-700/70">
+                                    <div class="relative aspect-square w-full overflow-hidden bg-zinc-50 dark:bg-zinc-900 rounded-xl mb-3">
                                         @if($product->file_path)
                                             <img
                                                 src="{{ Storage::url($product->file_path) }}"
@@ -64,48 +66,46 @@ use Illuminate\Support\Facades\Storage;
                                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                             />
                                         @else
-                                            <div class="w-full h-full flex items-center justify-center text-zinc-400">
-                                                <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                                </svg>
+                                            <div class="w-full h-full flex items-center justify-center text-zinc-300 dark:text-zinc-600">
+                                                <flux:icon.image size="lg" />
                                             </div>
                                         @endif
 
                                         @if($product->sale_price && $product->price && $product->sale_price < $product->price)
-                                            <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                                            <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-sm">
                                                 {{ __('general.discount') }}
                                             </div>
                                         @endif
                                     </div>
 
-                                    <div class="p-4 flex flex-col flex-grow items-center">
+                                    <div class="flex flex-col flex-grow items-center text-center">
                                         <flux:heading
                                             size="sm"
-                                            class="mb-2 line-clamp-3 min-h-[3rem] text-center group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors"
+                                            class="mb-3 line-clamp-2 min-h-[2.75rem] text-zinc-900 dark:text-zinc-100 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors leading-snug"
                                         >
                                             {{ $product->name }}
                                         </flux:heading>
 
-                                        <div class="mt-auto pt-3 border-t border-zinc-200 dark:border-zinc-700 w-full">
+                                        <div class="mt-auto pt-3 border-t border-zinc-100 dark:border-zinc-700/70 w-full">
                                             @if($product->price)
                                                 <div class="flex items-center justify-center gap-2">
                                                     @if($product->sale_price && $product->sale_price < $product->price)
                                                         <div class="flex flex-col items-center">
-                                                            <div class="text-lg font-bold text-green-600 dark:text-green-400">
+                                                            <div class="text-base font-bold text-emerald-600 dark:text-emerald-400">
                                                                 {{ number_format($product->sale_price, 0) }} {{ __('general.toman') }}
                                                             </div>
-                                                            <div class="text-sm text-zinc-400 dark:text-zinc-500 line-through">
+                                                            <div class="text-xs text-zinc-400 dark:text-zinc-500 line-through">
                                                                 {{ number_format($product->price, 0) }} {{ __('general.toman') }}
                                                             </div>
                                                         </div>
                                                     @else
-                                                        <div class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+                                                        <div class="text-base font-bold text-zinc-900 dark:text-zinc-100">
                                                             {{ number_format($product->price, 0) }} {{ __('general.toman') }}
                                                         </div>
                                                     @endif
                                                 </div>
                                             @else
-                                                <div class="text-sm text-zinc-400 dark:text-zinc-500 text-center">
+                                                <div class="text-xs text-zinc-400 dark:text-zinc-500 text-center">
                                                     {{ __('general.price_not_available') }}
                                                 </div>
                                             @endif
