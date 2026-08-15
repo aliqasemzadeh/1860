@@ -1,32 +1,5 @@
-<?php
-
-use App\Models\Content\Box;
-use Jenssegers\Agent\Agent;
-use Livewire\Attributes\Computed;
-use Livewire\Component;
-
-new class extends Component {
-    #[Computed]
-    public function boxes()
-    {
-        $agent = new Agent();
-        $isMobile = $agent->isMobile();
-        $productCount = $isMobile ? 3 : 6;
-
-        return Box::query()
-            ->where('is_active', true)
-            ->ordered()
-            ->with([
-                'products' => function ($query) use ($productCount) {
-                    $query->select('products.*')->inRandomOrder()->take($productCount)->withEffectivePrice();
-                }
-            ])
-            ->get();
-    }
-}; ?>
-
 <div>
-    @foreach($this->boxes() as $box)
+    @foreach($this->boxes as $box)
         @php
             $theme = $box->color_theme ?? [];
             $bgColor = $theme['bg'] ?? '#ffffff';
