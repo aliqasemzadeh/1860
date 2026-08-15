@@ -5,6 +5,7 @@ namespace App\Livewire\Panel\Administrator\SettingManagement\Function;
 use App\Jobs\System\RunArtisanCommandJob;
 use App\Jobs\System\UpdateProjectJob;
 use App\Models\System\CommandLog;
+use App\Services\Shop\SitemapService;
 use App\Support\SystemCommandGuard;
 use Flux\Flux;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -110,10 +111,11 @@ class Index extends Component
             'rebuild_sitemap' => [
                 'name' => __('general.rebuild_sitemap'),
                 'description' => __('general.cmd_sitemap_desc'),
-                'signature' => 'sitemap:refresh',
+                'signature' => 'SitemapService::refresh',
                 'category' => __('general.category_system'),
                 'icon' => 'network',
-                'mode' => 'sync',
+                'mode' => 'service',
+                'handler' => 'rebuildSitemap',
             ],
             'add_watermarks' => [
                 'name' => __('general.add_watermarks'),
@@ -207,11 +209,17 @@ class Index extends Component
         }
 
         $command = $catalog[$key];
-        $displayCommand = str_starts_with($command['signature'], 'Job:')
-            ? $command['signature']
-            : 'php artisan '.$command['signature'];
+        $displayCommand = match ($command['mode'] ?? 'sync') {
+            'queue' => ($command['job'] ?? null)
+                ? $command['signature']
+                : 'php artisan '.$command['signature'],
+            'service' => $command['signature'],
+            default => 'php artisan '.$command['signature'],
+        };
 
-        if (($command['mode'] ?? 'sync') === 'sync' && ! SystemCommandGuard::isAllowed($command['signature'])) {
+        $mode = $command['mode'] ?? 'sync';
+
+        if ($mode === 'sync' && ! SystemCommandGuard::isAllowed($command['signature'])) {
             Flux::toast(__('general.command_not_allowed'), variant: 'danger');
 
             return;
@@ -230,7 +238,7 @@ class Index extends Component
             $this->activeLogId = $log->id;
             $this->lastCommand = $displayCommand;
 
-            if (($command['mode'] ?? 'sync') === 'queue') {
+            if ($mode === 'queue') {
                 $this->dispatchQueuedCommand($command, $log->id);
 
                 $this->lastStatus = 0;
@@ -250,8 +258,20 @@ class Index extends Component
                 return;
             }
 
-            $statusCode = Artisan::call($command['signature']);
-            $output = SystemCommandGuard::stripAnsi(Artisan::output());
+            if ($mode === 'service') {
+                $handler = $command['handler'] ?? null;
+
+                if (! is_string($handler) || ! method_exists($this, $handler)) {
+                    throw new \RuntimeException(__('general.command_not_allowed'));
+                }
+
+                $output = (string) $this->{$handler}();
+                $statusCode = 0;
+            } else {
+                $statusCode = Artisan::call($command['signature']);
+                $output = SystemCommandGuard::stripAnsi(Artisan::output());
+            }
+
             $duration = (int) ((microtime(true) - $start) * 1000);
 
             $this->lastStatus = $statusCode;
@@ -289,6 +309,13 @@ class Index extends Component
             unset($this->logs, $this->hasRunningLogs, $this->selectedLog);
             Flux::toast(__('general.error'), variant: 'danger');
         }
+    }
+
+    protected function rebuildSitemap(): string
+    {
+        $urls = app(SitemapService::class)->refresh();
+
+        return __('general.sitemap_rebuilt', ['count' => count($urls)]);
     }
 
     /**

@@ -51,7 +51,7 @@
                                 <div class="flex flex-col">
                                     <span>{{ $command['name'] }}</span>
                                     <span class="text-xs text-zinc-500">
-                                        @if(str_starts_with($command['signature'], 'Job:'))
+                                        @if(($command['mode'] ?? 'sync') === 'service' || str_starts_with($command['signature'], 'Job:'))
                                             {{ $command['signature'] }}
                                         @else
                                             php artisan {{ $command['signature'] }}

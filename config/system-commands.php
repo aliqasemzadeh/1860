@@ -16,7 +16,6 @@ return [
         'view:cache',
         'system:administrator:create-permissions-command',
         'system:administrator:create-roles-command',
-        'sitemap:refresh',
         'app:add-water-mark-to-images-command',
         'app:optimize-images-command',
         'about',
