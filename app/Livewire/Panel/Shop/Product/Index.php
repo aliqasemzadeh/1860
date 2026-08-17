@@ -20,6 +20,9 @@ class Index extends Component
 
     public string $search = '';
 
+    /** @var array<int> */
+    public array $selectedProductIds = [];
+
     public function sort(string $column): void
     {
         if ($this->sortBy === $column) {
@@ -37,6 +40,40 @@ class Index extends Component
             $product->delete();
             Flux::toast(variant: 'success', text: __('general.product_deleted'));
         }
+    }
+
+    public function toggleSelectAllOnPage(): void
+    {
+        $pageIds = $this->products->getCollection()->pluck('id')->map(fn ($id) => (int) $id)->all();
+
+        if ($pageIds === []) {
+            return;
+        }
+
+        $allSelected = count(array_intersect($pageIds, $this->selectedProductIds)) === count($pageIds);
+
+        if ($allSelected) {
+            $this->selectedProductIds = array_values(array_diff($this->selectedProductIds, $pageIds));
+        } else {
+            $this->selectedProductIds = array_values(array_unique([...$this->selectedProductIds, ...$pageIds]));
+        }
+    }
+
+    public function openBulkPriceChange(): void
+    {
+        if ($this->selectedProductIds === []) {
+            Flux::toast(variant: 'danger', text: __('general.no_products_selected'));
+
+            return;
+        }
+
+        $this->dispatch('panel.shop.product.pricing.bulk-change.assign-data', productIds: $this->selectedProductIds);
+    }
+
+    #[On('panel.shop.product.index.clear-selection')]
+    public function clearSelection(): void
+    {
+        $this->selectedProductIds = [];
     }
 
     #[Computed]

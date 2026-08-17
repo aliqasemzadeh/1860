@@ -6,6 +6,16 @@
                 <flux:subheading size="lg" class="mb-6">{{ __('general.products_description') }}</flux:subheading>
             </div>
             <div class="flex items-center gap-2">
+                @if(count($selectedProductIds) > 0)
+                    <flux:button
+                        variant="primary"
+                        color="orange"
+                        icon="banknotes"
+                        wire:click="openBulkPriceChange"
+                    >
+                        {{ __('general.bulk_price_change') }} ({{ number_format(count($selectedProductIds)) }})
+                    </flux:button>
+                @endif
                 <flux:modal.trigger name="panel.shop.product.create.modal">
                     <flux:button variant="primary">{{ __('general.create_product') }}</flux:button>
                 </flux:modal.trigger>
@@ -37,8 +47,16 @@
     <livewire:panel.shop.setting-management.color.create />
     <livewire:panel.shop.setting-management.warranty.create />
 
+    <livewire:panel.shop.product.pricing.bulk-change />
+
     <flux:table :paginate="$this->products">
         <flux:table.columns>
+            <flux:table.column class="w-10">
+                <flux:checkbox
+                    wire:click="toggleSelectAllOnPage"
+                    :checked="count($selectedProductIds) > 0 && count(array_intersect($selectedProductIds, $this->products->getCollection()->pluck('id')->all())) === $this->products->count()"
+                />
+            </flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('general.name') }}</flux:table.column>
             <flux:table.column>{{ __('general.category') }}</flux:table.column>
             <flux:table.column>{{ __('general.brand') }}</flux:table.column>
@@ -48,6 +66,12 @@
 
         @foreach ($this->products as $product)
             <flux:table.row :key="$product->id">
+                <flux:table.cell>
+                    <flux:checkbox
+                        wire:model.live="selectedProductIds"
+                        value="{{ $product->id }}"
+                    />
+                </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex flex-row items-center gap-2">
                         <flux:avatar src="{{ Storage::url($product->file_path) }}"/>

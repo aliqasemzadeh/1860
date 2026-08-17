@@ -105,6 +105,7 @@ return [
         'shop_product_pricing_create' => 'ایجاد قیمت محصول',
         'shop_product_pricing_edit' => 'ویرایش قیمت محصول',
         'shop_product_pricing_history' => 'تاریخچه قیمت محصول',
+        'shop_product_pricing_bulk' => 'تغییر قیمت گروهی محصولات',
 
         'shop_order_index' => 'فهرست سفارش‌ها',
         'shop_order_view' => 'مشاهده سفارش',
