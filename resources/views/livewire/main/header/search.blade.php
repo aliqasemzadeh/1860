@@ -2,11 +2,11 @@
     <flux:modal.trigger name="search" shortcut="cmd.f">
         <flux:input as="button" placeholder="{{ __('general.search') }}" icon="magnifying-glass" kbd="⌘K" />
     </flux:modal.trigger>
-    <flux:modal name="search" variant="bare" class="w-full max-w-[30rem] my-[12vh] max-h-screen overflow-y-hidden">
+    <flux:modal name="search" variant="bare" wire:close="handleSearchClose" class="w-full max-w-[30rem] my-[12vh] max-h-screen overflow-y-hidden">
         <flux:command class="border-none shadow-lg inline-flex flex-col max-h-[76vh]">
             <flux:command.input wire:model.live.debounce.150ms="query" placeholder="{{ __('general.search_placeholder') }}" closable />
             <flux:command.items>
-                @if(empty($this->query) && count($this->searchHistory) > 0)
+                @if(empty($this->query) && count($recentSearches) > 0)
                     <div class="flex items-center justify-between px-2 py-1.5">
                         <span class="text-xs text-zinc-500 dark:text-zinc-400">{{ __('general.recent_searches') }}</span>
                         <button
@@ -17,7 +17,7 @@
                             {{ __('general.clear_search_history') }}
                         </button>
                     </div>
-                    @foreach($this->searchHistory as $term)
+                    @foreach($recentSearches as $term)
                         <flux:command.item
                             wire:key="history-{{ md5($term) }}"
                             wire:click="selectHistory(@js($term))"
@@ -30,9 +30,7 @@
                 @forelse($this->products as $product)
                     <flux:command.item 
                         wire:key="product-{{ $product->id }}"
-                        wire:click="rememberSearch"
-                        href="{{ $product->url }}"
-                        wire:navigate
+                        wire:click="goToProduct({{ $product->id }})"
                     >
                         <div class="flex items-center gap-3 w-full">
                             <flux:avatar 

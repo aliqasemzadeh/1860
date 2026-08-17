@@ -10,10 +10,17 @@ class Search extends Component
 {
     public string $query = '';
 
-    #[Computed]
-    public function searchHistory(): array
+    /** @var array<int, string> */
+    public array $recentSearches = [];
+
+    public function mount(): void
     {
-        return session('search_history', []);
+        $this->loadSearchHistory();
+    }
+
+    protected function loadSearchHistory(): void
+    {
+        $this->recentSearches = session('search_history', []);
     }
 
     #[Computed]
@@ -56,6 +63,18 @@ class Search extends Component
             ->all();
 
         session(['search_history' => $history]);
+        $this->recentSearches = $history;
+    }
+
+    public function goToProduct(int $productId): void
+    {
+        $this->rememberSearch();
+        $this->query = '';
+        unset($this->products);
+
+        $product = Product::query()->findOrFail($productId);
+
+        $this->redirect($product->url, navigate: true);
     }
 
     public function selectHistory(string $term): void
@@ -67,7 +86,14 @@ class Search extends Component
     public function clearSearchHistory(): void
     {
         session()->forget('search_history');
-        unset($this->searchHistory);
+        $this->recentSearches = [];
+    }
+
+    public function handleSearchClose(): void
+    {
+        $this->query = '';
+        $this->loadSearchHistory();
+        unset($this->products);
     }
 
     public function render()
