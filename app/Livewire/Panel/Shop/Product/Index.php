@@ -24,6 +24,8 @@ class Index extends Component
 
     public string $search = '';
 
+    public string $exportAvailability = 'all';
+
     /** @var array<int> */
     public array $selectedProductIds = [];
 
@@ -86,6 +88,10 @@ class Index extends Component
 
         if ($this->selectedProductIds !== []) {
             $query->whereIn('id', $this->selectedProductIds);
+        }
+
+        if ($this->exportAvailability === 'available') {
+            $query->whereAvailability(true);
         }
 
         $products = $query
