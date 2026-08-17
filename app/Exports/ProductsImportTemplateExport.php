@@ -11,15 +11,16 @@ class ProductsImportTemplateExport implements FromArray, ShouldAutoSize, WithHea
     public function headings(): array
     {
         return [
+            __('general.id'),
             __('general.name'),
             __('general.en_name'),
-            __('general.description'),
             __('general.category'),
             __('general.brand'),
             __('general.unit'),
             __('general.price'),
             __('general.sale_price'),
             __('general.quantity'),
+            __('general.description'),
             __('general.weight'),
             __('general.image_url'),
         ];
@@ -29,15 +30,16 @@ class ProductsImportTemplateExport implements FromArray, ShouldAutoSize, WithHea
     {
         return [
             [
+                '',
                 __('general.import_sample_product_name'),
                 'Sample Product',
-                __('general.import_sample_description'),
                 __('general.import_sample_category'),
                 __('general.import_sample_brand'),
                 __('general.import_sample_unit'),
                 '1000000',
                 '900000',
                 '10',
+                __('general.import_sample_description'),
                 '500',
                 'https://example.com/image.jpg',
             ],

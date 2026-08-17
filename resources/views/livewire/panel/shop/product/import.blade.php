@@ -2,7 +2,7 @@
     <div class="space-y-6">
         <div>
             <flux:heading size="lg">{{ __('general.import_excel') }}</flux:heading>
-            <flux:text class="mt-2">{{ __('general.import_products_description') }}</flux:text>
+            <flux:text class="mt-2">{{ __('general.import_roundtrip_description') }}</flux:text>
         </div>
 
         <flux:button

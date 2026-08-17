@@ -35,18 +35,34 @@ class Import extends Component
             'file.mimes' => __('general.import_file_invalid'),
         ]);
 
-        $importer = new ProductsImport(app(ProductImageSeoService::class));
+        $path = $this->file->getRealPath();
+        $format = ProductsImport::detectFormat($path);
+        $importer = new ProductsImport(app(ProductImageSeoService::class), $format);
 
-        Excel::import($importer, $this->file->getRealPath());
+        Excel::import($importer, $path);
 
         Flux::modal('panel.shop.product.import.modal')->close();
         $this->reset('file');
         $this->dispatch('panel.shop.product.index.render');
 
-        if ($importer->imported > 0) {
+        if ($importer->created > 0) {
             Flux::toast(
                 variant: 'success',
-                text: __('general.products_imported', ['count' => number_format($importer->imported)])
+                text: __('general.products_imported', ['count' => number_format($importer->created)])
+            );
+        }
+
+        if ($importer->updated > 0) {
+            Flux::toast(
+                variant: 'success',
+                text: __('general.products_updated', ['count' => number_format($importer->updated)])
+            );
+        }
+
+        if ($importer->unchanged > 0) {
+            Flux::toast(
+                variant: 'info',
+                text: __('general.products_unchanged', ['count' => number_format($importer->unchanged)])
             );
         }
 
@@ -57,7 +73,7 @@ class Import extends Component
             );
         }
 
-        if ($importer->imported === 0 && $importer->skipped === 0) {
+        if ($importer->created === 0 && $importer->updated === 0 && $importer->unchanged === 0 && $importer->skipped === 0) {
             Flux::toast(variant: 'danger', text: __('general.products_import_empty'));
         }
     }
