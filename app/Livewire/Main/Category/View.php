@@ -21,11 +21,21 @@ class View extends Component
 
     public $brandId = null;
 
-    public $minPrice = null;
+    public ?float $minPrice = null;
 
-    public $maxPrice = null;
+    public ?float $maxPrice = null;
 
     public string $stockFilter = 'available';
+
+    public function updatedMinPrice(mixed $value): void
+    {
+        $this->minPrice = filled($value) ? (float) $value : null;
+    }
+
+    public function updatedMaxPrice(mixed $value): void
+    {
+        $this->maxPrice = filled($value) ? (float) $value : null;
+    }
 
     public function mount($id = null, $slug = null)
     {
@@ -124,7 +134,7 @@ class View extends Component
         $products = $query->get();
 
         // Apply price filtering
-        if ($this->minPrice !== null || $this->maxPrice !== null) {
+        if (filled($this->minPrice) || filled($this->maxPrice)) {
             $products = $products->filter(function ($product) {
                 $price = $product->sale_price ?? $product->price;
                 if ($price === null) {
@@ -132,10 +142,10 @@ class View extends Component
                 }
 
                 // Filter by price range
-                if ($this->minPrice !== null && $price < $this->minPrice) {
+                if (filled($this->minPrice) && $price < $this->minPrice) {
                     return false;
                 }
-                if ($this->maxPrice !== null && $price > $this->maxPrice) {
+                if (filled($this->maxPrice) && $price > $this->maxPrice) {
                     return false;
                 }
 
@@ -195,8 +205,8 @@ class View extends Component
     public function seo(): Seo
     {
         $filtered = filled($this->brandId)
-            || $this->minPrice !== null
-            || $this->maxPrice !== null
+            || filled($this->minPrice)
+            || filled($this->maxPrice)
             || $this->stockFilter !== 'available';
 
         return Seo::category(
