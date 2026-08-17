@@ -70,6 +70,13 @@ class Login extends Component
         $this->redirectIntended(route('home'));
     }
 
+    public function editPhone(): void
+    {
+        $this->step = 1;
+        $this->code = '';
+        $this->canResendAt = null;
+    }
+
     public function resend(): void
     {
         $expiry = (int) config('one-time-passwords.default_expires_in_minutes');

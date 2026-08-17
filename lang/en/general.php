@@ -542,6 +542,7 @@ return [
     'mobile' => 'Mobile',
     'mobile_cannot_be_changed' => 'Mobile number cannot be changed.',
     'mobile_confirm_question' => 'Are you sure your mobile number is correct?',
+    'edit_phone_number' => 'Edit Phone Number',
     'my_addresses' => 'My Addresses',
     'my_addresses_description' => 'My Addresses Description',
     'my_orders' => 'My Orders',

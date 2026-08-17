@@ -542,6 +542,7 @@ return [
     'mobile' => 'موبایل',
     'mobile_cannot_be_changed' => 'شماره موبایل قابل تغییر نیست.',
     'mobile_confirm_question' => 'آیا از صحیح بودن شماره موبایل خود اطمینان دارید؟',
+    'edit_phone_number' => 'ویرایش شماره موبایل',
     'my_addresses' => 'آدرس‌های من',
     'my_addresses_description' => 'مدیریت آدرس‌های ارسال خود.',
     'my_orders' => 'سفارش‌های من',
