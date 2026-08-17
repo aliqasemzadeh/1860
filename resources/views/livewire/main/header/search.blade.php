@@ -1,4 +1,43 @@
-<div>
+<div
+    x-data="{
+        cookieName: 'search_history',
+        loadCookie() {
+            const match = document.cookie.match(new RegExp('(?:^|; )' + this.cookieName + '=([^;]*)'));
+
+            if (! match) {
+                return [];
+            }
+
+            try {
+                return JSON.parse(decodeURIComponent(match[1])) || [];
+            } catch (error) {
+                return [];
+            }
+        },
+        saveCookie(term) {
+            term = (term || '').trim();
+
+            if (term.length < 2) {
+                return;
+            }
+
+            const history = [term, ...this.loadCookie().filter((item) => item !== term)].slice(0, 10);
+
+            document.cookie = `${this.cookieName}=${encodeURIComponent(JSON.stringify(history))};path=/;max-age=${60 * 60 * 24 * 30};SameSite=Lax`;
+
+            $wire.syncSearchHistory(history);
+        },
+        clearCookie() {
+            document.cookie = `${this.cookieName}=;path=/;max-age=0;SameSite=Lax`;
+            $wire.clearSearchHistory();
+        },
+        openSearch() {
+            $wire.syncSearchHistory(this.loadCookie());
+            $wire.set('query', '');
+        },
+    }"
+    x-on:modal-show.document="if ($event.detail?.name === 'search') openSearch()"
+>
     <flux:modal.trigger name="search" shortcut="cmd.f">
         <flux:input as="button" placeholder="{{ __('general.search') }}" icon="magnifying-glass" kbd="⌘K" />
     </flux:modal.trigger>
@@ -11,7 +50,7 @@
                         <span class="text-xs text-zinc-500 dark:text-zinc-400">{{ __('general.recent_searches') }}</span>
                         <button
                             type="button"
-                            wire:click="clearSearchHistory"
+                            x-on:click="clearCookie()"
                             class="text-xs text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
                         >
                             {{ __('general.clear_search_history') }}
@@ -28,13 +67,14 @@
                     @endforeach
                 @else
                 @forelse($this->products as $product)
-                    <flux:command.item 
+                    <flux:command.item
                         wire:key="product-{{ $product->id }}"
                         wire:click="goToProduct({{ $product->id }})"
+                        x-on:click="saveCookie($wire.query)"
                     >
                         <div class="flex items-center gap-3 w-full">
-                            <flux:avatar 
-                                size="sm" 
+                            <flux:avatar
+                                size="sm"
                                 src="{{ $product->file_path ? Storage::url($product->file_path) : '' }}"
                                 alt="{{ product_image_alt($product) }}"
                             />

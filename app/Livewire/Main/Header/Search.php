@@ -13,21 +13,11 @@ class Search extends Component
     /** @var array<int, string> */
     public array $recentSearches = [];
 
-    public function mount(): void
-    {
-        $this->loadSearchHistory();
-    }
-
-    protected function loadSearchHistory(): void
-    {
-        $this->recentSearches = session('search_history', []);
-    }
-
     #[Computed]
     public function products()
     {
         $searchTerm = trim($this->query);
-        
+
         if (empty($searchTerm)) {
             return collect([]);
         }
@@ -47,28 +37,17 @@ class Search extends Component
             ->get();
     }
 
-    public function rememberSearch(): void
+    public function syncSearchHistory(array $history): void
     {
-        $term = trim($this->query);
-
-        if (mb_strlen($term) < 2) {
-            return;
-        }
-
-        $history = collect(session('search_history', []))
-            ->reject(fn ($item) => $item === $term)
-            ->prepend($term)
+        $this->recentSearches = collect($history)
+            ->filter(fn ($item) => is_string($item) && trim($item) !== '')
             ->take(10)
             ->values()
             ->all();
-
-        session(['search_history' => $history]);
-        $this->recentSearches = $history;
     }
 
     public function goToProduct(int $productId): void
     {
-        $this->rememberSearch();
         $this->query = '';
         unset($this->products);
 
@@ -85,14 +64,12 @@ class Search extends Component
 
     public function clearSearchHistory(): void
     {
-        session()->forget('search_history');
         $this->recentSearches = [];
     }
 
     public function handleSearchClose(): void
     {
         $this->query = '';
-        $this->loadSearchHistory();
         unset($this->products);
     }
 
