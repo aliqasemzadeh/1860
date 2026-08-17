@@ -28,6 +28,8 @@ class Search extends Component
                 $query->where('name', 'like', '%' . $searchTerm . '%')
                     ->orWhere('description', 'like', '%' . $searchTerm . '%');
             })
+            ->orderByAvailability()
+            ->orderBy('name')
             ->limit(10)
             ->get();
     }

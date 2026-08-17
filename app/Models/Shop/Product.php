@@ -204,6 +204,19 @@ class Product extends Model implements Cartable
     }
 
     /**
+     * Sort by default-price availability (in-stock first when $inStockFirst is true).
+     */
+    public function scopeOrderByAvailability(Builder $query, bool $inStockFirst = true): Builder
+    {
+        $sub = $this->defaultPriceColumnSubquery('quantity');
+
+        return $query->orderByRaw(
+            'CASE WHEN ('.$sub->toSql().') > 0 THEN 0 ELSE 1 END '.($inStockFirst ? 'asc' : 'desc'),
+            $sub->getBindings()
+        );
+    }
+
+    /**
      * Get the effective regular price based on the product's default price record.
      */
     public function getPriceAttribute(): ?string
