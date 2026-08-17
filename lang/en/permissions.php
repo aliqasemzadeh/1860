@@ -106,6 +106,7 @@ return [
         'shop_product_pricing_edit' => 'Edit Product Price',
         'shop_product_pricing_history' => 'Product Price History',
         'shop_product_pricing_bulk' => 'Bulk Product Price Change',
+        'shop_product_import' => 'Import Products from Excel',
 
         'shop_order_index' => 'Orders List',
         'shop_order_view' => 'View Order',

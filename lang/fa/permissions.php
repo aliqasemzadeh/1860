@@ -106,6 +106,7 @@ return [
         'shop_product_pricing_edit' => 'ویرایش قیمت محصول',
         'shop_product_pricing_history' => 'تاریخچه قیمت محصول',
         'shop_product_pricing_bulk' => 'تغییر قیمت گروهی محصولات',
+        'shop_product_import' => 'ورود محصولات از Excel',
 
         'shop_order_index' => 'فهرست سفارش‌ها',
         'shop_order_view' => 'مشاهده سفارش',

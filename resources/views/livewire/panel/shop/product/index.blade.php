@@ -26,6 +26,11 @@
                         {{ __('general.export_excel') }}
                     </flux:button>
                 </flux:tooltip>
+                <flux:modal.trigger name="panel.shop.product.import.modal">
+                    <flux:button variant="primary" color="cyan" icon="arrow-up-tray">
+                        {{ __('general.import_excel') }}
+                    </flux:button>
+                </flux:modal.trigger>
                 <flux:modal.trigger name="panel.shop.product.create.modal">
                     <flux:button variant="primary">{{ __('general.create_product') }}</flux:button>
                 </flux:modal.trigger>
@@ -58,6 +63,7 @@
     <livewire:panel.shop.setting-management.warranty.create />
 
     <livewire:panel.shop.product.pricing.bulk-change />
+    <livewire:panel.shop.product.import />
 
     <flux:table :paginate="$this->products">
         <flux:table.columns>
