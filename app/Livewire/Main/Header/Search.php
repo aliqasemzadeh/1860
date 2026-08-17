@@ -11,6 +11,12 @@ class Search extends Component
     public string $query = '';
 
     #[Computed]
+    public function searchHistory(): array
+    {
+        return session('search_history', []);
+    }
+
+    #[Computed]
     public function products()
     {
         $searchTerm = trim($this->query);
@@ -32,6 +38,36 @@ class Search extends Component
             ->orderBy('name')
             ->limit(10)
             ->get();
+    }
+
+    public function rememberSearch(): void
+    {
+        $term = trim($this->query);
+
+        if (mb_strlen($term) < 2) {
+            return;
+        }
+
+        $history = collect(session('search_history', []))
+            ->reject(fn ($item) => $item === $term)
+            ->prepend($term)
+            ->take(10)
+            ->values()
+            ->all();
+
+        session(['search_history' => $history]);
+    }
+
+    public function selectHistory(string $term): void
+    {
+        $this->query = $term;
+        unset($this->products);
+    }
+
+    public function clearSearchHistory(): void
+    {
+        session()->forget('search_history');
+        unset($this->searchHistory);
     }
 
     public function render()

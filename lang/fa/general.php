@@ -873,6 +873,8 @@ return [
     'search_in_posts' => 'جستجو در مقالات...',
     'search_in_products' => 'جستجو در محصولات...',
     'search_placeholder' => 'جستجو...',
+    'recent_searches' => 'جستجوهای اخیر',
+    'clear_search_history' => 'پاک کردن تاریخچه',
     'select' => 'انتخاب',
     'select_attribute_group' => 'انتخاب گروه ویژگی',
     'select_bank' => 'انتخاب بانک',

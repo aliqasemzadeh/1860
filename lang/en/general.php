@@ -873,6 +873,8 @@ return [
     'search_in_posts' => 'Search in posts...',
     'search_in_products' => 'Search in products...',
     'search_placeholder' => 'Search...',
+    'recent_searches' => 'Recent searches',
+    'clear_search_history' => 'Clear history',
     'select' => 'Select',
     'select_attribute_group' => 'Select Attribute Group',
     'select_bank' => 'Select Bank',
