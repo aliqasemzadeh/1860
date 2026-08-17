@@ -16,6 +16,16 @@
                         {{ __('general.bulk_price_change') }} ({{ number_format(count($selectedProductIds)) }})
                     </flux:button>
                 @endif
+                <flux:tooltip content="{{ count($selectedProductIds) > 0 ? __('general.export_selected_products') : __('general.export_all_products') }}">
+                    <flux:button
+                        variant="primary"
+                        color="teal"
+                        icon="arrow-down-tray"
+                        wire:click="export"
+                    >
+                        {{ __('general.export_excel') }}
+                    </flux:button>
+                </flux:tooltip>
                 <flux:modal.trigger name="panel.shop.product.create.modal">
                     <flux:button variant="primary">{{ __('general.create_product') }}</flux:button>
                 </flux:modal.trigger>

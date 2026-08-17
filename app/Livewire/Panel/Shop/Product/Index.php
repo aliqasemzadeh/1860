@@ -2,13 +2,17 @@
 
 namespace App\Livewire\Panel\Shop\Product;
 
+use App\Exports\ProductsExport;
 use App\Models\Shop\Product;
 use Flux\Flux;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class Index extends Component
 {
@@ -76,22 +80,44 @@ class Index extends Component
         $this->selectedProductIds = [];
     }
 
-    #[Computed]
-    public function products(): LengthAwarePaginator
+    public function export(): BinaryFileResponse
+    {
+        $query = $this->productsQuery();
+
+        if ($this->selectedProductIds !== []) {
+            $query->whereIn('id', $this->selectedProductIds);
+        }
+
+        $products = $query
+            ->with(['category', 'brand', 'unit', 'prices'])
+            ->get();
+
+        $filename = 'products-'.now()->format('Y-m-d-His').'.xlsx';
+
+        return Excel::download(new ProductsExport($products), $filename);
+    }
+
+    protected function productsQuery(): Builder
     {
         return Product::query()
-            ->with(['category', 'brand', 'unit'])
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
-                    $q->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('description', 'like', '%' . $this->search . '%');
+                    $q->where('name', 'like', '%'.$this->search.'%')
+                        ->orWhere('description', 'like', '%'.$this->search.'%');
                 });
             })
             ->tap(function ($query) {
                 if ($this->sortBy) {
                     $query->orderBy($this->sortBy, $this->sortDirection);
                 }
-            })
+            });
+    }
+
+    #[Computed]
+    public function products(): LengthAwarePaginator
+    {
+        return $this->productsQuery()
+            ->with(['category', 'brand', 'unit'])
             ->paginate(10);
     }
 
