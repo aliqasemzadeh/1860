@@ -27,14 +27,22 @@ class Search extends Component
                 $query->orderByDesc('is_default')
                     ->orderByDesc('created_at');
             }])
-            ->where(function ($query) use ($searchTerm) {
-                $query->where('name', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('description', 'like', '%' . $searchTerm . '%');
-            })
+            ->search($searchTerm)
             ->orderByAvailability()
             ->orderBy('name')
             ->limit(10)
             ->get();
+    }
+
+    public function goToSearchPage(): void
+    {
+        $term = trim($this->query);
+
+        if (strlen($term) < 2) {
+            return;
+        }
+
+        $this->redirect(route('search.index', ['q' => $term]), navigate: true);
     }
 
     public function syncSearchHistory(array $history): void

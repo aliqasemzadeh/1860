@@ -42,8 +42,13 @@
         <flux:input as="button" placeholder="{{ __('general.search') }}" icon="magnifying-glass" kbd="⌘K" />
     </flux:modal.trigger>
     <flux:modal name="search" variant="bare" wire:close="handleSearchClose" class="w-full max-w-[30rem] my-[12vh] max-h-screen overflow-y-hidden">
-        <flux:command class="border-none shadow-lg inline-flex flex-col max-h-[76vh]">
-            <flux:command.input wire:model.live.debounce.150ms="query" placeholder="{{ __('general.search_placeholder') }}" closable />
+        <flux:command class="border-none shadow-lg inline-flex flex-col max-h-[76vh]" filter="false">
+            <flux:command.input
+                wire:model.live.debounce.150ms="query"
+                placeholder="{{ __('general.search_placeholder') }}"
+                closable
+                x-on:keydown.enter.prevent="saveCookie($wire.query); $wire.goToSearchPage()"
+            />
             <flux:command.items>
                 @if(empty($this->query) && count($recentSearches) > 0)
                     <div class="flex items-center justify-between px-2 py-1.5">
@@ -119,6 +124,15 @@
                         </flux:command.item>
                     @endif
                 @endforelse
+                    @if(mb_strlen(trim($this->query)) >= 2)
+                        <flux:command.item
+                            wire:click="goToSearchPage"
+                            x-on:click="saveCookie($wire.query)"
+                            icon="arrow-left"
+                        >
+                            {{ __('general.view_all_results') }}
+                        </flux:command.item>
+                    @endif
                 @endif
             </flux:command.items>
         </flux:command>
