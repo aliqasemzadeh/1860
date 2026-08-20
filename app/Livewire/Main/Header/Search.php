@@ -10,11 +10,14 @@ class Search extends Component
 {
     public string $query = '';
 
+    /** @var array<int, string> */
+    public array $recentSearches = [];
+
     #[Computed]
     public function products()
     {
         $searchTerm = trim($this->query);
-        
+
         if (empty($searchTerm)) {
             return collect([]);
         }
@@ -24,14 +27,58 @@ class Search extends Component
                 $query->orderByDesc('is_default')
                     ->orderByDesc('created_at');
             }])
-            ->where(function ($query) use ($searchTerm) {
-                $query->where('name', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('description', 'like', '%' . $searchTerm . '%');
-            })
+            ->search($searchTerm)
             ->orderByAvailability()
             ->orderBy('name')
             ->limit(10)
             ->get();
+    }
+
+    public function goToSearchPage(): void
+    {
+        $term = trim($this->query);
+
+        if (strlen($term) < 2) {
+            return;
+        }
+
+        $this->redirect(route('search.index', ['q' => $term]), navigate: true);
+    }
+
+    public function syncSearchHistory(array $history): void
+    {
+        $this->recentSearches = collect($history)
+            ->filter(fn ($item) => is_string($item) && trim($item) !== '')
+            ->take(10)
+            ->values()
+            ->all();
+    }
+
+    public function goToProduct(int $productId): void
+    {
+        $this->query = '';
+        unset($this->products);
+
+        $product = Product::query()->findOrFail($productId);
+
+        $this->redirect($product->url, navigate: true);
+    }
+
+    public function selectHistory(string $term): void
+    {
+        $this->query = $term;
+        unset($this->products);
+    }
+
+    public function clearSearchHistory(): void
+    {
+        $this->recentSearches = [];
+    }
+
+    public function handleSearchClose(): void
+    {
+        $this->query = '';
+        unset($this->products);
     }
 
     public function render()

@@ -6,6 +6,32 @@
                 <flux:subheading size="lg" class="mb-6">{{ __('general.products_description') }}</flux:subheading>
             </div>
             <div class="flex items-center gap-2">
+                @if(count($selectedProductIds) > 0)
+                    <flux:button
+                        variant="primary"
+                        color="orange"
+                        icon="banknotes"
+                        wire:click="openBulkPriceChange"
+                    >
+                        {{ __('general.bulk_price_change') }} ({{ number_format(count($selectedProductIds)) }})
+                    </flux:button>
+                @endif
+                <flux:modal.trigger name="panel.shop.product.export.modal">
+                    <flux:tooltip content="{{ count($selectedProductIds) > 0 ? __('general.export_selected_products') : __('general.export_all_products') }}">
+                        <flux:button
+                            variant="primary"
+                            color="teal"
+                            icon="arrow-down-tray"
+                        >
+                            {{ __('general.export_excel') }}
+                        </flux:button>
+                    </flux:tooltip>
+                </flux:modal.trigger>
+                <flux:modal.trigger name="panel.shop.product.import.modal">
+                    <flux:button variant="primary" color="cyan" icon="arrow-up-tray">
+                        {{ __('general.import_excel') }}
+                    </flux:button>
+                </flux:modal.trigger>
                 <flux:modal.trigger name="panel.shop.product.create.modal">
                     <flux:button variant="primary">{{ __('general.create_product') }}</flux:button>
                 </flux:modal.trigger>
@@ -37,8 +63,40 @@
     <livewire:panel.shop.setting-management.color.create />
     <livewire:panel.shop.setting-management.warranty.create />
 
+    <livewire:panel.shop.product.pricing.bulk-change />
+    <livewire:panel.shop.product.import />
+
+    <flux:modal name="panel.shop.product.export.modal" class="md:w-96" flyout position="right">
+        <div class="space-y-6">
+            <div>
+                <flux:heading size="lg">{{ __('general.export_excel') }}</flux:heading>
+                <flux:text class="mt-2">{{ __('general.export_products_description') }}</flux:text>
+            </div>
+
+            <div class="space-y-4">
+                <flux:radio.group
+                    wire:model.live="exportAvailability"
+                    label="{{ __('general.stock_status') }}"
+                >
+                    <flux:radio value="all" label="{{ __('general.export_all_items') }}" />
+                    <flux:radio value="available" label="{{ __('general.export_available_items') }}" />
+                </flux:radio.group>
+            </div>
+
+            <flux:button type="button" class="w-full" variant="primary" color="teal" wire:click="export">
+                {{ __('general.export_excel') }}
+            </flux:button>
+        </div>
+    </flux:modal>
+
     <flux:table :paginate="$this->products">
         <flux:table.columns>
+            <flux:table.column class="w-10">
+                <flux:checkbox
+                    wire:click="toggleSelectAllOnPage"
+                    :checked="count($selectedProductIds) > 0 && count(array_intersect($selectedProductIds, $this->products->getCollection()->pluck('id')->all())) === $this->products->count()"
+                />
+            </flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">{{ __('general.name') }}</flux:table.column>
             <flux:table.column>{{ __('general.category') }}</flux:table.column>
             <flux:table.column>{{ __('general.brand') }}</flux:table.column>
@@ -48,6 +106,12 @@
 
         @foreach ($this->products as $product)
             <flux:table.row :key="$product->id">
+                <flux:table.cell>
+                    <flux:checkbox
+                        wire:model.live="selectedProductIds"
+                        value="{{ $product->id }}"
+                    />
+                </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
                     <div class="flex flex-row items-center gap-2">
                         <flux:avatar src="{{ Storage::url($product->file_path) }}"/>

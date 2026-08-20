@@ -22,6 +22,9 @@
                 <flux:heading size="lg" class="text-center">{{ __('general.verify_login') }}</flux:heading>
                 <flux:text class="text-center">{{ $mobile }}</flux:text>
                 <flux:text class="text-center">{{ __('general.mobile_confirm_question') }}</flux:text>
+                <flux:button type="button" wire:click="editPhone" variant="ghost" class="w-full">
+                    {{ __('general.edit_phone_number') }}
+                </flux:button>
             </div>
             <flux:otp wire:model="code" dir="ltr" length="6" label="{{ __('general.otp_code_label') }}" label:sr-only :error:icon="false" error:class="text-center" class="mx-auto" />
             <div class="space-y-4">

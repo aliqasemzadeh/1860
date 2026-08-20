@@ -217,6 +217,23 @@ class Product extends Model implements Cartable
         );
     }
 
+    public function scopeSearch(Builder $query, string $term): Builder
+    {
+        $term = trim($term);
+
+        if ($term === '') {
+            return $query;
+        }
+
+        $like = '%'.$term.'%';
+
+        return $query->where(function (Builder $q) use ($like): void {
+            $q->where('name', 'like', $like)
+                ->orWhere('description', 'like', $like)
+                ->orWhere('en_name', 'like', $like);
+        });
+    }
+
     /**
      * Get the effective regular price based on the product's default price record.
      */

@@ -385,9 +385,9 @@
                                 {{ __('general.description') }}
                             </flux:heading>
                             @if($this->product->description)
-                                <flux:text class="text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line">
-                                    {{ $this->product->description }}
-                                </flux:text>
+                                <div class="prose prose-sm dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                                    {!! $this->product->description !!}
+                                </div>
                             @else
                                 <flux:text class="text-zinc-400 dark:text-zinc-500 italic">
                                     {{ __('general.empty_description') }}

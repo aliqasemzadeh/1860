@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', \App\Livewire\Main\Dashboard\Index::class)->name('home');
 
+Route::livewire('/search', 'pages::search')->name('search.index');
+
 Route::get('/category/{id}/{slug?}', \App\Livewire\Main\Category\View::class)
     ->whereNumber('id')
     ->name('category.view');
