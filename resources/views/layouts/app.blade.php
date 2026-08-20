@@ -20,7 +20,7 @@
 
     <flux:sidebar.spacer />
 
-    <a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=709965&Code=xXpQ3qR4I1hEHCK1nsAaXGNdIJhuSmol'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=709965&Code=xXpQ3qR4I1hEHCK1nsAaXGNdIJhuSmol' alt='' style='cursor:pointer' code='xXpQ3qR4I1hEHCK1nsAaXGNdIJhuSmol'></a>
+    @include('partials.enamad')
 
     <flux:sidebar.nav>
             <flux:sidebar.item icon="newspaper" href="{{ route('post.index') }}" wire:navigate :current="request()->routeIs('post.*')">{{ __('general.blog') }}</flux:sidebar.item>
