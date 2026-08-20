@@ -101,25 +101,23 @@ class SeoSchema
             '@type' => 'Product',
             'name' => implode(' ', array_filter([$product->name, $product->en_name])),
             'description' => $description,
-            'sku' => (string) $product->id,
-            'mpn' => (string) $product->id,
+            'sku' => (string) ($product->sku ?? $product->id),
+            'mpn' => (string) ($product->sku ?? $product->id),
             'url' => $canonicalUrl,
         ];
 
-        if ($product->tags->isNotEmpty()) {
+        if ($product->tags && $product->tags->isNotEmpty()) {
             $schema['keywords'] = $product->tags->pluck('name')->implode(', ');
         }
 
         if ($imageUrls !== []) {
-            $schema['image'] = $imageUrls;
+            $schema['image'] = count($imageUrls) === 1 ? $imageUrls[0] : $imageUrls;
         }
 
-        if ($product->brand) {
-            $schema['brand'] = [
-                '@type' => 'Brand',
-                'name' => $product->brand->name,
-            ];
-        }
+        $schema['brand'] = [
+            '@type' => 'Brand',
+            'name' => $product->brand?->name ?? 'Default Brand',
+        ];
 
         if ($product->category) {
             $schema['category'] = $product->category->name;
@@ -138,6 +136,26 @@ class SeoSchema
                 'price' => (string) ((float) $finalPrice * (float) config('seo.currency_multiplier', 10)),
                 'priceValidUntil' => now()->addDays(30)->toDateString(),
                 'availability' => ((float) $price->quantity > 0)
+                    ? 'https://schema.org/InStock'
+                    : 'https://schema.org/OutOfStock',
+                'itemCondition' => 'https://schema.org/NewCondition',
+                'seller' => [
+                    '@type' => 'Organization',
+                    'name' => app(GeneralSettings::class)->title ?: config('app.name'),
+                ],
+            ];
+        } else {
+            $defaultPriceRecord = $product->default_price['record'] ?? null;
+            $rawPrice = $defaultPriceRecord?->sale_price ?? $defaultPriceRecord?->price ?? $product->price ?? 0;
+            $quantity = $defaultPriceRecord?->quantity ?? $product->stock ?? 0;
+
+            $schema['offers'] = [
+                '@type' => 'Offer',
+                'url' => $canonicalUrl,
+                'priceCurrency' => config('seo.currency', 'IRR'),
+                'price' => (string) ((float) $rawPrice * (float) config('seo.currency_multiplier', 10)),
+                'priceValidUntil' => now()->addDays(30)->toDateString(),
+                'availability' => ((float) $quantity > 0)
                     ? 'https://schema.org/InStock'
                     : 'https://schema.org/OutOfStock',
                 'itemCondition' => 'https://schema.org/NewCondition',

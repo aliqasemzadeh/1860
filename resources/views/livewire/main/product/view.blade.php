@@ -1,5 +1,8 @@
 <x-slot name="head">
     <x-seo :seo="$this->seo" />
+    @if($this->product)
+        <x-product-schema :product="$this->product" />
+    @endif
 </x-slot>
 <div>
     {{-- Management Modals --}}

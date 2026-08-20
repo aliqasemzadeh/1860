@@ -221,7 +221,6 @@ class Seo
             image: $imageUrl,
             type: 'product',
             schemas: [
-                SeoSchema::product($product, $price, $images, $description),
                 SeoSchema::breadcrumbs($crumbs),
             ],
             meta: $meta,

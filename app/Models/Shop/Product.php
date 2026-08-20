@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Tags\HasTags;
 
 class Product extends Model implements Cartable
@@ -227,10 +228,6 @@ class Product extends Model implements Cartable
             return null;
         }
 
-        if (($default['available'] ?? false) !== true) {
-            return null;
-        }
-
         /** @var \App\Models\Shop\ProductPrice|null $record */
         $record = $default['record'] ?? null;
 
@@ -248,14 +245,49 @@ class Product extends Model implements Cartable
             return null;
         }
 
-        if (($default['available'] ?? false) !== true) {
-            return null;
-        }
-
         /** @var \App\Models\Shop\ProductPrice|null $record */
         $record = $default['record'] ?? null;
 
         return $record?->sale_price;
+    }
+
+    /**
+     * Get the stock quantity based on the product's default price record.
+     */
+    public function getStockAttribute(): float
+    {
+        $default = $this->default_price;
+        $record = $default['record'] ?? null;
+
+        return $record ? (float) $record->quantity : 0.0;
+    }
+
+    /**
+     * Check if product is in stock.
+     */
+    public function getInStockAttribute(): bool
+    {
+        return $this->stock > 0;
+    }
+
+    /**
+     * Get the featured image URL.
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        if (filled($this->file_path)) {
+            return url(Storage::url($this->file_path));
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the product SKU fallback.
+     */
+    public function getSkuAttribute(): string
+    {
+        return (string) $this->id;
     }
 
     /**
