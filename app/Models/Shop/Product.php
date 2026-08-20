@@ -308,6 +308,22 @@ class Product extends Model implements Cartable
     }
 
     /**
+     * Get the brand name string fallback.
+     */
+    public function getBrandNameAttribute(): string
+    {
+        return $this->brand?->name ?? 'Default Brand';
+    }
+
+    /**
+     * Get the category name string fallback.
+     */
+    public function getCategoryNameAttribute(): string
+    {
+        return $this->category?->name ?? '';
+    }
+
+    /**
      * انتخاب قیمت پیش‌فرض محصول.
      *
      * منطق:
