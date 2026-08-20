@@ -71,15 +71,19 @@ test('product model accessors work as expected', function () {
         ->and($product->sku)->toBe((string) $product->id)
         ->and($product->stock)->toBe(10.0)
         ->and($product->in_stock)->toBeTrue()
-        ->and($product->price)->toBe('500000');
+        ->and($product->price)->toBe('500000')
+        ->and($product->brand_name)->toBe('Acme Brand')
+        ->and($product->category_name)->toBe('Electronics');
 });
 
 test('product schema component renders valid json-ld with required fields', function () {
     $brand = Brand::create(['name' => 'TechCorp', 'slug' => 'techcorp', 'slug_fa' => 'techcorp-fa']);
+    $category = Category::create(['name' => 'Gadgets', 'slug' => 'gadgets', 'slug_fa' => 'gadgets-fa']);
     $product = createTestProduct([
         'name' => 'Super Gadget',
         'description' => 'A wonderful gadget for all purposes.',
         'brand_id' => $brand->id,
+        'category_id' => $category->id,
     ]);
 
     ProductPrice::create([
@@ -95,18 +99,29 @@ test('product schema component renders valid json-ld with required fields', func
         ->and($html)->toContain('"@type": "Product"')
         ->and($html)->toContain('"name": "Super Gadget"')
         ->and($html)->toContain('"sku": "'.$product->id.'"')
+        ->and($html)->toContain('"category": "Gadgets"')
         ->and($html)->toContain('"@type": "Brand"')
         ->and($html)->toContain('"name": "TechCorp"')
         ->and($html)->toContain('"@type": "Offer"')
         ->and($html)->toContain('"priceCurrency": "IRR"')
         ->and($html)->toContain('"price": "1000000"')
-        ->and($html)->toContain('https://schema.org/InStock');
+        ->and($html)->toContain('"priceValidUntil": "'.date('Y-m-d', strtotime('+1 month')).'"')
+        ->and($html)->toContain('https://schema.org/InStock')
+        ->and($html)->toContain('"@type": "MerchantReturnPolicy"')
+        ->and($html)->toContain('"applicableCountry": "IR"')
+        ->and($html)->toContain('https://schema.org/MerchantReturnFiniteReturnWindow')
+        ->and($html)->toContain('"merchantReturnDays": 7')
+        ->and($html)->toContain('https://schema.org/ReturnByMail')
+        ->and($html)->toContain('https://schema.org/FreeReturn')
+        ->and($html)->toContain('"@type": "OfferShippingDetails"')
+        ->and($html)->toContain('"@type": "ShippingDeliveryTime"');
 });
 
 test('product schema handles out of stock product', function () {
     $product = createTestProduct([
         'name' => 'Soldout Item',
         'brand_id' => 0,
+        'category_id' => 0,
     ]);
 
     ProductPrice::create([
@@ -119,10 +134,11 @@ test('product schema handles out of stock product', function () {
     $html = Blade::render('<x-product-schema :product="$product" />', ['product' => $product]);
 
     expect($html)->toContain('https://schema.org/OutOfStock')
-        ->and($html)->toContain('"name": "Default Brand"');
+        ->and($html)->toContain('"name": "Default Brand"')
+        ->and($html)->toContain('"category": ""');
 });
 
-test('product view page contains product schema in head', function () {
+test('product view page contains comprehensive product schema in head', function () {
     $product = createTestProduct([
         'name' => 'Wireless Headphones',
     ]);
@@ -141,10 +157,12 @@ test('product view page contains product schema in head', function () {
         ->assertSee('"@type": "Product"', false)
         ->assertSee('Wireless Headphones')
         ->assertSee('"@type": "Offer"', false)
-        ->assertSee('3500000');
+        ->assertSee('3500000')
+        ->assertSee('"@type": "MerchantReturnPolicy"', false)
+        ->assertSee('"@type": "OfferShippingDetails"', false);
 });
 
-test('seo schema generator creates product schema with offers and brand', function () {
+test('seo schema generator creates product schema with return policy and shipping', function () {
     $brand = Brand::create(['name' => 'Apple', 'slug' => 'apple', 'slug_fa' => 'apple-fa']);
     $product = createTestProduct([
         'name' => 'iPhone 15',
@@ -158,5 +176,9 @@ test('seo schema generator creates product schema with offers and brand', functi
         ->and($schema['offers'])->toBeArray()
         ->and($schema['offers']['@type'])->toBe('Offer')
         ->and($schema['offers']['priceCurrency'])->toBe('IRR')
-        ->and($schema['offers']['availability'])->toBe('https://schema.org/OutOfStock');
+        ->and($schema['offers']['availability'])->toBe('https://schema.org/OutOfStock')
+        ->and($schema['offers']['hasMerchantReturnPolicy'])->toBeArray()
+        ->and($schema['offers']['hasMerchantReturnPolicy']['@type'])->toBe('MerchantReturnPolicy')
+        ->and($schema['offers']['shippingDetails'])->toBeArray()
+        ->and($schema['offers']['shippingDetails']['@type'])->toBe('OfferShippingDetails');
 });
