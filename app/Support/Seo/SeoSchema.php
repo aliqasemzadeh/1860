@@ -123,6 +123,43 @@ class SeoSchema
             $schema['category'] = $product->category->name;
         }
 
+        $merchantReturnPolicy = [
+            '@type' => 'MerchantReturnPolicy',
+            'applicableCountry' => 'IR',
+            'returnPolicyCategory' => 'https://schema.org/MerchantReturnFiniteReturnWindow',
+            'merchantReturnDays' => 7,
+            'returnMethod' => 'https://schema.org/ReturnByMail',
+            'returnFees' => 'https://schema.org/FreeReturn',
+        ];
+
+        $shippingDetails = [
+            '@type' => 'OfferShippingDetails',
+            'shippingRate' => [
+                '@type' => 'MonetaryAmount',
+                'value' => '0',
+                'currency' => 'IRR',
+            ],
+            'shippingDestination' => [
+                '@type' => 'DefinedRegion',
+                'addressCountry' => 'IR',
+            ],
+            'deliveryTime' => [
+                '@type' => 'ShippingDeliveryTime',
+                'handlingTime' => [
+                    '@type' => 'QuantitativeValue',
+                    'minValue' => 0,
+                    'maxValue' => 1,
+                    'unitCode' => 'd',
+                ],
+                'transitTime' => [
+                    '@type' => 'QuantitativeValue',
+                    'minValue' => 1,
+                    'maxValue' => 3,
+                    'unitCode' => 'd',
+                ],
+            ],
+        ];
+
         if ($price) {
             $finalPrice = ($price->sale_price && $price->sale_price < $price->price)
                 ? $price->sale_price
@@ -139,6 +176,8 @@ class SeoSchema
                     ? 'https://schema.org/InStock'
                     : 'https://schema.org/OutOfStock',
                 'itemCondition' => 'https://schema.org/NewCondition',
+                'hasMerchantReturnPolicy' => $merchantReturnPolicy,
+                'shippingDetails' => $shippingDetails,
                 'seller' => [
                     '@type' => 'Organization',
                     'name' => app(GeneralSettings::class)->title ?: config('app.name'),
@@ -159,6 +198,8 @@ class SeoSchema
                     ? 'https://schema.org/InStock'
                     : 'https://schema.org/OutOfStock',
                 'itemCondition' => 'https://schema.org/NewCondition',
+                'hasMerchantReturnPolicy' => $merchantReturnPolicy,
+                'shippingDetails' => $shippingDetails,
                 'seller' => [
                     '@type' => 'Organization',
                     'name' => app(GeneralSettings::class)->title ?: config('app.name'),
