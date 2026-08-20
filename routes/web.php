@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\EmallsFeedController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
+
+Route::match(['get', 'post'], '/list', EmallsFeedController::class)->name('emalls.list');
 
 Route::get('/', \App\Livewire\Main\Dashboard\Index::class)->name('home');
 
