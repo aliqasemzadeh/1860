@@ -22,7 +22,7 @@ class CustomerProfileForm extends Form
         $this->national_code = (string) ($user->national_code ?? '');
     }
 
-    public function rules(User $user): array
+    public function rules(): array
     {
         return [
             'first_name' => ['required', 'string', 'max:255'],
@@ -31,7 +31,7 @@ class CustomerProfileForm extends Form
                 'required',
                 'string',
                 new IranianNationalId(convertPersianNumbers: true),
-                Rule::unique('users', 'national_code')->ignore($user->id),
+                Rule::unique('users', 'national_code')->ignore(auth()->id()),
             ],
         ];
     }
@@ -40,7 +40,7 @@ class CustomerProfileForm extends Form
     {
         $this->national_code = $this->normalizeDigits(trim($this->national_code));
 
-        $validated = $this->validate($this->rules($user));
+        $validated = $this->validate();
 
         $user->first_name = trim($validated['first_name']);
         $user->last_name = trim($validated['last_name']);
