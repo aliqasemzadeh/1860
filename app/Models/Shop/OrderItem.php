@@ -39,7 +39,8 @@ class OrderItem extends Model
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::class, 'sku', 'sku');
+        // order_items.sku stores the product id (Product has no sku column)
+        return $this->belongsTo(Product::class, 'sku', 'id');
     }
 
     public function warranty(): BelongsTo

@@ -112,15 +112,15 @@ class OrderStatusService
         $order->loadMissing('items');
 
         foreach ($order->items as $item) {
-            $productPrice = ProductPrice::where('product_id', function ($query) use ($item) {
-                $query->select('id')
-                    ->from('products')
-                    ->where('sku', $item->sku)
-                    ->limit(1);
-            })
-                ->where('color_id', $item->color_id)
-                ->where('warranty_id', $item->warranty_id)
-                ->first();
+            $priceId = data_get($item->meta, 'price_id');
+
+            $productPrice = $priceId
+                ? ProductPrice::find($priceId)
+                : ProductPrice::query()
+                    ->where('product_id', $item->sku)
+                    ->where('color_id', $item->color_id)
+                    ->where('warranty_id', $item->warranty_id)
+                    ->first();
 
             if ($productPrice) {
                 $productPrice->decrement('quantity', $item->quantity);
