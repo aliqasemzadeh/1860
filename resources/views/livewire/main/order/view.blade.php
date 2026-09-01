@@ -145,13 +145,15 @@
                                         </div>
                                     @endif
 
-                                    @if($this->order->shipping_amount > 0)
-                                        <div class="flex items-center justify-between">
-                                            <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('general.shipping') }}</flux:text>
-                                            <flux:text class="font-medium text-zinc-900 dark:text-zinc-100">
-                                                {{ number_format($this->order->shipping_amount, 0) }} {{ __('general.toman') }}
-                                            </flux:text>
-                                        </div>
+                                    @if($this->order->shippingMethod || $this->order->shipping_amount > 0)
+                                        @if($this->order->shipping_amount > 0)
+                                            <div class="flex items-center justify-between">
+                                                <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('general.shipping') }}</flux:text>
+                                                <flux:text class="font-medium text-zinc-900 dark:text-zinc-100">
+                                                    {{ number_format($this->order->shipping_amount, 0) }} {{ __('general.toman') }}
+                                                </flux:text>
+                                            </div>
+                                        @endif
                                         @if($this->order->shippingMethod)
                                             <flux:text class="text-sm text-zinc-600 dark:text-zinc-400">
                                                 {{ $this->order->shippingMethod->name }}
@@ -162,6 +164,12 @@
                                                 {{ __('general.estimated_delivery') }}: {{ $this->order->shipping_estimated_days }}
                                             </flux:text>
                                         @endif
+                                    @endif
+
+                                    @if($this->order->shippingMethod?->isPickup())
+                                        <flux:callout variant="warning" icon="triangle-alert" heading="{{ __('general.pickup_shipping_notice') }}">
+                                            <flux:text>{{ __('general.pickup_id_documents_required') }}</flux:text>
+                                        </flux:callout>
                                     @endif
 
                                     @if($this->order->tax_amount > 0)

@@ -10,6 +10,8 @@ class ShippingMethod extends Model
 {
     use SoftDeletes;
 
+    public const PICKUP_HANDLES = ['pickup', 'in-person', 'in_person'];
+
     protected $fillable = [
         'name',
         'handle',
@@ -24,5 +26,10 @@ class ShippingMethod extends Model
     public function rates(): HasMany
     {
         return $this->hasMany(\App\Models\Shop\ShippingRate::class);
+    }
+
+    public function isPickup(): bool
+    {
+        return in_array($this->handle, self::PICKUP_HANDLES, true);
     }
 }

@@ -8,6 +8,7 @@ use App\Models\Customer\ShippingAddress as CustomerShippingAddress;
 use App\Models\Shop\Order;
 use App\Models\Shop\OrderItem;
 use App\Models\Shop\Product;
+use App\Models\Shop\ShippingMethod;
 use App\Models\Shop\ShippingRate;
 use App\Models\Shop\ShippingZone;
 use Binafy\LaravelCart\Models\Cart as UserCart;
@@ -113,6 +114,22 @@ class Shipping extends Component
     public function canCompleteOrder(): bool
     {
         return $this->completeOrderBlockers === [];
+    }
+
+    #[Computed]
+    public function isPickupShippingSelected(): bool
+    {
+        if (! $this->selectedShippingRateId) {
+            return false;
+        }
+
+        $selectedOption = $this->availableShippingMethods->firstWhere('id', $this->selectedShippingRateId);
+
+        if (! $selectedOption) {
+            return false;
+        }
+
+        return in_array($selectedOption['method_handle'] ?? '', ShippingMethod::PICKUP_HANDLES, true);
     }
 
     #[Computed]
@@ -434,6 +451,7 @@ class Shipping extends Component
                     'id' => $rate->id,
                     'method_id' => $rate->shipping_method_id,
                     'method_name' => $rate->method->name,
+                    'method_handle' => $rate->method->handle,
                     'zone_id' => $zone->id,
                     'cost' => $cost,
                     'estimated_days' => $rate->estimated_days,

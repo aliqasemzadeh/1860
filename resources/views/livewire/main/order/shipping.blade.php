@@ -211,6 +211,12 @@
                                     </label>
                                 @endforeach
                             </div>
+
+                            @if($this->isPickupShippingSelected)
+                                <flux:callout variant="warning" icon="triangle-alert" class="mt-4" heading="{{ __('general.pickup_shipping_notice') }}">
+                                    <flux:text>{{ __('general.pickup_id_documents_required') }}</flux:text>
+                                </flux:callout>
+                            @endif
                         </div>
                     @endif
 
