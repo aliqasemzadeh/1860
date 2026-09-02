@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
 
 function createTorobPricingRule(array $setterOverrides = [], array $priceOverrides = []): array
@@ -80,6 +81,18 @@ test('Torob panel formats prices with Persian digits', function () {
 
     expect((new \App\Livewire\Panel\Shop\Product\PriceFetchers)->formatNumber(1_234_567))
         ->toBe('۱,۲۳۴,۵۶۷');
+});
+
+test('price fetchers accept long percent-encoded Torob URLs', function () {
+    expect(Schema::getColumnType('price_fetchers', 'url'))->toBe('text');
+
+    ['fetcher' => $fetcher] = createTorobPricingRule();
+    $longUrl = 'https://torob.com/p/ad77d6f4-d0de-4ec9-9572-a05fbd27ad70/'.str_repeat('%D9%BE%D8%B1%DB%8C%D9%86%D8%AA%D8%B1-', 20);
+
+    $fetcher->update(['url' => $longUrl]);
+
+    expect($fetcher->fresh()->url)->toBe($longUrl)
+        ->and(strlen($longUrl))->toBeGreaterThan(255);
 });
 
 test('torob pricing rule undercuts the cheapest eligible competitor and excludes own shop', function () {
