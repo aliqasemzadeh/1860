@@ -75,7 +75,10 @@ function fakeTorobOffers(array $offers): void
     ]);
 }
 
-beforeEach(fn () => Cache::flush());
+beforeEach(function () {
+    Cache::flush();
+    config()->set('proxy.torob.enabled', false);
+});
 
 test('Torob panel formats prices with Persian digits', function () {
     app()->setLocale('fa');
@@ -136,6 +139,40 @@ test('torob offer fetching follows seller pagination', function () {
     expect((int) $price->fresh()->price)->toBe(20_990_000)
         ->and($setter->fresh()->last_competitor_shop)->toBe('رقیب صفحه دوم');
     Http::assertSentCount(2);
+});
+
+test('torob offer fetching rotates proxies before changing a price', function () {
+    ['price' => $price, 'setter' => $setter] = createTorobPricingRule();
+    config()->set('proxy.torob.enabled', true);
+    config()->set('proxy.torob.mode', 'proxy_only');
+    config()->set('proxy.torob.manual', [
+        'http://192.0.2.10:8080',
+        'socks5://192.0.2.11:1080',
+    ]);
+    config()->set('proxy.torob.source.enabled', false);
+    config()->set('proxy.torob.max_attempts', 2);
+
+    Process::fake(function ($process) {
+        if (in_array('http://192.0.2.10:8080', $process->command, true)) {
+            return Process::result("<html>blocked</html>\n__TOROB_HTTP_STATUS__:490");
+        }
+
+        return Process::result(json_encode([
+            'count' => 1,
+            'results' => [[
+                'availability' => true,
+                'shop_name' => 'رقیب معتبر',
+                'price' => 21_000_000,
+            ]],
+        ], JSON_THROW_ON_ERROR)."\n__TOROB_HTTP_STATUS__:200");
+    });
+
+    TorobPriceSetterJob::dispatchSync($setter);
+
+    expect((int) $price->fresh()->price)->toBe(20_990_000);
+    Process::assertRanTimes(fn (): bool => true, 2);
+    Process::assertRan(fn ($process): bool => in_array('socks5h://192.0.2.11:1080', $process->command, true)
+        && ! in_array('--insecure', $process->command, true));
 });
 
 test('torob offer fetching recovers from HTTP 490 with a browser session', function () {
@@ -216,7 +253,7 @@ test('torob offer fetching cools down after a final HTTP 490 response', function
     expect(fn () => TorobPriceSetterJob::dispatchSync($setter))
         ->toThrow(RuntimeException::class, 'HTTP 490');
 
-    expect(Cache::has('torob:sellers:blocked-until'))->toBeTrue();
+    expect(Cache::has('torob:sellers:direct-blocked-until'))->toBeTrue();
 
     expect(fn () => TorobPriceSetterJob::dispatchSync($setter->fresh()))
         ->toThrow(RuntimeException::class, 'cooling down');

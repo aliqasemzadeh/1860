@@ -18,7 +18,7 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
 
     public int $tries = 3;
 
-    public int $timeout = 45;
+    public int $timeout = 90;
 
     public int $uniqueFor = 120;
 

@@ -20,11 +20,13 @@ class TorobOfferFetcher
 
     private const MAX_PAGES = 10;
 
-    private const BLOCKED_CACHE_KEY = 'torob:sellers:blocked-until';
+    private const DIRECT_BLOCKED_CACHE_KEY = 'torob:sellers:direct-blocked-until';
 
     private const CURL_STATUS_MARKER = '__TOROB_HTTP_STATUS__:';
 
     private const BROWSER_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+
+    public function __construct(private readonly TorobProxyPool $proxyPool) {}
 
     /**
      * @param  list<string>  $excludedShopNames
@@ -90,6 +92,104 @@ class TorobOfferFetcher
     /** @return list<array<string, mixed>> */
     private function fetchOffers(string $productKey): array
     {
+        $mode = (string) config('proxy.torob.mode', 'proxy_first');
+
+        if ($this->proxyPool->enabled() && $mode === 'direct_first') {
+            try {
+                return $this->fetchOffersDirect($productKey);
+            } catch (Throwable $directException) {
+                $offers = $this->fetchOffersThroughProxies($productKey);
+                if ($offers !== null) {
+                    return $offers;
+                }
+
+                throw $directException;
+            }
+        }
+
+        if ($this->proxyPool->enabled()) {
+            $offers = $this->fetchOffersThroughProxies($productKey);
+            if ($offers !== null) {
+                return $offers;
+            }
+
+            if ($mode === 'proxy_only' || ! (bool) config('proxy.torob.direct_fallback', true)) {
+                throw new RuntimeException('No healthy Torob proxy was available; the current price was not changed.');
+            }
+        }
+
+        return $this->fetchOffersDirect($productKey);
+    }
+
+    /** @return list<array<string, mixed>>|null */
+    private function fetchOffersThroughProxies(string $productKey): ?array
+    {
+        $candidates = $this->proxyPool->leaseCandidates();
+
+        foreach ($candidates as $proxy) {
+            $startedAt = hrtime(true);
+
+            try {
+                $offers = $this->fetchOffersViaProxy($productKey, $proxy);
+                $latencyMs = (int) round((hrtime(true) - $startedAt) / 1_000_000);
+                $this->proxyPool->markSuccess($proxy, $latencyMs);
+
+                return $offers;
+            } catch (TorobProxyRequestException $exception) {
+                $this->proxyPool->markFailure($proxy, $exception->getMessage(), $exception->status);
+            } catch (Throwable $exception) {
+                $this->proxyPool->markFailure($proxy, $exception->getMessage());
+            }
+        }
+
+        return null;
+    }
+
+    /** @param array{uri: string, id: string, source: string, uptime_percent: float, latency_ms: float} $proxy
+     * @return list<array<string, mixed>>
+     */
+    private function fetchOffersViaProxy(string $productKey, array $proxy): array
+    {
+        $offers = [];
+        $page = 0;
+        $pageCount = 1;
+
+        while ($page < $pageCount && $page < self::MAX_PAGES) {
+            try {
+                $response = $this->requestOffersPageWithSystemCurl($productKey, $page, $proxy['uri']);
+            } catch (Throwable $exception) {
+                throw new TorobProxyRequestException($exception->getMessage(), previous: $exception);
+            }
+
+            if (! $response->successful()) {
+                throw new TorobProxyRequestException(
+                    "Torob proxy request returned HTTP {$response->status()}.",
+                    $response->status(),
+                );
+            }
+
+            $payload = $response->json();
+            if (! is_array($payload) || ! isset($payload['results']) || ! is_array($payload['results'])) {
+                throw new TorobProxyRequestException('Torob proxy returned an unexpected response.');
+            }
+
+            foreach ($payload['results'] as $offer) {
+                if (is_array($offer)) {
+                    $offers[] = $offer;
+                }
+            }
+
+            $count = max(0, (int) ($payload['count'] ?? count($offers)));
+            $pageCount = max(1, (int) ceil($count / self::PAGE_SIZE));
+            $page++;
+        }
+
+        return $offers;
+    }
+
+    /** @return list<array<string, mixed>> */
+    private function fetchOffersDirect(string $productKey): array
+    {
         $this->ensureRequestsAreNotBlocked();
 
         $offers = [];
@@ -144,7 +244,7 @@ class TorobOfferFetcher
 
     private function ensureRequestsAreNotBlocked(): void
     {
-        $blockedUntil = (int) Cache::get(self::BLOCKED_CACHE_KEY, 0);
+        $blockedUntil = (int) Cache::get(self::DIRECT_BLOCKED_CACHE_KEY, 0);
 
         if ($blockedUntil > now()->timestamp) {
             throw new RuntimeException(
@@ -152,7 +252,7 @@ class TorobOfferFetcher
             );
         }
 
-        Cache::forget(self::BLOCKED_CACHE_KEY);
+        Cache::forget(self::DIRECT_BLOCKED_CACHE_KEY);
     }
 
     private function blockFurtherRequests(): void
@@ -160,7 +260,7 @@ class TorobOfferFetcher
         $seconds = max(60, (int) config('services.torob.block_cooldown_seconds', 600));
         $blockedUntil = now()->addSeconds($seconds);
 
-        Cache::put(self::BLOCKED_CACHE_KEY, $blockedUntil->timestamp, $blockedUntil);
+        Cache::put(self::DIRECT_BLOCKED_CACHE_KEY, $blockedUntil->timestamp, $blockedUntil);
     }
 
     private function requestOffersPage(PendingRequest $client, string $productKey, int $page): Response
@@ -183,7 +283,7 @@ class TorobOfferFetcher
             ->get("https://torob.com/p/{$productKey}/");
     }
 
-    private function requestOffersPageWithSystemCurl(string $productKey, int $page): Response
+    private function requestOffersPageWithSystemCurl(string $productKey, int $page, ?string $proxy = null): Response
     {
         $query = http_build_query([
             'source' => 'next_desktop',
@@ -193,15 +293,15 @@ class TorobOfferFetcher
         ]);
         $binary = (string) config('services.torob.curl_binary', 'curl');
 
-        $result = Process::timeout(20)->run([
+        $command = [
             $binary,
             '--silent',
             '--show-error',
             '--compressed',
             '--max-time',
-            '15',
+            (string) ($proxy === null ? 15 : config('proxy.torob.request_timeout', 8)),
             '--connect-timeout',
-            '5',
+            (string) ($proxy === null ? 5 : config('proxy.torob.connect_timeout', 3)),
             '--header',
             'Accept: application/json',
             '--header',
@@ -212,10 +312,21 @@ class TorobOfferFetcher
             'Origin: https://torob.com',
             '--header',
             'Accept-Language: fa-IR,fa;q=0.9,en;q=0.8',
+        ];
+
+        if ($proxy !== null) {
+            $command[] = '--proxy';
+            $command[] = $proxy;
+        }
+
+        $command = array_merge($command, [
             '--write-out',
             '\n'.self::CURL_STATUS_MARKER.'%{http_code}',
             self::SELLERS_ENDPOINT.'?'.$query,
         ]);
+
+        $timeout = $proxy === null ? 20 : (int) config('proxy.torob.request_timeout', 8) + 5;
+        $result = Process::timeout($timeout)->run($command);
 
         $output = $result->output();
         $statusSeparator = strrpos($output, self::CURL_STATUS_MARKER);
@@ -225,7 +336,7 @@ class TorobOfferFetcher
             $details = $error !== '' ? mb_substr($error, 0, 500) : 'no error output';
 
             throw new RuntimeException(
-                "Torob sellers fallback transport returned an invalid response (exit {$result->exitCode()}: {$details}).",
+                "Torob cURL transport returned an invalid response (exit {$result->exitCode()}: {$details}).",
             );
         }
 
@@ -234,7 +345,7 @@ class TorobOfferFetcher
 
         if ($status < 100 || $status > 599) {
             $error = trim($result->errorOutput());
-            throw new RuntimeException('Torob sellers fallback transport failed'.($error !== '' ? ": {$error}" : '.'));
+            throw new RuntimeException('Torob cURL transport failed'.($error !== '' ? ": {$error}" : '.'));
         }
 
         return new Response(new Psr7Response(
