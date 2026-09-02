@@ -13,23 +13,41 @@
                     <!-- Customer Details -->
                     <div class="space-y-2">
                         <flux:heading size="sm">{{ __('general.customer_details') }}</flux:heading>
-                        <flux:text><strong>{{ __('general.name') }}:</strong> {{ $order->user?->name }}</flux:text>
-                        <flux:text><strong>{{ __('general.email') }}:</strong> {{ $order->user?->email }}</flux:text>
+                        <flux:text><strong>{{ __('general.first_name') }}:</strong> {{ $order->user?->first_name ?: '-' }}</flux:text>
+                        <flux:text><strong>{{ __('general.last_name') }}:</strong> {{ $order->user?->last_name ?: '-' }}</flux:text>
                         <flux:text><strong>{{ __('general.national_code') }}:</strong> {{ $order->user?->national_code ?: '-' }}</flux:text>
+                        <flux:text><strong>{{ __('general.mobile') }}:</strong> <span dir="ltr">{{ $order->user?->mobile ?: '-' }}</span></flux:text>
+                        <flux:text><strong>{{ __('general.email') }}:</strong> <span dir="ltr">{{ $order->user?->email ?: '-' }}</span></flux:text>
                     </div>
 
                     <!-- Shipping Address -->
                     <div class="space-y-2">
                         <flux:heading size="sm">{{ __('general.shipping_address') }}</flux:heading>
                         @if ($order->shipping_address)
-                            <flux:text>{{ $order->shipping_address['address'] ?? '-' }}</flux:text>
-                            <flux:text>{{ $order->shipping_address['city'] ?? '-' }}, {{ $order->shipping_address['province'] ?? '-' }}</flux:text>
-                            <flux:text>{{ __('general.postal_code') }}: {{ $order->shipping_address['postal_code'] ?? '-' }}</flux:text>
+                            @if ($order->shipping_address['name'] ?? null)
+                                <flux:text><strong>{{ __('general.address_name') }}:</strong> {{ $order->shipping_address['name'] }}</flux:text>
+                            @endif
+                            <flux:text><strong>{{ __('general.address') }}:</strong> {{ $order->shipping_address['address'] ?? '-' }}</flux:text>
+                            <flux:text><strong>{{ __('general.province') }}:</strong> {{ $order->shipping_province_name ?: '-' }}</flux:text>
+                            <flux:text><strong>{{ __('general.city') }}:</strong> {{ $order->shipping_city_name ?: '-' }}</flux:text>
+                            <flux:text><strong>{{ __('general.postal_code') }}:</strong> {{ $order->shipping_address['postal_code'] ?? '-' }}</flux:text>
+                            @if ($order->shipping_address['emergency_contact'] ?? null)
+                                <flux:text><strong>{{ __('general.emergency_contact') }}:</strong> <span dir="ltr">{{ $order->shipping_address['emergency_contact'] }}</span></flux:text>
+                            @endif
                         @else
                             <flux:text>-</flux:text>
                         @endif
                     </div>
                 </div>
+
+                @if ($order->customer_note)
+                    <flux:separator />
+
+                    <div class="space-y-2">
+                        <flux:heading size="sm">{{ __('general.customer_note') }}</flux:heading>
+                        <flux:text>{{ $order->customer_note }}</flux:text>
+                    </div>
+                @endif
 
                 <flux:separator />
 

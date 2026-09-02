@@ -106,6 +106,34 @@ class Order extends Model
             ?? data_get($this->meta, 'payment_receipt.details.CardHolderPan');
     }
 
+    public function getShippingProvinceNameAttribute(): ?string
+    {
+        $provinceId = data_get($this->shipping_address, 'province_id');
+
+        if ($provinceId === null) {
+            return data_get($this->shipping_address, 'province');
+        }
+
+        $provinces = require lang_path('fa/provinces.php');
+
+        return $provinces[$provinceId] ?? null;
+    }
+
+    public function getShippingCityNameAttribute(): ?string
+    {
+        $provinceId = data_get($this->shipping_address, 'province_id');
+        $cityId = data_get($this->shipping_address, 'city_id');
+
+        if ($provinceId === null || $cityId === null) {
+            return data_get($this->shipping_address, 'city');
+        }
+
+        $cities = require lang_path('fa/cities.php');
+        $city = $cities[$provinceId][$cityId] ?? null;
+
+        return is_array($city) ? ($city['name'] ?? null) : $city;
+    }
+
     /**
      * Generate a unique order number.
      */
