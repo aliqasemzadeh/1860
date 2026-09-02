@@ -56,11 +56,23 @@ class PaymentController extends Controller
 
             $orderStatusService->markAsPaid($order);
 
-            // Update meta with receipt
             $meta = $order->meta ?? [];
-            $meta['payment_receipt'] = $receipt;
+            $meta['payment_receipt'] = [
+                'driver' => $receipt->getDriver(),
+                'reference_id' => $receipt->getReferenceId(),
+                'details' => $receipt->getDetails(),
+            ];
             $meta['payment_verified_at'] = now()->toDateTimeString();
-            $order->update(['meta' => $meta]);
+
+            $order->update([
+                'payment_gateway' => $receipt->getDriver(),
+                'payment_reference_id' => $receipt->getReferenceId(),
+                'payment_card_pan' => $receipt->getDetail('CardHolderPan'),
+                'payment_transaction_id' => $order->payment_transaction_id
+                    ?? data_get($meta, 'payment_transaction_id')
+                    ?? $transactionId,
+                'meta' => $meta,
+            ]);
 
             // Clear session
             session()->forget('payment_order_id');

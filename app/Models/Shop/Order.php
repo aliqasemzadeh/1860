@@ -27,6 +27,11 @@ class Order extends Model
         'billing_address',
         'customer_note',
         'meta',
+        'payment_gateway',
+        'payment_transaction_id',
+        'payment_reference_id',
+        'payment_card_pan',
+        'payment_ip',
         'paid_at',
         'shipped_at',
         'delivered_at',
@@ -69,6 +74,36 @@ class Order extends Model
     public function shippingZone(): BelongsTo
     {
         return $this->belongsTo(ShippingZone::class);
+    }
+
+    public function getPaymentGatewayLabelAttribute(): ?string
+    {
+        if (! $this->payment_gateway) {
+            return null;
+        }
+
+        $key = 'general.payment_gateway_'.$this->payment_gateway;
+
+        return __($key) !== $key ? __($key) : $this->payment_gateway;
+    }
+
+    public function getResolvedPaymentTransactionIdAttribute(): ?string
+    {
+        return $this->payment_transaction_id
+            ?? data_get($this->meta, 'payment_transaction_id');
+    }
+
+    public function getResolvedPaymentReferenceIdAttribute(): ?string
+    {
+        return $this->payment_reference_id
+            ?? data_get($this->meta, 'payment_receipt.reference_id')
+            ?? data_get($this->meta, 'payment_receipt.details.SaleReferenceId');
+    }
+
+    public function getResolvedPaymentCardPanAttribute(): ?string
+    {
+        return $this->payment_card_pan
+            ?? data_get($this->meta, 'payment_receipt.details.CardHolderPan');
     }
 
     /**

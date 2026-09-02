@@ -61,14 +61,22 @@ class Payment extends Component
             // Store order ID in session for callback
             session(['payment_order_id' => $order->id]);
 
+            $order->update([
+                'payment_gateway' => config('payment.default'),
+                'payment_ip' => request()->ip(),
+            ]);
+
             // Create payment with callback URL
             $callbackUrl = route('payment.callback', ['orderId' => $order->id]);
             $payment = GatewayPayment::callbackUrl($callbackUrl)
                 ->purchase($invoice, function ($driver, $transactionId) use ($order) {
-                    // Store transaction ID in order meta
                     $meta = $order->meta ?? [];
                     $meta['payment_transaction_id'] = $transactionId;
-                    $order->update(['meta' => $meta]);
+
+                    $order->update([
+                        'payment_transaction_id' => $transactionId,
+                        'meta' => $meta,
+                    ]);
 
                     Log::info('meta updated', ['meta' => $meta]);
                 });

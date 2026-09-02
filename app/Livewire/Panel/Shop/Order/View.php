@@ -15,7 +15,12 @@ class View extends Component
     public function assignData(int $id): void
     {
         $this->order = Order::query()
-            ->with(['items', 'user', 'shippingMethod', 'shippingZone'])
+            ->with([
+                'items',
+                'user',
+                'shippingMethod' => fn ($query) => $query->withTrashed(),
+                'shippingZone' => fn ($query) => $query->withTrashed(),
+            ])
             ->find($id);
 
         if ($this->order) {
