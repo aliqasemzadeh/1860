@@ -3,10 +3,12 @@
 namespace App\Support;
 
 use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Psr7\Response as Psr7Response;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Process;
 use RuntimeException;
 use Throwable;
 
@@ -17,6 +19,8 @@ class TorobOfferFetcher
     private const PAGE_SIZE = 100;
 
     private const MAX_PAGES = 10;
+
+    private const BLOCKED_CACHE_KEY = 'torob:sellers:blocked-until';
 
     private const BROWSER_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
 
@@ -84,6 +88,8 @@ class TorobOfferFetcher
     /** @return list<array<string, mixed>> */
     private function fetchOffers(string $productKey): array
     {
+        $this->ensureRequestsAreNotBlocked();
+
         $offers = [];
         $page = 0;
         $pageCount = 1;
@@ -101,8 +107,14 @@ class TorobOfferFetcher
                 $response = $this->requestOffersPage($client, $productKey, $page);
             }
 
+            if ($response->status() === 490) {
+                $response = $this->requestOffersPageWithSystemCurl($productKey, $page);
+            }
+
             if (! $response->successful()) {
                 if ($response->status() === 490) {
+                    $this->blockFurtherRequests();
+
                     throw new RuntimeException('Torob temporarily rejected the sellers request (HTTP 490); the current price was not changed.');
                 }
 
@@ -128,6 +140,27 @@ class TorobOfferFetcher
         return $offers;
     }
 
+    private function ensureRequestsAreNotBlocked(): void
+    {
+        $blockedUntil = (int) Cache::get(self::BLOCKED_CACHE_KEY, 0);
+
+        if ($blockedUntil > now()->timestamp) {
+            throw new RuntimeException(
+                'Torob sellers requests are cooling down after HTTP 490 until '.date('Y-m-d H:i:s', $blockedUntil).'; the current price was not changed.',
+            );
+        }
+
+        Cache::forget(self::BLOCKED_CACHE_KEY);
+    }
+
+    private function blockFurtherRequests(): void
+    {
+        $seconds = max(60, (int) config('services.torob.block_cooldown_seconds', 600));
+        $blockedUntil = now()->addSeconds($seconds);
+
+        Cache::put(self::BLOCKED_CACHE_KEY, $blockedUntil->timestamp, $blockedUntil);
+    }
+
     private function requestOffersPage(PendingRequest $client, string $productKey, int $page): Response
     {
         return $client->get(self::SELLERS_ENDPOINT, [
@@ -146,6 +179,62 @@ class TorobOfferFetcher
             ->timeout(10)
             ->connectTimeout(5)
             ->get("https://torob.com/p/{$productKey}/");
+    }
+
+    private function requestOffersPageWithSystemCurl(string $productKey, int $page): Response
+    {
+        $query = http_build_query([
+            'source' => 'next_desktop',
+            'prk' => $productKey,
+            'page' => $page,
+            'size' => self::PAGE_SIZE,
+        ]);
+        $binary = (string) config('services.torob.curl_binary', 'curl');
+
+        $result = Process::timeout(20)->run([
+            $binary,
+            '--silent',
+            '--show-error',
+            '--compressed',
+            '--max-time',
+            '15',
+            '--connect-timeout',
+            '5',
+            '--header',
+            'Accept: application/json',
+            '--header',
+            'User-Agent: '.self::BROWSER_USER_AGENT,
+            '--header',
+            'Referer: https://torob.com/',
+            '--header',
+            'Origin: https://torob.com',
+            '--header',
+            'Accept-Language: fa-IR,fa;q=0.9,en;q=0.8',
+            '--write-out',
+            "\n%{http_code}",
+            self::SELLERS_ENDPOINT.'?'.$query,
+        ]);
+
+        $output = rtrim($result->output(), "\r\n");
+        $statusSeparator = strrpos($output, "\n");
+
+        if ($statusSeparator === false) {
+            throw new RuntimeException('Torob sellers fallback transport returned an invalid response.');
+        }
+
+        $body = substr($output, 0, $statusSeparator);
+        $status = (int) trim(substr($output, $statusSeparator + 1));
+
+        if ($status < 100 || $status > 599) {
+            $error = trim($result->errorOutput());
+            throw new RuntimeException('Torob sellers fallback transport failed'.($error !== '' ? ": {$error}" : '.'));
+        }
+
+        return new Response(new Psr7Response(
+            $status,
+            ['Content-Type' => 'application/json'],
+            $body,
+        ));
     }
 
     private function client(CookieJar $cookieJar): PendingRequest

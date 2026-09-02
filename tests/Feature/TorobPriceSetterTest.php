@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
@@ -167,6 +168,61 @@ test('torob offer fetching recovers from HTTP 490 with a browser session', funct
         'https://torob.com/p/ad77d6f4-d0de-4ec9-9572-a05fbd27ad70/',
     ));
     Http::assertSentCount(3);
+});
+
+test('torob offer fetching falls back to system curl when PHP transport remains blocked', function () {
+    ['price' => $price, 'setter' => $setter] = createTorobPricingRule();
+
+    Http::fake([
+        'api.torob.com/*' => Http::response([], 490),
+        'torob.com/p/*' => Http::response('', 200),
+    ]);
+    Process::fake([
+        '*' => Process::result(json_encode([
+            'count' => 1,
+            'results' => [[
+                'availability' => true,
+                'shop_name' => 'رقیب معتبر',
+                'price' => 21_000_000,
+            ]],
+        ], JSON_THROW_ON_ERROR)."\n200"),
+    ]);
+
+    TorobPriceSetterJob::dispatchSync($setter);
+
+    expect((int) $price->fresh()->price)->toBe(20_990_000);
+    Process::assertRan(function ($process): bool {
+        $command = $process->command;
+
+        return is_array($command)
+            && in_array('--write-out', $command, true)
+            && collect($command)->contains(
+                fn (string $argument): bool => str_starts_with($argument, 'https://api.torob.com/v4/base-product/sellers/'),
+            );
+    });
+});
+
+test('torob offer fetching cools down after a final HTTP 490 response', function () {
+    ['setter' => $setter] = createTorobPricingRule();
+
+    Http::fake([
+        'api.torob.com/*' => Http::response([], 490),
+        'torob.com/p/*' => Http::response('', 490),
+    ]);
+    Process::fake([
+        '*' => Process::result("<html>blocked</html>\n490"),
+    ]);
+
+    expect(fn () => TorobPriceSetterJob::dispatchSync($setter))
+        ->toThrow(RuntimeException::class, 'HTTP 490');
+
+    expect(Cache::has('torob:sellers:blocked-until'))->toBeTrue();
+
+    expect(fn () => TorobPriceSetterJob::dispatchSync($setter->fresh()))
+        ->toThrow(RuntimeException::class, 'cooling down');
+
+    Http::assertSentCount(3);
+    Process::assertRanTimes(fn (): bool => true, 1);
 });
 
 test('torob pricing rule keeps the current price when stop loss is reached', function () {
