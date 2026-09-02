@@ -86,19 +86,19 @@
 
                             <flux:field>
                                 <flux:label>{{ __('general.torob_step_amount') }}</flux:label>
-                                <flux:input wire:model="stepAmount" type="text" inputmode="numeric" dir="ltr" placeholder="100,000" />
+                                <flux:input wire:model="stepAmount" type="text" inputmode="numeric" dir="ltr" placeholder="100,000" mask:dynamic="$money($input)" />
                                 <flux:error name="stepAmount" />
                             </flux:field>
 
                             <flux:field>
                                 <flux:label>{{ __('general.torob_min_price') }}</flux:label>
-                                <flux:input wire:model="minPrice" type="text" inputmode="numeric" dir="ltr" placeholder="18,000,000" />
+                                <flux:input wire:model="minPrice" type="text" inputmode="numeric" dir="ltr" placeholder="18,000,000" mask:dynamic="$money($input)" />
                                 <flux:error name="minPrice" />
                             </flux:field>
 
                             <flux:field class="sm:col-start-2">
                                 <flux:label>{{ __('general.torob_max_price') }}</flux:label>
-                                <flux:input wire:model="maxPrice" type="text" inputmode="numeric" dir="ltr" placeholder="24,000,000" />
+                                <flux:input wire:model="maxPrice" type="text" inputmode="numeric" dir="ltr" placeholder="24,000,000" mask:dynamic="$money($input)" />
                                 <flux:error name="maxPrice" />
                             </flux:field>
                         </div>
