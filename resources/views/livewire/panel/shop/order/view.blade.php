@@ -1,5 +1,5 @@
 <div>
-    <flux:modal name="panel.shop.order.view.modal" class="md:w-[800px]">
+    <flux:modal name="panel.shop.order.view.modal" class="md:w-[800px]" flyout position="right">
         @if ($order)
             <div class="space-y-6">
                 <div>
@@ -27,6 +27,52 @@
                             <flux:text>{{ __('general.postal_code') }}: {{ $order->shipping_address['postal_code'] ?? '-' }}</flux:text>
                         @else
                             <flux:text>-</flux:text>
+                        @endif
+                    </div>
+                </div>
+
+                <flux:separator />
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Shipping Type -->
+                    <div class="space-y-2">
+                        <flux:heading size="sm">{{ __('general.shipping_type') }}</flux:heading>
+                        <flux:text><strong>{{ __('general.shipping_method') }}:</strong> {{ $order->shippingMethod?->name ?? '-' }}</flux:text>
+                        <flux:text><strong>{{ __('general.shipping_zone') }}:</strong> {{ $order->shippingZone?->name ?? '-' }}</flux:text>
+                        @if ($order->shipping_estimated_days)
+                            <flux:text><strong>{{ __('general.estimated_delivery') }}:</strong> {{ $order->shipping_estimated_days }}</flux:text>
+                        @endif
+                        <flux:text><strong>{{ __('general.shipping_cost') }}:</strong> {{ number_format((float) $order->shipping_amount) }} {{ $order->currency }}</flux:text>
+                    </div>
+
+                    <!-- Payment Info -->
+                    <div class="space-y-2">
+                        <flux:heading size="sm">{{ __('general.payment_info') }}</flux:heading>
+                        <flux:text>
+                            <strong>{{ __('general.payment_status') }}:</strong>
+                            @if ($order->paid_at)
+                                <flux:badge color="green" size="sm">{{ __('general.paid') }}</flux:badge>
+                            @else
+                                <flux:badge color="orange" size="sm">{{ __('general.unpaid') }}</flux:badge>
+                            @endif
+                        </flux:text>
+                        @if ($order->payment_gateway)
+                            <flux:text><strong>{{ __('general.payment_type') }}:</strong> {{ $order->payment_gateway_label ?? '-' }}</flux:text>
+                        @endif
+                        @if ($order->paid_at)
+                            <flux:text><strong>{{ __('general.paid_at') }}:</strong> {{ jalali($order->paid_at) }}</flux:text>
+                        @endif
+                        @if ($order->resolved_payment_reference_id)
+                            <flux:text><strong>{{ __('general.payment_reference_id') }}:</strong> {{ $order->resolved_payment_reference_id }}</flux:text>
+                        @endif
+                        @if ($order->resolved_payment_transaction_id)
+                            <flux:text><strong>{{ __('general.payment_transaction_id') }}:</strong> {{ $order->resolved_payment_transaction_id }}</flux:text>
+                        @endif
+                        @if ($order->resolved_payment_card_pan)
+                            <flux:text><strong>{{ __('general.payment_card_pan') }}:</strong> <span dir="ltr">{{ $order->resolved_payment_card_pan }}</span></flux:text>
+                        @endif
+                        @if ($order->payment_ip)
+                            <flux:text><strong>{{ __('general.payer_ip') }}:</strong> <span dir="ltr">{{ $order->payment_ip }}</span></flux:text>
                         @endif
                     </div>
                 </div>
