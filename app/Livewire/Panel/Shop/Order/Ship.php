@@ -60,6 +60,7 @@ class Ship extends Component
         }
 
         $this->dispatch('panel.shop.order.index.render');
+        $this->dispatch('panel.shop.dashboard.index.refresh-data');
         Flux::modal('panel.shop.order.ship.modal')->close();
         Flux::toast(variant: 'success', text: __('general.order_shipped'));
     }

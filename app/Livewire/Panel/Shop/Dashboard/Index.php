@@ -72,10 +72,16 @@ class Index extends Component
     #[On('panel.shop.dashboard.index.render')]
     public function refresh(): void
     {
-        Cache::forget('panel.shop.dashboard.stats');
-        unset($this->stats, $this->recentOrders);
+        $this->refreshData();
 
         Flux::toast(variant: 'success', text: __('general.updated_successfully'));
+    }
+
+    #[On('panel.shop.dashboard.index.refresh-data')]
+    public function refreshData(): void
+    {
+        Cache::forget('panel.shop.dashboard.stats');
+        unset($this->stats, $this->recentOrders);
     }
 
     #[Layout('layouts.panels.shop')]

@@ -21,6 +21,7 @@
     </div>
 
     <livewire:panel.shop.order.view />
+    <livewire:panel.shop.order.ship />
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <a href="{{ route('panel.shop.product.index') }}" wire:navigate class="block">
