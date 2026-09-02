@@ -35,7 +35,11 @@ class TorobPriceSetterCommand extends Command
             $query->whereKey((int) $ruleId);
         }
 
-        $setters = $query->get();
+        $setters = $query
+            ->orderByRaw('CASE WHEN last_checked_at IS NULL THEN 0 ELSE 1 END')
+            ->orderBy('last_checked_at')
+            ->orderBy('id')
+            ->get();
 
         if ($setters->isEmpty()) {
             $this->components->info('No active Torob pricing rules found.');

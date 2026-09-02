@@ -349,3 +349,28 @@ test('Torob sync command dispatches only active pricing rules', function () {
         fn (TorobPriceSetterJob $job): bool => $job->priceSetter->is($inactiveSetter)
     );
 });
+
+test('Torob sync command dispatches least recently checked rules first', function () {
+    Queue::fake();
+    ['setter' => $recentSetter] = createTorobPricingRule([
+        'last_checked_at' => now()->subMinutes(5),
+    ]);
+    ['setter' => $neverCheckedSetter] = createTorobPricingRule([
+        'last_checked_at' => null,
+    ]);
+    ['setter' => $oldSetter] = createTorobPricingRule([
+        'last_checked_at' => now()->subDay(),
+    ]);
+
+    $this->artisan('shop:sync-torob-prices')->assertSuccessful();
+
+    $dispatchedIds = Queue::pushed(TorobPriceSetterJob::class)
+        ->map(fn (TorobPriceSetterJob $job): int => $job->priceSetter->id)
+        ->all();
+
+    expect($dispatchedIds)->toBe([
+        $neverCheckedSetter->id,
+        $oldSetter->id,
+        $recentSetter->id,
+    ]);
+});
