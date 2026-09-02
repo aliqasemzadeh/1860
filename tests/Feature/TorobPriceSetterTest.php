@@ -137,6 +137,38 @@ test('torob offer fetching follows seller pagination', function () {
     Http::assertSentCount(2);
 });
 
+test('torob offer fetching recovers from HTTP 490 with a browser session', function () {
+    ['price' => $price, 'setter' => $setter] = createTorobPricingRule();
+
+    Http::fake([
+        'api.torob.com/*' => Http::sequence()
+            ->push([], 490)
+            ->push([
+                'count' => 1,
+                'results' => [[
+                    'availability' => true,
+                    'shop_name' => 'رقیب معتبر',
+                    'price' => 21_000_000,
+                ]],
+            ]),
+        'torob.com/p/*' => Http::response('', 200),
+    ]);
+
+    TorobPriceSetterJob::dispatchSync($setter);
+
+    expect((int) $price->fresh()->price)->toBe(20_990_000);
+
+    Http::assertSent(fn ($request): bool => str_starts_with($request->url(), 'https://api.torob.com/')
+        && str_contains($request->url(), 'source=next_desktop')
+        && str_starts_with($request->header('User-Agent')[0] ?? '', 'Mozilla/5.0')
+        && ($request->header('Referer')[0] ?? '') === 'https://torob.com/');
+    Http::assertSent(fn ($request): bool => str_starts_with(
+        $request->url(),
+        'https://torob.com/p/ad77d6f4-d0de-4ec9-9572-a05fbd27ad70/',
+    ));
+    Http::assertSentCount(3);
+});
+
 test('torob pricing rule keeps the current price when stop loss is reached', function () {
     ['price' => $price, 'setter' => $setter] = createTorobPricingRule([
         'min_price' => 20_000_000,

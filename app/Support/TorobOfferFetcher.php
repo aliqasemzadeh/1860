@@ -2,10 +2,13 @@
 
 namespace App\Support;
 
+use GuzzleHttp\Cookie\CookieJar;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
+use Throwable;
 
 class TorobOfferFetcher
 {
@@ -14,6 +17,8 @@ class TorobOfferFetcher
     private const PAGE_SIZE = 100;
 
     private const MAX_PAGES = 10;
+
+    private const BROWSER_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
 
     /**
      * @param  list<string>  $excludedShopNames
@@ -82,15 +87,25 @@ class TorobOfferFetcher
         $offers = [];
         $page = 0;
         $pageCount = 1;
+        $cookieJar = new CookieJar;
+        $client = $this->client($cookieJar);
+        $sessionPrimed = false;
 
         while ($page < $pageCount && $page < self::MAX_PAGES) {
-            $response = $this->client()->get(self::SELLERS_ENDPOINT, [
-                'prk' => $productKey,
-                'page' => $page,
-                'size' => self::PAGE_SIZE,
-            ]);
+            $response = $this->requestOffersPage($client, $productKey, $page);
+
+            if ($response->status() === 490 && ! $sessionPrimed) {
+                $this->primeBrowserSession($cookieJar, $productKey);
+                $client = $this->client($cookieJar);
+                $sessionPrimed = true;
+                $response = $this->requestOffersPage($client, $productKey, $page);
+            }
 
             if (! $response->successful()) {
+                if ($response->status() === 490) {
+                    throw new RuntimeException('Torob temporarily rejected the sellers request (HTTP 490); the current price was not changed.');
+                }
+
                 throw new RuntimeException("Torob sellers endpoint returned HTTP {$response->status()}.");
             }
 
@@ -113,13 +128,51 @@ class TorobOfferFetcher
         return $offers;
     }
 
-    private function client(): PendingRequest
+    private function requestOffersPage(PendingRequest $client, string $productKey, int $page): Response
     {
-        return Http::acceptJson()
-            ->withUserAgent('1860.ai Torob Price Monitor/1.0')
+        return $client->get(self::SELLERS_ENDPOINT, [
+            'source' => 'next_desktop',
+            'prk' => $productKey,
+            'page' => $page,
+            'size' => self::PAGE_SIZE,
+        ]);
+    }
+
+    private function primeBrowserSession(CookieJar $cookieJar, string $productKey): void
+    {
+        Http::withOptions(['cookies' => $cookieJar])
+            ->withHeaders($this->browserHeaders())
+            ->accept('text/html,application/xhtml+xml')
             ->timeout(10)
             ->connectTimeout(5)
-            ->retry(2, 300, throw: false);
+            ->get("https://torob.com/p/{$productKey}/");
+    }
+
+    private function client(CookieJar $cookieJar): PendingRequest
+    {
+        return Http::withOptions(['cookies' => $cookieJar])
+            ->withHeaders($this->browserHeaders())
+            ->acceptJson()
+            ->timeout(10)
+            ->connectTimeout(5)
+            ->retry(
+                [400, 1000],
+                when: fn (Throwable $exception): bool => $exception instanceof \Illuminate\Http\Client\ConnectionException
+                    || ($exception instanceof \Illuminate\Http\Client\RequestException
+                        && ($exception->response->status() === 429 || $exception->response->serverError())),
+                throw: false,
+            );
+    }
+
+    /** @return array<string, string> */
+    private function browserHeaders(): array
+    {
+        return [
+            'User-Agent' => self::BROWSER_USER_AGENT,
+            'Referer' => 'https://torob.com/',
+            'Origin' => 'https://torob.com',
+            'Accept-Language' => 'fa-IR,fa;q=0.9,en;q=0.8',
+        ];
     }
 
     private function normalizeShopName(string $name): string
