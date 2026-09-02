@@ -185,7 +185,7 @@ test('torob offer fetching falls back to system curl when PHP transport remains 
                 'shop_name' => 'رقیب معتبر',
                 'price' => 21_000_000,
             ]],
-        ], JSON_THROW_ON_ERROR)."\n200"),
+        ], JSON_THROW_ON_ERROR)."\n__TOROB_HTTP_STATUS__:200"),
     ]);
 
     TorobPriceSetterJob::dispatchSync($setter);
@@ -210,7 +210,7 @@ test('torob offer fetching cools down after a final HTTP 490 response', function
         'torob.com/p/*' => Http::response('', 490),
     ]);
     Process::fake([
-        '*' => Process::result("<html>blocked</html>\n490"),
+        '*' => Process::result("<html>blocked</html>\n__TOROB_HTTP_STATUS__:490"),
     ]);
 
     expect(fn () => TorobPriceSetterJob::dispatchSync($setter))

@@ -22,6 +22,8 @@ class TorobOfferFetcher
 
     private const BLOCKED_CACHE_KEY = 'torob:sellers:blocked-until';
 
+    private const CURL_STATUS_MARKER = '__TOROB_HTTP_STATUS__:';
+
     private const BROWSER_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
 
     /**
@@ -211,19 +213,24 @@ class TorobOfferFetcher
             '--header',
             'Accept-Language: fa-IR,fa;q=0.9,en;q=0.8',
             '--write-out',
-            "\n%{http_code}",
+            '\n'.self::CURL_STATUS_MARKER.'%{http_code}',
             self::SELLERS_ENDPOINT.'?'.$query,
         ]);
 
-        $output = rtrim($result->output(), "\r\n");
-        $statusSeparator = strrpos($output, "\n");
+        $output = $result->output();
+        $statusSeparator = strrpos($output, self::CURL_STATUS_MARKER);
 
         if ($statusSeparator === false) {
-            throw new RuntimeException('Torob sellers fallback transport returned an invalid response.');
+            $error = trim($result->errorOutput());
+            $details = $error !== '' ? mb_substr($error, 0, 500) : 'no error output';
+
+            throw new RuntimeException(
+                "Torob sellers fallback transport returned an invalid response (exit {$result->exitCode()}: {$details}).",
+            );
         }
 
-        $body = substr($output, 0, $statusSeparator);
-        $status = (int) trim(substr($output, $statusSeparator + 1));
+        $body = rtrim(substr($output, 0, $statusSeparator), "\r\n");
+        $status = (int) trim(substr($output, $statusSeparator + strlen(self::CURL_STATUS_MARKER)));
 
         if ($status < 100 || $status > 599) {
             $error = trim($result->errorOutput());
