@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands\Shop;
 
+use App\Jobs\Shop\TorobPriceSetterJob;
+use App\Models\Shop\TorobPriceSetter;
 use Illuminate\Console\Command;
 
 class TorobPriceSetterCommand extends Command
@@ -11,20 +13,46 @@ class TorobPriceSetterCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'app:torob-price-setter-command';
+    protected $signature = 'shop:sync-torob-prices
+                            {--rule= : Process only one Torob price setter ID}
+                            {--sync : Run jobs synchronously}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Fetch Torob competitors and update active product prices';
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
-        //
+        $query = TorobPriceSetter::query()->where('is_active', true);
+
+        if ($ruleId = $this->option('rule')) {
+            $query->whereKey((int) $ruleId);
+        }
+
+        $setters = $query->get();
+
+        if ($setters->isEmpty()) {
+            $this->components->info('No active Torob pricing rules found.');
+
+            return self::SUCCESS;
+        }
+
+        foreach ($setters as $setter) {
+            if ($this->option('sync')) {
+                TorobPriceSetterJob::dispatchSync($setter);
+            } else {
+                TorobPriceSetterJob::dispatch($setter);
+            }
+        }
+
+        $this->components->info("Processed {$setters->count()} Torob pricing rule(s).");
+
+        return self::SUCCESS;
     }
 }

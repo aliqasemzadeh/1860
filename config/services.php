@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'torob' => [
+        'audience' => env('TOROB_API_AUDIENCE', parse_url((string) env('APP_URL'), PHP_URL_HOST)),
+        'public_key' => env(
+            'TOROB_API_PUBLIC_KEY',
+            'MCowBQYDK2VwAyEAt6Mu4T0pBORY11W+QeM35UsmLO3vsf+6yKpFDEImFk0='
+        ),
+    ],
+
 ];

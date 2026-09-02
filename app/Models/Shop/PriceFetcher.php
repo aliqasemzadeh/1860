@@ -4,6 +4,7 @@ namespace App\Models\Shop;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PriceFetcher extends Model
 {
@@ -54,7 +55,13 @@ class PriceFetcher extends Model
             'fater' => __('general.price_fetcher_type_fater'),
             'setaregan' => __('general.price_fetcher_type_setaregan'),
             'technolife' => __('general.price_fetcher_type_technolife'),
+            'torob' => __('general.price_fetcher_type_torob'),
             default => $this->type,
         };
+    }
+
+    public function torobPriceSetter(): HasOne
+    {
+        return $this->hasOne(TorobPriceSetter::class);
     }
 }

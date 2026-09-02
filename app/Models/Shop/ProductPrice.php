@@ -4,12 +4,15 @@ namespace App\Models\Shop;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 
 class ProductPrice extends Model
 {
     use SoftDeletes;
+
+    protected $touches = ['product'];
 
     /**
      * The attributes that are mass assignable.
@@ -48,6 +51,11 @@ class ProductPrice extends Model
     public function warranty(): BelongsTo
     {
         return $this->belongsTo(Warranty::class);
+    }
+
+    public function torobPriceSetter(): HasOne
+    {
+        return $this->hasOne(TorobPriceSetter::class);
     }
 
     protected static function booted(): void

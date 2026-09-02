@@ -9,6 +9,7 @@ use App\Support\FaterPriceFetcher;
 use App\Support\MarkaziPriceFetcher;
 use App\Support\SetareganPriceFetcher;
 use App\Support\TechnolifePriceFetcher;
+use App\Support\TorobOfferFetcher;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
@@ -29,7 +30,7 @@ class FetchPriceJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(TorobOfferFetcher $torobOfferFetcher): void
     {
         try {
             $logger = Log::channel('single');
@@ -41,6 +42,7 @@ class FetchPriceJob implements ShouldQueue
                 'fater' => FaterPriceFetcher::fetchPrice($this->priceFetcher->url, $logger),
                 'setaregan' => SetareganPriceFetcher::fetchPrice($this->priceFetcher->url, $logger),
                 'technolife' => TechnolifePriceFetcher::fetchPrice($this->priceFetcher->url, $logger),
+                'torob' => $this->fetchTorobPrice($torobOfferFetcher),
                 default => null,
             };
 
@@ -61,5 +63,20 @@ class FetchPriceJob implements ShouldQueue
             Log::error("Error fetching price for price fetcher {$this->priceFetcher->id}: {$e->getMessage()}");
             Log::error('Stack trace: '.$e->getTraceAsString());
         }
+    }
+
+    private function fetchTorobPrice(TorobOfferFetcher $offerFetcher): ?int
+    {
+        $setter = $this->priceFetcher->torobPriceSetter;
+        if (! $setter) {
+            return null;
+        }
+
+        $offer = $offerFetcher->cheapestCompetitor(
+            $this->priceFetcher->url,
+            $setter->own_shop_names ?? [],
+        );
+
+        return $offer['price'] ?? null;
     }
 }
