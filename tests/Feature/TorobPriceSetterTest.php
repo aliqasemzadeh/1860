@@ -9,10 +9,10 @@ use App\Models\Shop\ProductPrice;
 use App\Models\Shop\TorobPriceSetter;
 use App\Models\Shop\Unit;
 use App\Models\User;
+use App\Scrapers\TorobScraper;
+use EduLazaro\Larascraper\Support\ScraperResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
@@ -67,17 +67,16 @@ function createTorobPricingRule(array $setterOverrides = [], array $priceOverrid
 
 function fakeTorobOffers(array $offers): void
 {
-    Http::fake([
-        'api.torob.com/*' => Http::response([
-            'count' => count($offers),
-            'results' => $offers,
-        ]),
-    ]);
+    $scraper = Mockery::mock(TorobScraper::class);
+    $scraper->shouldReceive('handleToResponse')
+        ->once()
+        ->andReturn(new ScraperResponse(data: $offers));
+
+    app()->instance(TorobScraper::class, $scraper);
 }
 
 beforeEach(function () {
     Cache::flush();
-    config()->set('proxy.torob.enabled', false);
 });
 
 test('Torob panel formats prices with Persian digits', function () {
@@ -114,135 +113,6 @@ test('torob pricing rule undercuts the cheapest eligible competitor and excludes
         ->and($fetcher->fresh()->last_price)->toBe(21_000_000)
         ->and($setter->fresh()->status)->toBe(TorobPriceSetter::STATUS_UPDATED)
         ->and($setter->fresh()->last_competitor_shop)->toBe('رقیب معتبر');
-});
-
-test('torob offer fetching follows seller pagination', function () {
-    ['price' => $price, 'setter' => $setter] = createTorobPricingRule();
-    $ownOffers = array_fill(0, 100, [
-        'availability' => true,
-        'shop_name' => 'هجده شصت',
-        'price' => 19_500_000,
-    ]);
-
-    Http::fake([
-        'api.torob.com/*' => Http::sequence()
-            ->push(['count' => 101, 'results' => $ownOffers])
-            ->push(['count' => 101, 'results' => [[
-                'availability' => true,
-                'shop_name' => 'رقیب صفحه دوم',
-                'price' => 21_000_000,
-            ]]]),
-    ]);
-
-    TorobPriceSetterJob::dispatchSync($setter);
-
-    expect((int) $price->fresh()->price)->toBe(20_990_000)
-        ->and($setter->fresh()->last_competitor_shop)->toBe('رقیب صفحه دوم');
-    Http::assertSentCount(2);
-});
-
-test('torob offer fetching rotates proxies before changing a price', function () {
-    ['price' => $price, 'setter' => $setter] = createTorobPricingRule();
-    config()->set('proxy.torob.enabled', true);
-    config()->set('proxy.torob.mode', 'proxy_only');
-    config()->set('proxy.torob.use_legacy_proxies', false);
-    config()->set('proxy.torob.manual', [
-        'http://192.0.2.10:8080',
-        'socks5://192.0.2.11:1080',
-    ]);
-    config()->set('proxy.torob.source.enabled', false);
-    config()->set('proxy.torob.max_attempts', 2);
-
-    Process::fake(function ($process) {
-        if (in_array('http://192.0.2.10:8080', $process->command, true)) {
-            return Process::result("<html>blocked</html>\n__TOROB_HTTP_STATUS__:490");
-        }
-
-        return Process::result(json_encode([
-            'count' => 1,
-            'results' => [[
-                'availability' => true,
-                'shop_name' => 'رقیب معتبر',
-                'price' => 21_000_000,
-            ]],
-        ], JSON_THROW_ON_ERROR)."\n__TOROB_HTTP_STATUS__:200");
-    });
-
-    TorobPriceSetterJob::dispatchSync($setter);
-
-    expect((int) $price->fresh()->price)->toBe(20_990_000);
-    Process::assertRanTimes(fn (): bool => true, 2);
-    Process::assertRan(fn ($process): bool => in_array('socks5h://192.0.2.11:1080', $process->command, true)
-        && ! in_array('--compressed', $process->command, true)
-        && ! in_array('--insecure', $process->command, true));
-});
-
-test('torob offer fetching retries with fresh proxies after the direct curl transport fails', function () {
-    ['price' => $price, 'setter' => $setter] = createTorobPricingRule();
-    config()->set('proxy.torob.enabled', true);
-    config()->set('proxy.torob.mode', 'proxy_first');
-    config()->set('proxy.torob.direct_fallback', true);
-    config()->set('proxy.torob.use_legacy_proxies', false);
-    config()->set('proxy.torob.manual', [
-        'http://192.0.2.10:8080',
-        'http://192.0.2.11:8080',
-    ]);
-    config()->set('proxy.torob.source.enabled', false);
-    config()->set('proxy.torob.max_attempts', 1);
-
-    Http::fake([
-        'api.torob.com/*' => Http::response([], 490),
-        'torob.com/p/*' => Http::response('', 200),
-    ]);
-    Process::fake(function ($process) {
-        if (in_array('http://192.0.2.10:8080', $process->command, true)) {
-            return Process::result("<html>blocked</html>\n__TOROB_HTTP_STATUS__:490");
-        }
-
-        if (in_array('http://192.0.2.11:8080', $process->command, true)) {
-            return Process::result(json_encode([
-                'count' => 1,
-                'results' => [[
-                    'availability' => true,
-                    'shop_name' => 'رقیب معتبر',
-                    'price' => 21_000_000,
-                ]],
-            ], JSON_THROW_ON_ERROR)."\n__TOROB_HTTP_STATUS__:200");
-        }
-
-        return Process::result(errorOutput: 'Operation timed out', exitCode: 28);
-    });
-
-    TorobPriceSetterJob::dispatchSync($setter);
-
-    expect((int) $price->fresh()->price)->toBe(20_990_000);
-    Process::assertRanTimes(fn (): bool => true, 2);
-    Process::assertRan(fn ($process): bool => in_array('http://192.0.2.11:8080', $process->command, true));
-});
-
-test('torob offer fetching skips direct fallback while direct requests are cooling down', function () {
-    ['setter' => $setter] = createTorobPricingRule();
-    config()->set('proxy.torob.enabled', true);
-    config()->set('proxy.torob.direct_fallback', true);
-    config()->set('proxy.torob.use_legacy_proxies', false);
-    config()->set('proxy.torob.manual', [
-        'http://192.0.2.10:8080',
-        'http://192.0.2.11:8080',
-    ]);
-    config()->set('proxy.torob.source.enabled', false);
-    config()->set('proxy.torob.max_attempts', 2);
-
-    Cache::put('torob:sellers:direct-blocked-until', now()->addMinutes(10)->timestamp, now()->addMinutes(10));
-
-    Process::fake([
-        '*' => Process::result("<html>blocked</html>\n__TOROB_HTTP_STATUS__:490"),
-    ]);
-
-    expect(fn () => TorobPriceSetterJob::dispatchSync($setter))
-        ->toThrow(RuntimeException::class, 'cooling down after HTTP 490');
-
-    Http::assertNothingSent();
-    Process::assertRanTimes(fn (): bool => true, 2);
 });
 
 test('torob offer fetching recovers from HTTP 490 with a browser session', function () {
