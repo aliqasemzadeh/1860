@@ -102,6 +102,26 @@ test('proxy refresh command caches eligible proxies', function () {
         ->assertSuccessful();
 });
 
+test('proxy pool prioritizes online proxies before legacy proxies', function () {
+    config()->set('proxy.torob.source.enabled', false);
+    config()->set('proxy.torob.use_legacy_proxies', true);
+    config()->set('proxy.torob.manual', []);
+    config()->set('proxy.proxies', ['192.0.2.20:8080']);
+
+    Cache::put('torob:proxy:list', [[
+        'uri' => 'https://1.1.1.1:443',
+        'id' => substr(hash('sha256', 'https://1.1.1.1:443'), 0, 16),
+        'source' => 'proxyscrape',
+        'uptime_percent' => 99,
+        'latency_ms' => 100,
+    ]], now()->addHour());
+
+    $first = app(TorobProxyPool::class)->leaseCandidates(1)[0];
+
+    expect($first['source'])->toBe('proxyscrape')
+        ->and($first['uri'])->toBe('https://1.1.1.1:443');
+});
+
 test('proxy pool can include legacy proxies and clear quarantines', function () {
     config()->set('proxy.torob.source.enabled', false);
     config()->set('proxy.torob.use_legacy_proxies', true);

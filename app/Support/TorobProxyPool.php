@@ -24,8 +24,12 @@ class TorobProxyPool
     /** @return list<array{uri: string, id: string, source: string, uptime_percent: float, latency_ms: float}> */
     public function refresh(bool $force = false): array
     {
-        if (! $this->enabled() || ! (bool) config('proxy.torob.source.enabled', true)) {
+        if (! $this->enabled()) {
             return [];
+        }
+
+        if (! (bool) config('proxy.torob.source.enabled', true)) {
+            return $this->cachedOnlineProxies();
         }
 
         $cached = Cache::get(self::LIST_CACHE_KEY);
@@ -100,12 +104,15 @@ class TorobProxyPool
             return [];
         }
 
-        $limit ??= (int) config('proxy.torob.max_attempts', 3);
-        $manual = $this->rotate($this->manualProxies(), 'manual');
-        $online = $this->rotate($this->prioritizeHealthy($this->refresh()), 'online');
+        $limit ??= (int) config('proxy.torob.max_attempts', 10);
+        $queue = array_merge(
+            $this->rotate($this->configuredManualProxies(), 'manual'),
+            $this->rotate($this->prioritizeHealthy($this->refresh()), 'online'),
+            $this->rotate($this->legacyProxies(), 'legacy'),
+        );
         $selected = [];
 
-        foreach (array_merge($manual, $online) as $proxy) {
+        foreach ($queue as $proxy) {
             if (count($selected) >= max(0, $limit)) {
                 break;
             }
@@ -171,11 +178,12 @@ class TorobProxyPool
     /** @return array{manual: int, legacy: int, online: int, total: int, quarantined: int, available: int} */
     public function stats(): array
     {
-        $manual = $this->manualProxies();
+        $manual = $this->configuredManualProxies();
+        $legacy = $this->legacyProxies();
         $online = $this->cachedOnlineProxies();
         $unique = [];
 
-        foreach (array_merge($manual, $online) as $proxy) {
+        foreach (array_merge($manual, $online, $legacy) as $proxy) {
             $unique[$proxy['id']] = $proxy;
         }
 
@@ -188,8 +196,8 @@ class TorobProxyPool
         }
 
         return [
-            'manual' => count(array_filter($manual, fn (array $proxy): bool => $proxy['source'] === 'manual')),
-            'legacy' => count(array_filter($manual, fn (array $proxy): bool => $proxy['source'] === 'legacy')),
+            'manual' => count($manual),
+            'legacy' => count($legacy),
             'online' => count($online),
             'total' => count($unique),
             'quarantined' => $quarantined,
@@ -277,11 +285,15 @@ class TorobProxyPool
     /** @return list<array{uri: string, id: string, source: string, uptime_percent: float, latency_ms: float}> */
     private function allKnownProxies(): array
     {
-        return array_values(array_merge($this->manualProxies(), $this->cachedOnlineProxies()));
+        return array_values(array_merge(
+            $this->configuredManualProxies(),
+            $this->cachedOnlineProxies(),
+            $this->legacyProxies(),
+        ));
     }
 
     /** @return list<array{uri: string, id: string, source: string, uptime_percent: float, latency_ms: float}> */
-    private function manualProxies(): array
+    private function configuredManualProxies(): array
     {
         $proxies = [];
 
@@ -294,15 +306,25 @@ class TorobProxyPool
             $proxies[$this->proxyId($uri)] = $this->endpoint($uri, 'manual', 100, 0);
         }
 
-        if ((bool) config('proxy.torob.use_legacy_proxies', true)) {
-            foreach ((array) config('proxy.proxies', []) as $value) {
-                $uri = $this->normalizeManualProxy($value);
-                if ($uri === null) {
-                    continue;
-                }
+        return array_values($proxies);
+    }
 
-                $proxies[$this->proxyId($uri)] = $this->endpoint($uri, 'legacy', 100, 0);
+    /** @return list<array{uri: string, id: string, source: string, uptime_percent: float, latency_ms: float}> */
+    private function legacyProxies(): array
+    {
+        if (! (bool) config('proxy.torob.use_legacy_proxies', true)) {
+            return [];
+        }
+
+        $proxies = [];
+
+        foreach ((array) config('proxy.proxies', []) as $value) {
+            $uri = $this->normalizeManualProxy($value);
+            if ($uri === null) {
+                continue;
             }
+
+            $proxies[$this->proxyId($uri)] = $this->endpoint($uri, 'legacy', 100, 0);
         }
 
         return array_values($proxies);

@@ -136,12 +136,7 @@ class TorobOfferFetcher
                 return $offers;
             }
 
-            $offers = $this->fetchOffersThroughProxies($productKey, refresh: true);
-            if ($offers !== null) {
-                return $offers;
-            }
-
-            if ($mode === 'proxy_only' || ! (bool) config('proxy.torob.direct_fallback', false)) {
+            if ($mode === 'proxy_only' || ! (bool) config('proxy.torob.direct_fallback', true)) {
                 throw new RuntimeException($this->proxyExhaustedMessage());
             }
 
@@ -194,21 +189,46 @@ class TorobOfferFetcher
             $this->proxyPool->refresh(true);
         }
 
-        $candidates = $this->proxyPool->leaseCandidates();
+        $offers = $this->attemptProxyBatches($productKey);
+        if ($offers !== null || $refresh) {
+            return $offers;
+        }
 
-        foreach ($candidates as $proxy) {
-            $startedAt = hrtime(true);
+        $this->proxyPool->refresh(true);
 
-            try {
-                $offers = $this->fetchOffersViaProxy($productKey, $proxy);
-                $latencyMs = (int) round((hrtime(true) - $startedAt) / 1_000_000);
-                $this->proxyPool->markSuccess($proxy, $latencyMs);
+        return $this->attemptProxyBatches($productKey);
+    }
 
-                return $offers;
-            } catch (TorobProxyRequestException $exception) {
-                $this->proxyPool->markFailure($proxy, $exception->getMessage(), $exception->status);
-            } catch (Throwable $exception) {
-                $this->proxyPool->markFailure($proxy, $exception->getMessage());
+    /** @return list<array<string, mixed>>|null */
+    private function attemptProxyBatches(string $productKey): ?array
+    {
+        $batchSize = max(1, (int) config('proxy.torob.max_attempts', 10));
+        $maxTotal = max($batchSize, (int) config('proxy.torob.max_total_attempts', 50));
+        $attempted = 0;
+
+        while ($attempted < $maxTotal) {
+            $remaining = $maxTotal - $attempted;
+            $candidates = $this->proxyPool->leaseCandidates(min($batchSize, $remaining));
+
+            if ($candidates === []) {
+                break;
+            }
+
+            foreach ($candidates as $proxy) {
+                $attempted++;
+                $startedAt = hrtime(true);
+
+                try {
+                    $offers = $this->fetchOffersViaProxy($productKey, $proxy);
+                    $latencyMs = (int) round((hrtime(true) - $startedAt) / 1_000_000);
+                    $this->proxyPool->markSuccess($proxy, $latencyMs);
+
+                    return $offers;
+                } catch (TorobProxyRequestException $exception) {
+                    $this->proxyPool->markFailure($proxy, $exception->getMessage(), $exception->status);
+                } catch (Throwable $exception) {
+                    $this->proxyPool->markFailure($proxy, $exception->getMessage());
+                }
             }
         }
 
