@@ -168,6 +168,51 @@ class TorobProxyPool
         Cache::forget($this->leaseKey($proxy['id']));
     }
 
+    /** @return array{manual: int, legacy: int, online: int, total: int, quarantined: int, available: int} */
+    public function stats(): array
+    {
+        $manual = $this->manualProxies();
+        $online = $this->cachedOnlineProxies();
+        $unique = [];
+
+        foreach (array_merge($manual, $online) as $proxy) {
+            $unique[$proxy['id']] = $proxy;
+        }
+
+        $quarantined = 0;
+
+        foreach ($unique as $proxy) {
+            if ($this->isQuarantined($proxy['id'])) {
+                $quarantined++;
+            }
+        }
+
+        return [
+            'manual' => count(array_filter($manual, fn (array $proxy): bool => $proxy['source'] === 'manual')),
+            'legacy' => count(array_filter($manual, fn (array $proxy): bool => $proxy['source'] === 'legacy')),
+            'online' => count($online),
+            'total' => count($unique),
+            'quarantined' => $quarantined,
+            'available' => count($unique) - $quarantined,
+        ];
+    }
+
+    public function clearQuarantines(): int
+    {
+        $cleared = 0;
+
+        foreach ($this->allKnownProxies() as $proxy) {
+            if (! $this->isQuarantined($proxy['id'])) {
+                continue;
+            }
+
+            Cache::forget($this->quarantineKey($proxy['id']));
+            $cleared++;
+        }
+
+        return $cleared;
+    }
+
     /** @return list<array{uri: string, id: string, source: string, uptime_percent: float, latency_ms: float}> */
     private function cachedOnlineProxies(): array
     {
@@ -230,6 +275,12 @@ class TorobProxyPool
     }
 
     /** @return list<array{uri: string, id: string, source: string, uptime_percent: float, latency_ms: float}> */
+    private function allKnownProxies(): array
+    {
+        return array_values(array_merge($this->manualProxies(), $this->cachedOnlineProxies()));
+    }
+
+    /** @return list<array{uri: string, id: string, source: string, uptime_percent: float, latency_ms: float}> */
     private function manualProxies(): array
     {
         $proxies = [];
@@ -241,6 +292,17 @@ class TorobProxyPool
             }
 
             $proxies[$this->proxyId($uri)] = $this->endpoint($uri, 'manual', 100, 0);
+        }
+
+        if ((bool) config('proxy.torob.use_legacy_proxies', true)) {
+            foreach ((array) config('proxy.proxies', []) as $value) {
+                $uri = $this->normalizeManualProxy($value);
+                if ($uri === null) {
+                    continue;
+                }
+
+                $proxies[$this->proxyId($uri)] = $this->endpoint($uri, 'legacy', 100, 0);
+            }
         }
 
         return array_values($proxies);

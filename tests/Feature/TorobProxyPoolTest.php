@@ -10,6 +10,7 @@ beforeEach(function () {
         'enabled' => true,
         'mode' => 'proxy_first',
         'manual' => [],
+        'use_legacy_proxies' => false,
         'protocols' => ['https', 'socks5'],
         'anonymity' => ['elite'],
         'min_uptime_percent' => 80,
@@ -56,6 +57,7 @@ test('proxy pool filters the online source and prioritizes manual proxies', func
 
 test('proxy pool quarantines a failed proxy and rotates to the next one', function () {
     config()->set('proxy.torob.source.enabled', false);
+    config()->set('proxy.torob.use_legacy_proxies', false);
     config()->set('proxy.torob.manual', [
         'http://192.0.2.10:8080',
         'http://192.0.2.11:8080',
@@ -98,6 +100,46 @@ test('proxy refresh command caches eligible proxies', function () {
     $this->artisan('shop:refresh-torob-proxies --force')
         ->expectsOutputToContain('Cached 1 eligible Torob proxies.')
         ->assertSuccessful();
+});
+
+test('proxy pool can include legacy proxies and clear quarantines', function () {
+    config()->set('proxy.torob.source.enabled', false);
+    config()->set('proxy.torob.use_legacy_proxies', true);
+    config()->set('proxy.torob.manual', []);
+    config()->set('proxy.proxies', [
+        '192.0.2.20:8080',
+        '192.0.2.21:8080',
+    ]);
+
+    $pool = app(TorobProxyPool::class);
+    $first = $pool->leaseCandidates(1)[0];
+    $pool->markFailure($first, 'HTTP 490', 490);
+
+    expect($first['source'])->toBe('legacy')
+        ->and($pool->stats()['legacy'])->toBe(2)
+        ->and($pool->stats()['quarantined'])->toBe(1)
+        ->and($pool->clearQuarantines())->toBe(1)
+        ->and($pool->stats()['quarantined'])->toBe(0);
+});
+
+test('torob cooldown command clears direct and proxy quarantines', function () {
+    config()->set('proxy.torob.source.enabled', false);
+    config()->set('proxy.torob.use_legacy_proxies', false);
+    config()->set('proxy.torob.manual', ['http://192.0.2.10:8080']);
+
+    Cache::put('torob:sellers:direct-blocked-until', now()->addMinutes(10)->timestamp, now()->addMinutes(10));
+
+    $pool = app(TorobProxyPool::class);
+    $proxy = $pool->leaseCandidates(1)[0];
+    $pool->markFailure($proxy, 'HTTP 490', 490);
+
+    $this->artisan('shop:clear-torob-cooldown --proxies')
+        ->expectsOutputToContain('Cleared Torob direct cooldown')
+        ->expectsOutputToContain('Cleared 1 quarantined Torob proxy/proxies.')
+        ->assertSuccessful();
+
+    expect(app(\App\Support\TorobOfferFetcher::class)->isDirectBlocked())->toBeFalse()
+        ->and($pool->stats()['quarantined'])->toBe(0);
 });
 
 /** @return array<string, mixed> */

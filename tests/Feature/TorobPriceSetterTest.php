@@ -145,6 +145,7 @@ test('torob offer fetching rotates proxies before changing a price', function ()
     ['price' => $price, 'setter' => $setter] = createTorobPricingRule();
     config()->set('proxy.torob.enabled', true);
     config()->set('proxy.torob.mode', 'proxy_only');
+    config()->set('proxy.torob.use_legacy_proxies', false);
     config()->set('proxy.torob.manual', [
         'http://192.0.2.10:8080',
         'socks5://192.0.2.11:1080',
@@ -180,6 +181,8 @@ test('torob offer fetching retries with fresh proxies after the direct curl tran
     ['price' => $price, 'setter' => $setter] = createTorobPricingRule();
     config()->set('proxy.torob.enabled', true);
     config()->set('proxy.torob.mode', 'proxy_first');
+    config()->set('proxy.torob.direct_fallback', true);
+    config()->set('proxy.torob.use_legacy_proxies', false);
     config()->set('proxy.torob.manual', [
         'http://192.0.2.10:8080',
         'http://192.0.2.11:8080',
@@ -213,9 +216,33 @@ test('torob offer fetching retries with fresh proxies after the direct curl tran
     TorobPriceSetterJob::dispatchSync($setter);
 
     expect((int) $price->fresh()->price)->toBe(20_990_000);
-    Process::assertRanTimes(fn (): bool => true, 3);
-    Process::assertRan(fn ($process): bool => ! in_array('--proxy', $process->command, true));
+    Process::assertRanTimes(fn (): bool => true, 2);
     Process::assertRan(fn ($process): bool => in_array('http://192.0.2.11:8080', $process->command, true));
+});
+
+test('torob offer fetching skips direct fallback while direct requests are cooling down', function () {
+    ['setter' => $setter] = createTorobPricingRule();
+    config()->set('proxy.torob.enabled', true);
+    config()->set('proxy.torob.direct_fallback', true);
+    config()->set('proxy.torob.use_legacy_proxies', false);
+    config()->set('proxy.torob.manual', [
+        'http://192.0.2.10:8080',
+        'http://192.0.2.11:8080',
+    ]);
+    config()->set('proxy.torob.source.enabled', false);
+    config()->set('proxy.torob.max_attempts', 2);
+
+    Cache::put('torob:sellers:direct-blocked-until', now()->addMinutes(10)->timestamp, now()->addMinutes(10));
+
+    Process::fake([
+        '*' => Process::result("<html>blocked</html>\n__TOROB_HTTP_STATUS__:490"),
+    ]);
+
+    expect(fn () => TorobPriceSetterJob::dispatchSync($setter))
+        ->toThrow(RuntimeException::class, 'cooling down after HTTP 490');
+
+    Http::assertNothingSent();
+    Process::assertRanTimes(fn (): bool => true, 2);
 });
 
 test('torob offer fetching recovers from HTTP 490 with a browser session', function () {

@@ -17,13 +17,14 @@ return [
         'min_uptime_percent' => env('TOROB_PROXY_MIN_UPTIME_PERCENT', 80),
         'max_latency_ms' => env('TOROB_PROXY_MAX_LATENCY_MS', 1500),
         'max_pool_size' => env('TOROB_PROXY_MAX_POOL_SIZE', 300),
-        'max_attempts' => env('TOROB_PROXY_MAX_ATTEMPTS', 3),
+        'max_attempts' => env('TOROB_PROXY_MAX_ATTEMPTS', 10),
+        'use_legacy_proxies' => env('TOROB_PROXY_USE_LEGACY', true),
         'connect_timeout' => env('TOROB_PROXY_CONNECT_TIMEOUT', 3),
         'request_timeout' => env('TOROB_PROXY_REQUEST_TIMEOUT', 8),
         'lease_seconds' => env('TOROB_PROXY_LEASE_SECONDS', 45),
         'failure_cooldown_seconds' => env('TOROB_PROXY_FAILURE_COOLDOWN_SECONDS', 900),
         'block_cooldown_seconds' => env('TOROB_PROXY_BLOCK_COOLDOWN_SECONDS', 3600),
-        'direct_fallback' => env('TOROB_PROXY_DIRECT_FALLBACK', true),
+        'direct_fallback' => env('TOROB_PROXY_DIRECT_FALLBACK', false),
         'source' => [
             'enabled' => env('TOROB_PROXY_SOURCE_ENABLED', true),
             'url' => env(

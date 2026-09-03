@@ -8,6 +8,7 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
 use RuntimeException;
 use Throwable;
@@ -27,6 +28,21 @@ class TorobOfferFetcher
     private const BROWSER_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
 
     public function __construct(private readonly TorobProxyPool $proxyPool) {}
+
+    public function clearDirectCooldown(): void
+    {
+        Cache::forget(self::DIRECT_BLOCKED_CACHE_KEY);
+    }
+
+    public function isDirectBlocked(): bool
+    {
+        return $this->directBlockedUntil() > now()->timestamp;
+    }
+
+    public function directBlockedUntil(): int
+    {
+        return (int) Cache::get(self::DIRECT_BLOCKED_CACHE_KEY, 0);
+    }
 
     /**
      * @param  list<string>  $excludedShopNames
@@ -95,16 +111,23 @@ class TorobOfferFetcher
         $mode = (string) config('proxy.torob.mode', 'proxy_first');
 
         if ($this->proxyPool->enabled() && $mode === 'direct_first') {
-            try {
-                return $this->fetchOffersDirect($productKey);
-            } catch (Throwable $directException) {
-                $offers = $this->fetchOffersThroughProxies($productKey);
-                if ($offers !== null) {
-                    return $offers;
-                }
+            if (! $this->isDirectBlocked()) {
+                try {
+                    return $this->fetchOffersDirect($productKey);
+                } catch (Throwable $directException) {
+                    $offers = $this->fetchOffersThroughProxies($productKey);
+                    if ($offers !== null) {
+                        return $offers;
+                    }
 
-                throw $directException;
+                    throw $directException;
+                }
             }
+
+            Log::warning('Torob direct requests are in HTTP 490 cooldown; using proxies instead.', [
+                'blocked_until' => date('Y-m-d H:i:s', $this->directBlockedUntil()),
+                'proxy_stats' => $this->proxyPool->stats(),
+            ]);
         }
 
         if ($this->proxyPool->enabled()) {
@@ -113,8 +136,22 @@ class TorobOfferFetcher
                 return $offers;
             }
 
-            if ($mode === 'proxy_only' || ! (bool) config('proxy.torob.direct_fallback', true)) {
-                throw new RuntimeException('No healthy Torob proxy was available; the current price was not changed.');
+            $offers = $this->fetchOffersThroughProxies($productKey, refresh: true);
+            if ($offers !== null) {
+                return $offers;
+            }
+
+            if ($mode === 'proxy_only' || ! (bool) config('proxy.torob.direct_fallback', false)) {
+                throw new RuntimeException($this->proxyExhaustedMessage());
+            }
+
+            if ($this->isDirectBlocked()) {
+                Log::warning('Skipping Torob direct fallback because direct requests are in HTTP 490 cooldown.', [
+                    'blocked_until' => date('Y-m-d H:i:s', $this->directBlockedUntil()),
+                    'proxy_stats' => $this->proxyPool->stats(),
+                ]);
+
+                throw new RuntimeException($this->proxyExhaustedMessage($this->directBlockedUntil()));
             }
 
             try {
@@ -130,6 +167,24 @@ class TorobOfferFetcher
         }
 
         return $this->fetchOffersDirect($productKey);
+    }
+
+    private function proxyExhaustedMessage(?int $directBlockedUntil = null): string
+    {
+        $stats = $this->proxyPool->stats();
+        $message = sprintf(
+            'No healthy Torob proxy was available (%d manual, %d legacy, %d online, %d quarantined); the current price was not changed.',
+            $stats['manual'],
+            $stats['legacy'],
+            $stats['online'],
+            $stats['quarantined'],
+        );
+
+        if ($directBlockedUntil !== null && $directBlockedUntil > now()->timestamp) {
+            $message .= ' Direct requests are cooling down after HTTP 490 until '.date('Y-m-d H:i:s', $directBlockedUntil).'.';
+        }
+
+        return $message;
     }
 
     /** @return list<array<string, mixed>>|null */
