@@ -2,6 +2,8 @@
 
 namespace App\Scrapers;
 
+use App\Scrapers\Runners\ProcessPuppeteerRunner;
+use EduLazaro\Larascraper\Runners\HttpRunner;
 use EduLazaro\Larascraper\Scraper;
 use JsonException;
 use RuntimeException;
@@ -14,6 +16,11 @@ class TorobScraper extends Scraper
     private const PAGE_SIZE = 100;
 
     private const MAX_PAGES = 10;
+
+    protected array $drivers = [
+        'browser' => ProcessPuppeteerRunner::class,
+        'http' => HttpRunner::class,
+    ];
 
     protected int $timeout = 20_000;
 
