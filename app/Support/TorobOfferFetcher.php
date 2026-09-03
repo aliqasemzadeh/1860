@@ -116,14 +116,29 @@ class TorobOfferFetcher
             if ($mode === 'proxy_only' || ! (bool) config('proxy.torob.direct_fallback', true)) {
                 throw new RuntimeException('No healthy Torob proxy was available; the current price was not changed.');
             }
+
+            try {
+                return $this->fetchOffersDirect($productKey);
+            } catch (Throwable $directException) {
+                $offers = $this->fetchOffersThroughProxies($productKey, refresh: true);
+                if ($offers !== null) {
+                    return $offers;
+                }
+
+                throw $directException;
+            }
         }
 
         return $this->fetchOffersDirect($productKey);
     }
 
     /** @return list<array<string, mixed>>|null */
-    private function fetchOffersThroughProxies(string $productKey): ?array
+    private function fetchOffersThroughProxies(string $productKey, bool $refresh = false): ?array
     {
+        if ($refresh) {
+            $this->proxyPool->refresh(true);
+        }
+
         $candidates = $this->proxyPool->leaseCandidates();
 
         foreach ($candidates as $proxy) {
