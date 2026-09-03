@@ -2,6 +2,7 @@
 
 use App\Jobs\Shop\PriceFetcher\FetchPriceJob;
 use App\Jobs\Shop\PriceFetcher\UpdatePriceJob;
+use App\Jobs\Shop\TorobPriceSetterJob;
 use App\Livewire\Main\Order\Cart as CartComponent;
 use App\Livewire\Main\Order\Shipping;
 use App\Livewire\Main\Product\View as ProductView;
@@ -11,9 +12,11 @@ use App\Models\Shop\Category;
 use App\Models\Shop\PriceFetcher;
 use App\Models\Shop\Product;
 use App\Models\Shop\ProductPrice;
+use App\Models\Shop\TorobPriceSetter;
 use App\Models\Shop\Unit;
 use App\Models\User;
 use App\Services\Shop\SitemapService;
+use App\Support\TorobOfferFetcher;
 use Binafy\LaravelCart\Models\Cart;
 use Illuminate\Support\Facades\Queue;
 use Livewire\Livewire;
@@ -172,4 +175,33 @@ test('bulk price fetching dispatches jobs only for active products', function ()
 
     Queue::assertPushed(FetchPriceJob::class, 1);
     Queue::assertPushed(fn (FetchPriceJob $job): bool => $job->priceFetcher->is($activeFetcher));
+});
+
+test('Torob price setting skips inactive products in the command and queued job', function () {
+    Queue::fake();
+    $product = createActivationProduct(['is_active' => false]);
+    $price = addActivationPrice($product);
+    $fetcher = PriceFetcher::create([
+        'product_id' => $product->id,
+        'type' => 'torob',
+        'url' => 'https://torob.com/p/inactive-product/',
+    ]);
+    $setter = TorobPriceSetter::create([
+        'price_fetcher_id' => $fetcher->id,
+        'product_price_id' => $price->id,
+        'own_shop_names' => ['Shop'],
+        'step_amount' => 1000,
+        'min_price' => 900000,
+        'max_price' => 1100000,
+        'is_active' => true,
+    ]);
+
+    $this->artisan('shop:sync-torob-prices')->assertSuccessful();
+    Queue::assertNotPushed(TorobPriceSetterJob::class);
+
+    $offerFetcher = Mockery::mock(TorobOfferFetcher::class);
+    $offerFetcher->shouldNotReceive('cheapestCompetitor');
+    (new TorobPriceSetterJob($setter))->handle($offerFetcher);
+
+    expect($setter->fresh()->status)->toBe(TorobPriceSetter::STATUS_PRODUCT_UNAVAILABLE);
 });

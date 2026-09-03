@@ -54,21 +54,21 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
             return;
         }
 
-        if (! $setter->priceFetcher?->product?->is_active || ! $setter->productPrice?->product?->is_active) {
-            $setter->update([
-                'status' => TorobPriceSetter::STATUS_PRODUCT_UNAVAILABLE,
-                'last_checked_at' => now(),
-                'last_error' => null,
-            ]);
-
-            return;
-        }
-
         if (! $setter->priceFetcher || ! $setter->productPrice) {
             $setter->update([
                 'status' => TorobPriceSetter::STATUS_FETCH_FAILED,
                 'last_checked_at' => now(),
                 'last_error' => 'The configured price source or target price no longer exists.',
+            ]);
+
+            return;
+        }
+
+        if (! $setter->priceFetcher->product?->is_active || ! $setter->productPrice->product?->is_active) {
+            $setter->update([
+                'status' => TorobPriceSetter::STATUS_PRODUCT_UNAVAILABLE,
+                'last_checked_at' => now(),
+                'last_error' => null,
             ]);
 
             return;

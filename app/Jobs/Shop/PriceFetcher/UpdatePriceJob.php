@@ -26,6 +26,6 @@ class UpdatePriceJob implements ShouldQueue
             FetchPriceJob::dispatch($priceFetcher);
         }
 
-        Log::info("Dispatched price update jobs for all price fetchers");
+        Log::info('Dispatched price update jobs for all active product price fetchers');
     }
 }
