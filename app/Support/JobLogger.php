@@ -113,6 +113,10 @@ class JobLogger
             $properties = [];
 
             foreach ((new ReflectionObject($instance))->getProperties() as $property) {
+                if ($property->getDeclaringClass()->getName() !== $instance::class) {
+                    continue;
+                }
+
                 if (! $property->isPublic()) {
                     continue;
                 }

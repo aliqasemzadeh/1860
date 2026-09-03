@@ -7,6 +7,11 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class Kernel extends ConsoleKernel
 {
+    protected function shouldDiscoverCommands(): bool
+    {
+        return true;
+    }
+
     /**
      * @return \Illuminate\Console\Application
      */
