@@ -2,7 +2,12 @@
 
 namespace App\Providers;
 
+use App\Support\JobLogger;
+use Illuminate\Queue\Events\JobAttempted;
+use Illuminate\Queue\Events\JobExceptionOccurred;
+use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -51,5 +56,9 @@ class AppServiceProvider extends ServiceProvider
                 || $user->hasRole('administrator')
                 || app()->environment('local');
         });
+
+        Event::listen(JobProcessing::class, [JobLogger::class, 'processing']);
+        Event::listen(JobExceptionOccurred::class, [JobLogger::class, 'exceptionOccurred']);
+        Event::listen(JobAttempted::class, [JobLogger::class, 'attempted']);
     }
 }

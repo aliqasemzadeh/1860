@@ -12,9 +12,9 @@ Schedule::command('shop:auto-deliver-orders')->dailyAt('01:00');
 Schedule::command('backup:run')->dailyAt('06:00');
 
 Schedule::command('shop:refresh-torob-proxies --force')
-    ->everyMinute()
-    ->withoutOverlapping(5);
+    ->everyThirtyMinutes()
+    ->withoutOverlapping(10);
 
-Schedule::command('shop:sync-torob-prices')
-    ->everyFiveMinutes()
-    ->withoutOverlapping(2);
+Schedule::command('shop:sync-torob-prices --sync')
+    ->hourly()
+    ->withoutOverlapping(55);

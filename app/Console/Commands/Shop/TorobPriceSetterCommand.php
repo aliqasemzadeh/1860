@@ -5,6 +5,7 @@ namespace App\Console\Commands\Shop;
 use App\Jobs\Shop\TorobPriceSetterJob;
 use App\Models\Shop\TorobPriceSetter;
 use Illuminate\Console\Command;
+use Throwable;
 
 class TorobPriceSetterCommand extends Command
 {
@@ -49,15 +50,35 @@ class TorobPriceSetterCommand extends Command
             return self::SUCCESS;
         }
 
+        $processed = 0;
+        $failed = 0;
+
         foreach ($setters as $setter) {
-            if ($this->option('sync')) {
-                TorobPriceSetterJob::dispatchSync($setter);
-            } else {
-                TorobPriceSetterJob::dispatch($setter);
+            try {
+                if ($this->option('sync')) {
+                    TorobPriceSetterJob::dispatchSync($setter);
+                } else {
+                    TorobPriceSetterJob::dispatch($setter);
+                }
+
+                $processed++;
+            } catch (Throwable $exception) {
+                $failed++;
+                $this->components->warn(sprintf(
+                    'Torob pricing rule #%d failed: %s',
+                    $setter->getKey(),
+                    mb_substr($exception->getMessage(), 0, 200),
+                ));
             }
         }
 
-        $this->components->info("Processed {$setters->count()} Torob pricing rule(s).");
+        $this->components->info("Processed {$processed} Torob pricing rule(s).");
+
+        if ($failed > 0) {
+            $this->components->warn("{$failed} Torob pricing rule(s) failed.");
+
+            return self::FAILURE;
+        }
 
         return self::SUCCESS;
     }
