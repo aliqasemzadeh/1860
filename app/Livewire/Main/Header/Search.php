@@ -23,6 +23,7 @@ class Search extends Component
         }
 
         return Product::query()
+            ->active()
             ->with(['category', 'prices' => function ($query) {
                 $query->orderByDesc('is_default')
                     ->orderByDesc('created_at');

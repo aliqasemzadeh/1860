@@ -16,7 +16,9 @@ class UpdatePriceJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $priceFetchers = PriceFetcher::all();
+        $priceFetchers = PriceFetcher::query()
+            ->whereHas('product', fn ($query) => $query->active())
+            ->get();
 
         Log::info("Starting price update for {$priceFetchers->count()} price fetchers");
 

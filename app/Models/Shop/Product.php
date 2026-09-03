@@ -34,18 +34,30 @@ class Product extends Model implements Cartable
         'category_id',
         'brand_id',
         'unit_id',
+        'is_active',
     ];
 
     use HasTags, SoftDeletes;
 
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
+    protected $attributes = [
+        'is_active' => true,
+    ];
+
     protected static function booted(): void
     {
-        $invalidateSitemap = fn () => Cache::forget(SitemapService::CACHE_KEY);
+        $invalidateCaches = function (self $product): void {
+            Cache::forget(SitemapService::CACHE_KEY);
+            Cache::forget(self::defaultPriceCacheKey((int) $product->getKey()));
+        };
 
-        static::saved($invalidateSitemap);
-        static::deleted($invalidateSitemap);
-        static::restored($invalidateSitemap);
-        static::forceDeleted($invalidateSitemap);
+        static::saved($invalidateCaches);
+        static::deleted($invalidateCaches);
+        static::restored($invalidateCaches);
+        static::forceDeleted($invalidateCaches);
     }
 
     /**
@@ -195,11 +207,14 @@ class Product extends Model implements Cartable
         $sub = $this->defaultPriceColumnSubquery('quantity');
 
         if ($available) {
-            return $query->whereRaw('('.$sub->toSql().') > 0', $sub->getBindings());
+            return $query
+                ->active()
+                ->whereRaw('('.$sub->toSql().') > 0', $sub->getBindings());
         }
 
         return $query->where(function (Builder $outer) use ($sub): void {
-            $outer->whereRaw('('.$sub->toSql().') IS NULL', $sub->getBindings())
+            $outer->where('products.is_active', false)
+                ->orWhereRaw('('.$sub->toSql().') IS NULL', $sub->getBindings())
                 ->orWhereRaw('('.$sub->toSql().') <= 0', $sub->getBindings());
         });
     }
@@ -212,7 +227,7 @@ class Product extends Model implements Cartable
         $sub = $this->defaultPriceColumnSubquery('quantity');
 
         return $query->orderByRaw(
-            'CASE WHEN ('.$sub->toSql().') > 0 THEN 0 ELSE 1 END '.($inStockFirst ? 'asc' : 'desc'),
+            'CASE WHEN products.is_active = 1 AND ('.$sub->toSql().') > 0 THEN 0 ELSE 1 END '.($inStockFirst ? 'asc' : 'desc'),
             $sub->getBindings()
         );
     }
@@ -232,6 +247,16 @@ class Product extends Model implements Cartable
                 ->orWhere('description', 'like', $like)
                 ->orWhere('en_name', 'like', $like);
         });
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('products.is_active', true);
+    }
+
+    public function scopeInactive(Builder $query): Builder
+    {
+        return $query->where('products.is_active', false);
     }
 
     /**
@@ -284,7 +309,17 @@ class Product extends Model implements Cartable
      */
     public function getInStockAttribute(): bool
     {
-        return $this->stock > 0;
+        return $this->is_active && $this->stock > 0;
+    }
+
+    public function isPurchasable(?ProductPrice $price = null, float $quantity = 1): bool
+    {
+        if (! $this->is_active || $price === null || $quantity <= 0) {
+            return false;
+        }
+
+        return (int) $price->product_id === (int) $this->getKey()
+            && (float) $price->quantity >= $quantity;
     }
 
     /**
@@ -337,7 +372,7 @@ class Product extends Model implements Cartable
     {
         $key = self::defaultPriceCacheKey($this->id);
 
-        return Cache::rememberForever($key, function (): array {
+        $defaultPrice = Cache::rememberForever($key, function (): array {
             // ترجیح با قیمت پیش‌فرض است، در غیر این صورت آخرین قیمت ثبت‌شده
             $price = $this->prices()
                 ->orderByDesc('is_default')
@@ -367,6 +402,13 @@ class Product extends Model implements Cartable
                 'message' => null,
             ];
         });
+
+        if (! $this->is_active) {
+            $defaultPrice['available'] = false;
+            $defaultPrice['message'] = __('general.out_of_stock');
+        }
+
+        return $defaultPrice;
     }
 
     /**
@@ -375,6 +417,10 @@ class Product extends Model implements Cartable
      */
     public function getPrice(): float
     {
+        if (! $this->is_active) {
+            return 0.0;
+        }
+
         $salePrice = $this->sale_price;
         $regularPrice = $this->price;
 

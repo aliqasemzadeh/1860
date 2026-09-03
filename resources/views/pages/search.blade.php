@@ -24,6 +24,7 @@ new class extends Component
     public function products(): LengthAwarePaginator
     {
         return Product::query()
+            ->active()
             ->with(['category', 'brand', 'prices' => function ($query) {
                 $query->orderByDesc('is_default')
                     ->orderByDesc('created_at');

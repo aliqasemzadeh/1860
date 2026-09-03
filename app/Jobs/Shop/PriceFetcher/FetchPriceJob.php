@@ -32,6 +32,16 @@ class FetchPriceJob implements ShouldQueue
      */
     public function handle(TorobOfferFetcher $torobOfferFetcher): void
     {
+        $priceFetcher = PriceFetcher::query()
+            ->with('product')
+            ->find($this->priceFetcher->getKey());
+
+        if (! $priceFetcher?->product?->is_active) {
+            return;
+        }
+
+        $this->priceFetcher = $priceFetcher;
+
         try {
             $logger = Log::channel('single');
 

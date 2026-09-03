@@ -8,10 +8,12 @@ use App\Models\Customer\ShippingAddress as CustomerShippingAddress;
 use App\Models\Shop\Order;
 use App\Models\Shop\OrderItem;
 use App\Models\Shop\Product;
+use App\Models\Shop\ProductPrice;
 use App\Models\Shop\ShippingMethod;
 use App\Models\Shop\ShippingRate;
 use App\Models\Shop\ShippingZone;
 use Binafy\LaravelCart\Models\Cart as UserCart;
+use Binafy\LaravelCart\Models\CartItem;
 use Flux\Flux;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -64,6 +66,12 @@ class Shipping extends Component
             return $this->redirect(route('order.cart'), navigate: true);
         }
 
+        if ($this->hasUnavailableItems) {
+            Flux::toast(variant: 'danger', text: __('general.remove_unavailable_products_to_continue'));
+
+            return $this->redirect(route('order.cart'), navigate: true);
+        }
+
         $this->profileForm->setUser(auth()->user());
 
         // Set default address if available
@@ -88,6 +96,10 @@ class Shipping extends Component
     public function completeOrderBlockers(): array
     {
         $reasons = [];
+
+        if ($this->hasUnavailableItems) {
+            $reasons[] = __('general.remove_unavailable_products_to_continue');
+        }
 
         if ($this->needsProfileCompletion) {
             if (blank($this->profileForm->first_name)
@@ -156,6 +168,12 @@ class Shipping extends Component
     }
 
     #[Computed]
+    public function hasUnavailableItems(): bool
+    {
+        return $this->cartItems->contains(fn (CartItem $item): bool => ! $this->isItemPurchasable($item));
+    }
+
+    #[Computed]
     public function subtotal()
     {
         if (! $this->cart) {
@@ -164,6 +182,10 @@ class Shipping extends Component
 
         $total = 0;
         foreach ($this->cart->items as $item) {
+            if (! $this->isItemPurchasable($item)) {
+                continue;
+            }
+
             $price = $item->itemable->getPrice();
             $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
             $priceId = $options['price_id'] ?? null;
@@ -190,7 +212,7 @@ class Shipping extends Component
 
         $weight = 0;
         foreach ($this->cart->items as $item) {
-            if ($item->itemable instanceof Product) {
+            if ($item->itemable instanceof Product && $item->itemable->is_active) {
                 $productWeight = $item->itemable->weight ?? 0;
                 $weight += $productWeight * $item->quantity;
             }
@@ -588,6 +610,12 @@ class Shipping extends Component
             return;
         }
 
+        if ($this->hasUnavailableItems) {
+            Flux::toast(variant: 'danger', text: __('general.remove_unavailable_products_to_continue'));
+
+            return;
+        }
+
         if ($this->needsProfileCompletion) {
             $this->profileForm->update(auth()->user());
             unset($this->needsProfileCompletion);
@@ -706,5 +734,22 @@ class Shipping extends Component
     public function render()
     {
         return view('livewire.main.order.shipping');
+    }
+
+    protected function isItemPurchasable(CartItem $cartItem): bool
+    {
+        if (! $cartItem->itemable instanceof Product) {
+            return false;
+        }
+
+        $options = is_string($cartItem->options)
+            ? json_decode($cartItem->options, true)
+            : $cartItem->options;
+        $priceId = $options['price_id'] ?? null;
+        $price = $priceId
+            ? ProductPrice::query()->find($priceId)
+            : ($cartItem->itemable->default_price['record'] ?? null);
+
+        return $cartItem->itemable->isPurchasable($price, (float) $cartItem->quantity);
     }
 }

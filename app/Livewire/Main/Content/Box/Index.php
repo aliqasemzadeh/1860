@@ -22,7 +22,7 @@ class Index extends Component
             ->with([
                 'media',
                 'products' => function ($query) use ($productCount) {
-                    $query->select('products.*')->inRandomOrder()->take($productCount)->withEffectivePrice();
+                    $query->select('products.*')->active()->inRandomOrder()->take($productCount)->withEffectivePrice();
                 },
             ])
             ->get();

@@ -29,7 +29,7 @@ class View extends Component
     #[Computed]
     public function products()
     {
-        return $this->box->products()->select('products.*')->withEffectivePrice()->paginate(12, pageName: 'products-page');
+        return $this->box->products()->select('products.*')->active()->withEffectivePrice()->paginate(12, pageName: 'products-page');
     }
 
     #[Computed]

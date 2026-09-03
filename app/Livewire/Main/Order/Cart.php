@@ -38,6 +38,12 @@ class Cart extends Component
     }
 
     #[Computed]
+    public function hasUnavailableItems(): bool
+    {
+        return $this->cartItems->contains(fn (CartItem $item): bool => ! $this->isItemPurchasable($item));
+    }
+
+    #[Computed]
     public function totalAmount()
     {
         if (! $this->cart) {
@@ -46,6 +52,10 @@ class Cart extends Component
 
         $total = 0;
         foreach ($this->cart->items as $item) {
+            if (! $this->isItemPurchasable($item)) {
+                continue;
+            }
+
             $price = $item->itemable->getPrice();
             // Get price from options if available
             $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
@@ -74,7 +84,7 @@ class Cart extends Component
         if ($item && $item->itemable instanceof Product) {
             // Check if we can increase quantity (check stock)
             $selectedPrice = $this->getPriceForItem($item);
-            if ($selectedPrice && $item->quantity < $selectedPrice->quantity) {
+            if ($item->itemable->isPurchasable($selectedPrice, (float) $item->quantity + 1)) {
                 $item->increment('quantity');
                 Flux::toast(variant: 'success', text: __('general.quantity_increased'));
             } else {
@@ -129,6 +139,18 @@ class Cart extends Component
         }
 
         return $cartItem->itemable->default_price['record'] ?? null;
+    }
+
+    protected function isItemPurchasable(CartItem $cartItem): bool
+    {
+        if (! $cartItem->itemable instanceof Product) {
+            return false;
+        }
+
+        return $cartItem->itemable->isPurchasable(
+            $this->getPriceForItem($cartItem),
+            (float) $cartItem->quantity,
+        );
     }
 
     #[On('main.sidebar.basket.refresh-cart')]

@@ -41,10 +41,17 @@
         <flux:separator variant="subtle" />
     </div>
 
-    <div class="mb-6">
+    <div class="mb-6 grid gap-4 md:grid-cols-[1fr_14rem]">
         <flux:field>
             <flux:label>{{ __('general.search') }}</flux:label>
             <flux:input wire:model.live.debounce.300ms="search" clearable type="text" placeholder="{{ __('general.search_in_products') }}" />
+        </flux:field>
+        <flux:field>
+            <flux:label>{{ __('general.status') }}</flux:label>
+            <flux:select wire:model.live="statusFilter">
+                <flux:select.option value="active">{{ __('general.active_products') }}</flux:select.option>
+                <flux:select.option value="inactive">{{ __('general.inactive_products') }}</flux:select.option>
+            </flux:select>
         </flux:field>
     </div>
 
@@ -101,6 +108,7 @@
             <flux:table.column>{{ __('general.category') }}</flux:table.column>
             <flux:table.column>{{ __('general.brand') }}</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection" wire:click="sort('created_at')">{{ __('general.date') }}</flux:table.column>
+            <flux:table.column>{{ __('general.status') }}</flux:table.column>
             <flux:table.column>{{ __('general.options') }}</flux:table.column>
         </flux:table.columns>
 
@@ -128,6 +136,11 @@
                     {{ jalali($product->created_at) }}
                 </flux:table.cell>
                 <flux:table.cell class="whitespace-nowrap">
+                    <flux:badge color="{{ $product->is_active ? 'green' : 'zinc' }}" size="sm">
+                        {{ $product->is_active ? __('general.active') : __('general.inactive') }}
+                    </flux:badge>
+                </flux:table.cell>
+                <flux:table.cell class="whitespace-nowrap">
                     <div class="flex items-center gap-2">
                         <flux:button size="xs" variant="primary" wire:click="$dispatch('panel.shop.product.edit.assign-data', { id: '{{ $product->id }}' })">{{ __('general.edit') }}</flux:button>
                         <flux:button size="xs" variant="primary" color="sky" wire:click="$dispatch('panel.shop.product.colors.assign-data', { id: '{{ $product->id }}' })">{{ __('general.colors') }}</flux:button>
@@ -136,7 +149,15 @@
                         <flux:button size="xs" variant="primary" color="orange" wire:click="$dispatch('panel.shop.product.images.assign-data', { id: '{{ $product->id }}' })">{{ __('general.images') }}</flux:button>
                         <flux:button size="xs" variant="primary" color="teal" href="{{ route('panel.shop.product.pricing.index', ['productId' => $product->id]) }}" wire:navigate>{{ __('general.pricing') }}</flux:button>
                         <flux:button size="xs" variant="primary" color="indigo" href="{{ route('panel.shop.product.attributes.index', ['id' => $product->id]) }}" wire:navigate>{{ __('general.product_attributes') }}</flux:button>
-                        <flux:button size="xs" variant="danger" wire:click="delete({{ $product->id }})" wire:confirm="{{ __('general.are_you_sure') }}">{{ __('general.delete') }}</flux:button>
+                        <flux:button
+                            size="xs"
+                            variant="primary"
+                            color="{{ $product->is_active ? 'red' : 'green' }}"
+                            wire:click="toggleActive({{ $product->id }})"
+                            wire:confirm="{{ $product->is_active ? __('general.confirm_deactivate_product') : __('general.confirm_activate_product') }}"
+                        >
+                            {{ $product->is_active ? __('general.deactivate') : __('general.activate') }}
+                        </flux:button>
                     </div>
                 </flux:table.cell>
             </flux:table.row>

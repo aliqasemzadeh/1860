@@ -70,7 +70,7 @@ class View extends Component
     #[Computed]
     public function selectedPrice()
     {
-        if (! $this->product) {
+        if (! $this->product || ! $this->product->is_active) {
             return null;
         }
 
@@ -201,7 +201,7 @@ class View extends Component
         return $images->get($index);
     }
 
-    public function delete(): void
+    public function toggleActive(): void
     {
         if (! $this->product) {
             Flux::toast(variant: 'danger', text: __('general.product_not_found'));
@@ -209,18 +209,19 @@ class View extends Component
             return;
         }
 
-        $this->product->delete();
-        Flux::toast(variant: 'success', text: __('general.product_deleted'));
+        $this->product->update(['is_active' => ! $this->product->is_active]);
+        unset($this->product, $this->selectedPrice, $this->seo);
 
-        $this->redirect(route('panel.shop.product.index'), navigate: true);
+        Flux::toast(
+            variant: 'success',
+            text: $this->product->is_active
+                ? __('general.product_activated')
+                : __('general.product_deactivated')
+        );
     }
 
     public function addToCart()
     {
-        $this->dispatch('main.sidebar.basket.refresh-cart');
-        // Open basket modal after adding item
-        Flux::modal('main.sidebar.basket.modal')->show();
-
         if (! auth()->check()) {
             Flux::toast(variant: 'danger', text: __('general.please_login_to_add_to_cart'));
 
@@ -233,9 +234,15 @@ class View extends Component
             return;
         }
 
+        if (! $this->product->is_active) {
+            Flux::toast(variant: 'danger', text: __('general.product_unavailable'));
+
+            return;
+        }
+
         $selectedPrice = $this->selectedPrice();
 
-        if (! $selectedPrice || $selectedPrice->quantity < $this->quantity) {
+        if (! $this->product->isPurchasable($selectedPrice, (float) $this->quantity)) {
             Flux::toast(variant: 'danger', text: __('general.insufficient_quantity'));
 
             return;

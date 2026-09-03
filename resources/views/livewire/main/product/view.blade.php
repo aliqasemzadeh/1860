@@ -1,6 +1,6 @@
 <x-slot name="head">
     <x-seo :seo="$this->seo" />
-    @if($this->product)
+    @if($this->product?->is_active)
         <x-product-schema :product="$this->product" />
     @endif
 </x-slot>
@@ -111,11 +111,12 @@
                             </flux:button>
                             <flux:button
                                 size="sm"
-                                variant="danger"
-                                wire:click="delete"
-                                wire:confirm="{{ __('general.are_you_sure') }}"
+                                variant="{{ $this->product->is_active ? 'danger' : 'primary' }}"
+                                color="{{ $this->product->is_active ? 'red' : 'green' }}"
+                                wire:click="toggleActive"
+                                wire:confirm="{{ $this->product->is_active ? __('general.confirm_deactivate_product') : __('general.confirm_activate_product') }}"
                             >
-                                {{ __('general.delete') }}
+                                {{ $this->product->is_active ? __('general.deactivate') : __('general.activate') }}
                             </flux:button>
                         </div>
                     </div>
@@ -164,7 +165,7 @@
                                 class="w-full h-full object-cover transition-opacity duration-300"
                                 x-bind:class="{ 'opacity-50': loading }"
                             />
-                            @if($this->product->sale_price && $this->product->price && $this->product->sale_price < $this->product->price)
+                            @if($this->product->is_active && $this->product->sale_price && $this->product->price && $this->product->sale_price < $this->product->price)
                                 <div class="absolute top-4 right-4 bg-red-500 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-lg">
                                     {{ __('general.discount') }}
                                 </div>
@@ -229,7 +230,11 @@
                             @php
                                 $selectedPrice = $this->selectedPrice;
                             @endphp
-                            @if($selectedPrice)
+                            @if(! $this->product->is_active)
+                                <div class="text-lg font-medium text-red-600 dark:text-red-400">
+                                    {{ __('general.out_of_stock') }}
+                                </div>
+                            @elseif($selectedPrice)
                                 <div class="flex flex-col gap-2">
                                     @if($selectedPrice->sale_price && $selectedPrice->sale_price < $selectedPrice->price)
                                         <div class="flex items-center gap-4">
@@ -323,7 +328,15 @@
                         @endif
 
                         {{-- Quantity and Add to Cart --}}
-                        @if($this->selectedPrice && $this->selectedPrice->quantity > 0)
+                        @if(! $this->product->is_active)
+                            <flux:button
+                                variant="ghost"
+                                class="w-full py-3 text-lg"
+                                disabled
+                            >
+                                {{ __('general.out_of_stock') }}
+                            </flux:button>
+                        @elseif($this->selectedPrice && $this->selectedPrice->quantity > 0)
                             <div class="space-y-4">
                                 <div>
                                     <flux:heading size="sm" class="mb-3 text-zinc-900 dark:text-zinc-100">
@@ -446,7 +459,7 @@
                         @endif
 
                         {{-- Pricing Options --}}
-                        @if($this->product->prices->isNotEmpty() && ($this->product->colors->count() > 1 || $this->product->warranties->count() > 1))
+                        @if($this->product->is_active && $this->product->prices->isNotEmpty() && ($this->product->colors->count() > 1 || $this->product->warranties->count() > 1))
                             <div>
                                 <flux:heading size="sm" class="mb-4 text-zinc-900 dark:text-zinc-100">
                                     {{ __('general.pricing') }}

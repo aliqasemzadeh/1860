@@ -78,6 +78,7 @@ class View extends Component
         $categoryIds = $this->getCategoryIds();
 
         $brandIds = Product::query()
+            ->active()
             ->whereIn('category_id', $categoryIds)
             ->whereNotNull('brand_id')
             ->distinct()
@@ -100,6 +101,7 @@ class View extends Component
         $categoryIds = $this->getCategoryIds();
 
         $query = Product::query()
+            ->active()
             ->with(['colors', 'warranties', 'brand', 'category'])
             ->whereIn('category_id', $categoryIds);
 

@@ -51,6 +51,7 @@ class SitemapService
             ->get();
 
         $products = Product::query()
+            ->active()
             ->select(['id', 'slug', 'slug_fa', 'file_path', 'updated_at'])
             ->orderBy('id')
             ->get();

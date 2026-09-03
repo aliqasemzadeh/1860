@@ -185,7 +185,9 @@ class Seo
             'product_name' => $product->name,
         ];
 
-        if ($price) {
+        if (! $product->is_active) {
+            $meta['availability'] = 'outofstock';
+        } elseif ($price) {
             // Iranian engines expect Toman. JSON-LD uses IRR (see SeoSchema::product).
             $hasDiscount = $price->sale_price && $price->sale_price < $price->price;
             $currentPrice = $hasDiscount ? $price->sale_price : $price->price;
@@ -220,6 +222,7 @@ class Seo
             canonical: $product->url,
             image: $imageUrl,
             type: 'product',
+            noindex: ! $product->is_active,
             schemas: [
                 SeoSchema::breadcrumbs($crumbs),
             ],

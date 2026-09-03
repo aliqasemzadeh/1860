@@ -24,6 +24,8 @@ class Index extends Component
 
     public string $search = '';
 
+    public string $statusFilter = 'active';
+
     public string $exportAvailability = 'all';
 
     /** @var array<int> */
@@ -39,13 +41,25 @@ class Index extends Component
         }
     }
 
-    public function delete(int $id): void
+    public function updatedStatusFilter(): void
     {
-        $product = Product::query()->find($id);
-        if ($product !== null) {
-            $product->delete();
-            Flux::toast(variant: 'success', text: __('general.product_deleted'));
-        }
+        $this->resetPage();
+        $this->selectedProductIds = [];
+    }
+
+    public function toggleActive(int $id): void
+    {
+        $product = Product::query()->findOrFail($id);
+        $product->update(['is_active' => ! $product->is_active]);
+
+        $this->selectedProductIds = array_values(array_diff($this->selectedProductIds, [$id]));
+
+        Flux::toast(
+            variant: 'success',
+            text: $product->is_active
+                ? __('general.product_activated')
+                : __('general.product_deactivated')
+        );
     }
 
     public function toggleSelectAllOnPage(): void
@@ -106,6 +120,11 @@ class Index extends Component
     protected function productsQuery(): Builder
     {
         return Product::query()
+            ->when(
+                $this->statusFilter === 'inactive',
+                fn (Builder $query) => $query->inactive(),
+                fn (Builder $query) => $query->active(),
+            )
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('name', 'like', '%'.$this->search.'%')

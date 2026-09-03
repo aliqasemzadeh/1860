@@ -55,6 +55,9 @@
                                     @endif
 
                                     {{-- Price --}}
+                                    @if(! $item->itemable->is_active)
+                                        <flux:badge color="red" size="sm">{{ __('general.out_of_stock') }}</flux:badge>
+                                    @else
                                     @php
                                         $itemPrice = $item->itemable->getPrice();
                                         $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
@@ -78,6 +81,7 @@
                                             </flux:text>
                                         @endif
                                     </div>
+                                    @endif
                                 </div>
 
                                 {{-- Quantity Controls --}}
@@ -92,6 +96,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>
                                     </button>
+                                    @if($item->itemable->is_active)
                                     <div class="flex items-center gap-2">
                                         <button
                                             type="button"
@@ -115,6 +120,7 @@
                                             </svg>
                                         </button>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         @endif
@@ -131,6 +137,11 @@
                             {{ number_format($this->totalAmount, 0) }} {{ __('general.toman') }}
                         </flux:heading>
                     </div>
+                    @if($this->hasUnavailableItems)
+                        <flux:text class="text-sm text-red-600 dark:text-red-400">
+                            {{ __('general.remove_unavailable_products_to_continue') }}
+                        </flux:text>
+                    @endif
                     <flux:button href="{{ route('order.cart') }}" variant="primary" class="w-full" wire:navigate>
                         {{ __('general.complete_order') }}
                     </flux:button>

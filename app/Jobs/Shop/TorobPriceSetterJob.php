@@ -41,12 +41,22 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
     public function handle(TorobOfferFetcher $offerFetcher): void
     {
         $setter = TorobPriceSetter::query()
-            ->with(['priceFetcher', 'productPrice'])
+            ->with(['priceFetcher.product', 'productPrice.product'])
             ->find($this->priceSetter->getKey());
 
         if (! $setter || ! $setter->is_active) {
             $setter?->update([
                 'status' => TorobPriceSetter::STATUS_INACTIVE,
+                'last_checked_at' => now(),
+                'last_error' => null,
+            ]);
+
+            return;
+        }
+
+        if (! $setter->priceFetcher?->product?->is_active || ! $setter->productPrice?->product?->is_active) {
+            $setter->update([
+                'status' => TorobPriceSetter::STATUS_PRODUCT_UNAVAILABLE,
                 'last_checked_at' => now(),
                 'last_error' => null,
             ]);
@@ -121,9 +131,9 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
 
             DB::transaction(function () use ($setter, $offer, $target): void {
                 $lockedSetter = TorobPriceSetter::query()->lockForUpdate()->find($setter->getKey());
-                $productPrice = ProductPrice::query()->lockForUpdate()->find($setter->product_price_id);
+                $productPrice = ProductPrice::query()->with('product')->lockForUpdate()->find($setter->product_price_id);
 
-                if (! $lockedSetter || ! $lockedSetter->is_active || ! $productPrice) {
+                if (! $lockedSetter || ! $lockedSetter->is_active || ! $productPrice?->product?->is_active) {
                     return;
                 }
 

@@ -19,6 +19,7 @@ class EmallsFeedService
         $perPage = min(max(1, $perPage), (int) config('emalls.max_per_page', 100));
 
         $query = Product::query()
+            ->active()
             ->whereHas('prices')
             ->with([
                 'category.main_category',

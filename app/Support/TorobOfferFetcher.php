@@ -297,7 +297,6 @@ class TorobOfferFetcher
             $binary,
             '--silent',
             '--show-error',
-            '--compressed',
             '--max-time',
             (string) ($proxy === null ? 15 : config('proxy.torob.request_timeout', 8)),
             '--connect-timeout',

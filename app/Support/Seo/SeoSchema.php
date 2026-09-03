@@ -160,7 +160,7 @@ class SeoSchema
             ],
         ];
 
-        if ($price) {
+        if ($product->is_active && $price) {
             $finalPrice = ($price->sale_price && $price->sale_price < $price->price)
                 ? $price->sale_price
                 : $price->price;
@@ -183,7 +183,7 @@ class SeoSchema
                     'name' => app(GeneralSettings::class)->title ?: config('app.name'),
                 ],
             ];
-        } else {
+        } elseif ($product->is_active) {
             $defaultPriceRecord = $product->default_price['record'] ?? null;
             $rawPrice = $defaultPriceRecord?->sale_price ?? $defaultPriceRecord?->price ?? $product->price ?? 0;
             $quantity = $defaultPriceRecord?->quantity ?? $product->stock ?? 0;

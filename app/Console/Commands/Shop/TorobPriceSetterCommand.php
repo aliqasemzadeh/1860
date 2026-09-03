@@ -29,7 +29,9 @@ class TorobPriceSetterCommand extends Command
      */
     public function handle(): int
     {
-        $query = TorobPriceSetter::query()->where('is_active', true);
+        $query = TorobPriceSetter::query()
+            ->where('is_active', true)
+            ->whereHas('priceFetcher.product', fn ($query) => $query->active());
 
         if ($ruleId = $this->option('rule')) {
             $query->whereKey((int) $ruleId);
