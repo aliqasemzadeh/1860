@@ -11,6 +11,7 @@ use App\Models\Shop\TorobPriceSetter;
 use App\Models\Shop\Unit;
 use App\Models\User;
 use App\Scrapers\TorobScraper;
+use App\Support\TorobChallengeGuard;
 use EduLazaro\Larascraper\Support\ScraperResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
@@ -264,4 +265,24 @@ test('Torob sync command dispatches least recently checked rules first', functio
         $oldSetter->id,
         $recentSetter->id,
     ]);
+});
+
+test('Torob sync command stops remaining rules while ARCaptcha cooldown is active', function () {
+    ['price' => $firstPrice, 'setter' => $firstSetter] = createTorobPricingRule();
+    ['price' => $secondPrice, 'setter' => $secondSetter] = createTorobPricingRule();
+    Cache::put(TorobChallengeGuard::CACHE_KEY, now()->addHour()->timestamp, 3600);
+
+    $scraper = Mockery::mock(TorobScraper::class);
+    $scraper->shouldNotReceive('handleToResponse');
+    app()->instance(TorobScraper::class, $scraper);
+
+    $this->artisan('shop:sync-torob-prices --sync')
+        ->expectsOutputToContain('ARCaptcha')
+        ->assertFailed();
+
+    expect($firstSetter->fresh()->status)->toBe(TorobPriceSetter::STATUS_FETCH_FAILED)
+        ->and($firstSetter->fresh()->last_error)->toContain('ARCaptcha')
+        ->and($secondSetter->fresh()->status)->toBe(TorobPriceSetter::STATUS_IDLE)
+        ->and($firstPrice->fresh()->price)->toBe($firstPrice->price)
+        ->and($secondPrice->fresh()->price)->toBe($secondPrice->price);
 });

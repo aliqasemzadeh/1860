@@ -1,8 +1,11 @@
 <?php
 
 use App\Scrapers\TorobScraper;
+use App\Support\TorobChallengeException;
+use App\Support\TorobChallengeGuard;
 use EduLazaro\Larascraper\Contracts\Runner;
 use EduLazaro\Larascraper\Exceptions\RequestException;
+use Illuminate\Support\Facades\Cache;
 
 class TorobScraperFakeRunner implements Runner
 {
@@ -117,6 +120,10 @@ function torobBrowserResponse(array|string $payload, int $status = 200): array
 
 function runTorobScraper(string $productKey = 'ad77d6f4-d0de-4ec9-9572-a05fbd27ad70')
 {
+    $throttle = config('larascraper.throttle', []);
+    $throttle['torob.sellers']['interval'] = 0;
+    config()->set('larascraper.throttle', $throttle);
+
     $scraper = app(TorobScraper::class);
     $scraper->applyWith([
         'drivers' => ['browser' => TorobScraperFakeRunner::class],
@@ -126,7 +133,10 @@ function runTorobScraper(string $productKey = 'ad77d6f4-d0de-4ec9-9572-a05fbd27a
     return $scraper->handleToResponse([$productKey]);
 }
 
-beforeEach(fn () => TorobScraperFakeRunner::reset());
+beforeEach(function () {
+    TorobScraperFakeRunner::reset();
+    Cache::flush();
+});
 
 test('torob scraper extracts browser JSON and follows seller pagination without a proxy', function () {
     TorobScraperFakeRunner::$responses = [
@@ -169,6 +179,59 @@ test('torob scraper rejects invalid JSON returned by the browser', function () {
 
     expect(fn () => runTorobScraper())
         ->toThrow(RuntimeException::class, 'did not contain valid JSON');
+});
+
+test('torob scraper detects ARCaptcha HTML and activates a shared cooldown', function () {
+    config()->set('services.torob.challenge_cooldown_seconds', 3600);
+    $retryAt = now()->addHour()->timestamp;
+    TorobScraperFakeRunner::$responses = [[
+        'success' => true,
+        'status' => 200,
+        'html' => '<html><head><title>ARCaptcha</title></head><body><h1>آیا شما یک ربات هستید؟</h1><p>من ربات نیستم</p></body></html>',
+        'error' => null,
+        'file' => null,
+        'contentType' => 'text/html',
+        'cookies' => [],
+    ]];
+
+    expect(fn () => runTorobScraper())
+        ->toThrow(TorobChallengeException::class, 'ARCaptcha')
+        ->and((int) Cache::get(TorobChallengeGuard::CACHE_KEY))->toBe($retryAt)
+        ->and(TorobScraperFakeRunner::$urls)->toHaveCount(1);
+});
+
+test('torob scraper makes no outbound request while the challenge cooldown is active', function () {
+    Cache::put(TorobChallengeGuard::CACHE_KEY, now()->addHour()->timestamp, 3600);
+    TorobScraperFakeRunner::$responses = [torobBrowserResponse([
+        'count' => 0,
+        'results' => [],
+    ])];
+
+    expect(fn () => runTorobScraper())
+        ->toThrow(TorobChallengeException::class, 'Requests are paused')
+        ->and(TorobScraperFakeRunner::$urls)->toBeEmpty();
+});
+
+test('torob scraper resumes requests after the challenge cooldown expires', function () {
+    Cache::put(TorobChallengeGuard::CACHE_KEY, now()->subSecond()->timestamp, 3600);
+    TorobScraperFakeRunner::$responses = [torobBrowserResponse([
+        'count' => 0,
+        'results' => [],
+    ])];
+
+    $response = runTorobScraper();
+
+    expect($response->success)->toBeTrue()
+        ->and($response->data)->toBe([])
+        ->and(Cache::has(TorobChallengeGuard::CACHE_KEY))->toBeFalse()
+        ->and(TorobScraperFakeRunner::$urls)->toHaveCount(1);
+});
+
+test('torob seller requests have a shared fifteen second throttle by default', function () {
+    $throttle = config('larascraper.throttle', []);
+
+    expect(config('larascraper.proxies'))->toBe([])
+        ->and($throttle['torob.sellers']['interval'] ?? null)->toBe(15);
 });
 
 test('torob scraper rejects an unexpected sellers response', function () {

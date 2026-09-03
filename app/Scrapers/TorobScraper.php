@@ -3,6 +3,7 @@
 namespace App\Scrapers;
 
 use App\Scrapers\Runners\ProcessPuppeteerRunner;
+use App\Support\TorobChallengeGuard;
 use EduLazaro\Larascraper\Runners\HttpRunner;
 use EduLazaro\Larascraper\Scraper;
 use JsonException;
@@ -28,12 +29,16 @@ class TorobScraper extends Scraper
 
     protected int $retryDelay = 2;
 
+    protected ?string $throttleKey = 'torob.sellers';
+
     protected array $headers = [
         'Accept' => 'application/json',
         'Accept-Language' => 'fa-IR,fa;q=0.9,en;q=0.8',
         'Origin' => 'https://torob.com',
         'Referer' => 'https://torob.com/',
     ];
+
+    public function __construct(private readonly TorobChallengeGuard $challengeGuard) {}
 
     /** @return list<array<string, mixed>> */
     protected function handle(string $productKey): array
@@ -43,6 +48,8 @@ class TorobScraper extends Scraper
         $pageCount = 1;
 
         while ($page < $pageCount && $page < self::MAX_PAGES) {
+            $this->challengeGuard->ensureRequestsAllowed();
+
             $response = $this->scrape($this->sellersUrl($productKey, $page))->run();
             $payload = $this->decodePayload((string) $response->data);
 
@@ -78,7 +85,20 @@ class TorobScraper extends Scraper
         if (str_starts_with($json, '<')) {
             $crawler = new Crawler($json);
             $pre = $crawler->filter('pre');
-            $json = $pre->count() > 0 ? trim($pre->first()->text('')) : '';
+
+            if ($pre->count() > 0) {
+                $json = trim($pre->first()->text(''));
+            } else {
+                $visibleText = $crawler->filter('html')->count() > 0
+                    ? $crawler->filter('html')->first()->text('', true)
+                    : html_entity_decode(strip_tags($json), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+                if ($this->isChallengePage($visibleText)) {
+                    throw $this->challengeGuard->activate();
+                }
+
+                $json = '';
+            }
         }
 
         try {
@@ -92,5 +112,25 @@ class TorobScraper extends Scraper
         }
 
         return $payload;
+    }
+
+    private function isChallengePage(string $content): bool
+    {
+        $content = mb_strtolower(preg_replace('/\s+/u', ' ', trim($content)) ?? trim($content), 'UTF-8');
+
+        foreach ([
+            'arcaptcha',
+            'من ربات نیستم',
+            'آیا شما یک ربات هستید',
+            'درخواست‌های مشکوک',
+            'درخواست هاي مشکوک',
+            'are you a robot',
+        ] as $marker) {
+            if (str_contains($content, $marker)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

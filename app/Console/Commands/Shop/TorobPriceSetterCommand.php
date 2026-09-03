@@ -4,6 +4,7 @@ namespace App\Console\Commands\Shop;
 
 use App\Jobs\Shop\TorobPriceSetterJob;
 use App\Models\Shop\TorobPriceSetter;
+use App\Support\TorobChallengeException;
 use Illuminate\Console\Command;
 use Throwable;
 
@@ -62,6 +63,15 @@ class TorobPriceSetterCommand extends Command
                 }
 
                 $processed++;
+            } catch (TorobChallengeException $exception) {
+                $failed++;
+                $this->components->warn(sprintf(
+                    'Torob returned ARCaptcha while processing rule #%d. The remaining rules were not processed: %s',
+                    $setter->getKey(),
+                    $exception->getMessage(),
+                ));
+
+                break;
             } catch (Throwable $exception) {
                 $failed++;
                 $this->components->warn(sprintf(

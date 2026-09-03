@@ -8,7 +8,10 @@ use RuntimeException;
 
 class TorobOfferFetcher
 {
-    public function __construct(private readonly TorobScraper $scraper) {}
+    public function __construct(
+        private readonly TorobScraper $scraper,
+        private readonly TorobChallengeGuard $challengeGuard,
+    ) {}
 
     /**
      * @param  list<string>  $excludedShopNames
@@ -16,6 +19,8 @@ class TorobOfferFetcher
      */
     public function cheapestCompetitor(string $productUrl, array $excludedShopNames): ?array
     {
+        $this->challengeGuard->ensureRequestsAllowed();
+
         $productKey = $this->extractProductKey($productUrl);
         $offers = Cache::remember(
             "torob:offers:{$productKey}",

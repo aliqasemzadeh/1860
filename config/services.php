@@ -37,6 +37,7 @@ return [
 
     'torob' => [
         'audience' => env('TOROB_API_AUDIENCE', parse_url((string) env('APP_URL'), PHP_URL_HOST)),
+        'challenge_cooldown_seconds' => (int) env('TOROB_CHALLENGE_COOLDOWN_SECONDS', 3600),
         'node_binary' => env('TOROB_NODE_BINARY', 'node'),
         'public_key' => env(
             'TOROB_API_PUBLIC_KEY',
