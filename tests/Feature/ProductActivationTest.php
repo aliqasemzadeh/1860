@@ -56,6 +56,13 @@ function addActivationPrice(Product $product, array $attributes = []): ProductPr
     ], $attributes));
 }
 
+function createActivationUser(): User
+{
+    return User::create([
+        'mobile' => '0912'.random_int(1000000, 9999999),
+    ]);
+}
+
 test('products are active by default and activation scopes remain explicit', function () {
     $active = createActivationProduct();
     $inactive = createActivationProduct(['is_active' => false]);
@@ -111,7 +118,7 @@ test('inactive products are excluded from feeds and sitemap', function () {
 });
 
 test('inactive products cannot be added to a cart', function () {
-    $user = User::factory()->create();
+    $user = createActivationUser();
     $product = createActivationProduct(['is_active' => false]);
     addActivationPrice($product);
 
@@ -123,7 +130,7 @@ test('inactive products cannot be added to a cart', function () {
 });
 
 test('a product disabled after being added remains visible but blocks checkout', function () {
-    $user = User::factory()->create();
+    $user = createActivationUser();
     $product = createActivationProduct();
     $price = addActivationPrice($product);
     $cart = Cart::query()->create(['user_id' => $user->id]);
