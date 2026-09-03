@@ -45,6 +45,7 @@ class UpdateProjectJob implements ShouldQueue
             $this->clearCache();
             $this->clearRoute();
             $this->clearView();
+            $this->publishLogViewer();
 
             if ($this->runNpmBuild) {
                 $this->addTheme();
@@ -150,6 +151,11 @@ class UpdateProjectJob implements ShouldQueue
     protected function clearView(): void
     {
         $this->runArtisan('view:clear');
+    }
+
+    protected function publishLogViewer(): void
+    {
+        $this->runArtisan('log-viewer:publish');
     }
 
     protected function addTheme(): void
