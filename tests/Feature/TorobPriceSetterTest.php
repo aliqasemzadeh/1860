@@ -172,6 +172,7 @@ test('torob offer fetching rotates proxies before changing a price', function ()
     expect((int) $price->fresh()->price)->toBe(20_990_000);
     Process::assertRanTimes(fn (): bool => true, 2);
     Process::assertRan(fn ($process): bool => in_array('socks5h://192.0.2.11:1080', $process->command, true)
+        && ! in_array('--compressed', $process->command, true)
         && ! in_array('--insecure', $process->command, true));
 });
 
@@ -233,6 +234,7 @@ test('torob offer fetching falls back to system curl when PHP transport remains 
 
         return is_array($command)
             && in_array('--write-out', $command, true)
+            && ! in_array('--compressed', $command, true)
             && collect($command)->contains(
                 fn (string $argument): bool => str_starts_with($argument, 'https://api.torob.com/v4/base-product/sellers/'),
             );

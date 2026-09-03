@@ -67,6 +67,7 @@ class TorobProductFeedService
     private function baseQuery(): Builder
     {
         return Product::query()
+            ->active()
             ->whereHas('prices')
             ->with([
                 'category',
