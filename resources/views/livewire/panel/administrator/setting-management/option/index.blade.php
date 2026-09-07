@@ -16,6 +16,7 @@
                 <flux:tab name="contact">{{ __('general.contact_settings') }}</flux:tab>
                 <flux:tab name="social">{{ __('general.social_networks') }}</flux:tab>
                 <flux:tab name="sms">{{ __('general.sms_settings') }}</flux:tab>
+                <flux:tab name="bale">{{ __('general.bale_settings') }}</flux:tab>
                 <flux:tab name="maintenance">{{ __('general.maintenance_mode') }}</flux:tab>
             </flux:tabs>
 
@@ -221,6 +222,39 @@
                             <flux:label>{{ __('general.sms_gateway') }}</flux:label>
                             <flux:input wire:model="smsForm.gateway" dir="ltr" placeholder="1000" />
                             <flux:error name="smsForm.gateway" />
+                        </flux:field>
+
+                        <flux:button type="submit" class="w-full" variant="primary" color="teal">
+                            {{ __('general.save') }}
+                        </flux:button>
+                    </form>
+                </flux:card>
+            </flux:tab.panel>
+
+            <flux:tab.panel name="bale">
+                <flux:card>
+                    <form wire:submit="saveBale" class="space-y-4">
+                        <flux:heading size="lg">{{ __('general.bale_settings') }}</flux:heading>
+                        <flux:text>{{ __('general.bale_settings_description') }}</flux:text>
+                        <flux:separator variant="subtle" />
+
+                        <flux:field>
+                            <flux:label>{{ __('general.bale_bot_username') }}</flux:label>
+                            <flux:input wire:model="baleForm.bot_username" dir="ltr" />
+                            <flux:error name="baleForm.bot_username" />
+                        </flux:field>
+
+                        <flux:field>
+                            <flux:label>{{ __('general.bale_bot_token') }}</flux:label>
+                            <flux:input wire:model="baleForm.bot_token" type="password" viewable copyable dir="ltr" />
+                            <flux:error name="baleForm.bot_token" />
+                        </flux:field>
+
+                        <flux:field>
+                            <flux:label>{{ __('general.bale_chat_id') }}</flux:label>
+                            <flux:input wire:model="baleForm.chat_id" dir="ltr" />
+                            <flux:text class="mt-1 text-xs">{{ __('general.bale_chat_id_help') }}</flux:text>
+                            <flux:error name="baleForm.chat_id" />
                         </flux:field>
 
                         <flux:button type="submit" class="w-full" variant="primary" color="teal">

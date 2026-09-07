@@ -3,9 +3,12 @@
 namespace App\Services\Shop;
 
 use App\Enums\OrderStatusEnum;
+use App\Jobs\Notification\SendBaleMessageJob;
 use App\Jobs\Notification\SendSmsMessageJob;
 use App\Models\Shop\Order;
 use App\Models\Shop\ProductPrice;
+use App\Settings\BaleSettings;
+use App\Settings\GeneralSettings;
 use Illuminate\Support\Facades\DB;
 
 class OrderStatusService
@@ -16,7 +19,9 @@ class OrderStatusService
             return false;
         }
 
-        DB::transaction(function () use ($order) {
+        $marked = false;
+
+        DB::transaction(function () use ($order, &$marked) {
             $order->refresh();
 
             if ($order->paid_at !== null) {
@@ -41,9 +46,15 @@ class OrderStatusService
                     ])
                 ));
             }
+
+            $marked = true;
         });
 
-        return true;
+        if ($marked) {
+            $this->notifyBalePaidOrder($order);
+        }
+
+        return $marked;
     }
 
     public function markAsShipped(Order $order, string $trackingCode): void
@@ -105,6 +116,50 @@ class OrderStatusService
             'status' => OrderStatusEnum::Cancelled->value,
             'cancelled_at' => now(),
         ]);
+    }
+
+    private function notifyBalePaidOrder(Order $order): void
+    {
+        $bale = app(BaleSettings::class);
+
+        if (trim($bale->bot_token) === '' || trim($bale->chat_id) === '') {
+            return;
+        }
+
+        $order->loadMissing(['user', 'items']);
+
+        $customer = trim(($order->user?->first_name ?? '').' '.($order->user?->last_name ?? ''));
+        if ($customer === '') {
+            $customer = $order->user?->mobile
+                ?? data_get($order->shipping_address, 'name')
+                ?? '-';
+        }
+
+        $itemLines = $order->items
+            ->take(5)
+            ->map(fn ($item) => sprintf(
+                '• %s × %s',
+                $item->name,
+                number_format((int) $item->quantity)
+            ));
+
+        $remaining = $order->items->count() - $itemLines->count();
+        if ($remaining > 0) {
+            $itemLines->push(__('general.and_more_items', ['count' => $remaining]));
+        }
+
+        $siteTitle = app(GeneralSettings::class)->title;
+
+        $message = __('general.order_paid_bale_message', [
+            'site' => $siteTitle,
+            'order_number' => $order->order_number,
+            'customer' => $customer,
+            'amount' => number_format((float) $order->total_amount),
+            'items' => $itemLines->implode("\n") ?: '-',
+            'url' => route('order.view', ['id' => $order->id]),
+        ]);
+
+        dispatch(new SendBaleMessageJob($bale->chat_id, $message));
     }
 
     private function deductInventory(Order $order): void
