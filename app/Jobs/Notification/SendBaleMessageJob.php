@@ -2,26 +2,59 @@
 
 namespace App\Jobs\Notification;
 
+use App\Settings\BaleSettings;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class SendBaleMessageJob implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * Create a new job instance.
-     */
-    public function __construct()
-    {
-        //
+    public function __construct(
+        public string $chatId,
+        public string $text,
+    ) {
     }
 
-    /**
-     * Execute the job.
-     */
-    public function handle(): void
+    public function handle(BaleSettings $settings): void
     {
-        //
+        $token = trim($settings->bot_token);
+
+        if ($token === '') {
+            Log::error('Bale message skipped: bot token is empty.');
+
+            return;
+        }
+
+        if (trim($this->chatId) === '' || trim($this->text) === '') {
+            Log::error('Bale message skipped: chat id or text is empty.');
+
+            return;
+        }
+
+        try {
+            $response = Http::asJson()
+                ->acceptJson()
+                ->post('https://tapi.bale.ai/bot'.$token.'/sendMessage', [
+                    'chat_id' => $this->chatId,
+                    'text' => $this->text,
+                ]);
+
+            $payload = $response->json();
+
+            if (! $response->successful() || ! ($payload['ok'] ?? false)) {
+                Log::error('Failed to send Bale message.', [
+                    'status' => $response->status(),
+                    'chat_id' => $this->chatId,
+                    'body' => $payload ?? $response->body(),
+                ]);
+            }
+        } catch (\Throwable $e) {
+            Log::error('Failed to send Bale message: '.$e->getMessage(), [
+                'chat_id' => $this->chatId,
+            ]);
+        }
     }
 }

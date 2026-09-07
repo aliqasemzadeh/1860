@@ -3,11 +3,13 @@
 namespace App\Livewire\Panel\Administrator\SettingManagement\Option;
 
 use App\Enums\SocialNetworkEnum;
+use App\Livewire\Forms\BaleSettingForm;
 use App\Livewire\Forms\ContactSettingForm;
 use App\Livewire\Forms\GeneralSettingForm;
 use App\Livewire\Forms\MaintenanceSettingForm;
 use App\Livewire\Forms\SocialSettingForm;
 use App\Livewire\Forms\SmsSettingForm;
+use App\Settings\BaleSettings;
 use App\Settings\ContactSettings;
 use App\Settings\GeneralSettings;
 use App\Settings\MaintenanceSettings;
@@ -36,6 +38,8 @@ class Index extends Component
 
     public SmsSettingForm $smsForm;
 
+    public BaleSettingForm $baleForm;
+
     public string $tab = 'general';
 
     public function mount(
@@ -44,6 +48,7 @@ class Index extends Component
         SocialSettings $social,
         MaintenanceSettings $maintenance,
         SmsSettings $sms,
+        BaleSettings $bale,
     ): void {
         $this->authorize('administrator_setting_option_index');
 
@@ -77,6 +82,12 @@ class Index extends Component
         $this->smsForm->fill([
             'token' => $sms->token,
             'gateway' => $sms->gateway,
+        ]);
+
+        $this->baleForm->fill([
+            'bot_username' => $bale->bot_username,
+            'bot_token' => $bale->bot_token,
+            'chat_id' => $bale->chat_id,
         ]);
     }
 
@@ -223,6 +234,20 @@ class Index extends Component
 
         $settings->token = $this->smsForm->token;
         $settings->gateway = $this->smsForm->gateway;
+        $settings->save();
+
+        Flux::toast(__('general.settings_updated'));
+    }
+
+    public function saveBale(BaleSettings $settings): void
+    {
+        $this->authorize('administrator_setting_option_update');
+
+        $this->baleForm->validate();
+
+        $settings->bot_username = $this->baleForm->bot_username;
+        $settings->bot_token = $this->baleForm->bot_token;
+        $settings->chat_id = $this->baleForm->chat_id;
         $settings->save();
 
         Flux::toast(__('general.settings_updated'));
