@@ -3,6 +3,7 @@
 namespace App\Livewire\Panel\Administrator\SettingManagement\Option;
 
 use App\Enums\SocialNetworkEnum;
+use App\Jobs\Notification\SendBaleMessageJob;
 use App\Livewire\Forms\BaleSettingForm;
 use App\Livewire\Forms\ContactSettingForm;
 use App\Livewire\Forms\GeneralSettingForm;
@@ -251,6 +252,36 @@ class Index extends Component
         $settings->save();
 
         Flux::toast(__('general.settings_updated'));
+    }
+
+    public function sendTestBale(BaleSettings $settings, GeneralSettings $general): void
+    {
+        $this->authorize('administrator_setting_option_update');
+
+        $this->baleForm->validate();
+
+        $settings->bot_username = $this->baleForm->bot_username;
+        $settings->bot_token = $this->baleForm->bot_token;
+        $settings->chat_id = $this->baleForm->chat_id;
+        $settings->save();
+
+        $message = __('general.bale_test_message', [
+            'site' => $general->title,
+            'bot' => $settings->bot_username,
+        ]);
+
+        $sent = dispatch_sync(new SendBaleMessageJob(
+            $settings->chat_id,
+            $message,
+        ));
+
+        if ($sent) {
+            Flux::toast(__('general.bale_test_sent'));
+
+            return;
+        }
+
+        Flux::toast(text: __('general.bale_test_failed'), variant: 'danger');
     }
 
     public function generateSecret(): void

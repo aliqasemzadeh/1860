@@ -260,6 +260,19 @@
                         <flux:button type="submit" class="w-full" variant="primary" color="teal">
                             {{ __('general.save') }}
                         </flux:button>
+
+                        <flux:button
+                            type="button"
+                            class="w-full"
+                            variant="primary"
+                            color="cyan"
+                            icon="send"
+                            icon:variant="outline"
+                            wire:click="sendTestBale"
+                            wire:loading.attr="disabled"
+                        >
+                            {{ __('general.bale_send_test') }}
+                        </flux:button>
                     </form>
                 </flux:card>
             </flux:tab.panel>
