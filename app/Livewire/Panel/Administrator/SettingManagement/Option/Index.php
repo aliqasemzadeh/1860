@@ -273,15 +273,16 @@ class Index extends Component
         $sent = dispatch_sync(new SendBaleMessageJob(
             $settings->chat_id,
             $message,
+            $settings->bot_token,
         ));
 
         if ($sent) {
-            Flux::toast(__('general.bale_test_sent'));
+            Flux::toast(variant: 'success', text: __('general.bale_test_sent'));
 
             return;
         }
 
-        Flux::toast(text: __('general.bale_test_failed'), variant: 'danger');
+        Flux::toast(variant: 'danger', text: __('general.bale_test_failed'));
     }
 
     public function generateSecret(): void

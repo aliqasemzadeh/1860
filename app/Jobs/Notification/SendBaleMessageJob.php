@@ -15,12 +15,13 @@ class SendBaleMessageJob implements ShouldQueue
     public function __construct(
         public string $chatId,
         public string $text,
+        public ?string $botToken = null,
     ) {
     }
 
     public function handle(BaleSettings $settings): bool
     {
-        $token = trim($settings->bot_token);
+        $token = trim($this->botToken ?? $settings->bot_token);
 
         if ($token === '') {
             Log::error('Bale message skipped: bot token is empty.');
