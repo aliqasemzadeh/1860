@@ -112,6 +112,7 @@ return [
     'bale_settings' => 'تنظیمات بله',
     'bale_settings_description' => 'تنظیمات ارسال اعلان سفارش پرداخت‌شده به گروه بله.',
     'bale_test_failed' => 'ارسال پیام تست به بله ناموفق بود.',
+    'bale_test_failed_with_reason' => 'ارسال پیام تست به بله ناموفق بود: :reason',
     'bale_test_message' => ":site\nپیام تست تنظیمات بله\nبات: :bot",
     'bale_test_sent' => 'پیام تست با موفقیت به گروه بله ارسال شد.',
     'bank' => 'بانک',

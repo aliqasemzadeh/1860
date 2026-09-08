@@ -18,6 +18,7 @@ use App\Settings\SmsSettings;
 use App\Settings\SocialSettings;
 use Flux\Flux;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
@@ -270,19 +271,30 @@ class Index extends Component
             'bot' => $settings->bot_username,
         ]);
 
-        $sent = dispatch_sync(new SendBaleMessageJob(
+        $result = dispatch_sync(new SendBaleMessageJob(
             $settings->chat_id,
             $message,
             $settings->bot_token,
         ));
 
-        if ($sent) {
+        if ($result['ok'] ?? false) {
             Flux::toast(variant: 'success', text: __('general.bale_test_sent'));
 
             return;
         }
 
-        Flux::toast(variant: 'danger', text: __('general.bale_test_failed'));
+        $error = $result['error'] ?? __('general.bale_test_failed');
+
+        Log::error('Bale test message failed from settings panel.', [
+            'chat_id' => $settings->chat_id,
+            'bot_username' => $settings->bot_username,
+            'error' => $error,
+        ]);
+
+        Flux::toast(
+            variant: 'danger',
+            text: __('general.bale_test_failed_with_reason', ['reason' => $error]),
+        );
     }
 
     public function generateSecret(): void

@@ -112,6 +112,7 @@ return [
     'bale_settings' => 'Bale Settings',
     'bale_settings_description' => 'Settings for sending paid-order notifications to a Bale group.',
     'bale_test_failed' => 'Failed to send the Bale test message.',
+    'bale_test_failed_with_reason' => 'Failed to send the Bale test message: :reason',
     'bale_test_message' => ":site\nBale settings test message\nBot: :bot",
     'bale_test_sent' => 'Test message sent to the Bale group successfully.',
     'bank' => 'Bank',

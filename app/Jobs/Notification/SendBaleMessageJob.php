@@ -19,49 +19,113 @@ class SendBaleMessageJob implements ShouldQueue
     ) {
     }
 
-    public function handle(BaleSettings $settings): bool
+    /**
+     * @return array{ok: bool, error: string|null}
+     */
+    public function handle(BaleSettings $settings): array
     {
         $token = trim($this->botToken ?? $settings->bot_token);
+        $chatId = trim($this->chatId);
+        $text = trim($this->text);
 
         if ($token === '') {
-            Log::error('Bale message skipped: bot token is empty.');
+            $error = 'Bale bot token is empty.';
+            Log::error($error, $this->logContext());
 
-            return false;
+            return $this->failure($error);
         }
 
-        if (trim($this->chatId) === '' || trim($this->text) === '') {
-            Log::error('Bale message skipped: chat id or text is empty.');
+        if ($chatId === '') {
+            $error = 'Bale chat_id is empty.';
+            Log::error($error, $this->logContext());
 
-            return false;
+            return $this->failure($error);
         }
+
+        if ($text === '') {
+            $error = 'Bale message text is empty.';
+            Log::error($error, $this->logContext());
+
+            return $this->failure($error);
+        }
+
+        $endpoint = 'https://tapi.bale.ai/bot'.$token.'/sendMessage';
 
         try {
+            Log::info('Sending Bale message.', $this->logContext([
+                'endpoint' => 'https://tapi.bale.ai/bot***/sendMessage',
+                'text_length' => mb_strlen($text),
+            ]));
+
             $response = Http::asJson()
                 ->acceptJson()
-                ->post('https://tapi.bale.ai/bot'.$token.'/sendMessage', [
-                    'chat_id' => $this->chatId,
+                ->timeout(20)
+                ->post($endpoint, [
+                    'chat_id' => is_numeric($chatId) ? (int) $chatId : $chatId,
                     'text' => $this->text,
                 ]);
 
             $payload = $response->json();
+            $body = is_array($payload) ? $payload : ['raw' => $response->body()];
 
             if (! $response->successful() || ! ($payload['ok'] ?? false)) {
-                Log::error('Failed to send Bale message.', [
-                    'status' => $response->status(),
-                    'chat_id' => $this->chatId,
-                    'body' => $payload ?? $response->body(),
-                ]);
+                $apiDescription = data_get($payload, 'description')
+                    ?? data_get($payload, 'error')
+                    ?? data_get($payload, 'message')
+                    ?? $response->body();
 
-                return false;
+                $error = sprintf(
+                    'Bale API error (HTTP %s): %s',
+                    $response->status(),
+                    is_string($apiDescription) ? $apiDescription : json_encode($apiDescription, JSON_UNESCAPED_UNICODE)
+                );
+
+                Log::error('Failed to send Bale message.', $this->logContext([
+                    'status' => $response->status(),
+                    'response' => $body,
+                    'error' => $error,
+                ]));
+
+                return $this->failure($error);
             }
 
-            return true;
-        } catch (\Throwable $e) {
-            Log::error('Failed to send Bale message: '.$e->getMessage(), [
-                'chat_id' => $this->chatId,
-            ]);
+            Log::info('Bale message sent successfully.', $this->logContext([
+                'message_id' => data_get($payload, 'result.message_id'),
+            ]));
 
-            return false;
+            return ['ok' => true, 'error' => null];
+        } catch (\Throwable $e) {
+            $error = 'Bale request exception: '.$e->getMessage();
+
+            Log::error($error, $this->logContext([
+                'exception' => $e::class,
+                'trace' => $e->getTraceAsString(),
+            ]));
+
+            return $this->failure($error);
         }
+    }
+
+    /**
+     * @param  array<string, mixed>  $extra
+     * @return array<string, mixed>
+     */
+    private function logContext(array $extra = []): array
+    {
+        $token = trim($this->botToken ?? '');
+
+        return array_merge([
+            'chat_id' => $this->chatId,
+            'token_prefix' => $token !== '' ? substr($token, 0, 8).'***' : null,
+            'has_token_override' => $this->botToken !== null,
+        ], $extra);
+    }
+
+    /**
+     * @return array{ok: bool, error: string}
+     */
+    private function failure(string $error): array
+    {
+        return ['ok' => false, 'error' => $error];
     }
 }
