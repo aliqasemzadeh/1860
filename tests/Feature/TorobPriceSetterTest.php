@@ -224,6 +224,120 @@ test('shop users can create and toggle a Torob pricing rule from the price fetch
     expect($setter->fresh()->is_active)->toBeFalse();
 });
 
+test('shop users can edit an existing Torob pricing rule from the price fetcher panel', function () {
+    ['product' => $product, 'price' => $price, 'fetcher' => $fetcher, 'setter' => $setter] = createTorobPricingRule([
+        'own_shop_names' => ['هجده شصت'],
+        'step_amount' => 10_000,
+        'min_price' => 18_000_000,
+        'max_price' => 24_000_000,
+        'is_active' => true,
+    ]);
+    $secondPrice = ProductPrice::create([
+        'product_id' => $product->id,
+        'price' => 21_000_000,
+        'quantity' => 3,
+        'is_default' => false,
+    ]);
+
+    Gate::define('shop_access', fn (): bool => true);
+    $this->actingAs(User::create([
+        'first_name' => 'Torob',
+        'last_name' => 'Editor',
+        'mobile' => '0912'.random_int(1000000, 9999999),
+    ]));
+
+    $component = Livewire::test(PriceFetchers::class)
+        ->call('assignData', $product->id)
+        ->call('editTorobPriceFetcher', $fetcher->id)
+        ->assertSet('editingPriceFetcherId', $fetcher->id)
+        ->assertSet('type', 'torob')
+        ->assertSet('url', $fetcher->url)
+        ->assertSet('productPriceId', $price->id)
+        ->assertSet('ownShopNames', 'هجده شصت')
+        ->assertSet('stepAmount', '10000')
+        ->assertSet('minPrice', '18000000')
+        ->assertSet('maxPrice', '24000000')
+        ->assertSet('torobEnabled', true)
+        ->set('url', 'https://torob.com/p/ad77d6f4-d0de-4ec9-9572-a05fbd27ad70/updated/')
+        ->set('productPriceId', $secondPrice->id)
+        ->set('ownShopNames', 'هجده شصت، فروشگاه سوم')
+        ->set('stepAmount', '۲۵٬۰۰۰')
+        ->set('minPrice', '19,500,000')
+        ->set('maxPrice', '25,000,000')
+        ->set('torobEnabled', false)
+        ->call('updateTorobPriceFetcher')
+        ->assertHasNoErrors()
+        ->assertSet('editingPriceFetcherId', null);
+
+    $setter->refresh();
+    $fetcher->refresh();
+
+    expect($fetcher->url)->toBe('https://torob.com/p/ad77d6f4-d0de-4ec9-9572-a05fbd27ad70/updated/')
+        ->and($setter->product_price_id)->toBe($secondPrice->id)
+        ->and($setter->own_shop_names)->toBe(['هجده شصت', 'فروشگاه سوم'])
+        ->and($setter->step_amount)->toBe(25_000)
+        ->and($setter->min_price)->toBe(19_500_000)
+        ->and($setter->max_price)->toBe(25_000_000)
+        ->and($setter->is_active)->toBeFalse()
+        ->and($setter->status)->toBe(TorobPriceSetter::STATUS_INACTIVE);
+});
+
+test('editing a Torob rule keeps the current variant unique and rejects variants used elsewhere', function () {
+    ['product' => $product, 'price' => $price, 'fetcher' => $fetcher] = createTorobPricingRule();
+    ['price' => $otherPrice, 'setter' => $otherSetter] = createTorobPricingRule();
+
+    Gate::define('shop_access', fn (): bool => true);
+    $this->actingAs(User::create([
+        'first_name' => 'Torob',
+        'last_name' => 'Unique',
+        'mobile' => '0912'.random_int(1000000, 9999999),
+    ]));
+
+    Livewire::test(PriceFetchers::class)
+        ->call('assignData', $product->id)
+        ->call('editTorobPriceFetcher', $fetcher->id)
+        ->set('stepAmount', '15,000')
+        ->set('minPrice', '18,000,000')
+        ->set('maxPrice', '24,000,000')
+        ->call('updateTorobPriceFetcher')
+        ->assertHasNoErrors()
+        ->assertSet('editingPriceFetcherId', null);
+
+    expect($fetcher->fresh()->torobPriceSetter->step_amount)->toBe(15_000)
+        ->and($fetcher->fresh()->torobPriceSetter->product_price_id)->toBe($price->id);
+
+    Livewire::test(PriceFetchers::class)
+        ->call('assignData', $product->id)
+        ->call('editTorobPriceFetcher', $fetcher->id)
+        ->set('productPriceId', $otherPrice->id)
+        ->set('stepAmount', '15,000')
+        ->set('minPrice', '18,000,000')
+        ->set('maxPrice', '24,000,000')
+        ->call('updateTorobPriceFetcher')
+        ->assertHasErrors(['productPriceId']);
+
+    expect($fetcher->fresh()->torobPriceSetter->product_price_id)->toBe($price->id)
+        ->and($otherSetter->fresh()->product_price_id)->toBe($otherPrice->id);
+});
+
+test('editing a Torob rule from another product is rejected', function () {
+    ['fetcher' => $foreignFetcher] = createTorobPricingRule();
+    ['product' => $product] = createTorobPricingRule();
+
+    Gate::define('shop_access', fn (): bool => true);
+    $this->actingAs(User::create([
+        'first_name' => 'Torob',
+        'last_name' => 'Scope',
+        'mobile' => '0912'.random_int(1000000, 9999999),
+    ]));
+
+    Livewire::test(PriceFetchers::class)
+        ->call('assignData', $product->id)
+        ->call('editTorobPriceFetcher', $foreignFetcher->id)
+        ->assertSet('editingPriceFetcherId', null)
+        ->assertSet('type', 'digikala');
+});
+
 test('Torob sync command dispatches only active pricing rules', function () {
     Queue::fake();
     ['setter' => $activeSetter] = createTorobPricingRule();

@@ -20,6 +20,8 @@ class PriceFetchers extends Component
 
     public ?int $productId = null;
 
+    public ?int $editingPriceFetcherId = null;
+
     public string $type = 'digikala';
 
     public string $url = '';
@@ -55,6 +57,12 @@ class PriceFetchers extends Component
 
     public function updatedType(): void
     {
+        if ($this->editingPriceFetcherId !== null) {
+            $this->type = 'torob';
+
+            return;
+        }
+
         $this->resetValidation();
 
         if ($this->type === 'torob' && $this->productPriceId === null) {
@@ -68,7 +76,7 @@ class PriceFetchers extends Component
     {
         $this->authorize('shop_access');
 
-        if (! $this->product) {
+        if (! $this->product || $this->editingPriceFetcherId !== null) {
             return;
         }
 
@@ -76,47 +84,16 @@ class PriceFetchers extends Component
             $this->normalizeTorobAmounts();
         }
 
-        $rules = [
-            'type' => 'required|in:digikala,fafait,markazi,fater,setaregan,technolife,torob',
-            'url' => ['required', 'url', 'max:500'],
-        ];
-
-        if ($this->type === 'torob') {
-            $rules = array_merge($rules, [
-                'url' => [
-                    'required',
-                    'url',
-                    'max:500',
-                    'regex:~^https?://(?:www\.)?torob\.com/p/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:/|$)~i',
+        $this->validate(
+            $this->type === 'torob'
+                ? $this->torobValidationRules()
+                : [
+                    'type' => 'required|in:digikala,fafait,markazi,fater,setaregan,technolife,torob',
+                    'url' => ['required', 'url', 'max:500'],
                 ],
-                'productPriceId' => [
-                    'required',
-                    'integer',
-                    Rule::exists('product_prices', 'id')->where(
-                        fn ($query) => $query
-                            ->where('product_id', $this->product->id)
-                            ->whereNull('deleted_at')
-                    ),
-                    Rule::unique('torob_price_setters', 'product_price_id'),
-                ],
-                'ownShopNames' => ['required', 'string', 'max:1000'],
-                'stepAmount' => ['required', 'integer', 'min:1'],
-                'minPrice' => ['required', 'integer', 'min:0'],
-                'maxPrice' => ['required', 'integer', 'gte:minPrice'],
-                'torobEnabled' => ['boolean'],
-            ]);
-        }
-
-        $this->validate($rules, [], [
-            'type' => __('general.price_fetcher_type'),
-            'url' => __('general.price_fetcher_url'),
-            'productPriceId' => __('general.torob_target_variant'),
-            'ownShopNames' => __('general.torob_own_shop_names'),
-            'stepAmount' => __('general.torob_step_amount'),
-            'minPrice' => __('general.torob_min_price'),
-            'maxPrice' => __('general.torob_max_price'),
-            'torobEnabled' => __('general.torob_enabled'),
-        ]);
+            [],
+            $this->validationAttributes(),
+        );
 
         DB::transaction(function (): void {
             $priceFetcher = $this->product->priceFetchers()->create([
@@ -141,6 +118,84 @@ class PriceFetchers extends Component
         Flux::toast(variant: 'success', text: __('general.price_fetcher_added'));
     }
 
+    public function editTorobPriceFetcher(int $priceFetcherId): void
+    {
+        $this->authorize('shop_access');
+
+        $priceFetcher = $this->findProductPriceFetcher($priceFetcherId);
+        $setter = $priceFetcher?->torobPriceSetter;
+
+        if (! $priceFetcher || ! $setter) {
+            Flux::toast(variant: 'danger', text: __('general.torob_rule_not_found'));
+
+            return;
+        }
+
+        $this->resetValidation();
+        $this->editingPriceFetcherId = $priceFetcher->id;
+        $this->type = 'torob';
+        $this->url = $priceFetcher->url;
+        $this->productPriceId = $setter->product_price_id;
+        $this->ownShopNames = implode('، ', $setter->own_shop_names ?? []);
+        $this->stepAmount = (string) $setter->step_amount;
+        $this->minPrice = (string) $setter->min_price;
+        $this->maxPrice = (string) $setter->max_price;
+        $this->torobEnabled = (bool) $setter->is_active;
+
+        $this->dispatch('panel.shop.product.price-fetchers.scroll-to-form');
+    }
+
+    public function updateTorobPriceFetcher(): void
+    {
+        $this->authorize('shop_access');
+
+        if (! $this->product || $this->editingPriceFetcherId === null) {
+            return;
+        }
+
+        $priceFetcher = $this->findProductPriceFetcher($this->editingPriceFetcherId);
+        $setter = $priceFetcher?->torobPriceSetter;
+
+        if (! $priceFetcher || ! $setter) {
+            Flux::toast(variant: 'danger', text: __('general.torob_rule_not_found'));
+            $this->resetForm();
+
+            return;
+        }
+
+        $this->type = 'torob';
+        $this->normalizeTorobAmounts();
+        $this->validate($this->torobValidationRules($setter), [], $this->validationAttributes());
+
+        DB::transaction(function () use ($priceFetcher, $setter): void {
+            $priceFetcher->update([
+                'url' => $this->url,
+            ]);
+
+            $setter->update([
+                'product_price_id' => $this->productPriceId,
+                'own_shop_names' => $this->parsedOwnShopNames(),
+                'step_amount' => (int) $this->stepAmount,
+                'min_price' => (int) $this->minPrice,
+                'max_price' => (int) $this->maxPrice,
+                'is_active' => $this->torobEnabled,
+                'status' => $this->torobEnabled
+                    ? TorobPriceSetter::STATUS_IDLE
+                    : TorobPriceSetter::STATUS_INACTIVE,
+                'last_error' => null,
+            ]);
+        });
+
+        $this->refreshProduct();
+        $this->resetForm();
+        Flux::toast(variant: 'success', text: __('general.torob_policy_updated'));
+    }
+
+    public function cancelEdit(): void
+    {
+        $this->resetForm();
+    }
+
     public function removePriceFetcher(int $priceFetcherId): void
     {
         $this->authorize('shop_access');
@@ -152,6 +207,10 @@ class PriceFetchers extends Component
         PriceFetcher::where('product_id', $this->product->id)
             ->where('id', $priceFetcherId)
             ->delete();
+
+        if ($this->editingPriceFetcherId === $priceFetcherId) {
+            $this->resetForm();
+        }
 
         $this->refreshProduct();
         Flux::toast(variant: 'success', text: __('general.price_fetcher_removed'));
@@ -281,6 +340,7 @@ class PriceFetchers extends Component
     private function resetForm(): void
     {
         $this->resetValidation();
+        $this->editingPriceFetcherId = null;
         $this->type = 'digikala';
         $this->url = '';
         $this->productPriceId = null;
@@ -289,6 +349,56 @@ class PriceFetchers extends Component
         $this->minPrice = '';
         $this->maxPrice = '';
         $this->torobEnabled = true;
+    }
+
+    /** @return array<string, mixed> */
+    private function torobValidationRules(?TorobPriceSetter $ignoreSetter = null): array
+    {
+        $uniqueProductPrice = Rule::unique('torob_price_setters', 'product_price_id');
+
+        if ($ignoreSetter) {
+            $uniqueProductPrice->ignore($ignoreSetter->id);
+        }
+
+        return [
+            'type' => 'required|in:torob',
+            'url' => [
+                'required',
+                'url',
+                'max:500',
+                'regex:~^https?://(?:www\.)?torob\.com/p/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:/|$)~i',
+            ],
+            'productPriceId' => [
+                'required',
+                'integer',
+                Rule::exists('product_prices', 'id')->where(
+                    fn ($query) => $query
+                        ->where('product_id', $this->product->id)
+                        ->whereNull('deleted_at')
+                ),
+                $uniqueProductPrice,
+            ],
+            'ownShopNames' => ['required', 'string', 'max:1000'],
+            'stepAmount' => ['required', 'integer', 'min:1'],
+            'minPrice' => ['required', 'integer', 'min:0'],
+            'maxPrice' => ['required', 'integer', 'gte:minPrice'],
+            'torobEnabled' => ['boolean'],
+        ];
+    }
+
+    /** @return array<string, string> */
+    private function validationAttributes(): array
+    {
+        return [
+            'type' => __('general.price_fetcher_type'),
+            'url' => __('general.price_fetcher_url'),
+            'productPriceId' => __('general.torob_target_variant'),
+            'ownShopNames' => __('general.torob_own_shop_names'),
+            'stepAmount' => __('general.torob_step_amount'),
+            'minPrice' => __('general.torob_min_price'),
+            'maxPrice' => __('general.torob_max_price'),
+            'torobEnabled' => __('general.torob_enabled'),
+        ];
     }
 
     private function normalizeTorobAmounts(): void

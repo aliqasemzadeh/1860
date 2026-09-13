@@ -13,21 +13,52 @@
         </header>
 
         @if ($product)
-            <section aria-labelledby="new-price-fetcher-heading" class="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
-                <flux:heading id="new-price-fetcher-heading" size="sm">{{ __('general.add_price_fetcher') }}</flux:heading>
+            <section
+                id="price-fetcher-form"
+                aria-labelledby="new-price-fetcher-heading"
+                class="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-900"
+                x-data
+                x-on:panel.shop.product.price-fetchers.scroll-to-form.window="$el.scrollIntoView({ behavior: 'smooth', block: 'start' })"
+            >
+                <div class="flex items-start justify-between gap-3">
+                    <flux:heading id="new-price-fetcher-heading" size="sm">
+                        {{ $editingPriceFetcherId ? __('general.edit_torob_policy') : __('general.add_price_fetcher') }}
+                    </flux:heading>
+
+                    @if ($editingPriceFetcherId)
+                        <flux:tooltip content="{{ __('general.cancel') }}">
+                            <flux:button
+                                size="xs"
+                                variant="ghost"
+                                icon="x"
+                                icon:variant="outline"
+                                aria-label="{{ __('general.cancel') }}"
+                                wire:click="cancelEdit"
+                            />
+                        </flux:tooltip>
+                    @endif
+                </div>
 
                 <div class="mt-4 grid gap-4 sm:grid-cols-2">
                     <flux:field>
                         <flux:label>{{ __('general.price_fetcher_type') }}</flux:label>
-                        <flux:select wire:model.live="type" placeholder="{{ __('general.select_price_fetcher_type') }}">
-                            <flux:select.option value="digikala">{{ __('general.price_fetcher_type_digikala') }}</flux:select.option>
-                            <flux:select.option value="fafait">{{ __('general.price_fetcher_type_fafait') }}</flux:select.option>
-                            <flux:select.option value="markazi">{{ __('general.price_fetcher_type_markazi') }}</flux:select.option>
-                            <flux:select.option value="fater">{{ __('general.price_fetcher_type_fater') }}</flux:select.option>
-                            <flux:select.option value="setaregan">{{ __('general.price_fetcher_type_setaregan') }}</flux:select.option>
-                            <flux:select.option value="technolife">{{ __('general.price_fetcher_type_technolife') }}</flux:select.option>
-                            <flux:select.option value="torob">{{ __('general.price_fetcher_type_torob') }}</flux:select.option>
-                        </flux:select>
+                        @if ($editingPriceFetcherId)
+                            <flux:input
+                                type="text"
+                                :value="__('general.price_fetcher_type_torob')"
+                                disabled
+                            />
+                        @else
+                            <flux:select wire:model.live="type" placeholder="{{ __('general.select_price_fetcher_type') }}">
+                                <flux:select.option value="digikala">{{ __('general.price_fetcher_type_digikala') }}</flux:select.option>
+                                <flux:select.option value="fafait">{{ __('general.price_fetcher_type_fafait') }}</flux:select.option>
+                                <flux:select.option value="markazi">{{ __('general.price_fetcher_type_markazi') }}</flux:select.option>
+                                <flux:select.option value="fater">{{ __('general.price_fetcher_type_fater') }}</flux:select.option>
+                                <flux:select.option value="setaregan">{{ __('general.price_fetcher_type_setaregan') }}</flux:select.option>
+                                <flux:select.option value="technolife">{{ __('general.price_fetcher_type_technolife') }}</flux:select.option>
+                                <flux:select.option value="torob">{{ __('general.price_fetcher_type_torob') }}</flux:select.option>
+                            </flux:select>
+                        @endif
                         <flux:error name="type" />
                     </flux:field>
 
@@ -105,17 +136,32 @@
                     </div>
                 @endif
 
-                <div class="mt-4 flex justify-end">
-                    <flux:button
-                        wire:click="addPriceFetcher"
-                        wire:loading.attr="disabled"
-                        wire:target="addPriceFetcher"
-                        variant="primary"
-                        color="{{ $type === 'torob' ? 'rose' : 'zinc' }}"
-                    >
-                        <span wire:loading.remove wire:target="addPriceFetcher">{{ __('general.add') }}</span>
-                        <span wire:loading wire:target="addPriceFetcher">{{ __('general.saving') }}</span>
-                    </flux:button>
+                <div class="mt-4">
+                    @if ($editingPriceFetcherId)
+                        <flux:button
+                            class="w-full"
+                            wire:click="updateTorobPriceFetcher"
+                            wire:loading.attr="disabled"
+                            wire:target="updateTorobPriceFetcher"
+                            variant="primary"
+                            color="rose"
+                        >
+                            <span wire:loading.remove wire:target="updateTorobPriceFetcher">{{ __('general.save') }}</span>
+                            <span wire:loading wire:target="updateTorobPriceFetcher">{{ __('general.saving') }}</span>
+                        </flux:button>
+                    @else
+                        <flux:button
+                            class="w-full"
+                            wire:click="addPriceFetcher"
+                            wire:loading.attr="disabled"
+                            wire:target="addPriceFetcher"
+                            variant="primary"
+                            color="{{ $type === 'torob' ? 'rose' : 'zinc' }}"
+                        >
+                            <span wire:loading.remove wire:target="addPriceFetcher">{{ __('general.add') }}</span>
+                            <span wire:loading wire:target="addPriceFetcher">{{ __('general.saving') }}</span>
+                        </flux:button>
+                    @endif
                 </div>
             </section>
 
@@ -192,6 +238,19 @@
                                                 {{ __('general.torob_run_now') }}
                                             </flux:button>
                                             <div class="flex items-center gap-1">
+                                                <flux:tooltip content="{{ __('general.edit') }}">
+                                                    <flux:button
+                                                        size="xs"
+                                                        variant="ghost"
+                                                        icon="pencil"
+                                                        icon:variant="outline"
+                                                        aria-label="{{ __('general.edit') }}"
+                                                        wire:click="editTorobPriceFetcher({{ $priceFetcher->id }})"
+                                                        wire:loading.attr="disabled"
+                                                        wire:target="editTorobPriceFetcher({{ $priceFetcher->id }})"
+                                                    />
+                                                </flux:tooltip>
+
                                                 <flux:tooltip content="{{ $setter->is_active ? __('general.disable') : __('general.enable') }}">
                                                     <flux:button
                                                         size="xs"
