@@ -35,6 +35,7 @@ class Index extends Component
                 ->selectRaw("sum(case when status = 'shipped' then 1 else 0 end) as shipped_count")
                 ->selectRaw("sum(case when status = 'delivered' then 1 else 0 end) as delivered_count")
                 ->selectRaw("sum(case when status = 'cancelled' then 1 else 0 end) as cancelled_count")
+                ->selectRaw("sum(case when status = 'pending' and paid_at is null and cancelled_at is null then 1 else 0 end) as pending_payment_count")
                 ->selectRaw('coalesce(sum(case when paid_at is not null then total_amount else 0 end), 0) as paid_total')
                 ->selectRaw('sum(case when created_at >= ? then 1 else 0 end) as today_count', [$startOfDay])
                 ->selectRaw('coalesce(sum(case when paid_at >= ? then total_amount else 0 end), 0) as today_paid_total', [$startOfDay])
@@ -50,6 +51,7 @@ class Index extends Component
                 'out_of_stock_count' => Product::query()->whereAvailability(false)->count(),
                 'orders_count' => (int) ($orders->orders_count ?? 0),
                 'paid_total' => (float) ($orders->paid_total ?? 0),
+                'pending_payment_count' => (int) ($orders->pending_payment_count ?? 0),
                 'today_count' => (int) ($orders->today_count ?? 0),
                 'today_paid_total' => (float) ($orders->today_paid_total ?? 0),
                 'categories_count' => Category::query()->count(),
@@ -69,6 +71,19 @@ class Index extends Component
             ->get();
     }
 
+    #[Computed]
+    public function pendingPaymentOrders(): Collection
+    {
+        return Order::query()
+            ->with('user:id,first_name,last_name,mobile,email')
+            ->where('status', OrderStatusEnum::Pending->value)
+            ->whereNull('paid_at')
+            ->whereNull('cancelled_at')
+            ->latest()
+            ->limit(10)
+            ->get();
+    }
+
     #[On('panel.shop.dashboard.index.render')]
     public function refresh(): void
     {
@@ -81,7 +96,7 @@ class Index extends Component
     public function refreshData(): void
     {
         Cache::forget('panel.shop.dashboard.stats');
-        unset($this->stats, $this->recentOrders);
+        unset($this->stats, $this->recentOrders, $this->pendingPaymentOrders);
     }
 
     #[Layout('layouts.panels.shop')]

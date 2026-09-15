@@ -23,7 +23,7 @@
     <livewire:panel.shop.order.view />
     <livewire:panel.shop.order.ship />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
         <a href="{{ route('panel.shop.product.index') }}" wire:navigate class="block">
             <flux:card class="hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">
                 <flux:text class="text-sm text-zinc-500">{{ __('general.products_count') }}</flux:text>
@@ -42,6 +42,12 @@
                 <flux:heading size="xl">{{ $this->stats['orders_count'] }}</flux:heading>
             </flux:card>
         </a>
+        <a href="{{ route('panel.shop.order.index', ['status' => 'pending', 'payment_status' => 'unpaid']) }}" wire:navigate class="block">
+            <flux:card class="hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">
+                <flux:text class="text-sm text-zinc-500">{{ __('general.pending_payment_orders') }}</flux:text>
+                <flux:heading size="xl" class="text-orange-600">{{ $this->stats['pending_payment_count'] }}</flux:heading>
+            </flux:card>
+        </a>
         <a href="{{ route('panel.shop.order.index') }}" wire:navigate class="block">
             <flux:card class="hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">
                 <flux:text class="text-sm text-zinc-500">{{ __('general.paid_total') }}</flux:text>
@@ -56,12 +62,77 @@
         <flux:heading size="lg" class="mb-4">{{ __('general.orders_by_status') }}</flux:heading>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
             @foreach (\App\Enums\OrderStatusEnum::cases() as $status)
-                <a href="{{ route('panel.shop.order.index') }}" wire:navigate class="block space-y-2">
+                <a href="{{ route('panel.shop.order.index', ['status' => $status->value]) }}" wire:navigate class="block space-y-2">
                     <flux:badge color="{{ $status->color() }}">{{ $status->label() }}</flux:badge>
                     <flux:heading size="lg">{{ $this->stats['status_counts'][$status->value] ?? 0 }}</flux:heading>
                 </a>
             @endforeach
         </div>
+    </flux:card>
+
+    <flux:card class="mb-6 space-y-4">
+        <div class="flex items-center justify-between gap-4">
+            <flux:heading size="lg">{{ __('general.pending_payment_orders') }}</flux:heading>
+            <flux:tooltip content="{{ __('general.view_all') }}">
+                <flux:button
+                    size="xs"
+                    variant="primary"
+                    color="orange"
+                    icon="arrow-left"
+                    icon:variant="outline"
+                    href="{{ route('panel.shop.order.index', ['status' => 'pending', 'payment_status' => 'unpaid']) }}"
+                />
+            </flux:tooltip>
+        </div>
+
+        <flux:table>
+            <flux:table.columns>
+                <flux:table.column>{{ __('general.order_number') }}</flux:table.column>
+                <flux:table.column>{{ __('general.customer') }}</flux:table.column>
+                <flux:table.column>{{ __('general.total_amount') }}</flux:table.column>
+                <flux:table.column>{{ __('general.payment_status') }}</flux:table.column>
+                <flux:table.column>{{ __('general.order_date') }}</flux:table.column>
+                <flux:table.column>{{ __('general.options') }}</flux:table.column>
+            </flux:table.columns>
+
+            @forelse ($this->pendingPaymentOrders as $order)
+                <flux:table.row :key="$order->id">
+                    <flux:table.cell class="whitespace-nowrap">
+                        {{ $order->order_number }}
+                    </flux:table.cell>
+                    <flux:table.cell class="whitespace-nowrap">
+                        {{ $order->user?->name ?? '-' }}
+                    </flux:table.cell>
+                    <flux:table.cell class="whitespace-nowrap">
+                        {{ number_format((float) $order->total_amount) }} {{ $order->currency }}
+                    </flux:table.cell>
+                    <flux:table.cell class="whitespace-nowrap">
+                        <flux:badge color="orange">{{ __('general.pending_payment') }}</flux:badge>
+                    </flux:table.cell>
+                    <flux:table.cell class="whitespace-nowrap">
+                        {{ jalali($order->created_at) }}
+                    </flux:table.cell>
+                    <flux:table.cell class="whitespace-nowrap">
+                        @can('shop_order_view')
+                            <flux:tooltip content="{{ __('general.view_order') }}">
+                                <flux:button
+                                    size="xs"
+                                    variant="primary"
+                                    color="sky"
+                                    icon="eye"
+                                    icon:variant="outline"
+                                    wire:click="$dispatch('panel.shop.order.view.assign-data', { id: '{{ $order->id }}' })"
+                                />
+                            </flux:tooltip>
+                        @endcan
+                    </flux:table.cell>
+                </flux:table.row>
+            @empty
+                <flux:table.row>
+                    <flux:table.cell colspan="6">{{ __('general.no_results') }}</flux:table.cell>
+                </flux:table.row>
+            @endforelse
+        </flux:table>
     </flux:card>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">

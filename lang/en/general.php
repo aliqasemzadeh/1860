@@ -721,6 +721,8 @@ return [
     'pickup_shipping_notice' => 'Notice: In-person pickup',
     'payment_status' => 'Payment Status',
     'payment_successful' => 'Payment successful.',
+    'pending_payment' => 'Pending payment',
+    'pending_payment_orders' => 'Pending payment orders',
     'permission' => 'Permission',
     'permissions' => 'Permissions',
     'permissions_description' => 'Search permissions and assign or remove them from roles.',
