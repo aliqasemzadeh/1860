@@ -721,6 +721,8 @@ return [
     'pickup_shipping_notice' => 'توجه: تحویل حضوری',
     'payment_status' => 'وضعیت پرداخت',
     'payment_successful' => 'پرداخت با موفقیت انجام شد.',
+    'pending_payment' => 'در انتظار پرداخت',
+    'pending_payment_orders' => 'سفارش‌های در انتظار پرداخت',
     'permission' => 'مجوز',
     'permissions' => 'مجوزها',
     'permissions_description' => 'مجوزها را جستجو و به کاربر اختصاص دهید یا حذف کنید.',
