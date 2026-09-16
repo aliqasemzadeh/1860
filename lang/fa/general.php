@@ -785,6 +785,7 @@ return [
     'torob_own_shop_names_help' => 'نام‌ها را با ویرگول جدا کنید؛ این فروشگاه‌ها از فهرست رقبا حذف می‌شوند.',
     'torob_own_shop_names_placeholder' => 'هجده شصت، نام دیگر فروشگاه',
     'torob_policy_updated' => 'سیاست ترب به‌روزرسانی شد.',
+    'torob_price_changed_bale_message' => ":site\nتغییر قیمت رقابتی ترب\nمحصول: :product\nقیمت قبلی: :old_price تومان\nقیمت جدید: :new_price تومان\nرقیب: :competitor (:competitor_price تومان)\n\n:url",
     'torob_rule_not_found' => 'قانون قیمت‌گذاری ترب یافت نشد.',
     'torob_rule_ran' => 'قانون ترب بررسی و نتیجه آن اعمال شد.',
     'torob_rule_run_failed' => 'اجرای قانون ترب ناموفق بود',

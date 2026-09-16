@@ -2,8 +2,11 @@
 
 namespace App\Jobs\Shop;
 
+use App\Jobs\Notification\SendBaleMessageJob;
 use App\Models\Shop\ProductPrice;
 use App\Models\Shop\TorobPriceSetter;
+use App\Settings\BaleSettings;
+use App\Settings\GeneralSettings;
 use App\Support\TorobOfferFetcher;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -41,7 +44,7 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
     public function handle(TorobOfferFetcher $offerFetcher): void
     {
         $setter = TorobPriceSetter::query()
-            ->with(['priceFetcher.product', 'productPrice.product'])
+            ->with(['priceFetcher.product', 'productPrice.product', 'productPrice.color', 'productPrice.warranty'])
             ->find($this->priceSetter->getKey());
 
         if (! $setter || ! $setter->is_active) {
@@ -128,10 +131,14 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
             }
 
             $target = min($candidate, $setter->max_price);
+            $priceChange = null;
 
-            DB::transaction(function () use ($setter, $offer, $target): void {
+            DB::transaction(function () use ($setter, $offer, $target, &$priceChange): void {
                 $lockedSetter = TorobPriceSetter::query()->lockForUpdate()->find($setter->getKey());
-                $productPrice = ProductPrice::query()->with('product')->lockForUpdate()->find($setter->product_price_id);
+                $productPrice = ProductPrice::query()
+                    ->with(['product', 'color', 'warranty'])
+                    ->lockForUpdate()
+                    ->find($setter->product_price_id);
 
                 if (! $lockedSetter || ! $lockedSetter->is_active || ! $productPrice?->product?->is_active) {
                     return;
@@ -163,6 +170,13 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
 
                     $status = TorobPriceSetter::STATUS_UPDATED;
                     $changedAt = now();
+                    $priceChange = [
+                        'product_price' => $productPrice,
+                        'old_price' => $currentPrice,
+                        'new_price' => $target,
+                        'competitor_shop' => $offer['shop_name'],
+                        'competitor_price' => $offer['price'],
+                    ];
                 }
 
                 $lockedSetter->update([
@@ -176,6 +190,10 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                     'last_error' => null,
                 ]);
             }, 3);
+
+            if (is_array($priceChange)) {
+                $this->notifyBalePriceChanged($priceChange);
+            }
 
             Log::info('Torob competitive pricing rule processed.', [
                 'torob_price_setter_id' => $setter->getKey(),
@@ -191,6 +209,47 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
 
             throw $exception;
         }
+    }
+
+    /**
+     * @param  array{product_price: ProductPrice, old_price: int, new_price: int, competitor_shop: string, competitor_price: int}  $change
+     */
+    private function notifyBalePriceChanged(array $change): void
+    {
+        $bale = app(BaleSettings::class);
+
+        if (trim($bale->bot_token) === '' || trim($bale->chat_id) === '') {
+            return;
+        }
+
+        $productPrice = $change['product_price'];
+        $product = $productPrice->product;
+        $variantParts = array_filter([
+            $productPrice->color?->name,
+            $productPrice->warranty?->name,
+        ]);
+
+        $productLabel = trim((string) ($product?->name ?? ''));
+        if ($variantParts !== []) {
+            $productLabel .= ' ('.implode(' / ', $variantParts).')';
+        }
+        if ($productLabel === '') {
+            $productLabel = '-';
+        }
+
+        $message = __('general.torob_price_changed_bale_message', [
+            'site' => app(GeneralSettings::class)->title,
+            'product' => $productLabel,
+            'old_price' => number_format($change['old_price']),
+            'new_price' => number_format($change['new_price']),
+            'competitor' => $change['competitor_shop'],
+            'competitor_price' => number_format($change['competitor_price']),
+            'url' => $product
+                ? route('panel.shop.product.pricing.index', ['productId' => $product->id])
+                : '',
+        ]);
+
+        dispatch(new SendBaleMessageJob($bale->chat_id, $message));
     }
 
     public function failed(?Throwable $exception): void

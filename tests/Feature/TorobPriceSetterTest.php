@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\Notification\SendBaleMessageJob;
 use App\Jobs\Shop\TorobPriceSetterJob;
 use App\Livewire\Panel\Shop\Product\PriceFetchers;
 use App\Models\Shop\Brand;
@@ -101,6 +102,8 @@ test('price fetchers accept long percent-encoded Torob URLs', function () {
 });
 
 test('torob pricing rule undercuts the cheapest eligible competitor and excludes own shop', function () {
+    Queue::fake([SendBaleMessageJob::class]);
+
     ['price' => $price, 'fetcher' => $fetcher, 'setter' => $setter] = createTorobPricingRule();
 
     fakeTorobOffers([
@@ -115,9 +118,18 @@ test('torob pricing rule undercuts the cheapest eligible competitor and excludes
         ->and($fetcher->fresh()->last_price)->toBe(21_000_000)
         ->and($setter->fresh()->status)->toBe(TorobPriceSetter::STATUS_UPDATED)
         ->and($setter->fresh()->last_competitor_shop)->toBe('رقیب معتبر');
+
+    Queue::assertPushed(SendBaleMessageJob::class, function (SendBaleMessageJob $job) use ($price): bool {
+        return str_contains($job->text, 'رقیب معتبر')
+            && str_contains($job->text, number_format(22_000_000))
+            && str_contains($job->text, number_format(20_990_000))
+            && str_contains($job->text, $price->product->name);
+    });
 });
 
 test('torob pricing rule keeps the current price when stop loss is reached', function () {
+    Queue::fake([SendBaleMessageJob::class]);
+
     ['price' => $price, 'setter' => $setter] = createTorobPricingRule([
         'min_price' => 20_000_000,
     ]);
@@ -131,6 +143,8 @@ test('torob pricing rule keeps the current price when stop loss is reached', fun
     expect((int) $price->fresh()->price)->toBe(22_000_000)
         ->and($setter->fresh()->status)->toBe(TorobPriceSetter::STATUS_FLOOR_REACHED)
         ->and($setter->fresh()->last_target_price)->toBe(19_890_000);
+
+    Queue::assertNotPushed(SendBaleMessageJob::class);
 });
 
 test('torob pricing rule caps a high target at the configured maximum', function () {

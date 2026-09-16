@@ -785,6 +785,7 @@ return [
     'torob_own_shop_names_help' => 'Separate names with commas; these shops are excluded from competitors.',
     'torob_own_shop_names_placeholder' => 'Hedjeh Shast, another shop name',
     'torob_policy_updated' => 'Torob policy updated.',
+    'torob_price_changed_bale_message' => ":site\nTorob competitive price change\nProduct: :product\nPrevious price: :old_price Toman\nNew price: :new_price Toman\nCompetitor: :competitor (:competitor_price Toman)\n\n:url",
     'torob_rule_not_found' => 'The Torob pricing rule was not found.',
     'torob_rule_ran' => 'The Torob rule was checked and its result was applied.',
     'torob_rule_run_failed' => 'The Torob rule could not be run',
