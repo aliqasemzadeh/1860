@@ -698,7 +698,7 @@ class Shipping extends Component
 
             OrderItem::create([
                 'order_id' => $order->id,
-                'sku' => $cartItem->itemable->sku ?? null,
+                'sku' => (string) $cartItem->itemable->id,
                 'name' => $cartItem->itemable->name,
                 'warranty_id' => $warrantyId,
                 'color_id' => $colorId,
@@ -707,7 +707,7 @@ class Shipping extends Component
                 'discount_amount' => 0,
                 'tax_amount' => 0,
                 'total_amount' => $price * $cartItem->quantity,
-                'meta' => $cartItem->options,
+                'meta' => is_array($options) ? $options : [],
             ]);
         }
 

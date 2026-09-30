@@ -193,6 +193,9 @@ test('setaregan pricing rule zeroes quantity when supplier is out of stock', fun
 test('setaregan pricing rule restores default quantity when supplier is back in stock', function () {
     ['price' => $price, 'setter' => $setter] = createSetareganPricingRule([
         'default_quantity' => 3,
+        'status' => SetareganPriceSetter::STATUS_OUT_OF_STOCK,
+        'last_supplier_available' => false,
+        'last_stock_action' => 'zeroed',
     ], [
         'quantity' => 0,
     ]);
@@ -205,6 +208,25 @@ test('setaregan pricing rule restores default quantity when supplier is back in 
         ->and((int) $price->fresh()->sale_price)->toBe(19_500_000)
         ->and($setter->fresh()->last_stock_action)->toBe('restored')
         ->and($setter->fresh()->status)->toBe(SetareganPriceSetter::STATUS_UPDATED);
+});
+
+test('setaregan pricing rule does not restore stock zeroed by a sale', function () {
+    ['price' => $price, 'setter' => $setter] = createSetareganPricingRule([
+        'default_quantity' => 3,
+        'status' => SetareganPriceSetter::STATUS_UPDATED,
+        'last_supplier_available' => true,
+    ], [
+        'quantity' => 0,
+        'price' => 19_500_000,
+        'sale_price' => 19_500_000,
+    ]);
+    fakeSetareganPage(setareganInStockHtml(20_000_000));
+
+    SetareganPriceSetterJob::dispatchSync($setter);
+
+    expect((float) $price->fresh()->quantity)->toBe(0.0)
+        ->and($setter->fresh()->last_stock_action)->toBeNull()
+        ->and($setter->fresh()->status)->toBe(SetareganPriceSetter::STATUS_UNCHANGED);
 });
 
 test('setaregan pricing rule does not overwrite positive stock on restock cycle', function () {

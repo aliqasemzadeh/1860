@@ -186,7 +186,10 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
             }
 
             $restored = false;
-            if ((float) $productPrice->quantity <= 0) {
+            if (
+                (float) $productPrice->quantity <= 0
+                && $lockedSetter->status === SetareganPriceSetter::STATUS_OUT_OF_STOCK
+            ) {
                 $productPrice->quantity = $lockedSetter->default_quantity;
                 $restored = true;
             }

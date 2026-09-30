@@ -167,18 +167,40 @@ class OrderStatusService
         $order->loadMissing('items');
 
         foreach ($order->items as $item) {
-            $priceId = data_get($item->meta, 'price_id');
+            $meta = $item->meta;
+            if (is_string($meta)) {
+                $meta = json_decode($meta, true) ?: [];
+            }
 
-            $productPrice = $priceId
-                ? ProductPrice::find($priceId)
-                : ProductPrice::query()
-                    ->where('product_id', $item->sku)
+            $priceId = data_get($meta, 'price_id');
+            $productId = $item->sku ?: data_get($meta, 'product_id');
+
+            $productPrice = null;
+
+            if ($priceId) {
+                $productPrice = ProductPrice::query()
+                    ->lockForUpdate()
+                    ->find($priceId);
+            }
+
+            if (! $productPrice && $productId) {
+                $productPrice = ProductPrice::query()
+                    ->lockForUpdate()
+                    ->where('product_id', $productId)
                     ->where('color_id', $item->color_id)
                     ->where('warranty_id', $item->warranty_id)
                     ->first();
+            }
 
-            if ($productPrice) {
-                $productPrice->decrement('quantity', $item->quantity);
+            if (! $productPrice) {
+                continue;
+            }
+
+            $orderedQty = (float) $item->quantity;
+            $newQuantity = max(0, (float) $productPrice->quantity - $orderedQty);
+
+            if ($newQuantity !== (float) $productPrice->quantity) {
+                $productPrice->update(['quantity' => $newQuantity]);
             }
         }
     }
