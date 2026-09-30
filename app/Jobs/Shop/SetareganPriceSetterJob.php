@@ -167,7 +167,7 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
             'last_fetched_at' => now(),
         ]);
 
-        $candidate = $offer['price'] + $setter->margin_amount;
+        $candidate = $offer['price'] - $setter->margin_amount;
         $target = min($candidate, $setter->max_price);
         $floorHit = $candidate < $setter->min_price;
 

@@ -189,7 +189,7 @@
 
                                 <flux:field>
                                     <flux:label>{{ __('general.setaregan_margin_amount') }}</flux:label>
-                                    <flux:input wire:model="marginAmount" type="text" inputmode="numeric" dir="ltr" placeholder="500,000" mask:dynamic="$money($input)" />
+                                    <flux:input wire:model="marginAmount" type="text" inputmode="numeric" dir="ltr" placeholder="150" mask:dynamic="$money($input)" />
                                     <flux:error name="marginAmount" />
                                 </flux:field>
 

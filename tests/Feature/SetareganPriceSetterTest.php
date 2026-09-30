@@ -122,7 +122,7 @@ beforeEach(function () {
     Cache::flush();
 });
 
-test('setaregan pricing rule applies supplier price plus margin to both price and sale_price', function () {
+test('setaregan pricing rule applies supplier price minus step to both price and sale_price', function () {
     Queue::fake([SendBaleMessageJob::class]);
     enableSetareganBaleNotifications();
 
@@ -133,8 +133,8 @@ test('setaregan pricing rule applies supplier price plus margin to both price an
 
     $price->refresh();
 
-    expect((int) $price->price)->toBe(20_500_000)
-        ->and((int) $price->sale_price)->toBe(20_500_000)
+    expect((int) $price->price)->toBe(19_500_000)
+        ->and((int) $price->sale_price)->toBe(19_500_000)
         ->and($fetcher->fresh()->last_price)->toBe(20_000_000)
         ->and($setter->fresh()->status)->toBe(SetareganPriceSetter::STATUS_UPDATED)
         ->and($setter->fresh()->last_supplier_available)->toBeTrue();
@@ -167,7 +167,7 @@ test('setaregan pricing rule keeps the current price when floor is reached', fun
     expect((int) $price->fresh()->price)->toBe(22_000_000)
         ->and((int) $price->fresh()->sale_price)->toBe(21_000_000)
         ->and($setter->fresh()->status)->toBe(SetareganPriceSetter::STATUS_FLOOR_REACHED)
-        ->and($setter->fresh()->last_target_price)->toBe(17_500_000);
+        ->and($setter->fresh()->last_target_price)->toBe(16_500_000);
 
     Queue::assertNotPushed(SendBaleMessageJob::class);
 });
@@ -201,8 +201,8 @@ test('setaregan pricing rule restores default quantity when supplier is back in 
     SetareganPriceSetterJob::dispatchSync($setter);
 
     expect((float) $price->fresh()->quantity)->toBe(3.0)
-        ->and((int) $price->fresh()->price)->toBe(20_500_000)
-        ->and((int) $price->fresh()->sale_price)->toBe(20_500_000)
+        ->and((int) $price->fresh()->price)->toBe(19_500_000)
+        ->and((int) $price->fresh()->sale_price)->toBe(19_500_000)
         ->and($setter->fresh()->last_stock_action)->toBe('restored')
         ->and($setter->fresh()->status)->toBe(SetareganPriceSetter::STATUS_UPDATED);
 });
@@ -210,8 +210,8 @@ test('setaregan pricing rule restores default quantity when supplier is back in 
 test('setaregan pricing rule does not overwrite positive stock on restock cycle', function () {
     ['price' => $price, 'setter' => $setter] = createSetareganPricingRule([], [
         'quantity' => 5,
-        'price' => 20_500_000,
-        'sale_price' => 20_500_000,
+        'price' => 19_500_000,
+        'sale_price' => 19_500_000,
     ]);
     fakeSetareganPage(setareganInStockHtml(20_000_000));
 

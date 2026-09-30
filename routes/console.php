@@ -16,5 +16,5 @@ Schedule::command('shop:sync-torob-prices --sync')
     ->withoutOverlapping(55);
 
 Schedule::command('shop:sync-setaregan-prices --sync')
-    ->hourlyAt(30)
-    ->withoutOverlapping(55);
+    ->everyMinute()
+    ->withoutOverlapping(1);
