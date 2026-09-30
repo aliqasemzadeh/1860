@@ -58,6 +58,11 @@ class ProductPrice extends Model
         return $this->hasOne(TorobPriceSetter::class);
     }
 
+    public function setareganPriceSetter(): HasOne
+    {
+        return $this->hasOne(SetareganPriceSetter::class);
+    }
+
     protected static function booted(): void
     {
         $forget = function (self $model): void {

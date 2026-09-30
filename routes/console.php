@@ -14,3 +14,7 @@ Schedule::command('backup:run')->dailyAt('06:00');
 Schedule::command('shop:sync-torob-prices --sync')
     ->hourly()
     ->withoutOverlapping(55);
+
+Schedule::command('shop:sync-setaregan-prices --sync')
+    ->hourlyAt(30)
+    ->withoutOverlapping(55);

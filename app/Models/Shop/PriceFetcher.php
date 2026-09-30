@@ -64,4 +64,10 @@ class PriceFetcher extends Model
     {
         return $this->hasOne(TorobPriceSetter::class);
     }
+
+    public function setareganPriceSetter(): HasOne
+    {
+        return $this->hasOne(SetareganPriceSetter::class);
+    }
 }
+

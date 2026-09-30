@@ -9,39 +9,42 @@ class FetchSetareganPriceCommand extends Command
 {
     protected $signature = 'setaregan:price {url : The Setaregan product URL} {--debug : Show detailed debugging information}';
 
-    protected $description = 'Fetch product price from Setaregan';
+    protected $description = 'Fetch product price and availability from Setaregan';
 
     public function handle(): int
     {
         $url = $this->argument('url');
         $debug = $this->option('debug');
-        
-        $this->info("Fetching price from: {$url}");
-        
+
+        $this->info("Fetching offer from: {$url}");
+
         if ($debug) {
             $this->line('Debug mode enabled');
         }
 
         try {
-            $price = SetareganPriceFetcher::fetchPrice($url, $debug ? $this : null);
-            
-            if ($price) {
-                $this->info("Price: " . number_format($price) . " تومان");
-                return 0;
+            $offer = SetareganPriceFetcher::fetchOffer($url, $debug ? $this : null);
+
+            if ($offer['price'] !== null) {
+                $this->info('Price: '.number_format($offer['price']).' تومان');
             } else {
                 $this->warn('Could not fetch price. The product might not be available or the page structure has changed.');
-                if (!$debug) {
-                    $this->warn('Try using --debug flag to see detailed debugging information.');
-                }
-                return 1;
             }
+
+            $this->info('Available: '.($offer['available'] ? 'yes' : 'no'));
+
+            if ($offer['source']) {
+                $this->line('Source: '.$offer['source']);
+            }
+
+            return $offer['price'] !== null || $offer['available'] === false ? self::SUCCESS : self::FAILURE;
         } catch (\Exception $e) {
-            $this->error('Error: ' . $e->getMessage());
+            $this->error('Error: '.$e->getMessage());
             if ($debug) {
-                $this->error('Stack trace: ' . $e->getTraceAsString());
+                $this->error('Stack trace: '.$e->getTraceAsString());
             }
-            return 1;
+
+            return self::FAILURE;
         }
     }
 }
-

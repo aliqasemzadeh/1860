@@ -22,7 +22,13 @@
             >
                 <div class="flex items-start justify-between gap-3">
                     <flux:heading id="new-price-fetcher-heading" size="sm">
-                        {{ $editingPriceFetcherId ? __('general.edit_torob_policy') : __('general.add_price_fetcher') }}
+                        @if ($editingType === 'setaregan')
+                            {{ __('general.edit_setaregan_policy') }}
+                        @elseif ($editingPriceFetcherId)
+                            {{ __('general.edit_torob_policy') }}
+                        @else
+                            {{ __('general.add_price_fetcher') }}
+                        @endif
                     </flux:heading>
 
                     @if ($editingPriceFetcherId)
@@ -45,7 +51,7 @@
                         @if ($editingPriceFetcherId)
                             <flux:input
                                 type="text"
-                                :value="__('general.price_fetcher_type_torob')"
+                                :value="$editingType === 'setaregan' ? __('general.price_fetcher_type_setaregan') : __('general.price_fetcher_type_torob')"
                                 disabled
                             />
                         @else
@@ -68,7 +74,7 @@
                             wire:model="url"
                             type="url"
                             dir="ltr"
-                            placeholder="{{ $type === 'torob' ? 'https://torob.com/p/...' : __('general.price_fetcher_url_placeholder') }}"
+                            placeholder="{{ $type === 'torob' ? 'https://torob.com/p/...' : ($type === 'setaregan' ? 'https://setaregan.co/...' : __('general.price_fetcher_url_placeholder')) }}"
                         />
                         <flux:error name="url" />
                     </flux:field>
@@ -136,8 +142,94 @@
                     </div>
                 @endif
 
+                @if ($type === 'setaregan')
+                    <div class="mt-5 overflow-hidden rounded-xl border border-teal-200 bg-teal-50/40 dark:border-teal-900/70 dark:bg-teal-950/15">
+                        <div class="flex items-start justify-between gap-4 border-b border-teal-200 px-4 py-3 dark:border-teal-900/70">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="size-2 rounded-full bg-teal-500"></span>
+                                    <flux:heading size="sm">{{ __('general.setaregan_supplier_policy') }}</flux:heading>
+                                </div>
+                                <p class="mt-1 text-xs leading-5 text-zinc-600 dark:text-zinc-400">
+                                    {{ __('general.setaregan_supplier_policy_help') }}
+                                </p>
+                            </div>
+                            @if (! $editingPriceFetcherId)
+                                <flux:switch wire:model.live="setareganAutoPricing" :label="__('general.setaregan_auto_pricing')" />
+                            @else
+                                <flux:switch wire:model="setareganEnabled" :label="__('general.setaregan_enabled')" />
+                            @endif
+                        </div>
+
+                        @if ($setareganAutoPricing || $editingType === 'setaregan')
+                            <div class="grid gap-4 p-4 sm:grid-cols-2">
+                                @if (! $editingPriceFetcherId)
+                                    <div class="sm:col-span-2 flex justify-end">
+                                        <flux:switch wire:model="setareganEnabled" :label="__('general.setaregan_enabled')" />
+                                    </div>
+                                @endif
+
+                                <flux:field class="sm:col-span-2">
+                                    <flux:label>{{ __('general.setaregan_target_variant') }}</flux:label>
+                                    <flux:select wire:model="productPriceId" placeholder="{{ __('general.setaregan_select_target_variant') }}">
+                                        @foreach ($product->prices->sortByDesc('is_default') as $price)
+                                            <flux:select.option :value="$price->id">
+                                                #{{ $this->formatNumber($price->id) }}
+                                                · {{ $price->color?->name ?? __('general.none') }}
+                                                · {{ $price->warranty?->name ?? __('general.none') }}
+                                                · {{ $this->formatNumber($price->sale_price ?: $price->price) }} {{ __('general.toman') }}
+                                            </flux:select.option>
+                                        @endforeach
+                                    </flux:select>
+                                    <flux:error name="productPriceId" />
+                                    @if ($product->prices->isEmpty())
+                                        <p class="mt-1 text-xs font-medium text-amber-700 dark:text-amber-400">{{ __('general.setaregan_no_target_variants') }}</p>
+                                    @endif
+                                </flux:field>
+
+                                <flux:field>
+                                    <flux:label>{{ __('general.setaregan_margin_amount') }}</flux:label>
+                                    <flux:input wire:model="marginAmount" type="text" inputmode="numeric" dir="ltr" placeholder="500,000" mask:dynamic="$money($input)" />
+                                    <flux:error name="marginAmount" />
+                                </flux:field>
+
+                                <flux:field>
+                                    <flux:label>{{ __('general.setaregan_default_quantity') }}</flux:label>
+                                    <flux:input wire:model="defaultQuantity" type="text" inputmode="numeric" dir="ltr" placeholder="1" />
+                                    <flux:description>{{ __('general.setaregan_default_quantity_help') }}</flux:description>
+                                    <flux:error name="defaultQuantity" />
+                                </flux:field>
+
+                                <flux:field>
+                                    <flux:label>{{ __('general.setaregan_min_price') }}</flux:label>
+                                    <flux:input wire:model="minPrice" type="text" inputmode="numeric" dir="ltr" placeholder="18,000,000" mask:dynamic="$money($input)" />
+                                    <flux:error name="minPrice" />
+                                </flux:field>
+
+                                <flux:field>
+                                    <flux:label>{{ __('general.setaregan_max_price') }}</flux:label>
+                                    <flux:input wire:model="maxPrice" type="text" inputmode="numeric" dir="ltr" placeholder="24,000,000" mask:dynamic="$money($input)" />
+                                    <flux:error name="maxPrice" />
+                                </flux:field>
+                            </div>
+                        @endif
+                    </div>
+                @endif
+
                 <div class="mt-4">
-                    @if ($editingPriceFetcherId)
+                    @if ($editingType === 'setaregan')
+                        <flux:button
+                            class="w-full"
+                            wire:click="updateSetareganPriceFetcher"
+                            wire:loading.attr="disabled"
+                            wire:target="updateSetareganPriceFetcher"
+                            variant="primary"
+                            color="teal"
+                        >
+                            <span wire:loading.remove wire:target="updateSetareganPriceFetcher">{{ __('general.save') }}</span>
+                            <span wire:loading wire:target="updateSetareganPriceFetcher">{{ __('general.saving') }}</span>
+                        </flux:button>
+                    @elseif ($editingPriceFetcherId)
                         <flux:button
                             class="w-full"
                             wire:click="updateTorobPriceFetcher"
@@ -156,7 +248,7 @@
                             wire:loading.attr="disabled"
                             wire:target="addPriceFetcher"
                             variant="primary"
-                            color="{{ $type === 'torob' ? 'rose' : 'zinc' }}"
+                            color="{{ $type === 'torob' ? 'rose' : ($type === 'setaregan' ? 'teal' : 'zinc') }}"
                         >
                             <span wire:loading.remove wire:target="addPriceFetcher">{{ __('general.add') }}</span>
                             <span wire:loading wire:target="addPriceFetcher">{{ __('general.saving') }}</span>
@@ -177,21 +269,29 @@
                     <div class="space-y-3">
                         @foreach ($product->priceFetchers as $priceFetcher)
                             @php
-                                $setter = $priceFetcher->type === 'torob' ? $priceFetcher->torobPriceSetter : null;
+                                $torobSetter = $priceFetcher->type === 'torob' ? $priceFetcher->torobPriceSetter : null;
+                                $setareganSetter = $priceFetcher->type === 'setaregan' ? $priceFetcher->setareganPriceSetter : null;
+                                $setter = $torobSetter ?? $setareganSetter;
+                                $isSetaregan = $setareganSetter !== null;
                                 $status = $setter?->status ?: 'idle';
                                 $statusColor = match ($status) {
                                     'updated', 'unchanged' => 'green',
-                                    'floor_reached', 'no_competitor', 'product_unavailable' => 'amber',
-                                    'fetch_failed' => 'red',
+                                    'floor_reached', 'no_competitor', 'product_unavailable', 'no_price' => 'amber',
+                                    'out_of_stock' => 'orange',
+                                    'fetch_failed', 'page_not_found' => 'red',
                                     default => 'zinc',
                                 };
                                 $targetPrice = $setter?->productPrice;
                                 $effectiveTargetPrice = $targetPrice?->sale_price ?: $targetPrice?->price;
+                                $statusKey = $isSetaregan ? 'setaregan_status_'.$status : 'torob_status_'.$status;
+                                $borderClass = $isSetaregan
+                                    ? 'border-teal-200 dark:border-teal-900/70'
+                                    : ($torobSetter ? 'border-rose-200 dark:border-rose-900/70' : 'border-zinc-200 dark:border-zinc-700');
                             @endphp
 
                             <article
                                 wire:key="price-fetcher-{{ $priceFetcher->id }}"
-                                class="overflow-hidden rounded-xl border bg-white shadow-sm dark:bg-zinc-900 {{ $setter ? 'border-rose-200 dark:border-rose-900/70' : 'border-zinc-200 dark:border-zinc-700' }}"
+                                class="overflow-hidden rounded-xl border bg-white shadow-sm dark:bg-zinc-900 {{ $borderClass }}"
                             >
                                 <div class="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between">
                                     <div class="min-w-0 flex-1">
@@ -202,7 +302,7 @@
                                                     {{ $setter->is_active ? __('general.active') : __('general.inactive') }}
                                                 </flux:badge>
                                                 <flux:badge size="sm" :color="$statusColor">
-                                                    {{ __('general.torob_status_'.$status) }}
+                                                    {{ __('general.'.$statusKey) }}
                                                 </flux:badge>
                                             @elseif ($priceFetcher->last_price)
                                                 <span class="text-sm font-medium tabular-nums text-zinc-700 dark:text-zinc-300">
@@ -225,7 +325,7 @@
                                     </div>
 
                                     <div class="flex w-full shrink-0 items-center justify-between gap-2 sm:w-auto sm:justify-end">
-                                        @if ($setter)
+                                        @if ($torobSetter)
                                             <flux:button
                                                 size="xs"
                                                 variant="primary"
@@ -251,16 +351,69 @@
                                                     />
                                                 </flux:tooltip>
 
-                                                <flux:tooltip content="{{ $setter->is_active ? __('general.disable') : __('general.enable') }}">
+                                                <flux:tooltip content="{{ $torobSetter->is_active ? __('general.disable') : __('general.enable') }}">
                                                     <flux:button
                                                         size="xs"
                                                         variant="ghost"
-                                                        icon="{{ $setter->is_active ? 'pause-circle' : 'play-circle' }}"
+                                                        icon="{{ $torobSetter->is_active ? 'pause-circle' : 'play-circle' }}"
                                                         icon:variant="outline"
-                                                        aria-label="{{ $setter->is_active ? __('general.disable') : __('general.enable') }}"
+                                                        aria-label="{{ $torobSetter->is_active ? __('general.disable') : __('general.enable') }}"
                                                         wire:click="toggleTorobPriceSetter({{ $priceFetcher->id }})"
                                                         wire:loading.attr="disabled"
                                                         wire:target="toggleTorobPriceSetter({{ $priceFetcher->id }})"
+                                                    />
+                                                </flux:tooltip>
+
+                                                <flux:tooltip content="{{ __('general.delete') }}">
+                                                    <flux:button
+                                                        size="xs"
+                                                        variant="danger"
+                                                        icon="trash"
+                                                        icon:variant="outline"
+                                                        aria-label="{{ __('general.delete') }}"
+                                                        wire:click="removePriceFetcher({{ $priceFetcher->id }})"
+                                                        wire:loading.attr="disabled"
+                                                        wire:target="removePriceFetcher({{ $priceFetcher->id }})"
+                                                        wire:confirm="{{ __('general.are_you_sure') }}"
+                                                    />
+                                                </flux:tooltip>
+                                            </div>
+                                        @elseif ($setareganSetter)
+                                            <flux:button
+                                                size="xs"
+                                                variant="primary"
+                                                color="teal"
+                                                icon="arrow-path"
+                                                wire:click="runSetareganPriceSetter({{ $priceFetcher->id }})"
+                                                wire:loading.attr="disabled"
+                                                wire:target="runSetareganPriceSetter({{ $priceFetcher->id }})"
+                                            >
+                                                {{ __('general.setaregan_run_now') }}
+                                            </flux:button>
+                                            <div class="flex items-center gap-1">
+                                                <flux:tooltip content="{{ __('general.edit') }}">
+                                                    <flux:button
+                                                        size="xs"
+                                                        variant="ghost"
+                                                        icon="pencil"
+                                                        icon:variant="outline"
+                                                        aria-label="{{ __('general.edit') }}"
+                                                        wire:click="editSetareganPriceFetcher({{ $priceFetcher->id }})"
+                                                        wire:loading.attr="disabled"
+                                                        wire:target="editSetareganPriceFetcher({{ $priceFetcher->id }})"
+                                                    />
+                                                </flux:tooltip>
+
+                                                <flux:tooltip content="{{ $setareganSetter->is_active ? __('general.disable') : __('general.enable') }}">
+                                                    <flux:button
+                                                        size="xs"
+                                                        variant="ghost"
+                                                        icon="{{ $setareganSetter->is_active ? 'pause-circle' : 'play-circle' }}"
+                                                        icon:variant="outline"
+                                                        aria-label="{{ $setareganSetter->is_active ? __('general.disable') : __('general.enable') }}"
+                                                        wire:click="toggleSetareganPriceSetter({{ $priceFetcher->id }})"
+                                                        wire:loading.attr="disabled"
+                                                        wire:target="toggleSetareganPriceSetter({{ $priceFetcher->id }})"
                                                     />
                                                 </flux:tooltip>
 
@@ -303,7 +456,7 @@
                                     </div>
                                 </div>
 
-                                @if ($setter)
+                                @if ($torobSetter)
                                     <div class="border-t border-rose-100 bg-zinc-50/70 px-4 py-3 dark:border-rose-950 dark:bg-zinc-950/40">
                                         <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
                                             <span class="font-medium text-zinc-700 dark:text-zinc-300">
@@ -314,7 +467,7 @@
                                             </span>
                                             <span class="text-zinc-500 dark:text-zinc-400">
                                                 {{ __('general.torob_step') }}:
-                                                <strong class="font-semibold text-zinc-700 dark:text-zinc-200">{{ $this->formatNumber($setter->step_amount) }}</strong>
+                                                <strong class="font-semibold text-zinc-700 dark:text-zinc-200">{{ $this->formatNumber($torobSetter->step_amount) }}</strong>
                                                 {{ __('general.toman') }}
                                             </span>
                                         </div>
@@ -325,38 +478,38 @@
                                                     <span class="size-2 shrink-0 rounded-full bg-amber-500"></span>
                                                     <span class="truncate text-[11px] font-medium text-zinc-600 dark:text-zinc-300">{{ __('general.torob_floor') }}</span>
                                                 </div>
-                                                <span dir="ltr" class="shrink-0 whitespace-nowrap text-xs font-bold tabular-nums text-amber-700 dark:text-amber-400">{{ $this->formatNumber($setter->min_price) }}</span>
+                                                <span dir="ltr" class="shrink-0 whitespace-nowrap text-xs font-bold tabular-nums text-amber-700 dark:text-amber-400">{{ $this->formatNumber($torobSetter->min_price) }}</span>
                                             </li>
                                             <li class="flex min-w-0 items-center justify-between gap-3 border-y border-zinc-100 bg-zinc-50/70 px-3 py-2.5 dark:border-zinc-800 dark:bg-zinc-950/30">
                                                 <div class="flex min-w-0 items-center gap-2">
                                                     <span class="size-2 shrink-0 rounded-full bg-rose-500 ring-4 ring-rose-100 dark:ring-rose-950"></span>
                                                     <span class="truncate text-[11px] font-semibold text-zinc-800 dark:text-zinc-100">{{ __('general.torob_target_price') }}</span>
                                                 </div>
-                                                <span dir="ltr" class="shrink-0 whitespace-nowrap text-xs font-bold tabular-nums text-zinc-950 dark:text-white">{{ $this->formatNumber($setter->last_target_price ?? $effectiveTargetPrice) }}</span>
+                                                <span dir="ltr" class="shrink-0 whitespace-nowrap text-xs font-bold tabular-nums text-zinc-950 dark:text-white">{{ $this->formatNumber($torobSetter->last_target_price ?? $effectiveTargetPrice) }}</span>
                                             </li>
                                             <li class="flex min-w-0 items-center justify-between gap-3 px-3 py-2.5">
                                                 <div class="flex min-w-0 items-center gap-2">
                                                     <span class="size-2 shrink-0 rounded-full bg-zinc-400"></span>
                                                     <span class="truncate text-[11px] font-medium text-zinc-600 dark:text-zinc-300">{{ __('general.torob_ceiling') }}</span>
                                                 </div>
-                                                <span dir="ltr" class="shrink-0 whitespace-nowrap text-xs font-bold tabular-nums text-zinc-700 dark:text-zinc-300">{{ $this->formatNumber($setter->max_price) }}</span>
+                                                <span dir="ltr" class="shrink-0 whitespace-nowrap text-xs font-bold tabular-nums text-zinc-700 dark:text-zinc-300">{{ $this->formatNumber($torobSetter->max_price) }}</span>
                                             </li>
                                         </ol>
 
                                         <div class="mt-3 hidden grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-center sm:grid dark:border-zinc-700 dark:bg-zinc-900">
                                             <div>
                                                 <div class="text-[10px] font-medium text-zinc-500 dark:text-zinc-400">{{ __('general.torob_floor') }}</div>
-                                                <div dir="ltr" class="mt-0.5 truncate whitespace-nowrap text-xs font-bold tabular-nums text-amber-700 dark:text-amber-400">{{ $this->formatNumber($setter->min_price) }}</div>
+                                                <div dir="ltr" class="mt-0.5 truncate whitespace-nowrap text-xs font-bold tabular-nums text-amber-700 dark:text-amber-400">{{ $this->formatNumber($torobSetter->min_price) }}</div>
                                             </div>
                                             <flux:icon name="chevron-left" class="size-4 text-zinc-300 dark:text-zinc-600 rtl:rotate-180" />
                                             <div>
                                                 <div class="text-[10px] font-medium text-zinc-500 dark:text-zinc-400">{{ __('general.torob_target_price') }}</div>
-                                                <div dir="ltr" class="mt-0.5 truncate whitespace-nowrap text-xs font-bold tabular-nums text-zinc-900 dark:text-white">{{ $this->formatNumber($setter->last_target_price ?? $effectiveTargetPrice) }}</div>
+                                                <div dir="ltr" class="mt-0.5 truncate whitespace-nowrap text-xs font-bold tabular-nums text-zinc-900 dark:text-white">{{ $this->formatNumber($torobSetter->last_target_price ?? $effectiveTargetPrice) }}</div>
                                             </div>
                                             <flux:icon name="chevron-left" class="size-4 text-zinc-300 dark:text-zinc-600 rtl:rotate-180" />
                                             <div>
                                                 <div class="text-[10px] font-medium text-zinc-500 dark:text-zinc-400">{{ __('general.torob_ceiling') }}</div>
-                                                <div dir="ltr" class="mt-0.5 truncate whitespace-nowrap text-xs font-bold tabular-nums text-zinc-700 dark:text-zinc-300">{{ $this->formatNumber($setter->max_price) }}</div>
+                                                <div dir="ltr" class="mt-0.5 truncate whitespace-nowrap text-xs font-bold tabular-nums text-zinc-700 dark:text-zinc-300">{{ $this->formatNumber($torobSetter->max_price) }}</div>
                                             </div>
                                         </div>
 
@@ -364,25 +517,25 @@
                                             <div class="bg-white px-3 py-2 dark:bg-zinc-900">
                                                 <dt class="text-[10px] text-zinc-500 dark:text-zinc-400">{{ __('general.torob_latest_competitor') }}</dt>
                                                 <dd class="mt-1 text-sm font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
-                                                    {{ $this->formatNumber($setter->last_competitor_price) }}
-                                                    @if ($setter->last_competitor_price) <span class="text-[10px] font-normal">{{ __('general.toman') }}</span> @endif
+                                                    {{ $this->formatNumber($torobSetter->last_competitor_price) }}
+                                                    @if ($torobSetter->last_competitor_price) <span class="text-[10px] font-normal">{{ __('general.toman') }}</span> @endif
                                                 </dd>
-                                                @if ($setter->last_competitor_shop)
-                                                    <dd class="mt-0.5 truncate text-[10px] text-zinc-500 dark:text-zinc-400">{{ $setter->last_competitor_shop }}</dd>
+                                                @if ($torobSetter->last_competitor_shop)
+                                                    <dd class="mt-0.5 truncate text-[10px] text-zinc-500 dark:text-zinc-400">{{ $torobSetter->last_competitor_shop }}</dd>
                                                 @endif
                                             </div>
                                             <div class="bg-white px-3 py-2 dark:bg-zinc-900">
                                                 <dt class="text-[10px] text-zinc-500 dark:text-zinc-400">{{ __('general.torob_calculated_target') }}</dt>
                                                 <dd class="mt-1 text-sm font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
-                                                    {{ $this->formatNumber($setter->last_target_price) }}
-                                                    @if ($setter->last_target_price) <span class="text-[10px] font-normal">{{ __('general.toman') }}</span> @endif
+                                                    {{ $this->formatNumber($torobSetter->last_target_price) }}
+                                                    @if ($torobSetter->last_target_price) <span class="text-[10px] font-normal">{{ __('general.toman') }}</span> @endif
                                                 </dd>
                                             </div>
                                             <div class="bg-white px-3 py-2 dark:bg-zinc-900">
                                                 <dt class="text-[10px] text-zinc-500 dark:text-zinc-400">{{ __('general.torob_applied_price') }}</dt>
                                                 <dd class="mt-1 text-sm font-semibold tabular-nums text-green-700 dark:text-green-400">
-                                                    {{ $this->formatNumber($setter->last_applied_price) }}
-                                                    @if ($setter->last_applied_price) <span class="text-[10px] font-normal">{{ __('general.toman') }}</span> @endif
+                                                    {{ $this->formatNumber($torobSetter->last_applied_price) }}
+                                                    @if ($torobSetter->last_applied_price) <span class="text-[10px] font-normal">{{ __('general.toman') }}</span> @endif
                                                 </dd>
                                             </div>
                                         </dl>
@@ -390,17 +543,130 @@
                                         <div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-500 dark:text-zinc-400">
                                             <span>
                                                 {{ __('general.torob_last_checked') }}:
-                                                {{ $setter->last_checked_at ? jalali($setter->last_checked_at) : __('general.never') }}
+                                                {{ $torobSetter->last_checked_at ? jalali($torobSetter->last_checked_at) : __('general.never') }}
                                             </span>
-                                            @if ($setter->last_changed_at)
-                                                <span>{{ __('general.torob_last_changed') }}: {{ jalali($setter->last_changed_at) }}</span>
+                                            @if ($torobSetter->last_changed_at)
+                                                <span>{{ __('general.torob_last_changed') }}: {{ jalali($torobSetter->last_changed_at) }}</span>
                                             @endif
                                         </div>
 
-                                        @if ($setter->last_error)
+                                        @if ($torobSetter->last_error)
                                             <div role="alert" class="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs leading-5 text-red-800 dark:border-red-900/70 dark:bg-red-950/30 dark:text-red-300">
                                                 <span class="font-semibold">{{ __('general.error') }}:</span>
-                                                {{ $setter->last_error }}
+                                                {{ $torobSetter->last_error }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                @elseif ($setareganSetter)
+                                    <div class="border-t border-teal-100 bg-zinc-50/70 px-4 py-3 dark:border-teal-950 dark:bg-zinc-950/40">
+                                        <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                                            <span class="font-medium text-zinc-700 dark:text-zinc-300">
+                                                {{ __('general.setaregan_target_variant') }}:
+                                                #{{ $this->formatNumber($targetPrice?->id) }}
+                                                · {{ $targetPrice?->color?->name ?? __('general.none') }}
+                                                · {{ $targetPrice?->warranty?->name ?? __('general.none') }}
+                                            </span>
+                                            <span class="text-zinc-500 dark:text-zinc-400">
+                                                {{ __('general.setaregan_margin') }}:
+                                                <strong class="font-semibold text-zinc-700 dark:text-zinc-200">{{ $this->formatNumber($setareganSetter->margin_amount) }}</strong>
+                                                {{ __('general.toman') }}
+                                            </span>
+                                        </div>
+
+                                        <ol class="mt-3 overflow-hidden rounded-lg border border-zinc-200 bg-white sm:hidden dark:border-zinc-700 dark:bg-zinc-900">
+                                            <li class="flex min-w-0 items-center justify-between gap-3 px-3 py-2.5">
+                                                <div class="flex min-w-0 items-center gap-2">
+                                                    <span class="size-2 shrink-0 rounded-full bg-amber-500"></span>
+                                                    <span class="truncate text-[11px] font-medium text-zinc-600 dark:text-zinc-300">{{ __('general.setaregan_floor') }}</span>
+                                                </div>
+                                                <span dir="ltr" class="shrink-0 whitespace-nowrap text-xs font-bold tabular-nums text-amber-700 dark:text-amber-400">{{ $this->formatNumber($setareganSetter->min_price) }}</span>
+                                            </li>
+                                            <li class="flex min-w-0 items-center justify-between gap-3 border-y border-zinc-100 bg-zinc-50/70 px-3 py-2.5 dark:border-zinc-800 dark:bg-zinc-950/30">
+                                                <div class="flex min-w-0 items-center gap-2">
+                                                    <span class="size-2 shrink-0 rounded-full bg-teal-500 ring-4 ring-teal-100 dark:ring-teal-950"></span>
+                                                    <span class="truncate text-[11px] font-semibold text-zinc-800 dark:text-zinc-100">{{ __('general.setaregan_target_price') }}</span>
+                                                </div>
+                                                <span dir="ltr" class="shrink-0 whitespace-nowrap text-xs font-bold tabular-nums text-zinc-950 dark:text-white">{{ $this->formatNumber($setareganSetter->last_target_price ?? $effectiveTargetPrice) }}</span>
+                                            </li>
+                                            <li class="flex min-w-0 items-center justify-between gap-3 px-3 py-2.5">
+                                                <div class="flex min-w-0 items-center gap-2">
+                                                    <span class="size-2 shrink-0 rounded-full bg-zinc-400"></span>
+                                                    <span class="truncate text-[11px] font-medium text-zinc-600 dark:text-zinc-300">{{ __('general.setaregan_ceiling') }}</span>
+                                                </div>
+                                                <span dir="ltr" class="shrink-0 whitespace-nowrap text-xs font-bold tabular-nums text-zinc-700 dark:text-zinc-300">{{ $this->formatNumber($setareganSetter->max_price) }}</span>
+                                            </li>
+                                        </ol>
+
+                                        <div class="mt-3 hidden grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-center sm:grid dark:border-zinc-700 dark:bg-zinc-900">
+                                            <div>
+                                                <div class="text-[10px] font-medium text-zinc-500 dark:text-zinc-400">{{ __('general.setaregan_floor') }}</div>
+                                                <div dir="ltr" class="mt-0.5 truncate whitespace-nowrap text-xs font-bold tabular-nums text-amber-700 dark:text-amber-400">{{ $this->formatNumber($setareganSetter->min_price) }}</div>
+                                            </div>
+                                            <flux:icon name="chevron-left" class="size-4 text-zinc-300 dark:text-zinc-600 rtl:rotate-180" />
+                                            <div>
+                                                <div class="text-[10px] font-medium text-zinc-500 dark:text-zinc-400">{{ __('general.setaregan_target_price') }}</div>
+                                                <div dir="ltr" class="mt-0.5 truncate whitespace-nowrap text-xs font-bold tabular-nums text-zinc-900 dark:text-white">{{ $this->formatNumber($setareganSetter->last_target_price ?? $effectiveTargetPrice) }}</div>
+                                            </div>
+                                            <flux:icon name="chevron-left" class="size-4 text-zinc-300 dark:text-zinc-600 rtl:rotate-180" />
+                                            <div>
+                                                <div class="text-[10px] font-medium text-zinc-500 dark:text-zinc-400">{{ __('general.setaregan_ceiling') }}</div>
+                                                <div dir="ltr" class="mt-0.5 truncate whitespace-nowrap text-xs font-bold tabular-nums text-zinc-700 dark:text-zinc-300">{{ $this->formatNumber($setareganSetter->max_price) }}</div>
+                                            </div>
+                                        </div>
+
+                                        <dl class="mt-3 grid gap-px overflow-hidden rounded-lg border border-zinc-200 bg-zinc-200 sm:grid-cols-3 dark:border-zinc-700 dark:bg-zinc-700">
+                                            <div class="bg-white px-3 py-2 dark:bg-zinc-900">
+                                                <dt class="text-[10px] text-zinc-500 dark:text-zinc-400">{{ __('general.setaregan_supplier_price') }}</dt>
+                                                <dd class="mt-1 text-sm font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
+                                                    {{ $this->formatNumber($setareganSetter->last_supplier_price) }}
+                                                    @if ($setareganSetter->last_supplier_price) <span class="text-[10px] font-normal">{{ __('general.toman') }}</span> @endif
+                                                </dd>
+                                            </div>
+                                            <div class="bg-white px-3 py-2 dark:bg-zinc-900">
+                                                <dt class="text-[10px] text-zinc-500 dark:text-zinc-400">{{ __('general.setaregan_calculated_target') }}</dt>
+                                                <dd class="mt-1 text-sm font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
+                                                    {{ $this->formatNumber($setareganSetter->last_target_price) }}
+                                                    @if ($setareganSetter->last_target_price) <span class="text-[10px] font-normal">{{ __('general.toman') }}</span> @endif
+                                                </dd>
+                                            </div>
+                                            <div class="bg-white px-3 py-2 dark:bg-zinc-900">
+                                                <dt class="text-[10px] text-zinc-500 dark:text-zinc-400">{{ __('general.setaregan_applied_price') }}</dt>
+                                                <dd class="mt-1 text-sm font-semibold tabular-nums text-green-700 dark:text-green-400">
+                                                    {{ $this->formatNumber($setareganSetter->last_applied_price) }}
+                                                    @if ($setareganSetter->last_applied_price) <span class="text-[10px] font-normal">{{ __('general.toman') }}</span> @endif
+                                                </dd>
+                                            </div>
+                                        </dl>
+
+                                        <div class="mt-3 flex flex-wrap items-center gap-2 text-xs">
+                                            <span class="font-medium text-zinc-700 dark:text-zinc-300">
+                                                {{ __('general.setaregan_stock') }}:
+                                                {{ $this->formatNumber((int) ($targetPrice?->quantity ?? 0)) }}
+                                            </span>
+                                            @if ((float) ($targetPrice?->quantity ?? 0) <= 0)
+                                                <flux:badge size="sm" color="orange">{{ __('general.setaregan_stock_zeroed') }}</flux:badge>
+                                            @elseif ($setareganSetter->last_stock_action === 'restored')
+                                                <flux:badge size="sm" color="teal">{{ __('general.setaregan_stock_restored') }}</flux:badge>
+                                            @endif
+                                        </div>
+
+                                        <div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-500 dark:text-zinc-400">
+                                            <span>
+                                                {{ __('general.setaregan_last_checked') }}:
+                                                {{ $setareganSetter->last_checked_at ? jalali($setareganSetter->last_checked_at) : __('general.never') }}
+                                            </span>
+                                            @if ($setareganSetter->last_changed_at)
+                                                <span>{{ __('general.setaregan_last_changed') }}: {{ jalali($setareganSetter->last_changed_at) }}</span>
+                                            @endif
+                                            @if ($setareganSetter->last_stock_changed_at)
+                                                <span>{{ __('general.setaregan_last_stock_changed') }}: {{ jalali($setareganSetter->last_stock_changed_at) }}</span>
+                                            @endif
+                                        </div>
+
+                                        @if ($setareganSetter->last_error)
+                                            <div role="alert" class="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs leading-5 text-red-800 dark:border-red-900/70 dark:bg-red-950/30 dark:text-red-300">
+                                                <span class="font-semibold">{{ __('general.error') }}:</span>
+                                                {{ $setareganSetter->last_error }}
                                             </div>
                                         @endif
                                     </div>

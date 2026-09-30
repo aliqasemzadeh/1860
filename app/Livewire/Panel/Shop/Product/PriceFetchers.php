@@ -3,9 +3,11 @@
 namespace App\Livewire\Panel\Shop\Product;
 
 use App\Jobs\Shop\PriceFetcher\FetchPriceJob;
+use App\Jobs\Shop\SetareganPriceSetterJob;
 use App\Jobs\Shop\TorobPriceSetterJob;
 use App\Models\Shop\PriceFetcher;
 use App\Models\Shop\Product;
+use App\Models\Shop\SetareganPriceSetter;
 use App\Models\Shop\TorobPriceSetter;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
@@ -22,6 +24,8 @@ class PriceFetchers extends Component
 
     public ?int $editingPriceFetcherId = null;
 
+    public ?string $editingType = null;
+
     public string $type = 'digikala';
 
     public string $url = '';
@@ -37,6 +41,14 @@ class PriceFetchers extends Component
     public string $maxPrice = '';
 
     public bool $torobEnabled = true;
+
+    public bool $setareganAutoPricing = false;
+
+    public string $marginAmount = '';
+
+    public string $defaultQuantity = '1';
+
+    public bool $setareganEnabled = true;
 
     public function mount(): void
     {
@@ -58,14 +70,27 @@ class PriceFetchers extends Component
     public function updatedType(): void
     {
         if ($this->editingPriceFetcherId !== null) {
-            $this->type = 'torob';
+            $this->type = $this->editingType ?? $this->type;
 
             return;
         }
 
         $this->resetValidation();
 
-        if ($this->type === 'torob' && $this->productPriceId === null) {
+        if (in_array($this->type, ['torob', 'setaregan'], true) && $this->productPriceId === null) {
+            $this->productPriceId = $this->product?->prices
+                ->sortByDesc('is_default')
+                ->first()?->id;
+        }
+
+        if ($this->type === 'setaregan') {
+            $this->setareganAutoPricing = false;
+        }
+    }
+
+    public function updatedSetareganAutoPricing(): void
+    {
+        if ($this->setareganAutoPricing && $this->productPriceId === null) {
             $this->productPriceId = $this->product?->prices
                 ->sortByDesc('is_default')
                 ->first()?->id;
@@ -81,16 +106,20 @@ class PriceFetchers extends Component
         }
 
         if ($this->type === 'torob') {
-            $this->normalizeTorobAmounts();
+            $this->normalizeAmounts(['stepAmount', 'minPrice', 'maxPrice']);
+        } elseif ($this->type === 'setaregan' && $this->setareganAutoPricing) {
+            $this->normalizeAmounts(['marginAmount', 'minPrice', 'maxPrice', 'defaultQuantity']);
         }
 
         $this->validate(
             $this->type === 'torob'
                 ? $this->torobValidationRules()
-                : [
-                    'type' => 'required|in:digikala,fafait,markazi,fater,setaregan,technolife,torob',
-                    'url' => ['required', 'url', 'max:500'],
-                ],
+                : ($this->type === 'setaregan' && $this->setareganAutoPricing
+                    ? $this->setareganValidationRules()
+                    : [
+                        'type' => 'required|in:digikala,fafait,markazi,fater,setaregan,technolife,torob',
+                        'url' => ['required', 'url', 'max:500'],
+                    ]),
             [],
             $this->validationAttributes(),
         );
@@ -111,6 +140,17 @@ class PriceFetchers extends Component
                     'is_active' => $this->torobEnabled,
                 ]);
             }
+
+            if ($this->type === 'setaregan' && $this->setareganAutoPricing) {
+                $priceFetcher->setareganPriceSetter()->create([
+                    'product_price_id' => $this->productPriceId,
+                    'margin_amount' => (int) $this->marginAmount,
+                    'min_price' => (int) $this->minPrice,
+                    'max_price' => (int) $this->maxPrice,
+                    'default_quantity' => (int) $this->defaultQuantity,
+                    'is_active' => $this->setareganEnabled,
+                ]);
+            }
         });
 
         $this->refreshProduct();
@@ -122,7 +162,7 @@ class PriceFetchers extends Component
     {
         $this->authorize('shop_access');
 
-        $priceFetcher = $this->findProductPriceFetcher($priceFetcherId);
+        $priceFetcher = $this->findProductPriceFetcher($priceFetcherId, 'torob');
         $setter = $priceFetcher?->torobPriceSetter;
 
         if (! $priceFetcher || ! $setter) {
@@ -133,6 +173,7 @@ class PriceFetchers extends Component
 
         $this->resetValidation();
         $this->editingPriceFetcherId = $priceFetcher->id;
+        $this->editingType = 'torob';
         $this->type = 'torob';
         $this->url = $priceFetcher->url;
         $this->productPriceId = $setter->product_price_id;
@@ -141,6 +182,36 @@ class PriceFetchers extends Component
         $this->minPrice = (string) $setter->min_price;
         $this->maxPrice = (string) $setter->max_price;
         $this->torobEnabled = (bool) $setter->is_active;
+        $this->setareganAutoPricing = false;
+
+        $this->dispatch('panel.shop.product.price-fetchers.scroll-to-form');
+    }
+
+    public function editSetareganPriceFetcher(int $priceFetcherId): void
+    {
+        $this->authorize('shop_access');
+
+        $priceFetcher = $this->findProductPriceFetcher($priceFetcherId, 'setaregan');
+        $setter = $priceFetcher?->setareganPriceSetter;
+
+        if (! $priceFetcher || ! $setter) {
+            Flux::toast(variant: 'danger', text: __('general.setaregan_rule_not_found'));
+
+            return;
+        }
+
+        $this->resetValidation();
+        $this->editingPriceFetcherId = $priceFetcher->id;
+        $this->editingType = 'setaregan';
+        $this->type = 'setaregan';
+        $this->url = $priceFetcher->url;
+        $this->productPriceId = $setter->product_price_id;
+        $this->marginAmount = (string) $setter->margin_amount;
+        $this->minPrice = (string) $setter->min_price;
+        $this->maxPrice = (string) $setter->max_price;
+        $this->defaultQuantity = (string) $setter->default_quantity;
+        $this->setareganEnabled = (bool) $setter->is_active;
+        $this->setareganAutoPricing = true;
 
         $this->dispatch('panel.shop.product.price-fetchers.scroll-to-form');
     }
@@ -153,7 +224,7 @@ class PriceFetchers extends Component
             return;
         }
 
-        $priceFetcher = $this->findProductPriceFetcher($this->editingPriceFetcherId);
+        $priceFetcher = $this->findProductPriceFetcher($this->editingPriceFetcherId, 'torob');
         $setter = $priceFetcher?->torobPriceSetter;
 
         if (! $priceFetcher || ! $setter) {
@@ -164,7 +235,7 @@ class PriceFetchers extends Component
         }
 
         $this->type = 'torob';
-        $this->normalizeTorobAmounts();
+        $this->normalizeAmounts(['stepAmount', 'minPrice', 'maxPrice']);
         $this->validate($this->torobValidationRules($setter), [], $this->validationAttributes());
 
         DB::transaction(function () use ($priceFetcher, $setter): void {
@@ -189,6 +260,53 @@ class PriceFetchers extends Component
         $this->refreshProduct();
         $this->resetForm();
         Flux::toast(variant: 'success', text: __('general.torob_policy_updated'));
+    }
+
+    public function updateSetareganPriceFetcher(): void
+    {
+        $this->authorize('shop_access');
+
+        if (! $this->product || $this->editingPriceFetcherId === null) {
+            return;
+        }
+
+        $priceFetcher = $this->findProductPriceFetcher($this->editingPriceFetcherId, 'setaregan');
+        $setter = $priceFetcher?->setareganPriceSetter;
+
+        if (! $priceFetcher || ! $setter) {
+            Flux::toast(variant: 'danger', text: __('general.setaregan_rule_not_found'));
+            $this->resetForm();
+
+            return;
+        }
+
+        $this->type = 'setaregan';
+        $this->setareganAutoPricing = true;
+        $this->normalizeAmounts(['marginAmount', 'minPrice', 'maxPrice', 'defaultQuantity']);
+        $this->validate($this->setareganValidationRules($setter), [], $this->validationAttributes());
+
+        DB::transaction(function () use ($priceFetcher, $setter): void {
+            $priceFetcher->update([
+                'url' => $this->url,
+            ]);
+
+            $setter->update([
+                'product_price_id' => $this->productPriceId,
+                'margin_amount' => (int) $this->marginAmount,
+                'min_price' => (int) $this->minPrice,
+                'max_price' => (int) $this->maxPrice,
+                'default_quantity' => (int) $this->defaultQuantity,
+                'is_active' => $this->setareganEnabled,
+                'status' => $this->setareganEnabled
+                    ? SetareganPriceSetter::STATUS_IDLE
+                    : SetareganPriceSetter::STATUS_INACTIVE,
+                'last_error' => null,
+            ]);
+        });
+
+        $this->refreshProduct();
+        $this->resetForm();
+        Flux::toast(variant: 'success', text: __('general.setaregan_policy_updated'));
     }
 
     public function cancelEdit(): void
@@ -247,7 +365,7 @@ class PriceFetchers extends Component
     {
         $this->authorize('shop_access');
 
-        $priceSetter = $this->findProductPriceFetcher($priceFetcherId)?->torobPriceSetter;
+        $priceSetter = $this->findProductPriceFetcher($priceFetcherId, 'torob')?->torobPriceSetter;
 
         if (! $priceSetter) {
             Flux::toast(variant: 'danger', text: __('general.torob_rule_not_found'));
@@ -265,11 +383,33 @@ class PriceFetchers extends Component
         }
     }
 
+    public function runSetareganPriceSetter(int $priceFetcherId): void
+    {
+        $this->authorize('shop_access');
+
+        $priceSetter = $this->findProductPriceFetcher($priceFetcherId, 'setaregan')?->setareganPriceSetter;
+
+        if (! $priceSetter) {
+            Flux::toast(variant: 'danger', text: __('general.setaregan_rule_not_found'));
+
+            return;
+        }
+
+        try {
+            SetareganPriceSetterJob::dispatch($priceSetter)->onConnection('sync');
+            $this->refreshProduct();
+            Flux::toast(variant: 'success', text: __('general.setaregan_rule_ran'));
+        } catch (\Throwable $exception) {
+            $this->refreshProduct();
+            Flux::toast(variant: 'danger', text: __('general.setaregan_rule_run_failed').': '.$exception->getMessage());
+        }
+    }
+
     public function toggleTorobPriceSetter(int $priceFetcherId): void
     {
         $this->authorize('shop_access');
 
-        $priceSetter = $this->findProductPriceFetcher($priceFetcherId)?->torobPriceSetter;
+        $priceSetter = $this->findProductPriceFetcher($priceFetcherId, 'torob')?->torobPriceSetter;
 
         if (! $priceSetter) {
             Flux::toast(variant: 'danger', text: __('general.torob_rule_not_found'));
@@ -287,6 +427,30 @@ class PriceFetchers extends Component
         ]);
         $this->refreshProduct();
         Flux::toast(variant: 'success', text: __('general.torob_rule_toggled'));
+    }
+
+    public function toggleSetareganPriceSetter(int $priceFetcherId): void
+    {
+        $this->authorize('shop_access');
+
+        $priceSetter = $this->findProductPriceFetcher($priceFetcherId, 'setaregan')?->setareganPriceSetter;
+
+        if (! $priceSetter) {
+            Flux::toast(variant: 'danger', text: __('general.setaregan_rule_not_found'));
+
+            return;
+        }
+
+        $isActive = ! $priceSetter->is_active;
+        $priceSetter->update([
+            'is_active' => $isActive,
+            'status' => $isActive
+                ? SetareganPriceSetter::STATUS_IDLE
+                : SetareganPriceSetter::STATUS_INACTIVE,
+            'last_error' => null,
+        ]);
+        $this->refreshProduct();
+        Flux::toast(variant: 'success', text: __('general.setaregan_rule_toggled'));
     }
 
     public function formatNumber(int|string|null $value): string
@@ -313,17 +477,19 @@ class PriceFetchers extends Component
             : $formatted;
     }
 
-    private function findProductPriceFetcher(int $priceFetcherId): ?PriceFetcher
+    private function findProductPriceFetcher(int $priceFetcherId, string $type = 'torob'): ?PriceFetcher
     {
         if (! $this->product) {
             return null;
         }
 
+        $relation = $type === 'setaregan' ? 'setareganPriceSetter' : 'torobPriceSetter';
+
         return PriceFetcher::query()
-            ->with('torobPriceSetter')
+            ->with($relation)
             ->whereBelongsTo($this->product)
             ->whereKey($priceFetcherId)
-            ->where('type', 'torob')
+            ->where('type', $type)
             ->first();
     }
 
@@ -334,6 +500,8 @@ class PriceFetchers extends Component
             'prices.warranty',
             'priceFetchers.torobPriceSetter.productPrice.color',
             'priceFetchers.torobPriceSetter.productPrice.warranty',
+            'priceFetchers.setareganPriceSetter.productPrice.color',
+            'priceFetchers.setareganPriceSetter.productPrice.warranty',
         ])->findOrFail($this->productId);
     }
 
@@ -341,6 +509,7 @@ class PriceFetchers extends Component
     {
         $this->resetValidation();
         $this->editingPriceFetcherId = null;
+        $this->editingType = null;
         $this->type = 'digikala';
         $this->url = '';
         $this->productPriceId = null;
@@ -349,6 +518,10 @@ class PriceFetchers extends Component
         $this->minPrice = '';
         $this->maxPrice = '';
         $this->torobEnabled = true;
+        $this->setareganAutoPricing = false;
+        $this->marginAmount = '';
+        $this->defaultQuantity = '1';
+        $this->setareganEnabled = true;
     }
 
     /** @return array<string, mixed> */
@@ -377,12 +550,49 @@ class PriceFetchers extends Component
                         ->whereNull('deleted_at')
                 ),
                 $uniqueProductPrice,
+                Rule::unique('setaregan_price_setters', 'product_price_id'),
             ],
             'ownShopNames' => ['required', 'string', 'max:1000'],
             'stepAmount' => ['required', 'integer', 'min:1'],
             'minPrice' => ['required', 'integer', 'min:0'],
             'maxPrice' => ['required', 'integer', 'gte:minPrice'],
             'torobEnabled' => ['boolean'],
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    private function setareganValidationRules(?SetareganPriceSetter $ignoreSetter = null): array
+    {
+        $uniqueProductPrice = Rule::unique('setaregan_price_setters', 'product_price_id');
+
+        if ($ignoreSetter) {
+            $uniqueProductPrice->ignore($ignoreSetter->id);
+        }
+
+        return [
+            'type' => 'required|in:setaregan',
+            'url' => [
+                'required',
+                'url',
+                'max:500',
+                'regex:~^https?://(?:www\.)?setaregan\.co/~i',
+            ],
+            'productPriceId' => [
+                'required',
+                'integer',
+                Rule::exists('product_prices', 'id')->where(
+                    fn ($query) => $query
+                        ->where('product_id', $this->product->id)
+                        ->whereNull('deleted_at')
+                ),
+                $uniqueProductPrice,
+                Rule::unique('torob_price_setters', 'product_price_id'),
+            ],
+            'marginAmount' => ['required', 'integer', 'min:0'],
+            'minPrice' => ['required', 'integer', 'min:0'],
+            'maxPrice' => ['required', 'integer', 'gte:minPrice'],
+            'defaultQuantity' => ['required', 'integer', 'min:1'],
+            'setareganEnabled' => ['boolean'],
         ];
     }
 
@@ -398,15 +608,19 @@ class PriceFetchers extends Component
             'minPrice' => __('general.torob_min_price'),
             'maxPrice' => __('general.torob_max_price'),
             'torobEnabled' => __('general.torob_enabled'),
+            'marginAmount' => __('general.setaregan_margin_amount'),
+            'defaultQuantity' => __('general.setaregan_default_quantity'),
+            'setareganEnabled' => __('general.setaregan_enabled'),
         ];
     }
 
-    private function normalizeTorobAmounts(): void
+    /** @param  list<string>  $properties */
+    private function normalizeAmounts(array $properties): void
     {
         $persianDigits = array_combine(mb_str_split('۰۱۲۳۴۵۶۷۸۹'), range(0, 9));
         $arabicDigits = array_combine(mb_str_split('٠١٢٣٤٥٦٧٨٩'), range(0, 9));
 
-        foreach (['stepAmount', 'minPrice', 'maxPrice'] as $property) {
+        foreach ($properties as $property) {
             $normalized = strtr($this->{$property}, $persianDigits + $arabicDigits);
             $this->{$property} = preg_replace('/[^0-9]/', '', $normalized) ?? '';
         }
