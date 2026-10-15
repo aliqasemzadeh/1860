@@ -18,6 +18,7 @@
                     src="{{ \Illuminate\Support\Facades\Storage::url($product->file_path) }}"
                     alt="{{ product_image_alt($product) }}"
                     loading="lazy"
+                    decoding="async"
                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
             @else

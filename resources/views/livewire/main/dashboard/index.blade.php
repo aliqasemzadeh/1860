@@ -74,6 +74,7 @@
                         src="{{ Storage::url($this->heroOfferProduct->file_path) }}"
                         alt="{{ product_image_alt($this->heroOfferProduct) }}"
                         loading="lazy"
+                        decoding="async"
                         class="pointer-events-none absolute -top-4 start-4 w-36 rotate-[-8deg] object-contain opacity-90 drop-shadow-2xl transition-transform duration-700 group-hover:-translate-y-2 group-hover:rotate-[-4deg] group-hover:scale-110 md:w-44"
                     />
                 @else
@@ -102,6 +103,7 @@
                         src="{{ $this->heroPost->featured_image_url }}"
                         alt="{{ $this->heroPost->title }}"
                         loading="lazy"
+                        decoding="async"
                         class="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/40 to-transparent"></div>
@@ -253,6 +255,7 @@
                                         src="{{ $post->featured_image_url }}"
                                         alt="{{ $post->title }}"
                                         loading="lazy"
+                                        decoding="async"
                                         class="size-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     />
                                 @else
