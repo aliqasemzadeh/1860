@@ -44,24 +44,98 @@ $hasActiveFilters = $this->brandId
                 </div>
             </div>
 
-            <div class="flex flex-col lg:flex-row gap-6" x-data="{ filtersOpen: false }">
-                {{-- Mobile filter toggle --}}
-                <div class="lg:hidden">
-                    <flux:button
-                        variant="primary"
-                        color="zinc"
-                        class="w-full"
-                        icon="funnel"
-                        x-on:click="filtersOpen = !filtersOpen"
-                    >
-                        {{ __('general.filter') }}
-                    </flux:button>
+            <div class="flex flex-col lg:flex-row gap-6">
+                {{-- Mobile filter trigger --}}
+                <div class="lg:hidden mb-2 flex items-center justify-between gap-3">
+                    <flux:modal.trigger name="category.filters">
+                        <flux:button variant="filled" icon="funnel" class="flex-1 !rounded-xl">
+                            {{ __('general.filter') }}
+                            @if($hasActiveFilters)
+                                <span class="ms-1.5 flex size-2 rounded-full bg-teal-500"></span>
+                            @endif
+                        </flux:button>
+                    </flux:modal.trigger>
+                    @if($hasActiveFilters)
+                        <flux:button variant="ghost" size="sm" icon="x-mark" wire:click="clearFilters">
+                            {{ __('general.clear_filter') }}
+                        </flux:button>
+                    @endif
                 </div>
 
-                {{-- Filters sidebar (vertical desktop / dropdown mobile) --}}
+                {{-- Mobile Filter Flyout Modal --}}
+                <flux:modal name="category.filters" flyout position="right" class="w-full max-w-sm lg:hidden">
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between">
+                            <flux:heading size="lg">{{ __('general.filter') }}</flux:heading>
+                            @if($hasActiveFilters)
+                                <flux:button size="xs" variant="ghost" wire:click="clearFilters">
+                                    {{ __('general.clear_filter') }}
+                                </flux:button>
+                            @endif
+                        </div>
+
+                        <flux:radio.group
+                            wire:model.live="stockFilter"
+                            label="{{ __('general.stock_filter') }}"
+                        >
+                            <flux:radio value="available" label="{{ __('general.stock_filter_available') }}" />
+                            <flux:radio value="unavailable" label="{{ __('general.stock_filter_unavailable') }}" />
+                            <flux:radio value="all" label="{{ __('general.stock_filter_all') }}" />
+                        </flux:radio.group>
+
+                        @if($this->brands->isNotEmpty())
+                            <flux:select
+                                label="{{ __('general.brand') }}"
+                                placeholder="{{ __('general.select_brand') }}"
+                                wire:model.live="brandId"
+                                searchable
+                            >
+                                <option value="">{{ __('general.all') }}</option>
+                                @foreach($this->brands as $brand)
+                                    <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                @endforeach
+                            </flux:select>
+                        @endif
+
+                        <div class="space-y-2">
+                            <flux:input
+                                type="number"
+                                label="{{ __('general.min_price') }}"
+                                placeholder="0"
+                                wire:model.live.debounce.500ms="minPrice"
+                            />
+                            <flux:input
+                                type="number"
+                                label="{{ __('general.max_price') }}"
+                                placeholder="∞"
+                                wire:model.live.debounce.500ms="maxPrice"
+                            />
+                            <flux:text class="text-xs text-zinc-500">
+                                {{ __('general.toman') }}
+                            </flux:text>
+                        </div>
+
+                        <div>
+                            <flux:select
+                                label="{{ __('general.sort_by') }}"
+                                wire:model.live="sortBy"
+                            >
+                                <option value="created_at">{{ __('general.sort_newest') }}</option>
+                                <option value="name">{{ __('general.sort_name') }}</option>
+                                <option value="price_asc">{{ __('general.sort_price_low_high') }}</option>
+                                <option value="price_desc">{{ __('general.sort_price_high_low') }}</option>
+                            </flux:select>
+                        </div>
+
+                        <flux:button variant="primary" color="teal" class="w-full" x-on:click="$dispatch('modal-close', { name: 'category.filters' })">
+                            {{ __('general.save') }}
+                        </flux:button>
+                    </div>
+                </flux:modal>
+
+                {{-- Filters sidebar (Desktop) --}}
                 <aside
-                    class="w-full lg:w-64 shrink-0 bg-zinc-50 dark:bg-zinc-900 rounded-lg p-4 border border-zinc-200 dark:border-zinc-800 space-y-4"
-                    x-bind:class="filtersOpen ? 'block' : 'hidden lg:block'"
+                    class="hidden lg:block w-64 shrink-0 bg-zinc-50 dark:bg-zinc-900 rounded-lg p-4 border border-zinc-200 dark:border-zinc-800 space-y-4"
                 >
                     <flux:radio.group
                         wire:model.live="stockFilter"
