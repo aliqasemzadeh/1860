@@ -129,7 +129,7 @@
                                 touchEnd(e) {
                                     if (this.touchX === null) return;
                                     const dx = e.changedTouches[0].clientX - this.touchX;
-                                    if (Math.abs(dx) > 40) { dx > 0 ? this.next() : this.prev(); }
+                                    if (Math.abs(dx) > 40) { dx > 0 ? this.prev() : this.next(); }
                                     this.touchX = null;
                                 }
                             }"
@@ -163,6 +163,7 @@
                                         alt="{{ product_image_alt($product) }}"
                                         class="relative z-10 size-full object-contain p-8 transition-transform duration-300 ease-out will-change-transform md:p-12"
                                         fetchpriority="high"
+                                        decoding="async"
                                     />
                                 @else
                                     <div class="relative z-10 flex size-full items-center justify-center text-zinc-300 dark:text-zinc-700">
@@ -224,7 +225,7 @@
                                                 class="relative size-16 shrink-0 snap-start overflow-hidden rounded-2xl border-2 bg-white p-1 transition-all duration-300 hover:-translate-y-0.5 dark:bg-zinc-900 md:size-20"
                                                 :class="index === {{ $index }} ? 'border-teal-500 shadow-lg shadow-teal-500/20' : 'border-zinc-200 opacity-70 hover:opacity-100 dark:border-zinc-700'"
                                             >
-                                                <img src="{{ $url }}" alt="{{ product_image_alt($product) }} - {{ $index + 1 }}" class="size-full object-contain" loading="lazy" />
+                                                <img src="{{ $url }}" alt="{{ product_image_alt($product) }} - {{ $index + 1 }}" class="size-full object-contain" loading="lazy" decoding="async" />
                                             </button>
                                         @endforeach
                                     </div>
@@ -561,7 +562,7 @@
                                             <div wire:key="story-{{ $i }}" class="grid items-center gap-6 md:grid-cols-2 md:gap-12">
                                                 <div class="relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-gradient-to-br from-zinc-50 to-zinc-100 dark:border-zinc-800/80 dark:from-zinc-900 dark:to-zinc-950 {{ $i % 2 ? 'md:order-2' : '' }}">
                                                     <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(20,184,166,0.15),transparent_60%)]"></div>
-                                                    <img src="{{ $image }}" alt="{{ product_image_alt($product) }} - {{ $i + 2 }}" loading="lazy" class="relative aspect-[4/3] size-full object-contain p-8 transition-transform duration-700 hover:scale-105" />
+                                                    <img src="{{ $image }}" alt="{{ product_image_alt($product) }} - {{ $i + 2 }}" loading="lazy" decoding="async" class="relative aspect-[4/3] size-full object-contain p-8 transition-transform duration-700 hover:scale-105" />
                                                 </div>
                                                 <div class="space-y-4 {{ $i % 2 ? 'md:order-1' : '' }}">
                                                     <span class="inline-flex size-12 items-center justify-center rounded-2xl bg-teal-50 text-teal-600 dark:bg-teal-950/60 dark:text-teal-300">
@@ -731,7 +732,7 @@
                                 <a href="{{ $post->url }}" wire:navigate wire:key="related-post-{{ $post->id }}" class="group flex flex-col overflow-hidden rounded-3xl border border-zinc-200/80 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-zinc-800/80 dark:bg-zinc-900">
                                     <div class="relative aspect-[16/10] overflow-hidden bg-zinc-100 dark:bg-zinc-800">
                                         @if($post->featured_image_url)
-                                            <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" loading="lazy" class="size-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                            <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" loading="lazy" decoding="async" class="size-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                         @else
                                             <div class="flex size-full items-center justify-center text-zinc-300 dark:text-zinc-600"><flux:icon.newspaper class="size-10" /></div>
                                         @endif

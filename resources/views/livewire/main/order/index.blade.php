@@ -24,9 +24,9 @@
                 @if($this->orders && $this->orders->count() > 0)
                     <div class="space-y-4">
                         @foreach($this->orders as $order)
-                            <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm overflow-hidden">
+                            <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-sm overflow-hidden">
                                 {{-- Order Header --}}
-                                <div class="p-6 border-b border-zinc-200 dark:border-zinc-700">
+                                <div class="p-4 sm:p-6 border-b border-zinc-200 dark:border-zinc-700">
                                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                                         <div>
                                             <div class="flex items-center gap-3 mb-2">
@@ -58,7 +58,7 @@
                                 </div>
 
                                 {{-- Order Items --}}
-                                <div class="p-6">
+                                <div class="p-4 sm:p-6">
                                     <div class="space-y-3">
                                         @foreach($order->items->take(3) as $item)
                                             <div class="flex items-center gap-4">

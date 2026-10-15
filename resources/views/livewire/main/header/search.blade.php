@@ -41,8 +41,8 @@
     <flux:modal.trigger name="search" shortcut="cmd.f">
         <flux:input as="button" placeholder="{{ __('general.search') }}" icon="magnifying-glass" kbd="⌘K" />
     </flux:modal.trigger>
-    <flux:modal name="search" variant="bare" wire:close="handleSearchClose" class="w-full max-w-[30rem] my-[12vh] max-h-screen overflow-y-hidden">
-        <flux:command class="border-none shadow-lg inline-flex flex-col max-h-[76vh]" filter="false">
+    <flux:modal name="search" variant="bare" wire:close="handleSearchClose" class="w-full max-w-[30rem] my-2 sm:my-[12vh] max-h-[92vh] sm:max-h-screen overflow-y-hidden">
+        <flux:command class="border-none shadow-lg inline-flex flex-col max-h-[85vh] sm:max-h-[76vh]" filter="false">
             <flux:command.input
                 wire:model.live.debounce.150ms="query"
                 placeholder="{{ __('general.search_placeholder') }}"

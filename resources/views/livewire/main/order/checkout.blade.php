@@ -24,7 +24,7 @@
                 <flux:text class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('general.checkout_description') }}</flux:text>
             </div>
 
-            <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-8 max-w-md mx-auto">
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-sm p-5 sm:p-8 max-w-md mx-auto">
                 @if ($step === 1)
                     <form wire:submit="send" class="space-y-6">
                         <div class="space-y-2">
