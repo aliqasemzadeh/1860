@@ -125,7 +125,7 @@
 
                         {{-- Order Summary --}}
                         <div class="lg:col-span-1">
-                            <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6 sticky top-4">
+                            <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-sm p-4 sm:p-6 sticky top-4">
                                 <flux:heading size="lg" class="mb-6">{{ __('general.order_summary') }}</flux:heading>
 
                                 <div class="space-y-4 mb-6">
