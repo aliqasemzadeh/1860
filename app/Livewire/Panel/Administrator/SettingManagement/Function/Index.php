@@ -349,7 +349,7 @@ class Index extends Component
     protected function dispatchQueuedCommand(array $command, int $logId): void
     {
         if (($command['job'] ?? null) === 'update_quick') {
-            UpdateProjectJob::dispatch(runComposer: false, runNpmBuild: false, logId: $logId);
+            UpdateProjectJob::dispatch(runComposer: false, runNpmBuild: true, logId: $logId);
 
             return;
         }

@@ -19,7 +19,7 @@ class UpdateProjectJob implements ShouldQueue
 
     public function __construct(
         public bool $runComposer = false,
-        public bool $runNpmBuild = false,
+        public bool $runNpmBuild = true,
         public ?int $logId = null,
     ) {}
 
