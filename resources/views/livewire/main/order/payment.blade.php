@@ -36,7 +36,7 @@
 
                     {{-- Payment Info --}}
                     <div class="max-w-2xl mx-auto">
-                        <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-8">
+                        <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-sm p-5 sm:p-8">
                             <div class="text-center mb-8">
                                 <flux:heading size="xl" class="mb-4">{{ __('general.payment') }}</flux:heading>
                                 <flux:text class="text-zinc-600 dark:text-zinc-400">

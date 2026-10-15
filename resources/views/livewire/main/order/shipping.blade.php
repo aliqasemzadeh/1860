@@ -28,7 +28,7 @@
                 {{-- Main Content --}}
                 <div class="lg:col-span-2 space-y-6">
                     {{-- Customer Information Section --}}
-                    <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
+                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-sm p-4 sm:p-6">
                         <flux:heading size="lg" class="mb-2">{{ __('general.customer_information') }}</flux:heading>
                         <flux:text class="mb-6 text-zinc-600 dark:text-zinc-400">{{ __('general.customer_information_description') }}</flux:text>
 
@@ -73,7 +73,7 @@
                     </div>
 
                     {{-- Shipping Address Section --}}
-                    <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
+                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-sm p-4 sm:p-6">
                         <flux:heading size="lg" class="mb-6">{{ __('general.shipping_address') }}</flux:heading>
 
                         @if($this->addresses->count() > 0 && !$showNewAddressForm)
@@ -190,7 +190,7 @@
 
                     @if($selectedAddressId && count($this->availableShippingMethods) > 0)
                         {{-- Shipping Methods Section --}}
-                        <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
+                        <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-sm p-4 sm:p-6">
                             <flux:heading size="lg" class="mb-6">{{ __('general.shipping_method') }}</flux:heading>
 
                             <div class="space-y-4">
@@ -229,7 +229,7 @@
                     @endif
 
                     {{-- Customer Note --}}
-                    <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
+                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-sm p-4 sm:p-6">
                         <flux:heading size="lg" class="mb-4">{{ __('general.customer_note') }}</flux:heading>
                         <flux:field>
                             <flux:textarea wire:model="customerNote" rows="3" placeholder="{{ __('general.customer_note_placeholder') }}" />
@@ -239,7 +239,7 @@
 
                 {{-- Order Summary Sidebar --}}
                 <div class="lg:col-span-1">
-                    <div class="sticky top-4 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
+                    <div class="sticky top-4 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-sm p-4 sm:p-6">
                         <flux:heading size="lg" class="mb-6">{{ __('general.order_summary') }}</flux:heading>
 
                         <div class="space-y-4 mb-6">
