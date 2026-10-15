@@ -1188,6 +1188,7 @@ return [
     'sort_name' => 'نام',
     'sort_newest' => 'جدیدترین',
     'sort_order' => 'ترتیب نمایش',
+    'special_offers' => 'پیشنهادهای ویژه',
     'sort_price_high_low' => 'قیمت: زیاد به کم',
     'sort_price_low_high' => 'قیمت: کم به زیاد',
     'specifications_in_description' => 'مشخصات فنی در قسمت توضیحات محصول قرار گرفته‌اند.',
