@@ -7,6 +7,7 @@ use App\Models\Shop\ProductPrice;
 use App\Support\Seo\Seo;
 use Binafy\LaravelCart\Models\Cart;
 use Flux\Flux;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -310,6 +311,146 @@ class View extends Component
             Flux::toast(variant: 'danger', text: $e->getMessage());
             // Flux::toast(variant: 'danger', text: __('general.failed_to_add_to_cart'));
         }
+    }
+
+    /**
+     * Technical specifications grouped for the specs tab.
+     * Returns a collection keyed by group name => [['label' => ..., 'value' => ...], ...].
+     */
+    #[Computed]
+    public function specGroups(): Collection
+    {
+        $product = $this->product;
+
+        if (! $product) {
+            return collect();
+        }
+
+        $groups = collect();
+
+        $general = collect([
+            ['label' => __('general.brand'), 'value' => $product->brand?->name],
+            ['label' => __('general.category'), 'value' => $product->category?->name],
+            ['label' => __('general.product_code'), 'value' => $product->sku],
+            ['label' => __('general.unit'), 'value' => $product->unit?->name],
+        ])->filter(fn (array $row) => filled($row['value']))->values();
+
+        if ($general->isNotEmpty()) {
+            $groups->put(__('general.general_specs'), $general);
+        }
+
+        $dimensions = collect([$product->x_dimension, $product->y_dimension, $product->z_dimension])
+            ->filter()
+            ->map(fn ($dim) => number_format((float) $dim, 0))
+            ->implode(' × ');
+
+        $physical = collect([
+            ['label' => __('general.weight'), 'value' => $product->weight ? number_format((float) $product->weight, 0).' '.__('general.gram') : null],
+            ['label' => __('general.dimensions'), 'value' => $dimensions !== '' ? $dimensions.' '.__('general.centimeter') : null],
+        ])->filter(fn (array $row) => filled($row['value']))->values();
+
+        if ($physical->isNotEmpty()) {
+            $groups->put(__('general.physical_specs'), $physical);
+        }
+
+        $values = $product->attributeValues->keyBy('attribute_id');
+        $attributes = $product->category?->attributes ?? collect();
+
+        $attributes
+            ->filter(fn ($attribute) => $values->has($attribute->id))
+            ->groupBy(fn ($attribute) => $attribute->attributeGroup?->name ?? __('general.technical_specifications'))
+            ->each(function ($groupAttributes, string $groupName) use ($values, $groups): void {
+                $rows = $groupAttributes->map(function ($attribute) use ($values) {
+                    $display = $values[$attribute->id]->display_value;
+
+                    if (is_array($display)) {
+                        $display = implode('، ', $display);
+                    }
+
+                    return ['label' => $attribute->label, 'value' => $display];
+                })->filter(fn (array $row) => filled($row['value']) && $row['value'] !== '-')->values();
+
+                if ($rows->isNotEmpty()) {
+                    $groups->put($groupName, $groups->get($groupName, collect())->merge($rows));
+                }
+            });
+
+        return $groups;
+    }
+
+    /**
+     * Top four "killer" facts rendered as a 2x2 bento grid under the title.
+     */
+    #[Computed]
+    public function highlights(): Collection
+    {
+        $product = $this->product;
+
+        if (! $product) {
+            return collect();
+        }
+
+        $iconFor = fn (string $type): string => match ($type) {
+            'number' => 'gauge',
+            'boolean' => 'circle-check',
+            'select', 'multiselect' => 'layers',
+            'date' => 'calendar',
+            default => 'cpu',
+        };
+
+        $values = $product->attributeValues->keyBy('attribute_id');
+
+        $highlights = ($product->category?->attributes ?? collect())
+            ->filter(fn ($attribute) => $values->has($attribute->id))
+            ->map(function ($attribute) use ($values, $iconFor) {
+                $display = $values[$attribute->id]->display_value;
+
+                if (is_array($display)) {
+                    $display = implode('، ', $display);
+                }
+
+                return ['icon' => $iconFor($attribute->type), 'label' => $attribute->label, 'value' => $display];
+            })
+            ->filter(fn (array $row) => filled($row['value']) && $row['value'] !== '-')
+            ->values();
+
+        $fallbacks = collect([
+            ['icon' => 'award', 'label' => __('general.brand'), 'value' => $product->brand?->name],
+            ['icon' => 'shield-check', 'label' => __('general.warranties'), 'value' => $product->warranties->isNotEmpty() ? $product->warranties->first()->name : null],
+            ['icon' => 'palette', 'label' => __('general.colors'), 'value' => $product->colors->isNotEmpty() ? $product->colors->count().' '.__('general.colors') : null],
+            ['icon' => 'weight', 'label' => __('general.weight'), 'value' => $product->weight ? number_format((float) $product->weight, 0).' '.__('general.gram') : null],
+            ['icon' => 'ruler', 'label' => __('general.dimensions'), 'value' => $product->x_dimension && $product->y_dimension ? number_format((float) $product->x_dimension, 0).' × '.number_format((float) $product->y_dimension, 0).' '.__('general.centimeter') : null],
+            ['icon' => 'cube', 'label' => __('general.category'), 'value' => $product->category?->name],
+        ])->filter(fn (array $row) => filled($row['value']));
+
+        return $highlights->concat($fallbacks)->take(4)->values();
+    }
+
+    /**
+     * Products from the same category (in-stock first) for the "related" rail.
+     */
+    #[Computed]
+    public function relatedProducts()
+    {
+        $product = $this->product;
+
+        if (! $product || ! $product->category_id) {
+            return collect();
+        }
+
+        return Cache::remember(
+            "product.{$product->id}.related_products",
+            now()->addHour(),
+            fn () => Product::query()
+                ->active()
+                ->where('category_id', $product->category_id)
+                ->whereKeyNot($product->id)
+                ->withEffectivePrice()
+                ->orderByAvailability()
+                ->orderByDesc('created_at')
+                ->take(8)
+                ->get()
+        );
     }
 
     #[Computed]
