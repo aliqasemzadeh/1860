@@ -46,6 +46,9 @@ class Index extends Component
             ->get();
     }
 
+    /**
+     * Exactly two editorial articles for the magazine-style section above the footer.
+     */
     #[Computed]
     public function latestPosts(): Collection
     {
@@ -53,8 +56,23 @@ class Index extends Component
             ->published()
             ->with('tags')
             ->orderByDesc('published_at')
-            ->take(3)
+            ->take(2)
             ->get();
+    }
+
+    /**
+     * Hero promo visuals: the freshest discounted product and the most recent article.
+     */
+    #[Computed]
+    public function heroOfferProduct(): ?Product
+    {
+        return $this->discountedProducts->first();
+    }
+
+    #[Computed]
+    public function heroPost(): ?Post
+    {
+        return $this->latestPosts->first();
     }
 
     public function render()

@@ -58,4 +58,20 @@ class Post extends Model
 
         return Storage::disk('public')->url($this->featured_image);
     }
+
+    /**
+     * Estimated reading time in minutes (~200 words per minute, unicode-safe).
+     */
+    public function getReadingTimeAttribute(): int
+    {
+        $text = trim(strip_tags((string) ($this->content ?? $this->summary)));
+
+        if ($text === '') {
+            return 1;
+        }
+
+        $words = count(preg_split('/\s+/u', $text) ?: []);
+
+        return max(1, (int) ceil($words / 200));
+    }
 }
