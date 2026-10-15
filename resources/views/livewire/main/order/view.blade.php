@@ -75,7 +75,7 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         {{-- Order Items --}}
                         <div class="lg:col-span-2">
-                            <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
+                            <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-sm p-4 sm:p-6">
                                 <flux:heading size="lg" class="mb-6">{{ __('general.order_items') }}</flux:heading>
 
                                 <div class="space-y-4">
