@@ -14,16 +14,6 @@
     </div>
 
     <div class="flex items-center gap-1 shrink-0">
-        <flux:tooltip content="{{ __('general.home') }}">
-            <flux:button
-                size="sm"
-                variant="ghost"
-                icon="shopping-bag"
-                href="{{ route('home') }}"
-                wire:navigate
-            />
-        </flux:tooltip>
-
         <flux:dropdown position="bottom" align="end">
             @auth
                 <flux:profile name="{{ Auth::user()->name ?: Auth::user()->mobile }}" />
@@ -33,15 +23,25 @@
                 <flux:profile />
             @endguest
 
-            <flux:menu>
+            <flux:menu class="min-w-52">
                 @auth
-                    <flux:menu.item icon="user" href="{{ route('panel.user.dashboard.index') }}" wire:navigate>
-                        {{ __('general.profile') }}
-                    </flux:menu.item>
-                    <flux:menu.item icon="shopping-bag" href="{{ route('home') }}" wire:navigate>
-                        {{ __('general.back_to_store') }}
-                    </flux:menu.item>
+                    <div class="px-2 py-1.5">
+                        <div class="truncate text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                            {{ Auth::user()->name ?: Auth::user()->mobile }}
+                        </div>
+                        @if(Auth::user()->name && Auth::user()->mobile)
+                            <div class="truncate text-[11px] text-zinc-500 dark:text-zinc-400" dir="ltr">
+                                {{ Auth::user()->mobile }}
+                            </div>
+                        @endif
+                    </div>
+
                     <flux:menu.separator />
+
+                    @include('partials.panels')
+
+                    <flux:menu.separator />
+
                     <flux:menu.item icon="arrow-right-start-on-rectangle" href="{{ route('logout') }}">
                         {{ __('general.logout_title') }}
                     </flux:menu.item>

@@ -87,9 +87,10 @@
 
     <flux:sidebar.spacer />
 
-    @include('partials.panels')
-    @include('partials.user-dropdown')
-    @include('partials.theme-icon')
+    <div class="border-t border-zinc-200/80 pt-2 space-y-2 dark:border-zinc-800">
+        @include('partials.user-dropdown')
+        @include('partials.theme-icon')
+    </div>
 </flux:sidebar>
 
 <flux:header sticky class="lg:hidden bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">

@@ -307,5 +307,58 @@
                 </div>
             </section>
         @endif
+
+        {{-- ═══════════════════════ Home Footer (Blog, Contact, Socials, eNamad) ═══════════════════════ --}}
+        @php($general = app(\App\Settings\GeneralSettings::class))
+        <footer class="overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-zinc-50/80 p-6 md:p-10 shadow-sm dark:border-zinc-800/80 dark:bg-zinc-900/70">
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-12 items-center">
+                {{-- Brand & Quick Links (Blog, Contact Us) --}}
+                <div class="md:col-span-5 space-y-4">
+                    <div class="flex items-center gap-3">
+                        @if ($general->logo_path)
+                            <img src="{{ $general->logoUrl() }}" alt="{{ $general->title }}" class="h-10 w-auto object-contain" />
+                        @endif
+                        <div>
+                            <flux:heading size="lg" class="font-extrabold">{{ $general->title }}</flux:heading>
+                            <flux:text class="text-xs text-zinc-500 dark:text-zinc-400">{{ __('general.home_hero_badge') }}</flux:text>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 pt-1">
+                        <flux:button
+                            href="{{ route('post.index') }}"
+                            wire:navigate
+                            variant="filled"
+                            size="sm"
+                            icon="newspaper"
+                            class="!rounded-xl"
+                        >
+                            {{ __('general.blog') }}
+                        </flux:button>
+
+                        <flux:button
+                            href="{{ route('contact.index') }}"
+                            wire:navigate
+                            variant="filled"
+                            size="sm"
+                            icon="mail"
+                            class="!rounded-xl"
+                        >
+                            {{ __('general.contact_us') }}
+                        </flux:button>
+                    </div>
+                </div>
+
+                {{-- Follow Us (Socials) --}}
+                <div class="md:col-span-4">
+                    <livewire:main.sidebar.socials :key="'home-footer-socials'" defer />
+                </div>
+
+                {{-- eNamad Trust Seal --}}
+                <div class="md:col-span-3 flex md:justify-end">
+                    @include('partials.enamad')
+                </div>
+            </div>
+        </footer>
     </div>
 </div>

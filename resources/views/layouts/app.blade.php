@@ -16,23 +16,14 @@
 <flux:sidebar sticky collapsible="mobile" class="bg-zinc-50 dark:bg-zinc-900 border-e border-zinc-200 dark:border-zinc-700">
     @include('partials.sidebar-header')
 
-    <livewire:main.sidebar.categories />
+    <div class="flex-1 overflow-y-auto py-1 [scrollbar-width:thin]">
+        <livewire:main.sidebar.categories />
+    </div>
 
-    <flux:sidebar.spacer />
-
-    @include('partials.enamad')
-
-    <flux:sidebar.nav>
-            <flux:sidebar.item icon="newspaper" href="{{ route('post.index') }}" wire:navigate :current="request()->routeIs('post.*')">{{ __('general.blog') }}</flux:sidebar.item>
-            <flux:sidebar.item icon="mail" href="{{ route('contact.index') }}">{{ __('general.contact_us') }}</flux:sidebar.item>
-    </flux:sidebar.nav>
-
-    <livewire:main.sidebar.socials defer />
-
-    @include('partials.panels')
-    @include('partials.user-dropdown')
-    @include('partials.theme-icon')
-
+    <div class="mt-auto border-t border-zinc-200/80 pt-2 space-y-2 dark:border-zinc-800">
+        @include('partials.user-dropdown')
+        @include('partials.theme-icon')
+    </div>
 </flux:sidebar>
 
 <flux:header sticky class="bg-white lg:bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
@@ -49,14 +40,38 @@
 
         <div class="hidden sm:flex items-center">
             @auth
-                <flux:button icon="user" href="{{ route('panel.user.dashboard.index') }}" square variant="ghost" wire:navigate />
+                <flux:dropdown position="bottom" align="end">
+                    <flux:button icon="user" square variant="ghost" />
+
+                    <flux:menu class="min-w-52">
+                        <div class="px-2 py-1.5">
+                            <div class="truncate text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                                {{ Auth::user()->name ?: Auth::user()->mobile }}
+                            </div>
+                            @if(Auth::user()->name && Auth::user()->mobile)
+                                <div class="truncate text-[11px] text-zinc-500 dark:text-zinc-400" dir="ltr">
+                                    {{ Auth::user()->mobile }}
+                                </div>
+                            @endif
+                        </div>
+
+                        <flux:menu.separator />
+
+                        @include('partials.panels')
+
+                        <flux:menu.separator />
+
+                        <flux:menu.item icon="arrow-right-start-on-rectangle" href="{{ route('logout') }}">
+                            {{ __('general.logout_title') }}
+                        </flux:menu.item>
+                    </flux:menu>
+                </flux:dropdown>
             @endauth
 
             @guest
                 <flux:button icon="user" href="{{ route('login') }}" square variant="ghost" wire:navigate />
             @endguest
         </div>
-
     </flux:navbar>
 </flux:header>
 
