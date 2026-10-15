@@ -1,6 +1,13 @@
 <div>
     <flux:modal.trigger name="main.sidebar.basket.modal">
-        <flux:button icon="shopping-cart" square variant="ghost" />
+        <div class="relative inline-flex">
+            <flux:button icon="shopping-cart" square variant="ghost" aria-label="{{ __('general.shopping_cart') }}" />
+            @if($this->cartCount > 0)
+                <span class="absolute -top-1 -end-1 flex min-w-5 h-5 px-1 items-center justify-center rounded-full bg-teal-600 text-[10px] font-black text-white ring-2 ring-white dark:ring-zinc-900 pointer-events-none">
+                    {{ $this->cartCount > 99 ? '99+' : $this->cartCount }}
+                </span>
+            @endif
+        </div>
     </flux:modal.trigger>
     <flux:modal name="main.sidebar.basket.modal" position="right" flyout>
         <div class="space-y-6 h-full flex flex-col">
@@ -20,6 +27,8 @@
                                         <img
                                             src="{{ \Illuminate\Support\Facades\Storage::url($item->itemable->file_path) }}"
                                             alt="{{ product_image_alt($item->itemable->name ?? '') }}"
+                                            loading="lazy"
+                                            decoding="async"
                                             class="w-20 h-20 object-cover rounded-lg"
                                         />
                                     </div>

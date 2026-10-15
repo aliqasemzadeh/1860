@@ -36,6 +36,16 @@ class Basket extends Component
     }
 
     #[Computed]
+    public function cartCount(): int
+    {
+        if (! $this->cart) {
+            return 0;
+        }
+
+        return (int) $this->cartItems->sum('quantity');
+    }
+
+    #[Computed]
     public function hasUnavailableItems(): bool
     {
         return $this->cartItems->contains(fn (CartItem $item): bool => ! $this->isItemPurchasable($item));
@@ -156,6 +166,7 @@ class Basket extends Component
     public function refreshCart()
     {
         $this->dispatch('$refresh');
+        $this->dispatch('cart-count-updated', count: $this->cartCount);
     }
 
     public function render()

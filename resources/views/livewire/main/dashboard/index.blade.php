@@ -157,7 +157,7 @@
         @endif
 
         {{-- ═══════════════════════ Brand Islands (GPlus, Meva, ...) ═══════════════════════ --}}
-        <livewire:main.content.box.index :key="'home-brand-boxes'" />
+        <livewire:main.content.box.index :key="'home-brand-boxes'" lazy />
 
         {{-- ═══════════════════════ Special offers ═══════════════════════ --}}
         @if($this->discountedProducts->isNotEmpty())

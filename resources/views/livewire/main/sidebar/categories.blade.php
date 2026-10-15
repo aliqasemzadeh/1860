@@ -2,31 +2,37 @@
     <flux:sidebar.nav>
         @foreach($this->categories as $category)
             @if($category->children->isNotEmpty())
-                <flux:modal.trigger name="{{ $category->slug }}" shortcut="cmd.k">
-                    <flux:sidebar.item :icon="$category->icon" href="#">{{ $category->name }}</flux:sidebar.item>
-                </flux:modal.trigger>
+                <flux:sidebar.group
+                    expandable
+                    :expanded="false"
+                    :icon="$category->icon"
+                    :heading="$category->name"
+                    wire:key="category-group-{{ $category->id }}"
+                >
+                    <flux:sidebar.item
+                        :href="$category->url"
+                        wire:navigate
+                        class="text-teal-600 dark:text-teal-400 font-semibold"
+                    >
+                        {{ __('general.view_all') }} {{ $category->name }}
+                    </flux:sidebar.item>
 
-                <flux:modal name="{{ $category->slug }}" variant="bare" class="w-full max-w-[30rem] my-[12vh] max-h-screen overflow-y-hidden">
-                    <flux:command wire:key="command-{{ $category->slug }}" class="border-none shadow-lg inline-flex flex-col max-h-[76vh]">
-                        <flux:command.input placeholder="{{ __('general.search') }}" closable />
-                        <flux:command.items>
-                            @foreach ($category->children as $child)
-                                <flux:command.item 
-                                    wire:key="command-{{ $category->slug }}:item-{{ $child->slug }}"
-                                    href="{{ $child->url }}"
-                                    wire:navigate
-                                >
-                                    {{ $child->name }}
-                                </flux:command.item>
-                            @endforeach
-                        </flux:command.items>
-                    </flux:command>
-                </flux:modal>
+                    @foreach ($category->children as $child)
+                        <flux:sidebar.item 
+                            wire:key="category-child-{{ $child->id }}"
+                            :href="$child->url"
+                            wire:navigate
+                        >
+                            {{ $child->name }}
+                        </flux:sidebar.item>
+                    @endforeach
+                </flux:sidebar.group>
             @else
                 <flux:sidebar.item 
                     :icon="$category->icon" 
-                    href="{{ $category->url }}"
+                    :href="$category->url"
                     wire:navigate
+                    wire:key="category-item-{{ $category->id }}"
                 >
                     {{ $category->name }}
                 </flux:sidebar.item>

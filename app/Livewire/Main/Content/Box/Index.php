@@ -103,6 +103,11 @@ class Index extends Component
         }
     }
 
+    public function placeholder()
+    {
+        return view('livewire.main.content.box.placeholder');
+    }
+
     public function render()
     {
         return view('livewire.main.content.box.index');
