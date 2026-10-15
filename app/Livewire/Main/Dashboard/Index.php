@@ -2,29 +2,58 @@
 
 namespace App\Livewire\Main\Dashboard;
 
+use App\Models\Content\Post;
 use App\Models\Shop\Category;
 use App\Models\Shop\Product;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class Index extends Component
 {
-    #[Computed]
-    public function categories()
+    #[Computed(cache: true, key: 'home.categories')]
+    public function categories(): Collection
     {
         return Category::query()
             ->where('main_category_id', 0)
+            ->orderBy('sort_order')
+            ->orderBy('name')
             ->get();
     }
 
     #[Computed]
-    public function products()
+    public function discountedProducts(): Collection
     {
         return Product::query()
             ->active()
-            ->with(['category'])
             ->whereAvailability(true)
+            ->whereDiscounted()
+            ->withEffectivePrice()
             ->orderByDesc('created_at')
+            ->take(12)
+            ->get();
+    }
+
+    #[Computed]
+    public function newestProducts(): Collection
+    {
+        return Product::query()
+            ->active()
+            ->whereAvailability(true)
+            ->withEffectivePrice()
+            ->orderByDesc('created_at')
+            ->take(12)
+            ->get();
+    }
+
+    #[Computed]
+    public function latestPosts(): Collection
+    {
+        return Post::query()
+            ->published()
+            ->with('tags')
+            ->orderByDesc('published_at')
+            ->take(3)
             ->get();
     }
 

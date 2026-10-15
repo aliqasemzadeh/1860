@@ -220,6 +220,18 @@ class Product extends Model implements Cartable
     }
 
     /**
+     * Only products whose default price row has a real discount (0 < sale_price < price).
+     */
+    public function scopeWhereDiscounted(Builder $query): Builder
+    {
+        $sub = $this->defaultPriceColumnSubquery(
+            DB::raw('CASE WHEN sale_price > 0 AND sale_price < price THEN 1 ELSE 0 END')
+        );
+
+        return $query->whereRaw('('.$sub->toSql().') = 1', $sub->getBindings());
+    }
+
+    /**
      * Sort by default-price availability (in-stock first when $inStockFirst is true).
      */
     public function scopeOrderByAvailability(Builder $query, bool $inStockFirst = true): Builder
