@@ -14,11 +14,11 @@
                 <div class="space-y-5 lg:col-span-3">
                     <flux:badge color="teal" rounded icon="sparkles">{{ __('general.home_hero_badge') }}</flux:badge>
 
-                    <flux:heading size="2xl" level="1" class="leading-tight">
+                    <flux:heading size="xl" level="1" class="text-3xl font-bold leading-tight md:text-4xl">
                         {{ __('general.home_hero_title') }}
                     </flux:heading>
 
-                    <flux:subheading size="lg" class="max-w-xl text-zinc-600 dark:text-zinc-300">
+                    <flux:subheading size="xl" class="max-w-xl text-zinc-600 dark:text-zinc-300">
                         {{ __('general.home_hero_subtitle') }}
                     </flux:subheading>
 
