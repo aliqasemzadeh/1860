@@ -6,19 +6,22 @@ use App\Models\Content\Post;
 use App\Models\Shop\Category;
 use App\Models\Shop\Product;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class Index extends Component
 {
-    #[Computed(cache: true, key: 'home.categories')]
+    #[Computed]
     public function categories(): Collection
     {
-        return Category::query()
-            ->where('main_category_id', 0)
-            ->orderBy('sort_order')
-            ->orderBy('name')
-            ->get();
+        return Cache::rememberForever(Category::CACHE_KEY_ROOTS, function () {
+            return Category::query()
+                ->where('main_category_id', 0)
+                ->orderBy('sort_order', 'asc')
+                ->orderBy('name', 'asc')
+                ->get();
+        });
     }
 
     #[Computed]

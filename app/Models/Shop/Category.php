@@ -14,16 +14,29 @@ class Category extends Model
 {
     use SoftDeletes;
 
+    public const CACHE_KEY_TREE = 'shop.categories.tree';
+
+    public const CACHE_KEY_ROOTS = 'shop.categories.roots';
+
     public $fillable = ['name', 'slug', 'slug_fa', 'icon', 'sort_order', 'main_category_id'];
 
     protected static function booted(): void
     {
-        $invalidateSitemap = fn () => Cache::forget(SitemapService::CACHE_KEY);
+        $invalidate = fn () => static::flushCache();
 
-        static::saved($invalidateSitemap);
-        static::deleted($invalidateSitemap);
-        static::restored($invalidateSitemap);
-        static::forceDeleted($invalidateSitemap);
+        static::saved($invalidate);
+        static::deleted($invalidate);
+        static::restored($invalidate);
+        static::forceDeleted($invalidate);
+    }
+
+    public static function flushCache(): void
+    {
+        Cache::forget(SitemapService::CACHE_KEY);
+        Cache::forget(self::CACHE_KEY_TREE);
+        Cache::forget(self::CACHE_KEY_ROOTS);
+        Cache::forget('categories');
+        Cache::forget('home.categories');
     }
 
     public function main_category(): BelongsTo
@@ -33,7 +46,9 @@ class Category extends Model
 
     public function children(): HasMany
     {
-        return $this->hasMany(Category::class, 'main_category_id');
+        return $this->hasMany(Category::class, 'main_category_id')
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('name', 'asc');
     }
 
     /**

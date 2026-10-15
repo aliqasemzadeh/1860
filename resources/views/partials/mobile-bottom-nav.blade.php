@@ -15,8 +15,8 @@
             <button
                 type="button"
                 x-data=""
-                x-on:click="$dispatch('flux-sidebar-toggle')"
-                class="flex flex-col items-center justify-center flex-1 h-full py-1 text-[11px] text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors"
+                x-on:click="$dispatch('sidebar-categories-reset'); $dispatch('flux-sidebar-toggle')"
+                class="flex flex-col items-center justify-center flex-1 h-full py-1 text-[11px] {{ request()->routeIs('category.*') ? 'text-teal-600 dark:text-teal-400 font-bold' : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200' }} transition-colors"
                 aria-label="{{ __('general.categories') }}"
             >
                 <flux:icon name="squares-2x2" class="size-5 mb-1" />

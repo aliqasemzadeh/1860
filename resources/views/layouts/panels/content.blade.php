@@ -5,10 +5,8 @@
     <x-seo :title="$title ?? null" noindex />
 </head>
 <body class="min-h-screen bg-white dark:bg-zinc-800 antialiased">
-<flux:sidebar sticky collapsible="mobile" class="bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700">
+<flux:sidebar sticky collapsible="mobile" class="bg-zinc-50 dark:bg-zinc-900 border-e border-zinc-200 dark:border-zinc-700">
     @include('partials.sidebar-header')
-
-    <flux:sidebar.search placeholder="Search..." />
 
     <flux:sidebar.nav>
         <flux:sidebar.item
@@ -33,16 +31,15 @@
     <flux:sidebar.spacer />
 
     @include('partials.panels')
-
     @include('partials.user-dropdown')
     @include('partials.theme-icon')
 </flux:sidebar>
 
-<flux:header class="block! bg-white lg:bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
+<flux:header sticky class="lg:hidden bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
     @include('partials.user-navbar')
 </flux:header>
 
-<flux:main>
+<flux:main class="p-3 md:p-6">
     {{ $slot }}
 </flux:main>
 @include('partials.foot')
