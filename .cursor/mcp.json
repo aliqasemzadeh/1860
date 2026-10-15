@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "flux-docs": {
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "livewire-flux-mcp"
+      ]
+    },
+    "laravel-boost": {
+      "command": "C:\\ProgramData\\envkit\\services\\php\\8.4.22\\php.exe",
+      "args": [
+        "C:\\Users\\SRS\\Herd\\1860\\artisan",
+        "boost:mcp"
+      ]
+    }
+  }
+}
