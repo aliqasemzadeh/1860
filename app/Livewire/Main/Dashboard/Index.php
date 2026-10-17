@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Main\Dashboard;
 
+use App\Models\Content\Banner;
 use App\Models\Content\Post;
 use App\Models\Shop\Category;
 use App\Models\Shop\Product;
@@ -12,6 +13,17 @@ use Livewire\Component;
 
 class Index extends Component
 {
+    #[Computed]
+    public function banners(): Collection
+    {
+        return Cache::rememberForever(Banner::CACHE_KEY_ACTIVE, function () {
+            return Banner::query()
+                ->active()
+                ->ordered()
+                ->get();
+        });
+    }
+
     #[Computed]
     public function categories(): Collection
     {

@@ -9,23 +9,38 @@
     @include('partials.sidebar-header')
 
     <flux:sidebar.nav>
-        <flux:sidebar.item
-            icon="newspaper"
-            href="{{ route('panel.content.post.index') }}"
-            wire:navigate
-            :current="request()->routeIs('panel.content.post.*')"
-        >
-            {{ __('general.posts') }}
-        </flux:sidebar.item>
+        @can('content_post_index')
+            <flux:sidebar.item
+                icon="newspaper"
+                href="{{ route('panel.content.post.index') }}"
+                wire:navigate
+                :current="request()->routeIs('panel.content.post.*')"
+            >
+                {{ __('general.posts') }}
+            </flux:sidebar.item>
+        @endcan
 
-        <flux:sidebar.item
-            icon="layout-grid"
-            href="{{ route('panel.content.box.index') }}"
-            wire:navigate
-            :current="request()->routeIs('panel.content.box.*')"
-        >
-            {{ __('general.boxes') }}
-        </flux:sidebar.item>
+        @can('content_box_index')
+            <flux:sidebar.item
+                icon="layout-grid"
+                href="{{ route('panel.content.box.index') }}"
+                wire:navigate
+                :current="request()->routeIs('panel.content.box.*')"
+            >
+                {{ __('general.boxes') }}
+            </flux:sidebar.item>
+        @endcan
+
+        @can('content_banner_index')
+            <flux:sidebar.item
+                icon="images"
+                href="{{ route('panel.content.banner.index') }}"
+                wire:navigate
+                :current="request()->routeIs('panel.content.banner.*')"
+            >
+                {{ __('general.banners') }}
+            </flux:sidebar.item>
+        @endcan
     </flux:sidebar.nav>
 
     <flux:sidebar.spacer />

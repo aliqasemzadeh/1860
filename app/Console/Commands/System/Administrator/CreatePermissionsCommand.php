@@ -32,7 +32,7 @@ class CreatePermissionsCommand extends Command
             'user' => null,
             'administrator' => 'administrator',
             'shop' => 'shop',
-            'content' => null,
+            'content' => 'content',
         ];
 
         foreach ($groups as $permissionGroup => $roleName) {
@@ -41,7 +41,7 @@ class CreatePermissionsCommand extends Command
 
         // Ensure administrator has all permissions
         try {
-            $adminRole = Role::findByName('administrator');
+            $adminRole = Role::firstOrCreate(['name' => 'administrator']);
             $allPermissions = Permission::all();
             $adminRole->syncPermissions($allPermissions);
             $this->info('All permissions synced to administrator role.');
@@ -75,7 +75,7 @@ class CreatePermissionsCommand extends Command
         }
 
         try {
-            $role = Role::findByName($roleName);
+            $role = Role::firstOrCreate(['name' => $roleName]);
         } catch (Throwable) {
             $this->warn("Role [{$roleName}] not found; permissions for [{$permissionGroup}] were created but not assigned.");
 

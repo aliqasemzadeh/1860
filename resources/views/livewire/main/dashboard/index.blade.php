@@ -13,53 +13,174 @@
         <section class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:grid-rows-2 lg:h-[34rem]">
 
             {{-- Main flagship banner --}}
-            <div class="group relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-zinc-950 text-white shadow-xl dark:border-zinc-800/80 lg:col-span-2 lg:row-span-2">
-                <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(45,212,191,0.35),_transparent_55%),radial-gradient(ellipse_at_bottom_left,_rgba(99,102,241,0.25),_transparent_55%)]"></div>
-                <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]"></div>
-                <div class="pointer-events-none absolute -bottom-32 -start-16 size-96 rounded-full bg-teal-500/20 blur-3xl transition-transform duration-1000 group-hover:scale-125"></div>
+            @if($this->banners->isNotEmpty())
+                <div class="group relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-zinc-950 text-white shadow-xl dark:border-zinc-800/80 lg:col-span-2 lg:row-span-2">
+                    @if($this->banners->count() === 1)
+                        @php($banner = $this->banners->first())
+                        @if($banner->link)
+                            <a href="{{ $banner->link }}" class="relative block size-full min-h-[20rem] lg:min-h-full">
+                                <picture class="block size-full">
+                                    @if($banner->mobile_image_url)
+                                        <source media="(max-width: 640px)" srcset="{{ $banner->mobile_image_url }}" type="image/webp" />
+                                    @endif
+                                    @if($banner->tablet_image_url)
+                                        <source media="(max-width: 1024px)" srcset="{{ $banner->tablet_image_url }}" type="image/webp" />
+                                    @endif
+                                    <img
+                                        src="{{ $banner->desktop_image_url }}"
+                                        alt="{{ $banner->title }}"
+                                        fetchpriority="high"
+                                        loading="eager"
+                                        decoding="async"
+                                        class="size-full min-h-[20rem] object-cover transition-transform duration-700 group-hover:scale-105 lg:min-h-full"
+                                    />
+                                </picture>
+                                <div class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/30 to-transparent p-6 md:p-8">
+                                    <span class="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-black/40 px-4 py-2 text-sm font-bold text-white backdrop-blur-md md:text-base">
+                                        <span>{{ $banner->title }}</span>
+                                        <flux:icon.arrow-left class="size-4 transition-transform group-hover:-translate-x-1" />
+                                    </span>
+                                </div>
+                            </a>
+                        @else
+                            <div class="relative size-full min-h-[20rem] lg:min-h-full">
+                                <picture class="block size-full">
+                                    @if($banner->mobile_image_url)
+                                        <source media="(max-width: 640px)" srcset="{{ $banner->mobile_image_url }}" type="image/webp" />
+                                    @endif
+                                    @if($banner->tablet_image_url)
+                                        <source media="(max-width: 1024px)" srcset="{{ $banner->tablet_image_url }}" type="image/webp" />
+                                    @endif
+                                    <img
+                                        src="{{ $banner->desktop_image_url }}"
+                                        alt="{{ $banner->title }}"
+                                        fetchpriority="high"
+                                        loading="eager"
+                                        decoding="async"
+                                        class="size-full min-h-[20rem] object-cover lg:min-h-full"
+                                    />
+                                </picture>
+                                <div class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-zinc-950/80 via-zinc-950/20 to-transparent p-6 md:p-8">
+                                    <span class="inline-flex items-center rounded-2xl border border-white/15 bg-black/40 px-4 py-2 text-sm font-bold text-white backdrop-blur-md md:text-base">
+                                        {{ $banner->title }}
+                                    </span>
+                                </div>
+                            </div>
+                        @endif
+                    @else
+                        <div class="relative size-full min-h-[20rem] lg:min-h-full">
+                            <flux:carousel name="home-banners-carousel" class="size-full" :arrows="false" track:class="size-full gap-0">
+                                @foreach($this->banners as $banner)
+                                    <flux:carousel.slide wire:key="home-banner-{{ $banner->id }}" class="relative w-full shrink-0">
+                                        @if($banner->link)
+                                            <a href="{{ $banner->link }}" class="relative block size-full min-h-[20rem] lg:min-h-[34rem]">
+                                                <picture class="block size-full">
+                                                    @if($banner->mobile_image_url)
+                                                        <source media="(max-width: 640px)" srcset="{{ $banner->mobile_image_url }}" type="image/webp" />
+                                                    @endif
+                                                    @if($banner->tablet_image_url)
+                                                        <source media="(max-width: 1024px)" srcset="{{ $banner->tablet_image_url }}" type="image/webp" />
+                                                    @endif
+                                                    <img
+                                                        src="{{ $banner->desktop_image_url }}"
+                                                        alt="{{ $banner->title }}"
+                                                        fetchpriority="{{ $loop->first ? 'high' : 'auto' }}"
+                                                        loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+                                                        decoding="async"
+                                                        class="size-full min-h-[20rem] object-cover lg:min-h-[34rem]"
+                                                    />
+                                                </picture>
+                                                <div class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/30 to-transparent p-6 md:p-8">
+                                                    <span class="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-black/40 px-4 py-2 text-sm font-bold text-white backdrop-blur-md md:text-base">
+                                                        <span>{{ $banner->title }}</span>
+                                                        <flux:icon.arrow-left class="size-4" />
+                                                    </span>
+                                                </div>
+                                            </a>
+                                        @else
+                                            <div class="relative size-full min-h-[20rem] lg:min-h-[34rem]">
+                                                <picture class="block size-full">
+                                                    @if($banner->mobile_image_url)
+                                                        <source media="(max-width: 640px)" srcset="{{ $banner->mobile_image_url }}" type="image/webp" />
+                                                    @endif
+                                                    @if($banner->tablet_image_url)
+                                                        <source media="(max-width: 1024px)" srcset="{{ $banner->tablet_image_url }}" type="image/webp" />
+                                                    @endif
+                                                    <img
+                                                        src="{{ $banner->desktop_image_url }}"
+                                                        alt="{{ $banner->title }}"
+                                                        fetchpriority="{{ $loop->first ? 'high' : 'auto' }}"
+                                                        loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+                                                        decoding="async"
+                                                        class="size-full min-h-[20rem] object-cover lg:min-h-[34rem]"
+                                                    />
+                                                </picture>
+                                                <div class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-zinc-950/80 via-zinc-950/20 to-transparent p-6 md:p-8">
+                                                    <span class="inline-flex items-center rounded-2xl border border-white/15 bg-black/40 px-4 py-2 text-sm font-bold text-white backdrop-blur-md md:text-base">
+                                                        {{ $banner->title }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </flux:carousel.slide>
+                                @endforeach
+                            </flux:carousel>
 
-                <div class="relative flex h-full flex-col justify-between gap-10 p-7 md:p-12">
-                    <div class="space-y-5">
-                        <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold backdrop-blur">
-                            <span class="relative flex size-2">
-                                <span class="absolute inline-flex size-full animate-ping rounded-full bg-teal-400 opacity-75"></span>
-                                <span class="relative inline-flex size-2 rounded-full bg-teal-400"></span>
+                            <div class="absolute bottom-5 end-5 z-10 rounded-full border border-white/15 bg-black/40 p-1 backdrop-blur-md">
+                                <flux:carousel.controls name="home-banners-carousel" />
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            @else
+                <div class="group relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-zinc-950 text-white shadow-xl dark:border-zinc-800/80 lg:col-span-2 lg:row-span-2">
+                    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(45,212,191,0.35),_transparent_55%),radial-gradient(ellipse_at_bottom_left,_rgba(99,102,241,0.25),_transparent_55%)]"></div>
+                    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]"></div>
+                    <div class="pointer-events-none absolute -bottom-32 -start-16 size-96 rounded-full bg-teal-500/20 blur-3xl transition-transform duration-1000 group-hover:scale-125"></div>
+
+                    <div class="relative flex h-full flex-col justify-between gap-10 p-7 md:p-12">
+                        <div class="space-y-5">
+                            <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold backdrop-blur">
+                                <span class="relative flex size-2">
+                                    <span class="absolute inline-flex size-full animate-ping rounded-full bg-teal-400 opacity-75"></span>
+                                    <span class="relative inline-flex size-2 rounded-full bg-teal-400"></span>
+                                </span>
+                                {{ __('general.home_hero_badge') }}
                             </span>
-                            {{ __('general.home_hero_badge') }}
-                        </span>
 
-                        <h1 class="max-w-xl text-3xl font-black leading-[1.2] tracking-tight md:text-5xl">
-                            {{ __('general.home_hero_title') }}
-                        </h1>
+                            <h1 class="max-w-xl text-3xl font-black leading-[1.2] tracking-tight md:text-5xl">
+                                {{ __('general.home_hero_title') }}
+                            </h1>
 
-                        <p class="max-w-lg text-sm leading-7 text-zinc-300 md:text-lg">
-                            {{ __('general.home_hero_subtitle') }}
-                        </p>
+                            <p class="max-w-lg text-sm leading-7 text-zinc-300 md:text-lg">
+                                {{ __('general.home_hero_subtitle') }}
+                            </p>
 
-                        <div class="flex flex-wrap gap-3 pt-1">
-                            <flux:button href="{{ route('search.index') }}" wire:navigate variant="primary" color="teal" icon="shopping-bag" class="!rounded-full shadow-lg shadow-teal-500/30">
-                                {{ __('general.home_hero_browse') }}
-                            </flux:button>
-                            <flux:button href="{{ route('post.index') }}" wire:navigate variant="ghost" icon="newspaper" class="!rounded-full !text-white hover:!bg-white/10">
-                                {{ __('general.home_hero_blog') }}
-                            </flux:button>
+                            <div class="flex flex-wrap gap-3 pt-1">
+                                <flux:button href="{{ route('search.index') }}" wire:navigate variant="primary" color="teal" icon="shopping-bag" class="!rounded-full shadow-lg shadow-teal-500/30">
+                                    {{ __('general.home_hero_browse') }}
+                                </flux:button>
+                                <flux:button href="{{ route('post.index') }}" wire:navigate variant="ghost" icon="newspaper" class="!rounded-full !text-white hover:!bg-white/10">
+                                    {{ __('general.home_hero_blog') }}
+                                </flux:button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 md:gap-3">
+                            @foreach([
+                                ['icon' => 'truck', 'label' => __('general.home_hero_stat_shipping')],
+                                ['icon' => 'shield-check', 'label' => __('general.home_hero_stat_original')],
+                                ['icon' => 'badge-check', 'label' => __('general.home_hero_stat_warranty')],
+                            ] as $stat)
+                                <div class="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2.5 backdrop-blur-sm md:gap-3 md:px-4 md:py-3">
+                                    <flux:icon :name="$stat['icon']" class="size-4 shrink-0 text-teal-300 md:size-5" />
+                                    <span class="text-[11px] font-semibold text-zinc-100 md:text-sm">{{ $stat['label'] }}</span>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
-
-                    <div class="grid grid-cols-3 gap-2 md:gap-3">
-                        @foreach([
-                            ['icon' => 'truck', 'label' => __('general.home_hero_stat_shipping')],
-                            ['icon' => 'shield-check', 'label' => __('general.home_hero_stat_original')],
-                            ['icon' => 'badge-check', 'label' => __('general.home_hero_stat_warranty')],
-                        ] as $stat)
-                            <div class="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2.5 backdrop-blur-sm md:gap-3 md:px-4 md:py-3">
-                                <flux:icon :name="$stat['icon']" class="size-4 shrink-0 text-teal-300 md:size-5" />
-                                <span class="text-[11px] font-semibold text-zinc-100 md:text-sm">{{ $stat['label'] }}</span>
-                            </div>
-                        @endforeach
-                    </div>
                 </div>
-            </div>
+            @endif
 
             {{-- Promo: special offers --}}
             <a

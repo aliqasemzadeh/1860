@@ -184,5 +184,10 @@ return [
         'content_box_create' => 'ایجاد باکس برند و محصول',
         'content_box_edit' => 'ویرایش باکس برند و محصول',
         'content_box_delete' => 'حذف باکس برند و محصول',
+
+        'content_banner_index' => 'فهرست بنرها',
+        'content_banner_create' => 'ایجاد بنر',
+        'content_banner_edit' => 'ویرایش بنر',
+        'content_banner_delete' => 'حذف بنر',
     ],
 ];

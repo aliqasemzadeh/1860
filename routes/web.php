@@ -121,6 +121,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/panel/content/post/index', \App\Livewire\Panel\Content\Post\Index::class)
         ->name('panel.content.post.index');
+    Route::get('/panel/content/banner/index', \App\Livewire\Panel\Content\Banner\Index::class)
+        ->name('panel.content.banner.index');
 
 });
 

@@ -183,5 +183,10 @@ return [
         'content_box_create' => 'Create Box',
         'content_box_edit' => 'Edit Box',
         'content_box_delete' => 'Delete Box',
+
+        'content_banner_index' => 'Banners List',
+        'content_banner_create' => 'Create Banner',
+        'content_banner_edit' => 'Edit Banner',
+        'content_banner_delete' => 'Delete Banner',
     ],
 ];
