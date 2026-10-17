@@ -6,6 +6,13 @@
         "C:\\Users\\SRS\\Herd\\1860\\artisan",
         "boost:mcp"
       ]
+    },
+    "flux-docs": {
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "livewire-flux-mcp"
+      ]
     }
   }
 }
