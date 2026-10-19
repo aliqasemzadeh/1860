@@ -41,7 +41,6 @@
             $imageUrls = $allImages->map(fn ($img) => Storage::url($img['file_path']))->values()->all();
             $highlights = $this->highlights;
             $specGroups = $this->specGroups;
-            $storyImages = collect($imageUrls)->slice(1)->take(3)->values();
         @endphp
 
         <div class="pb-28 antialiased lg:pb-12">
@@ -93,10 +92,10 @@
                 @endcan
 
                 {{-- ═══════════════════════ Showcase: gallery + purchase panel ═══════════════════════ --}}
-                <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
+                <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
 
                     {{-- Interactive showcase gallery (right side in RTL) --}}
-                    <div class="lg:col-span-7">
+                    <div class="lg:col-span-5 xl:col-span-5">
                         <div
                             class="lg:sticky lg:top-24"
                             x-data="{
@@ -157,6 +156,7 @@
 
                                 @if(count($imageUrls))
                                     <img
+                                        src="{{ $imageUrls[0] }}"
                                         x-bind:src="current"
                                         x-bind:style="{ transformOrigin: origin, transform: zoom ? 'scale(1.9)' : 'scale(1)' }"
                                         x-bind:class="zoom ? 'cursor-zoom-in' : ''"
@@ -240,26 +240,30 @@
                                 </flux:modal.trigger>
                             </div>
 
-                            {{-- Fullscreen gallery modal --}}
-                            <flux:modal name="product.gallery" variant="bare" class="w-full max-w-5xl p-0">
-                                <div class="relative overflow-hidden rounded-3xl border border-zinc-200/80 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
-                                    <div class="flex items-center justify-between border-b border-zinc-100 px-5 py-3 dark:border-zinc-800">
-                                        <flux:heading size="sm">{{ __('general.product_gallery') }}</flux:heading>
-                                        <span class="font-mono text-xs text-zinc-400" dir="ltr"><span x-text="index + 1"></span> / <span x-text="images.length"></span></span>
+                            {{-- Fullscreen gallery modal (flyout) --}}
+                            <flux:modal name="product.gallery" flyout position="right" class="w-full md:max-w-2xl">
+                                <div class="flex h-full min-h-0 flex-col gap-4">
+                                    <div class="flex items-center justify-between">
+                                        <flux:heading size="lg">{{ __('general.product_gallery') }}</flux:heading>
+                                        <span class="rounded-full bg-zinc-100 px-3 py-1 font-mono text-xs text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400" dir="ltr">
+                                            <span x-text="index + 1"></span> / <span x-text="images.length"></span>
+                                        </span>
                                     </div>
-                                    <div class="relative aspect-[4/3] bg-gradient-to-b from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-950 md:aspect-[16/9]">
+
+                                    <div class="relative min-h-0 flex-1 overflow-hidden rounded-3xl border border-zinc-200/80 bg-gradient-to-b from-zinc-50 to-zinc-100 dark:border-zinc-800 dark:from-zinc-900 dark:to-zinc-950">
                                         @if(count($imageUrls))
                                             <img x-bind:src="current" alt="{{ product_image_alt($product) }}" class="size-full object-contain p-6" />
                                         @endif
                                         @if(count($imageUrls) > 1)
                                             <div class="absolute inset-x-4 top-1/2 flex -translate-y-1/2 items-center justify-between">
-                                                <flux:button variant="filled" icon="chevron-right" square class="!rounded-full" x-on:click="prev()" />
-                                                <flux:button variant="filled" icon="chevron-left" square class="!rounded-full" x-on:click="next()" />
+                                                <flux:button variant="filled" icon="chevron-right" square class="!rounded-full" x-on:click="prev()" aria-label="prev" />
+                                                <flux:button variant="filled" icon="chevron-left" square class="!rounded-full" x-on:click="next()" aria-label="next" />
                                             </div>
                                         @endif
                                     </div>
+
                                     @if(count($imageUrls) > 1)
-                                        <div class="flex gap-2 overflow-x-auto border-t border-zinc-100 p-4 [scrollbar-width:none] dark:border-zinc-800 [&::-webkit-scrollbar]:hidden">
+                                        <div class="flex shrink-0 gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                                             @foreach($imageUrls as $index => $url)
                                                 <button type="button" x-on:click="select({{ $index }})" class="size-16 shrink-0 overflow-hidden rounded-xl border-2 bg-white p-1 dark:bg-zinc-900" :class="index === {{ $index }} ? 'border-teal-500' : 'border-zinc-200 dark:border-zinc-700'">
                                                     <img src="{{ $url }}" alt="" class="size-full object-contain" loading="lazy" />
@@ -273,7 +277,7 @@
                     </div>
 
                     {{-- Smart purchase & configuration panel (left side in RTL) --}}
-                    <div class="space-y-6 lg:col-span-5">
+                    <div class="min-w-0 space-y-6 lg:col-span-7">
 
                         {{-- Identity --}}
                         <div class="space-y-3">
@@ -498,8 +502,13 @@
                                 </summary>
                                 <div class="max-h-64 space-y-2 overflow-y-auto border-t border-zinc-100 p-3 dark:border-zinc-800">
                                     @foreach($product->prices->where('quantity', '>', 0) as $price)
-                                        <div wire:key="variant-{{ $price->id }}" class="flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/60 {{ $selectedPrice?->id === $price->id ? 'bg-teal-50/70 ring-1 ring-teal-200 dark:bg-teal-950/30 dark:ring-teal-800' : '' }}">
-                                            <div class="flex min-w-0 items-center gap-2">
+                                        <button
+                                            type="button"
+                                            wire:key="variant-{{ $price->id }}"
+                                            wire:click="selectVariant({{ $price->id }})"
+                                            class="flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/60 {{ $selectedPrice?->id === $price->id ? 'bg-teal-50/70 ring-1 ring-teal-200 dark:bg-teal-950/30 dark:ring-teal-800' : '' }}"
+                                        >
+                                            <span class="flex min-w-0 items-center gap-2">
                                                 @if($price->color)
                                                     <span class="size-4 shrink-0 rounded-full border border-black/10" style="background-color: {{ $price->color->hex }};"></span>
                                                     <span class="truncate text-zinc-700 dark:text-zinc-200">{{ $price->color->name }}</span>
@@ -508,12 +517,15 @@
                                                     <span class="text-zinc-300 dark:text-zinc-600">•</span>
                                                     <span class="truncate text-zinc-500 dark:text-zinc-400">{{ $price->warranty->name }}</span>
                                                 @endif
-                                            </div>
-                                            <div class="shrink-0 text-end font-bold text-zinc-900 dark:text-zinc-50">
+                                                @if($selectedPrice?->id === $price->id)
+                                                    <flux:icon.check class="size-4 shrink-0 text-teal-600 dark:text-teal-400" />
+                                                @endif
+                                            </span>
+                                            <span class="shrink-0 text-end font-bold text-zinc-900 dark:text-zinc-50">
                                                 {{ number_format(($price->sale_price && $price->sale_price < $price->price) ? $price->sale_price : $price->price, 0) }}
                                                 <span class="text-[10px] font-medium text-zinc-500">{{ __('general.toman') }}</span>
-                                            </div>
-                                        </div>
+                                            </span>
+                                        </button>
                                     @endforeach
                                 </div>
                             </details>
@@ -524,16 +536,14 @@
                 {{-- ═══════════════════════ Deep-dive tabs ═══════════════════════ --}}
                 <section class="mt-14 md:mt-20">
                     <flux:tab.group>
-                        <div class="sticky top-[4.25rem] z-30 -mx-4 mb-8 border-b border-zinc-200/80 bg-white/80 px-4 py-2 backdrop-blur-lg dark:border-zinc-800/80 dark:bg-zinc-900/80 md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
-                            <flux:tabs variant="segmented" class="w-full md:w-auto">
-                                <flux:tab name="review" icon="sparkles" class="flex-1 md:flex-none">{{ __('general.expert_review') }}</flux:tab>
-                                <flux:tab name="specs" icon="cpu" class="flex-1 md:flex-none">{{ __('general.technical_specifications') }}</flux:tab>
-                                <flux:tab name="reviews" icon="message-square" class="flex-1 md:flex-none">{{ __('general.user_reviews') }}</flux:tab>
-                            </flux:tabs>
-                        </div>
+                        <flux:tabs variant="segmented" scrollable class="mb-8 w-full md:w-auto">
+                            <flux:tab name="review" icon="sparkles" selected class="flex-1 md:flex-none">{{ __('general.expert_review') }}</flux:tab>
+                            <flux:tab name="specs" icon="cpu" class="flex-1 md:flex-none">{{ __('general.technical_specifications') }}</flux:tab>
+                            <flux:tab name="reviews" icon="message-square" class="flex-1 md:flex-none">{{ __('general.user_reviews') }}</flux:tab>
+                        </flux:tabs>
 
                         {{-- Expert review: visual storytelling --}}
-                        <flux:tab.panel name="review" class="!p-0">
+                        <flux:tab.panel name="review" selected class="!p-0">
                             <div class="space-y-12 md:space-y-16">
                                 <div class="mx-auto max-w-3xl text-center">
                                     <flux:heading size="xl" class="text-2xl font-black md:text-3xl">
@@ -551,41 +561,6 @@
                                 @else
                                     <div class="mx-auto max-w-3xl rounded-2xl border border-dashed border-zinc-200 p-8 text-center text-sm text-zinc-400 dark:border-zinc-700">
                                         {{ __('general.empty_description') }}
-                                    </div>
-                                @endif
-
-                                {{-- Zig-zag feature breakdown --}}
-                                @if($storyImages->isNotEmpty() && $highlights->isNotEmpty())
-                                    <div class="space-y-10 md:space-y-14">
-                                        @foreach($storyImages as $i => $image)
-                                            @php $feature = $highlights[$i % $highlights->count()]; @endphp
-                                            <div wire:key="story-{{ $i }}" class="grid items-center gap-6 md:grid-cols-2 md:gap-12">
-                                                <div class="relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-gradient-to-br from-zinc-50 to-zinc-100 dark:border-zinc-800/80 dark:from-zinc-900 dark:to-zinc-950 {{ $i % 2 ? 'md:order-2' : '' }}">
-                                                    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(20,184,166,0.15),transparent_60%)]"></div>
-                                                    <img src="{{ $image }}" alt="{{ product_image_alt($product) }} - {{ $i + 2 }}" loading="lazy" decoding="async" class="relative aspect-[4/3] size-full object-contain p-8 transition-transform duration-700 hover:scale-105" />
-                                                </div>
-                                                <div class="space-y-4 {{ $i % 2 ? 'md:order-1' : '' }}">
-                                                    <span class="inline-flex size-12 items-center justify-center rounded-2xl bg-teal-50 text-teal-600 dark:bg-teal-950/60 dark:text-teal-300">
-                                                        <flux:icon :name="$feature['icon']" class="size-6" />
-                                                    </span>
-                                                    <flux:text class="text-xs font-semibold uppercase tracking-widest text-teal-600 dark:text-teal-400">{{ $feature['label'] }}</flux:text>
-                                                    <flux:heading size="xl" class="text-2xl font-black md:text-3xl">{{ $feature['value'] }}</flux:heading>
-                                                    <flux:text class="leading-7 text-zinc-500">{{ __('general.product_story_subtitle') }}</flux:text>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @elseif($highlights->isNotEmpty())
-                                    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                                        @foreach($highlights as $i => $feature)
-                                            <div wire:key="story-feature-{{ $i }}" class="rounded-3xl border border-zinc-200/80 bg-white p-6 dark:border-zinc-800/80 dark:bg-zinc-900">
-                                                <span class="mb-4 inline-flex size-11 items-center justify-center rounded-2xl bg-teal-50 text-teal-600 dark:bg-teal-950/60 dark:text-teal-300">
-                                                    <flux:icon :name="$feature['icon']" class="size-5" />
-                                                </span>
-                                                <div class="text-lg font-black">{{ $feature['value'] }}</div>
-                                                <div class="text-xs text-zinc-500">{{ $feature['label'] }}</div>
-                                            </div>
-                                        @endforeach
                                     </div>
                                 @endif
                             </div>

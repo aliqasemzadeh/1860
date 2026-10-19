@@ -1,10 +1,10 @@
 <div>
     @if (count($this->socials) > 0)
-        <div class="space-y-3">
+        <div class="flex flex-col items-center gap-2.5 md:items-start">
             <flux:text class="text-xs font-bold text-zinc-500 dark:text-zinc-400">
                 {{ __('general.follow_us') }}
             </flux:text>
-            <div class="flex flex-wrap items-center gap-2">
+            <div class="flex flex-wrap items-center justify-center gap-2">
                 @foreach ($this->socials as $key => $url)
                     @php($network = \App\Enums\SocialNetworkEnum::from($key))
                     <flux:tooltip content="{{ $network->label() }}">
@@ -18,6 +18,7 @@
                             :icon="$network->icon()"
                             icon:variant="outline"
                             square
+                            class="!rounded-full shadow-sm transition-transform hover:-translate-y-0.5"
                         />
                     </flux:tooltip>
                 @endforeach

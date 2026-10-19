@@ -5,6 +5,7 @@ namespace App\Livewire\Main\Order;
 use App\Models\Shop\Order;
 use Flux\Flux;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Shetabit\Multipay\Invoice;
@@ -22,13 +23,15 @@ class Payment extends Component
         $this->orderId = $id;
     }
 
-    public function getOrderProperty()
+    #[Computed]
+    public function order(): ?Order
     {
         if (! auth()->check()) {
             return null;
         }
 
         return Order::query()
+            ->with(['items', 'shippingMethod'])
             ->where('id', $this->orderId)
             ->where('user_id', auth()->id())
             ->first();

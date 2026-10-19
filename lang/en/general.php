@@ -1370,4 +1370,8 @@ return [
     'only_trashed' => 'Only Trashed',
     'restore' => 'Restore',
     'force_delete' => 'Force Delete',
+    'all_rights_reserved' => 'All rights reserved.',
+    'footer_quick_access' => 'Quick Access',
+    'footer_trust_badge' => 'eNamad Trust Seal',
+    'track_orders' => 'Track Orders',
 ];

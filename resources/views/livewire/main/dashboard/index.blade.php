@@ -280,7 +280,7 @@
         @endif
 
         {{-- ═══════════════════════ Brand Islands (GPlus, Meva, ...) ═══════════════════════ --}}
-        <livewire:main.content.box.index :key="'home-brand-boxes'" lazy />
+        <livewire:main.content.box.index :key="'home-brand-boxes'" />
 
         {{-- ═══════════════════════ Special offers ═══════════════════════ --}}
         @if($this->discountedProducts->isNotEmpty())
@@ -431,54 +431,87 @@
 
         {{-- ═══════════════════════ Home Footer (Blog, Contact, Socials, eNamad) ═══════════════════════ --}}
         @php($general = app(\App\Settings\GeneralSettings::class))
-        <footer class="overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-zinc-50/80 p-6 md:p-10 shadow-sm dark:border-zinc-800/80 dark:bg-zinc-900/70">
-            <div class="grid grid-cols-1 gap-8 md:grid-cols-12 items-center">
-                {{-- Brand & Quick Links (Blog, Contact Us) --}}
-                <div class="md:col-span-5 space-y-4">
-                    <div class="flex items-center gap-3">
-                        @if ($general->logo_path)
-                            <img src="{{ $general->logoUrl() }}" alt="{{ $general->title }}" class="h-10 w-auto object-contain" />
-                        @endif
-                        <div>
-                            <flux:heading size="lg" class="font-extrabold">{{ $general->title }}</flux:heading>
-                            <flux:text class="text-xs text-zinc-500 dark:text-zinc-400">{{ __('general.home_hero_badge') }}</flux:text>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-wrap items-center gap-2 pt-1">
-                        <flux:button
-                            href="{{ route('post.index') }}"
-                            wire:navigate
-                            variant="filled"
-                            size="sm"
-                            icon="newspaper"
-                            class="!rounded-xl"
-                        >
-                            {{ __('general.blog') }}
-                        </flux:button>
-
-                        <flux:button
-                            href="{{ route('contact.index') }}"
-                            wire:navigate
-                            variant="filled"
-                            size="sm"
-                            icon="mail"
-                            class="!rounded-xl"
-                        >
-                            {{ __('general.contact_us') }}
-                        </flux:button>
+        <footer class="overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-gradient-to-b from-zinc-50 to-white shadow-sm dark:border-zinc-800/80 dark:from-zinc-900 dark:to-zinc-900/70">
+            {{-- Top: brand + trust seal --}}
+            <div class="flex items-center justify-between gap-4 border-b border-zinc-200/70 p-5 dark:border-zinc-800 md:p-8">
+                <div class="flex min-w-0 items-center gap-3">
+                    @if ($general->logo_path)
+                        <span class="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-1.5 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+                            <img src="{{ $general->logoUrl() }}" alt="{{ $general->title }}" class="size-full object-contain" />
+                        </span>
+                    @endif
+                    <div class="min-w-0">
+                        <flux:heading size="lg" class="truncate font-extrabold">{{ $general->title }}</flux:heading>
+                        <flux:text class="truncate text-xs text-zinc-500 dark:text-zinc-400">{{ __('general.home_hero_badge') }}</flux:text>
                     </div>
                 </div>
 
-                {{-- Follow Us (Socials) --}}
-                <div class="md:col-span-4">
-                    <livewire:main.sidebar.socials :key="'home-footer-socials'" defer />
-                </div>
-
-                {{-- eNamad Trust Seal --}}
-                <div class="md:col-span-3 flex md:justify-end">
+                <div class="shrink-0" title="{{ __('general.footer_trust_badge') }}">
                     @include('partials.enamad')
                 </div>
+            </div>
+
+            {{-- Middle: quick access links --}}
+            <div class="border-b border-zinc-200/70 p-5 dark:border-zinc-800 md:p-8">
+                <flux:text class="mb-4 text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                    {{ __('general.footer_quick_access') }}
+                </flux:text>
+                <div class="grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap">
+                    <flux:button
+                        href="{{ route('post.index') }}"
+                        wire:navigate
+                        variant="filled"
+                        size="sm"
+                        icon="newspaper"
+                        class="!rounded-xl max-sm:w-full"
+                    >
+                        {{ __('general.blog') }}
+                    </flux:button>
+
+                    <flux:button
+                        href="{{ route('contact.index') }}"
+                        wire:navigate
+                        variant="filled"
+                        size="sm"
+                        icon="mail"
+                        class="!rounded-xl max-sm:w-full"
+                    >
+                        {{ __('general.contact_us') }}
+                    </flux:button>
+
+                    <flux:button
+                        href="{{ route('search.index') }}"
+                        wire:navigate
+                        variant="filled"
+                        size="sm"
+                        icon="magnifying-glass"
+                        class="!rounded-xl max-sm:w-full"
+                    >
+                        {{ __('general.search') }}
+                    </flux:button>
+
+                    @auth
+                        <flux:button
+                            href="{{ route('order.index') }}"
+                            wire:navigate
+                            variant="filled"
+                            size="sm"
+                            icon="truck"
+                            class="!rounded-xl max-sm:w-full"
+                        >
+                            {{ __('general.track_orders') }}
+                        </flux:button>
+                    @endauth
+                </div>
+            </div>
+
+            {{-- Bottom: socials + copyright --}}
+            <div class="flex flex-col items-center gap-4 p-5 md:flex-row md:justify-between md:p-8">
+                <livewire:main.sidebar.socials :key="'home-footer-socials'" />
+
+                <flux:text class="text-center text-[11px] leading-5 text-zinc-400 dark:text-zinc-500">
+                    {{ $general->title }} — {{ __('general.all_rights_reserved') }}
+                </flux:text>
             </div>
         </footer>
     </div>

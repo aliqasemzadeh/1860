@@ -3,6 +3,7 @@
 namespace App\Livewire\Main\Order;
 
 use App\Models\Shop\Product;
+use App\Models\Shop\ProductPrice;
 use Binafy\LaravelCart\Models\Cart as UserCart;
 use Binafy\LaravelCart\Models\CartItem;
 use Flux\Flux;
@@ -43,6 +44,53 @@ class Cart extends Component
         return $this->cartItems->contains(fn (CartItem $item): bool => ! $this->isItemPurchasable($item));
     }
 
+    /**
+     * All selected price rows for the current cart, loaded in a single query.
+     *
+     * @return array<int, ProductPrice>
+     */
+    #[Computed]
+    public function priceMap(): array
+    {
+        $priceIds = $this->cartItems
+            ->map(function (CartItem $item) {
+                $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
+
+                return $options['price_id'] ?? null;
+            })
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($priceIds->isEmpty()) {
+            return [];
+        }
+
+        return ProductPrice::query()
+            ->whereIn('id', $priceIds)
+            ->get()
+            ->keyBy('id')
+            ->all();
+    }
+
+    /**
+     * Effective unit price for a cart item (variant-aware).
+     */
+    public function itemPrice(CartItem $item): float
+    {
+        $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
+        $priceId = $options['price_id'] ?? null;
+        $priceRecord = $priceId ? ($this->priceMap[$priceId] ?? null) : null;
+
+        if ($priceRecord) {
+            return (float) ($priceRecord->sale_price && $priceRecord->sale_price < $priceRecord->price
+                ? $priceRecord->sale_price
+                : $priceRecord->price);
+        }
+
+        return (float) ($item->itemable?->getPrice() ?? 0);
+    }
+
     #[Computed]
     public function totalAmount()
     {
@@ -56,19 +104,7 @@ class Cart extends Component
                 continue;
             }
 
-            $price = $item->itemable->getPrice();
-            // Get price from options if available
-            $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
-            $priceId = $options['price_id'] ?? null;
-            if ($priceId) {
-                $priceRecord = \App\Models\Shop\ProductPrice::find($priceId);
-                if ($priceRecord) {
-                    $price = $priceRecord->sale_price && $priceRecord->sale_price < $priceRecord->price
-                        ? $priceRecord->sale_price
-                        : $priceRecord->price;
-                }
-            }
-            $total += $price * $item->quantity;
+            $total += $this->itemPrice($item) * $item->quantity;
         }
 
         return $total;
@@ -135,7 +171,7 @@ class Cart extends Component
         $priceId = $options['price_id'] ?? null;
 
         if ($priceId) {
-            return \App\Models\Shop\ProductPrice::find($priceId);
+            return $this->priceMap[$priceId] ?? ProductPrice::find($priceId);
         }
 
         return $cartItem->itemable->default_price['record'] ?? null;

@@ -41,6 +41,14 @@ class View extends Component
         if ($this->slug === null || $this->slug !== $canonicalSlug) {
             return redirect()->to($product->url, 301);
         }
+
+        // Pre-select the default variant (color / warranty) so the
+        // purchase panel shows a concrete price from the start.
+        $defaultPrice = $product->default_price['record'] ?? null;
+        if ($defaultPrice) {
+            $this->selectedColorId = $defaultPrice->color_id;
+            $this->selectedWarrantyId = $defaultPrice->warranty_id;
+        }
     }
 
     #[Computed]
@@ -75,47 +83,34 @@ class View extends Component
             return null;
         }
 
+        // No explicit selection: fall back to the default price record.
+        if (! $this->selectedColorId && ! $this->selectedWarrantyId) {
+            return $this->product->default_price['record'] ?? null;
+        }
+
         $query = ProductPrice::query()
             ->where('product_id', $this->product->id)
-            ->where('quantity', '>', 0);
+            ->where(function ($q) {
+                $this->selectedColorId
+                    ? $q->where('color_id', $this->selectedColorId)
+                    : $q->whereNull('color_id');
+            })
+            ->where(function ($q) {
+                $this->selectedWarrantyId
+                    ? $q->where('warranty_id', $this->selectedWarrantyId)
+                    : $q->whereNull('warranty_id');
+            });
 
-        if ($this->selectedColorId) {
-            $query->where('color_id', $this->selectedColorId);
-        } else {
-            $query->whereNull('color_id');
-        }
+        // Prefer an in-stock row, otherwise show the variant anyway (out of stock state).
+        $price = (clone $query)
+            ->orderByRaw('CASE WHEN quantity > 0 THEN 0 ELSE 1 END')
+            ->orderByDesc('is_default')
+            ->orderByDesc('created_at')
+            ->first();
 
-        if ($this->selectedWarrantyId) {
-            $query->where('warranty_id', $this->selectedWarrantyId);
-        } else {
-            $query->whereNull('warranty_id');
-        }
-
-        $price = $query->first();
-
-        // If no exact match, try to find a price with just color or just warranty
-        if (! $price && $this->selectedColorId) {
-            $price = ProductPrice::query()
-                ->where('product_id', $this->product->id)
-                ->where('color_id', $this->selectedColorId)
-                ->whereNull('warranty_id')
-                ->where('quantity', '>', 0)
-                ->first();
-        }
-
-        if (! $price && $this->selectedWarrantyId) {
-            $price = ProductPrice::query()
-                ->where('product_id', $this->product->id)
-                ->where('warranty_id', $this->selectedWarrantyId)
-                ->whereNull('color_id')
-                ->where('quantity', '>', 0)
-                ->first();
-        }
-
-        // If still no match, use default price
+        // No price row exists for this combination: fall back to the default record.
         if (! $price) {
-            $default = $this->product->default_price;
-            $price = $default['record'] ?? null;
+            return $this->product->default_price['record'] ?? null;
         }
 
         return $price;
@@ -124,13 +119,34 @@ class View extends Component
     public function selectColor($colorId)
     {
         $this->selectedColorId = $colorId;
-        $this->dispatch('price-updated');
+        $this->quantity = 1;
+        unset($this->selectedPrice);
     }
 
     public function selectWarranty($warrantyId)
     {
         $this->selectedWarrantyId = $warrantyId;
-        $this->dispatch('price-updated');
+        $this->quantity = 1;
+        unset($this->selectedPrice);
+    }
+
+    /**
+     * Directly select a variant row from the "available variants" list.
+     */
+    public function selectVariant(int $priceId)
+    {
+        $price = ProductPrice::query()
+            ->where('product_id', $this->product?->id)
+            ->find($priceId);
+
+        if (! $price) {
+            return;
+        }
+
+        $this->selectedColorId = $price->color_id;
+        $this->selectedWarrantyId = $price->warranty_id;
+        $this->quantity = 1;
+        unset($this->selectedPrice);
     }
 
     public function increaseQuantity()

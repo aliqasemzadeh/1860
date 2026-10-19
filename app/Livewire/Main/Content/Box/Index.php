@@ -6,6 +6,7 @@ use App\Models\Content\Box;
 use App\Models\Shop\Product;
 use Binafy\LaravelCart\Models\Cart;
 use Flux\Flux;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -16,23 +17,27 @@ class Index extends Component
     #[Computed]
     public function boxes()
     {
-        return Box::query()
-            ->where('is_active', true)
-            ->ordered()
-            ->with([
-                'media',
-                'products' => function ($query) {
-                    $query->select('products.*')
-                        ->active()
-                        ->with('category:id,name')
-                        ->withCount(['colors', 'warranties'])
-                        ->withEffectivePrice()
-                        ->orderByAvailability()
-                        ->orderByDesc('products.created_at')
-                        ->limit(self::PRODUCTS_PER_BOX);
-                },
-            ])
-            ->get();
+        return Cache::remember(
+            'home.brand_boxes',
+            now()->addMinutes(30),
+            fn () => Box::query()
+                ->where('is_active', true)
+                ->ordered()
+                ->with([
+                    'media',
+                    'products' => function ($query) {
+                        $query->select('products.*')
+                            ->active()
+                            ->with('category:id,name')
+                            ->withCount(['colors', 'warranties'])
+                            ->withEffectivePrice()
+                            ->orderByAvailability()
+                            ->orderByDesc('products.created_at')
+                            ->limit(self::PRODUCTS_PER_BOX);
+                    },
+                ])
+                ->get()
+        );
     }
 
     /**

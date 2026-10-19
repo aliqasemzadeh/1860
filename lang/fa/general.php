@@ -1370,4 +1370,8 @@ return [
     'only_trashed' => 'فقط زباله‌دان',
     'restore' => 'بازیابی',
     'force_delete' => 'حذف دائمی',
+    'all_rights_reserved' => 'تمامی حقوق مادی و معنوی این فروشگاه محفوظ است.',
+    'footer_quick_access' => 'دسترسی سریع',
+    'footer_trust_badge' => 'نماد اعتماد الکترونیکی',
+    'track_orders' => 'پیگیری سفارش‌ها',
 ];

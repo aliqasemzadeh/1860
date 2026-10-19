@@ -267,6 +267,16 @@ class Shipping extends Component
         $this->city_id = null; // Reset city when province changes
     }
 
+    /**
+     * React to selecting a saved address so shipping rates recalculate immediately.
+     */
+    public function updatedSelectedAddressId($addressId): void
+    {
+        if ($addressId) {
+            $this->loadAddress($addressId);
+        }
+    }
+
     public function loadAddress($addressId)
     {
         $address = CustomerShippingAddress::find($addressId);
@@ -591,11 +601,20 @@ class Shipping extends Component
         }
     }
 
-    public function toggleNewAddressForm()
+    public function openNewAddressForm(): void
     {
-        $this->showNewAddressForm = ! $this->showNewAddressForm;
-        if (! $this->showNewAddressForm) {
+        $this->resetNewAddressFields();
+        $this->showNewAddressForm = true;
+    }
+
+    /**
+     * Reset the form whenever the flyout gets closed without saving.
+     */
+    public function updatedShowNewAddressForm(bool $value): void
+    {
+        if (! $value) {
             $this->resetNewAddressFields();
+            $this->resetValidation();
         }
     }
 
@@ -650,6 +669,10 @@ class Shipping extends Component
         $taxAmount = 0; // Can be calculated later
         $total = $subtotal + $shippingAmount + $taxAmount - $discountAmount;
 
+        // Resolve human-readable province/city names for the order snapshot.
+        $provinceName = $address->province_name;
+        $cityName = $address->city_name;
+
         // Create order
         $order = Order::create([
             'user_id' => auth()->id(),
@@ -668,7 +691,9 @@ class Shipping extends Component
                 'name' => $address->name,
                 'address' => $address->address,
                 'province_id' => $address->province_id,
+                'province_name' => $provinceName,
                 'city_id' => $address->city_id,
+                'city_name' => $cityName,
                 'postal_code' => $address->postal_code,
                 'emergency_contact' => $address->emergency_contact,
             ],

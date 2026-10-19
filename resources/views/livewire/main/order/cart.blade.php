@@ -4,189 +4,142 @@
 
 <div>
     @auth
-        <section class="py-8 antialiased md:py-12">
+        <section class="py-6 antialiased md:py-10">
             <div class="mx-auto max-w-7xl px-4 2xl:px-0">
                 {{-- Breadcrumb --}}
-                <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-                    <a href="{{ route('home') }}" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-                        {{ __('general.dashboard') }}
-                    </a>
-                    <span>/</span>
-                    <span class="text-zinc-900 dark:text-zinc-100 font-medium">{{ __('general.shopping_cart') }}</span>
-                </nav>
+                <flux:breadcrumbs class="mb-6">
+                    <flux:breadcrumbs.item href="{{ route('home') }}" wire:navigate>{{ __('general.home') }}</flux:breadcrumbs.item>
+                    <flux:breadcrumbs.item>{{ __('general.shopping_cart') }}</flux:breadcrumbs.item>
+                </flux:breadcrumbs>
 
                 {{-- Page Header --}}
-                <div class="mb-8">
-                    <flux:heading size="xl">{{ __('general.shopping_cart') }}</flux:heading>
-                    <flux:text class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('general.shopping_cart_description') }}</flux:text>
+                <div class="mb-8 flex items-center gap-3">
+                    <span class="flex size-11 items-center justify-center rounded-2xl bg-teal-50 text-teal-600 dark:bg-teal-950/50 dark:text-teal-400">
+                        <flux:icon.shopping-cart class="size-6" />
+                    </span>
+                    <div>
+                        <flux:heading size="xl">{{ __('general.shopping_cart') }}</flux:heading>
+                        <flux:text class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ __('general.shopping_cart_description') }}</flux:text>
+                    </div>
                 </div>
 
                 @if($this->cartItems && $this->cartItems->count() > 0)
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
                         {{-- Cart Items --}}
-                        <div class="lg:col-span-2 space-y-4">
+                        <div class="space-y-4 lg:col-span-2">
                             @foreach($this->cartItems as $item)
                                 @if($item->itemable)
-                                    <div class="flex flex-col sm:flex-row gap-4 p-4 sm:p-6 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-sm">
-                                        <div class="flex gap-4 items-start flex-1 min-w-0">
+                                    @php
+                                        $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
+                                        $itemPrice = $this->itemPrice($item);
+                                        $isActive = (bool) $item->itemable->is_active;
+                                    @endphp
+                                    <div
+                                        wire:key="cart-item-{{ $item->id }}"
+                                        class="flex flex-col gap-4 rounded-3xl border border-zinc-200/80 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800/80 dark:bg-zinc-900 sm:p-5 {{ ! $isActive ? 'opacity-75' : '' }}"
+                                    >
+                                        <div class="flex items-start gap-4">
                                             {{-- Product Image --}}
-                                            @if(method_exists($item->itemable, 'file_path') && $item->itemable->file_path)
-                                                <div class="flex-shrink-0">
-                                                    <a href="{{ $item->itemable->url }}">
-                                                        <img
-                                                            src="{{ \Illuminate\Support\Facades\Storage::url($item->itemable->file_path) }}"
-                                                            alt="{{ product_image_alt($item->itemable->name ?? '') }}"
-                                                            loading="lazy"
-                                                            decoding="async"
-                                                            class="size-20 sm:size-24 object-cover rounded-xl border border-zinc-200 dark:border-zinc-700"
-                                                        />
-                                                    </a>
-                                                </div>
+                                            @if($item->itemable->file_path)
+                                                <a href="{{ $item->itemable->url }}" wire:navigate class="shrink-0">
+                                                    <img
+                                                        src="{{ \Illuminate\Support\Facades\Storage::url($item->itemable->file_path) }}"
+                                                        alt="{{ product_image_alt($item->itemable) }}"
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                        class="size-20 rounded-2xl border border-zinc-200 object-cover dark:border-zinc-700 sm:size-24"
+                                                    />
+                                                </a>
                                             @endif
 
                                             {{-- Product Info --}}
-                                            <div class="flex-1 min-w-0">
-                                                <a href="{{ $item->itemable->url }}">
-                                                    <flux:heading size="md" class="mb-1.5 sm:mb-2 text-sm sm:text-base text-zinc-900 dark:text-zinc-100 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors line-clamp-2">
+                                            <div class="min-w-0 flex-1">
+                                                <a href="{{ $item->itemable->url }}" wire:navigate>
+                                                    <flux:heading size="md" class="mb-2 line-clamp-2 text-sm transition-colors hover:text-teal-600 sm:text-base dark:hover:text-teal-400">
                                                         {{ $item->itemable->name ?? __('general.product') }}
                                                     </flux:heading>
                                                 </a>
 
                                                 {{-- Options (Color, Warranty) --}}
-                                                @if($item->options)
-                                                    @php
-                                                        $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
-                                                    @endphp
-                                                    <div class="flex flex-wrap gap-2.5 sm:gap-4 mb-2">
+                                                @if($options)
+                                                    <div class="mb-2 flex flex-wrap items-center gap-x-4 gap-y-1.5">
                                                         @if(isset($options['color']))
-                                                            <div class="flex items-center gap-1.5">
-                                                                <div
-                                                                    class="size-4 sm:size-5 rounded-full border border-zinc-300 dark:border-zinc-600"
+                                                            <span class="inline-flex items-center gap-1.5">
+                                                                <span
+                                                                    class="size-4 rounded-full border border-zinc-300 dark:border-zinc-600"
                                                                     style="background-color: {{ $options['color']['hex'] ?? '#000' }};"
-                                                                ></div>
-                                                                <flux:text class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+                                                                ></span>
+                                                                <flux:text class="text-xs text-zinc-600 dark:text-zinc-400 sm:text-sm">
                                                                     {{ $options['color']['name'] ?? '' }}
                                                                 </flux:text>
-                                                            </div>
+                                                            </span>
                                                         @endif
                                                         @if(isset($options['warranty']))
-                                                            <flux:text class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+                                                            <flux:text class="text-xs text-zinc-600 dark:text-zinc-400 sm:text-sm">
                                                                 {{ __('general.warranty') }}: {{ $options['warranty']['name'] ?? '' }}
                                                             </flux:text>
                                                         @endif
                                                     </div>
                                                 @endif
 
-                                                {{-- Price (Desktop) --}}
-                                                <div class="hidden sm:block">
-                                                    @if(! $item->itemable->is_active)
-                                                        <flux:badge color="red" size="sm">{{ __('general.out_of_stock') }}</flux:badge>
-                                                    @else
-                                                        @php
-                                                            $itemPrice = $item->itemable->getPrice();
-                                                            $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
-                                                            $priceId = $options['price_id'] ?? null;
-                                                            if ($priceId) {
-                                                                $priceRecord = \App\Models\Shop\ProductPrice::find($priceId);
-                                                                if ($priceRecord) {
-                                                                    $itemPrice = $priceRecord->sale_price && $priceRecord->sale_price < $priceRecord->price
-                                                                        ? $priceRecord->sale_price
-                                                                        : $priceRecord->price;
-                                                                }
-                                                            }
-                                                        @endphp
-                                                        <div class="mt-2">
-                                                            <flux:text class="text-base sm:text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                                                                {{ number_format($itemPrice * $item->quantity, 0) }} {{ __('general.toman') }}
-                                                            </flux:text>
-                                                            @if($item->quantity > 1)
-                                                                <flux:text class="text-xs text-zinc-500 block mt-0.5">
-                                                                    {{ number_format($itemPrice, 0) }} {{ __('general.toman') }} × {{ $item->quantity }}
-                                                                </flux:text>
-                                                            @endif
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-
-                                            {{-- Delete Button (Mobile) --}}
-                                            <button
-                                                type="button"
-                                                wire:click="removeItem({{ $item->id }})"
-                                                class="sm:hidden text-red-500 hover:text-red-700 p-1"
-                                                title="{{ __('general.remove_item') }}"
-                                            >
-                                                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-
-                                        {{-- Bottom row on Mobile / Right column on Desktop --}}
-                                        <div class="flex items-center justify-between sm:flex-col sm:items-end sm:justify-between border-t border-zinc-100 dark:border-zinc-800 pt-3 sm:border-0 sm:pt-0 gap-3">
-                                            {{-- Price (Mobile) --}}
-                                            <div class="sm:hidden">
-                                                @if(! $item->itemable->is_active)
+                                                @if(! $isActive)
                                                     <flux:badge color="red" size="sm">{{ __('general.out_of_stock') }}</flux:badge>
                                                 @else
-                                                    @php
-                                                        $itemPrice = $item->itemable->getPrice();
-                                                        $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
-                                                        $priceId = $options['price_id'] ?? null;
-                                                        if ($priceId) {
-                                                            $priceRecord = \App\Models\Shop\ProductPrice::find($priceId);
-                                                            if ($priceRecord) {
-                                                                $itemPrice = $priceRecord->sale_price && $priceRecord->sale_price < $priceRecord->price
-                                                                    ? $priceRecord->sale_price
-                                                                    : $priceRecord->price;
-                                                            }
-                                                        }
-                                                    @endphp
-                                                    <flux:text class="text-base font-bold text-zinc-900 dark:text-zinc-100">
-                                                        {{ number_format($itemPrice * $item->quantity, 0) }} {{ __('general.toman') }}
-                                                    </flux:text>
+                                                    <div class="flex items-baseline gap-2">
+                                                        <flux:text class="text-base font-black text-zinc-900 dark:text-zinc-100 sm:text-lg">
+                                                            {{ number_format($itemPrice * $item->quantity, 0) }} {{ __('general.toman') }}
+                                                        </flux:text>
+                                                        @if($item->quantity > 1)
+                                                            <flux:text class="text-xs text-zinc-500">
+                                                                {{ number_format($itemPrice, 0) }} {{ __('general.toman') }} × {{ $item->quantity }}
+                                                            </flux:text>
+                                                        @endif
+                                                    </div>
                                                 @endif
                                             </div>
 
-                                            {{-- Delete Button (Desktop) --}}
-                                            <button
-                                                type="button"
-                                                wire:click="removeItem({{ $item->id }})"
-                                                class="hidden sm:block text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors p-2"
-                                                title="{{ __('general.remove_item') }}"
-                                            >
-                                                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                </svg>
-                                            </button>
+                                            {{-- Delete Button --}}
+                                            <flux:tooltip content="{{ __('general.remove_item') }}">
+                                                <flux:button
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    color="red"
+                                                    icon="trash"
+                                                    square
+                                                    wire:click="removeItem({{ $item->id }})"
+                                                    wire:confirm="{{ __('general.are_you_sure') }}"
+                                                    aria-label="{{ __('general.remove_item') }}"
+                                                />
+                                            </flux:tooltip>
+                                        </div>
 
-                                            {{-- Quantity Controls --}}
-                                            @if($item->itemable->is_active)
-                                                <div class="flex items-center gap-2 sm:gap-3 bg-zinc-50 dark:bg-zinc-800 p-1 rounded-xl border border-zinc-200 dark:border-zinc-700">
-                                                    <button
-                                                        type="button"
+                                        {{-- Quantity Controls --}}
+                                        @if($isActive)
+                                            <div class="flex items-center justify-between border-t border-zinc-100 pt-3 dark:border-zinc-800">
+                                                <flux:text class="text-xs text-zinc-500">{{ __('general.quantity') }}</flux:text>
+                                                <div class="flex items-center gap-1 rounded-2xl border border-zinc-200 bg-zinc-50 p-1 dark:border-zinc-700 dark:bg-zinc-800">
+                                                    <flux:button
+                                                        size="xs"
+                                                        variant="ghost"
+                                                        icon="minus"
+                                                        square
                                                         wire:click="decreaseQuantity({{ $item->id }})"
-                                                        class="size-8 sm:size-9 flex items-center justify-center rounded-lg hover:bg-white dark:hover:bg-zinc-700 transition-colors"
-                                                    >
-                                                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-                                                        </svg>
-                                                    </button>
-                                                    <span class="w-8 text-center text-sm sm:text-base font-bold text-zinc-900 dark:text-zinc-100">
+                                                        aria-label="-"
+                                                    />
+                                                    <span class="min-w-8 text-center text-sm font-bold tabular-nums text-zinc-900 dark:text-zinc-100">
                                                         {{ $item->quantity }}
                                                     </span>
-                                                    <button
-                                                        type="button"
+                                                    <flux:button
+                                                        size="xs"
+                                                        variant="ghost"
+                                                        icon="plus"
+                                                        square
                                                         wire:click="increaseQuantity({{ $item->id }})"
-                                                        class="size-8 sm:size-9 flex items-center justify-center rounded-lg hover:bg-white dark:hover:bg-zinc-700 transition-colors"
-                                                    >
-                                                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                                        </svg>
-                                                    </button>
+                                                        aria-label="+"
+                                                    />
                                                 </div>
-                                            @endif
-                                        </div>
+                                            </div>
+                                        @endif
                                     </div>
                                 @endif
                             @endforeach
@@ -194,10 +147,10 @@
 
                         {{-- Order Summary --}}
                         <div class="lg:col-span-1">
-                            <div class="sticky top-4 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-6">
+                            <div class="sticky top-4 rounded-3xl border border-zinc-200/80 bg-white p-5 shadow-sm dark:border-zinc-800/80 dark:bg-zinc-900 sm:p-6">
                                 <flux:heading size="lg" class="mb-6">{{ __('general.order_summary') }}</flux:heading>
 
-                                <div class="space-y-4 mb-6">
+                                <div class="mb-6 space-y-4">
                                     <div class="flex items-center justify-between">
                                         <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('general.subtotal') }}</flux:text>
                                         <flux:text class="font-medium text-zinc-900 dark:text-zinc-100">
@@ -206,11 +159,11 @@
                                     </div>
                                     <div class="flex items-center justify-between">
                                         <flux:text class="text-zinc-600 dark:text-zinc-400">{{ __('general.shipping') }}</flux:text>
-                                        <flux:text class="font-medium text-zinc-900 dark:text-zinc-100">
+                                        <flux:text class="text-sm text-zinc-400">
                                             {{ __('general.calculated_at_checkout') }}
                                         </flux:text>
                                     </div>
-                                    <div class="border-t border-zinc-200 dark:border-zinc-700 pt-4">
+                                    <div class="border-t border-zinc-200 pt-4 dark:border-zinc-700">
                                         <div class="flex items-center justify-between">
                                             <flux:heading size="md" class="text-zinc-900 dark:text-zinc-100">
                                                 {{ __('general.total') }}
@@ -233,6 +186,8 @@
                                     <flux:button
                                         href="{{ route('order.checkout') }}"
                                         variant="primary"
+                                        color="teal"
+                                        icon="credit-card"
                                         class="w-full"
                                         wire:navigate
                                     >
@@ -240,10 +195,10 @@
                                     </flux:button>
                                 @endif
 
-                                <flux:button 
-                                    href="{{ route('home') }}" 
-                                    variant="ghost" 
-                                    class="w-full mt-3"
+                                <flux:button
+                                    href="{{ route('home') }}"
+                                    variant="ghost"
+                                    class="mt-3 w-full"
                                     wire:navigate
                                 >
                                     {{ __('general.continue_shopping') }}
@@ -252,14 +207,16 @@
                         </div>
                     </div>
                 @else
-                    <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-12">
+                    <div class="rounded-3xl border border-zinc-200/80 bg-white p-12 shadow-sm dark:border-zinc-800/80 dark:bg-zinc-900">
                         <div class="text-center">
-                            <flux:icon.shopping-cart class="w-24 h-24 mx-auto text-zinc-400 dark:text-zinc-600 mb-6" />
+                            <span class="mx-auto mb-6 flex size-20 items-center justify-center rounded-3xl bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500">
+                                <flux:icon.shopping-cart class="size-10" />
+                            </span>
                             <flux:heading size="xl" class="mb-4">{{ __('general.cart_is_empty') }}</flux:heading>
-                            <flux:text class="text-zinc-600 dark:text-zinc-400 mb-8">
+                            <flux:text class="mb-8 text-zinc-600 dark:text-zinc-400">
                                 {{ __('general.cart_is_empty_description') }}
                             </flux:text>
-                            <flux:button href="{{ route('home') }}" variant="primary" wire:navigate>
+                            <flux:button href="{{ route('home') }}" variant="primary" color="teal" wire:navigate>
                                 {{ __('general.continue_shopping') }}
                             </flux:button>
                         </div>
@@ -270,13 +227,13 @@
     @else
         <section class="py-8 antialiased md:py-12">
             <div class="mx-auto max-w-7xl px-4 2xl:px-0">
-                <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm p-12">
+                <div class="rounded-3xl border border-zinc-200/80 bg-white p-12 shadow-sm dark:border-zinc-800/80 dark:bg-zinc-900">
                     <div class="text-center">
                         <flux:heading size="xl" class="mb-4">{{ __('general.please_login') }}</flux:heading>
-                        <flux:text class="text-zinc-600 dark:text-zinc-400 mb-8">
+                        <flux:text class="mb-8 text-zinc-600 dark:text-zinc-400">
                             {{ __('general.please_login_to_view_cart') }}
                         </flux:text>
-                        <flux:button href="{{ route('login') }}" variant="primary" wire:navigate>
+                        <flux:button href="{{ route('login') }}" variant="primary" color="teal" wire:navigate>
                             {{ __('general.login') }}
                         </flux:button>
                     </div>
