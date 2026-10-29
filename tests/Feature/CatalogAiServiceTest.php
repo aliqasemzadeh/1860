@@ -37,6 +37,8 @@ function createCatalogAiProduct(array $attributes = []): Product
         'description' => '',
         'slug' => 'product-'.$id,
         'slug_fa' => 'محصول-'.$id,
+        'file_path' => 'products/sample.jpg',
+        'file_name' => 'sample.jpg',
         'category_id' => $category->id,
         'brand_id' => $brand->id,
         'unit_id' => $unit->id,
@@ -86,7 +88,9 @@ test('product edit generateWithAi fills form without saving', function () {
     ]);
     $product->syncTags(['قدیمی']);
 
-    $user = User::factory()->create();
+    $user = User::create([
+        'mobile' => '0912'.random_int(1000000, 9999999),
+    ]);
 
     Livewire::actingAs($user)
         ->test(Edit::class)
@@ -106,7 +110,9 @@ test('product edit generateWithAi fills form without saving', function () {
 
 test('product edit generateWithAi requires a product name', function () {
     $product = createCatalogAiProduct();
-    $user = User::factory()->create();
+    $user = User::create([
+        'mobile' => '0912'.random_int(1000000, 9999999),
+    ]);
 
     Livewire::actingAs($user)
         ->test(Edit::class)

@@ -96,25 +96,25 @@ test('product schema component renders valid json-ld with required fields', func
     $html = Blade::render('<x-product-schema :product="$product" />', ['product' => $product]);
 
     expect($html)->toContain('application/ld+json')
-        ->and($html)->toContain('"@type": "Product"')
-        ->and($html)->toContain('"name": "Super Gadget"')
-        ->and($html)->toContain('"sku": "'.$product->id.'"')
-        ->and($html)->toContain('"category": "Gadgets"')
-        ->and($html)->toContain('"@type": "Brand"')
-        ->and($html)->toContain('"name": "TechCorp"')
-        ->and($html)->toContain('"@type": "Offer"')
-        ->and($html)->toContain('"priceCurrency": "IRR"')
-        ->and($html)->toContain('"price": "10000000"')
-        ->and($html)->toContain('"priceValidUntil": "'.now()->addDays(30)->toDateString().'"')
+        ->and($html)->toContain('"@type":"Product"')
+        ->and($html)->toContain('"name":"Super Gadget"')
+        ->and($html)->toContain('"sku":"'.$product->id.'"')
+        ->and($html)->toContain('"category":"Gadgets"')
+        ->and($html)->toContain('"@type":"Brand"')
+        ->and($html)->toContain('"name":"TechCorp"')
+        ->and($html)->toContain('"@type":"Offer"')
+        ->and($html)->toContain('"priceCurrency":"IRR"')
+        ->and($html)->toContain('"price":"10000000"')
+        ->and($html)->toContain('"priceValidUntil":"'.now()->addDays(30)->toDateString().'"')
         ->and($html)->toContain('https://schema.org/InStock')
-        ->and($html)->toContain('"@type": "MerchantReturnPolicy"')
-        ->and($html)->toContain('"applicableCountry": "IR"')
+        ->and($html)->toContain('"@type":"MerchantReturnPolicy"')
+        ->and($html)->toContain('"applicableCountry":"IR"')
         ->and($html)->toContain('https://schema.org/MerchantReturnFiniteReturnWindow')
-        ->and($html)->toContain('"merchantReturnDays": 7')
+        ->and($html)->toContain('"merchantReturnDays":7')
         ->and($html)->toContain('https://schema.org/ReturnByMail')
         ->and($html)->toContain('https://schema.org/FreeReturn')
-        ->and($html)->toContain('"@type": "OfferShippingDetails"')
-        ->and($html)->toContain('"@type": "ShippingDeliveryTime"');
+        ->and($html)->toContain('"@type":"OfferShippingDetails"')
+        ->and($html)->toContain('"@type":"ShippingDeliveryTime"');
 });
 
 test('product schema handles out of stock product', function () {
@@ -134,7 +134,7 @@ test('product schema handles out of stock product', function () {
     $html = Blade::render('<x-product-schema :product="$product" />', ['product' => $product]);
 
     expect($html)->toContain('https://schema.org/OutOfStock')
-        ->and($html)->toContain('"name": "Default Brand"')
+        ->and($html)->toContain('"name":"Default Brand"')
         ->and($html)->not->toContain('"category":');
 });
 
@@ -154,13 +154,13 @@ test('product view page contains comprehensive product schema in head', function
 
     $response->assertStatus(200)
         ->assertSee('application/ld+json', false)
-        ->assertSee('"@type": "Product"', false)
+        ->assertSee('"@type":"Product"', false)
         ->assertSee('Wireless Headphones')
-        ->assertSee('"@type": "Offer"', false)
+        ->assertSee('"@type":"Offer"', false)
         ->assertSee('35000000', false)
-        ->assertSee('"@type": "MerchantReturnPolicy"', false)
-        ->assertSee('"@type": "OfferShippingDetails"', false)
-        ->assertSee('"@type": "BreadcrumbList"', false);
+        ->assertSee('"@type":"MerchantReturnPolicy"', false)
+        ->assertSee('"@type":"OfferShippingDetails"', false)
+        ->assertSee('"@type":"BreadcrumbList"', false);
 });
 
 test('seo schema generator creates product schema with return policy and shipping', function () {
