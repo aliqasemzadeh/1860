@@ -30,8 +30,27 @@
                         </flux:field>
 
                         <flux:field>
-                            <flux:label>{{ __('general.description') }}</flux:label>
+                            <div class="mb-2 flex items-center justify-between gap-3">
+                                <flux:label>{{ __('general.description') }}</flux:label>
+                                <flux:tooltip content="{{ __('general.catalog_ai_generate_tooltip') }}">
+                                    <flux:button
+                                        type="button"
+                                        size="xs"
+                                        variant="primary"
+                                        color="violet"
+                                        icon="wand-sparkles"
+                                        icon:variant="outline"
+                                        wire:click="generateWithAi"
+                                        wire:loading.attr="disabled"
+                                        wire:target="generateWithAi"
+                                    >
+                                        <span wire:loading.remove wire:target="generateWithAi">{{ __('general.catalog_ai_generate') }}</span>
+                                        <span wire:loading wire:target="generateWithAi">{{ __('general.catalog_ai_generating') }}</span>
+                                    </flux:button>
+                                </flux:tooltip>
+                            </div>
                             <flux:editor wire:model="description" />
+                            <flux:text class="mt-1 text-xs text-zinc-500">{{ __('general.catalog_ai_generate_hint') }}</flux:text>
                             <flux:error name="description" />
                         </flux:field>
 

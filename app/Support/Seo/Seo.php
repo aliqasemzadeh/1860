@@ -224,6 +224,7 @@ class Seo
             type: 'product',
             noindex: ! $product->is_active,
             schemas: [
+                SeoSchema::product($product, $price, $images, $description),
                 SeoSchema::breadcrumbs($crumbs),
             ],
             meta: $meta,

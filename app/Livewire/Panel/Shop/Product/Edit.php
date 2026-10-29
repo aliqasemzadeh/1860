@@ -6,9 +6,11 @@ use App\Models\Shop\Brand;
 use App\Models\Shop\Category;
 use App\Models\Shop\Product as ProductModel;
 use App\Models\Shop\Unit;
+use App\Services\Shop\CatalogAiService;
 use App\Services\Shop\ProductImageSeoService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -18,6 +20,7 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Throwable;
 
 class Edit extends Component
 {
@@ -91,6 +94,65 @@ class Edit extends Component
         $this->brand_search = '';
         $this->unit_search = '';
         Flux::modal('panel.shop.product.edit.modal')->show();
+    }
+
+    public function generateWithAi(CatalogAiService $catalogAi): void
+    {
+        if (! isset($this->product)) {
+            return;
+        }
+
+        if (blank($this->name)) {
+            Flux::toast(variant: 'danger', text: __('general.catalog_ai_name_required'));
+
+            return;
+        }
+
+        try {
+            $category = null;
+            if ($this->category_id) {
+                $selectedCategory = Category::query()
+                    ->with('main_category')
+                    ->find($this->category_id);
+
+                $category = collect([
+                    $selectedCategory?->main_category?->name,
+                    $selectedCategory?->name,
+                ])->filter()->implode(' / ');
+            }
+
+            $brand = $this->brand_id
+                ? Brand::query()->whereKey($this->brand_id)->value('name')
+                : null;
+
+            $generated = $catalogAi->generateProductContent($this->product, [
+                'name' => $this->name,
+                'en_name' => $this->en_name,
+                'description' => $this->description,
+                'category' => $category,
+                'brand' => $brand,
+                'tags' => $this->tags,
+            ]);
+
+            if (filled($generated['en_name'])) {
+                $this->en_name = $generated['en_name'];
+            }
+
+            $this->description = $generated['description'];
+
+            if ($generated['tags'] !== []) {
+                $this->tags = $generated['tags'];
+            }
+
+            Flux::toast(variant: 'success', text: __('general.catalog_ai_generated'));
+        } catch (Throwable $exception) {
+            Log::warning('Catalog AI generation failed', [
+                'product_id' => $this->product->id ?? null,
+                'message' => $exception->getMessage(),
+            ]);
+
+            Flux::toast(variant: 'danger', text: __('general.catalog_ai_failed'));
+        }
     }
 
     public function edit(): void
