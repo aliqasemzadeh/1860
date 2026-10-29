@@ -104,8 +104,8 @@ test('product schema component renders valid json-ld with required fields', func
         ->and($html)->toContain('"name": "TechCorp"')
         ->and($html)->toContain('"@type": "Offer"')
         ->and($html)->toContain('"priceCurrency": "IRR"')
-        ->and($html)->toContain('"price": "1000000"')
-        ->and($html)->toContain('"priceValidUntil": "'.date('Y-m-d', strtotime('+1 month')).'"')
+        ->and($html)->toContain('"price": "10000000"')
+        ->and($html)->toContain('"priceValidUntil": "'.now()->addDays(30)->toDateString().'"')
         ->and($html)->toContain('https://schema.org/InStock')
         ->and($html)->toContain('"@type": "MerchantReturnPolicy"')
         ->and($html)->toContain('"applicableCountry": "IR"')
@@ -135,7 +135,7 @@ test('product schema handles out of stock product', function () {
 
     expect($html)->toContain('https://schema.org/OutOfStock')
         ->and($html)->toContain('"name": "Default Brand"')
-        ->and($html)->toContain('"category": ""');
+        ->and($html)->not->toContain('"category":');
 });
 
 test('product view page contains comprehensive product schema in head', function () {
@@ -157,9 +157,10 @@ test('product view page contains comprehensive product schema in head', function
         ->assertSee('"@type": "Product"', false)
         ->assertSee('Wireless Headphones')
         ->assertSee('"@type": "Offer"', false)
-        ->assertSee('3500000')
+        ->assertSee('35000000', false)
         ->assertSee('"@type": "MerchantReturnPolicy"', false)
-        ->assertSee('"@type": "OfferShippingDetails"', false);
+        ->assertSee('"@type": "OfferShippingDetails"', false)
+        ->assertSee('"@type": "BreadcrumbList"', false);
 });
 
 test('seo schema generator creates product schema with return policy and shipping', function () {
