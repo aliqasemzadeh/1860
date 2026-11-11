@@ -9,6 +9,7 @@ use App\Models\Shop\PriceFetcher;
 use App\Models\Shop\Product;
 use App\Models\Shop\SetareganPriceSetter;
 use App\Models\Shop\TorobPriceSetter;
+use App\Support\DiscardedOutput;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
@@ -353,7 +354,9 @@ class PriceFetchers extends Component
         }
 
         try {
-            FetchPriceJob::dispatch($priceFetcher)->onConnection('sync');
+            DiscardedOutput::run(
+                fn () => FetchPriceJob::dispatch($priceFetcher)->onConnection('sync'),
+            );
             $this->refreshProduct();
             Flux::toast(variant: 'success', text: __('general.price_fetcher_fetched'));
         } catch (\Throwable $exception) {
@@ -374,7 +377,9 @@ class PriceFetchers extends Component
         }
 
         try {
-            TorobPriceSetterJob::dispatch($priceSetter)->onConnection('sync');
+            DiscardedOutput::run(
+                fn () => TorobPriceSetterJob::dispatch($priceSetter)->onConnection('sync'),
+            );
             $this->refreshProduct();
             Flux::toast(variant: 'success', text: __('general.torob_rule_ran'));
         } catch (\Throwable $exception) {

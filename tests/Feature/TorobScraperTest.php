@@ -62,7 +62,9 @@ test('torob scraper extracts browser JSON and follows seller pagination without 
         ]),
     ];
 
+    ob_start();
     $response = runTorobScraper();
+    $leaked = ob_get_clean();
 
     expect($response->success)->toBeTrue()
         ->and($response->data)->toHaveCount(2)
@@ -75,7 +77,8 @@ test('torob scraper extracts browser JSON and follows seller pagination without 
             'Accept' => 'application/json',
             'Origin' => 'https://torob.com',
             'Referer' => 'https://torob.com/',
-        ]);
+        ])
+        ->and($leaked)->toBe('');
 });
 
 test('torob scraper rejects invalid JSON returned by the browser', function () {

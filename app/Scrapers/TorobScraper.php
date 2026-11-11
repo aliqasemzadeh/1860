@@ -3,6 +3,7 @@
 namespace App\Scrapers;
 
 use App\Scrapers\Runners\ProcessPuppeteerRunner;
+use App\Support\DiscardedOutput;
 use App\Support\TorobChallengeGuard;
 use EduLazaro\Larascraper\Runners\HttpRunner;
 use EduLazaro\Larascraper\Scraper;
@@ -50,7 +51,9 @@ class TorobScraper extends Scraper
         while ($page < $pageCount && $page < self::MAX_PAGES) {
             $this->challengeGuard->ensureRequestsAllowed();
 
-            $response = $this->scrape($this->sellersUrl($productKey, $page))->run();
+            $response = DiscardedOutput::run(
+                fn () => $this->scrape($this->sellersUrl($productKey, $page))->run(),
+            );
             $payload = $this->decodePayload((string) $response->data);
 
             foreach ($payload['results'] as $offer) {
