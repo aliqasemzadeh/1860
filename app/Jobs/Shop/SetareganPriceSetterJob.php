@@ -7,13 +7,13 @@ use App\Models\Shop\ProductPrice;
 use App\Models\Shop\SetareganPriceSetter;
 use App\Settings\BaleSettings;
 use App\Settings\GeneralSettings;
+use App\Support\FetcherLog;
 use App\Support\SetareganPageMissingException;
 use App\Support\SetareganPriceFetcher;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
@@ -52,8 +52,20 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
                 'last_error' => null,
             ]);
 
+            FetcherLog::info('Setaregan: قیمت عوض نشد', FetcherLog::decision(
+                'setaregan',
+                SetareganPriceSetter::STATUS_INACTIVE,
+                'قانون قیمت‌گذاری ستارگان غیرفعال است یا پیدا نشد.',
+                [
+                    'setaregan_price_setter_id' => $this->priceSetter->getKey(),
+                    'is_active' => (bool) $setter?->is_active,
+                ],
+            ));
+
             return;
         }
+
+        $baseContext = $this->baseContext($setter);
 
         if (! $setter->priceFetcher || ! $setter->productPrice) {
             $setter->update([
@@ -61,6 +73,13 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
                 'last_checked_at' => now(),
                 'last_error' => 'The configured price source or target price no longer exists.',
             ]);
+
+            FetcherLog::warning('Setaregan: قیمت عوض نشد', FetcherLog::decision(
+                'setaregan',
+                SetareganPriceSetter::STATUS_FETCH_FAILED,
+                'منبع قیمت یا قیمت هدف تنظیم‌شده دیگر وجود ندارد.',
+                $baseContext,
+            ));
 
             return;
         }
@@ -72,13 +91,20 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
                 'last_error' => null,
             ]);
 
+            FetcherLog::info('Setaregan: قیمت عوض نشد', FetcherLog::decision(
+                'setaregan',
+                SetareganPriceSetter::STATUS_PRODUCT_UNAVAILABLE,
+                'محصول مربوط به قانون یا واریانت هدف غیرفعال است.',
+                $baseContext,
+            ));
+
             return;
         }
 
         try {
             $offer = SetareganPriceFetcher::fetchOffer(
                 $setter->priceFetcher->url,
-                Log::channel('single'),
+                FetcherLog::channel(),
             );
 
             if ($offer['available'] === false) {
@@ -97,6 +123,16 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
                     'last_error' => 'Setaregan page appears in stock but no price could be parsed.',
                 ]);
 
+                FetcherLog::warning('Setaregan: قیمت عوض نشد', FetcherLog::decision(
+                    'setaregan',
+                    SetareganPriceSetter::STATUS_NO_PRICE,
+                    'صفحه ستارگان موجود به نظر می‌رسد ولی قیمت قابل خواندن نبود.',
+                    array_merge($baseContext, [
+                        'offer_source' => $offer['source'] ?? null,
+                        'supplier_price' => null,
+                    ]),
+                ));
+
                 return;
             }
 
@@ -108,6 +144,13 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
                 'last_error' => mb_substr($exception->getMessage(), 0, 2000),
             ]);
 
+            FetcherLog::warning('Setaregan: قیمت عوض نشد', FetcherLog::decision(
+                'setaregan',
+                SetareganPriceSetter::STATUS_PAGE_NOT_FOUND,
+                'صفحه محصول ستارگان پیدا نشد: '.$exception->getMessage(),
+                $baseContext,
+            ));
+
             $this->notifyBalePageMissing($setter);
 
             return;
@@ -117,6 +160,15 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
                 'last_checked_at' => now(),
                 'last_error' => mb_substr($exception->getMessage(), 0, 2000),
             ]);
+
+            FetcherLog::error('Setaregan: قیمت عوض نشد', FetcherLog::decision(
+                'setaregan',
+                SetareganPriceSetter::STATUS_FETCH_FAILED,
+                'خطا در دریافت یا پردازش قیمت از ستارگان: '.$exception->getMessage(),
+                array_merge($baseContext, [
+                    'exception' => $exception::class,
+                ]),
+            ));
 
             throw $exception;
         }
@@ -152,6 +204,22 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
             'last_error' => null,
         ]);
 
+        FetcherLog::info(
+            $zeroed ? 'Setaregan: موجودی صفر شد' : 'Setaregan: قیمت عوض نشد',
+            FetcherLog::decision(
+                'setaregan',
+                SetareganPriceSetter::STATUS_OUT_OF_STOCK,
+                $zeroed
+                    ? 'تأمین‌کننده ناموجود بود؛ موجودی واریانت صفر شد و قیمت فروش عوض نشد.'
+                    : 'تأمین‌کننده ناموجود بود؛ موجودی از قبل صفر بود و قیمت عوض نشد.',
+                array_merge($this->baseContext($setter), [
+                    'supplier_price' => $offer['price'],
+                    'offer_source' => $offer['source'] ?? null,
+                    'stock_action' => $zeroed ? 'zeroed' : null,
+                ]),
+            ),
+        );
+
         if ($zeroed) {
             $this->notifyBaleStockChanged($setter->fresh(['productPrice.product', 'productPrice.color', 'productPrice.warranty']), 0);
         }
@@ -170,11 +238,22 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
         $candidate = $offer['price'] - $setter->margin_amount;
         $target = min($candidate, $setter->max_price);
         $floorHit = $candidate < $setter->min_price;
+        $baseContext = array_merge($this->baseContext($setter), [
+            'supplier_price' => $offer['price'],
+            'offer_source' => $offer['source'] ?? null,
+            'margin_amount' => $setter->margin_amount,
+            'candidate_price' => $candidate,
+            'min_price' => $setter->min_price,
+            'max_price' => $setter->max_price,
+            'target_price' => $target,
+            'floor_hit' => $floorHit,
+        ]);
 
         $priceChange = null;
         $stockChange = null;
+        $decision = null;
 
-        DB::transaction(function () use ($setter, $offer, $target, $floorHit, &$priceChange, &$stockChange): void {
+        DB::transaction(function () use ($setter, $offer, $target, $floorHit, $baseContext, &$priceChange, &$stockChange, &$decision): void {
             $lockedSetter = SetareganPriceSetter::query()->lockForUpdate()->find($setter->getKey());
             $productPrice = ProductPrice::query()
                 ->with(['product', 'color', 'warranty'])
@@ -182,6 +261,12 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
                 ->find($setter->product_price_id);
 
             if (! $lockedSetter || ! $lockedSetter->is_active || ! $productPrice?->product?->is_active) {
+                $decision = [
+                    'outcome' => SetareganPriceSetter::STATUS_INACTIVE,
+                    'reason' => 'در لحظه اعمال، قانون غیرفعال شد یا محصول در دسترس نبود.',
+                    'context' => $baseContext,
+                ];
+
                 return;
             }
 
@@ -197,11 +282,18 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
             $regularPrice = (int) $productPrice->price;
             $salePrice = $productPrice->sale_price !== null ? (int) $productPrice->sale_price : null;
             $changed = false;
+            $currentEffective = ($salePrice !== null && $salePrice > 0 && $salePrice < $regularPrice)
+                ? $salePrice
+                : $regularPrice;
+
+            $detailContext = array_merge($baseContext, [
+                'current_regular_price' => $regularPrice,
+                'current_sale_price' => $salePrice,
+                'current_effective_price' => $currentEffective,
+            ]);
 
             if (! $floorHit && ($regularPrice !== $target || $salePrice !== $target)) {
-                $oldPrice = ($salePrice !== null && $salePrice > 0 && $salePrice < $regularPrice)
-                    ? $salePrice
-                    : $regularPrice;
+                $oldPrice = $currentEffective;
 
                 $productPrice->price = $target;
                 $productPrice->sale_price = $target;
@@ -242,6 +334,22 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
                     'quantity' => (int) $productPrice->quantity,
                 ];
             }
+
+            $reason = match ($status) {
+                SetareganPriceSetter::STATUS_FLOOR_REACHED => 'قیمت هدف محاسبه‌شده از کف قیمت کمتر است؛ برای جلوگیری از ضرر قیمت عوض نشد.',
+                SetareganPriceSetter::STATUS_UPDATED => 'قیمت فروشگاه بر اساس قیمت تأمین‌کننده به‌روز شد.',
+                default => 'قیمت فعلی فروشگاه با هدف محاسبه‌شده یکی است؛ تغییری لازم نبود.',
+            };
+
+            $decision = [
+                'outcome' => $status,
+                'reason' => $reason,
+                'context' => array_merge($detailContext, [
+                    'stock_restored' => $restored,
+                    'old_price' => $priceChange['old_price'] ?? $currentEffective,
+                    'new_price' => $priceChange['new_price'] ?? $currentEffective,
+                ]),
+            ];
         }, 3);
 
         if (is_array($priceChange)) {
@@ -252,12 +360,33 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
             $this->notifyBaleStockChanged($stockChange['setter'], $stockChange['quantity']);
         }
 
-        Log::info('Setaregan supplier pricing rule processed.', [
+        if (is_array($decision)) {
+            $message = $decision['outcome'] === SetareganPriceSetter::STATUS_UPDATED
+                ? 'Setaregan: قیمت به‌روز شد'
+                : 'Setaregan: قیمت عوض نشد';
+
+            FetcherLog::info($message, FetcherLog::decision(
+                'setaregan',
+                $decision['outcome'],
+                $decision['reason'],
+                $decision['context'],
+            ));
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function baseContext(SetareganPriceSetter $setter): array
+    {
+        return [
             'setaregan_price_setter_id' => $setter->getKey(),
-            'supplier_price' => $offer['price'],
-            'target_price' => $target,
-            'floor_hit' => $floorHit,
-        ]);
+            'price_fetcher_id' => $setter->price_fetcher_id,
+            'product_price_id' => $setter->product_price_id,
+            'product_id' => $setter->priceFetcher?->product_id ?? $setter->productPrice?->product_id,
+            'product_name' => $setter->priceFetcher?->product?->name ?? $setter->productPrice?->product?->name,
+            'url' => $setter->priceFetcher?->url,
+        ];
     }
 
     /**
@@ -359,5 +488,14 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
             'last_checked_at' => now(),
             'last_error' => mb_substr($exception?->getMessage() ?? 'Setaregan pricing job failed.', 0, 2000),
         ]);
+
+        FetcherLog::error('Setaregan: قیمت عوض نشد', FetcherLog::decision(
+            'setaregan',
+            SetareganPriceSetter::STATUS_FETCH_FAILED,
+            'جاب قیمت‌گذاری ستارگان شکست خورد: '.($exception?->getMessage() ?? 'Setaregan pricing job failed.'),
+            [
+                'setaregan_price_setter_id' => $this->priceSetter->getKey(),
+            ],
+        ));
     }
 }

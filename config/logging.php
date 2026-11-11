@@ -143,6 +143,14 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'fetchers' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/fetchers.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => env('LOG_DAILY_DAYS', 14),
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];

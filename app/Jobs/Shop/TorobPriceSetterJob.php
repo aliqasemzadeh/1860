@@ -7,12 +7,12 @@ use App\Models\Shop\ProductPrice;
 use App\Models\Shop\TorobPriceSetter;
 use App\Settings\BaleSettings;
 use App\Settings\GeneralSettings;
+use App\Support\FetcherLog;
 use App\Support\TorobOfferFetcher;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
@@ -54,8 +54,20 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                 'last_error' => null,
             ]);
 
+            FetcherLog::info('Torob: قیمت عوض نشد', FetcherLog::decision(
+                'torob',
+                TorobPriceSetter::STATUS_INACTIVE,
+                'قانون قیمت‌گذاری غیرفعال است یا پیدا نشد.',
+                [
+                    'torob_price_setter_id' => $this->priceSetter->getKey(),
+                    'is_active' => (bool) $setter?->is_active,
+                ],
+            ));
+
             return;
         }
+
+        $baseContext = $this->baseContext($setter);
 
         if (! $setter->priceFetcher || ! $setter->productPrice) {
             $setter->update([
@@ -63,6 +75,13 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                 'last_checked_at' => now(),
                 'last_error' => 'The configured price source or target price no longer exists.',
             ]);
+
+            FetcherLog::warning('Torob: قیمت عوض نشد', FetcherLog::decision(
+                'torob',
+                TorobPriceSetter::STATUS_FETCH_FAILED,
+                'منبع قیمت یا قیمت هدف تنظیم‌شده دیگر وجود ندارد.',
+                $baseContext,
+            ));
 
             return;
         }
@@ -73,6 +92,13 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                 'last_checked_at' => now(),
                 'last_error' => null,
             ]);
+
+            FetcherLog::info('Torob: قیمت عوض نشد', FetcherLog::decision(
+                'torob',
+                TorobPriceSetter::STATUS_PRODUCT_UNAVAILABLE,
+                'محصول مربوط به قانون یا واریانت هدف غیرفعال است.',
+                $baseContext,
+            ));
 
             return;
         }
@@ -97,6 +123,17 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                     'last_error' => null,
                 ]);
 
+                FetcherLog::info('Torob: قیمت عوض نشد', FetcherLog::decision(
+                    'torob',
+                    TorobPriceSetter::STATUS_NO_COMPETITOR,
+                    'هیچ رقیب واجدی بعد از فیلتر فروشگاه خودمان، موجودی و اقساطی پیدا نشد.',
+                    array_merge($baseContext, [
+                        'own_shop_names' => $setter->own_shop_names ?? [],
+                        'competitor_price' => null,
+                        'target_price' => null,
+                    ]),
+                ));
+
                 return;
             }
 
@@ -106,6 +143,16 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
             ]);
 
             $candidate = $offer['price'] - $setter->step_amount;
+            $pricingContext = array_merge($baseContext, [
+                'own_shop_names' => $setter->own_shop_names ?? [],
+                'competitor_shop' => $offer['shop_name'],
+                'competitor_price' => $offer['price'],
+                'step_amount' => $setter->step_amount,
+                'candidate_price' => $candidate,
+                'min_price' => $setter->min_price,
+                'max_price' => $setter->max_price,
+            ]);
+
             $common = [
                 'last_competitor_shop' => $offer['shop_name'],
                 'last_competitor_price' => $offer['price'],
@@ -119,6 +166,16 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                     'status' => TorobPriceSetter::STATUS_PRODUCT_UNAVAILABLE,
                 ]);
 
+                FetcherLog::info('Torob: قیمت عوض نشد', FetcherLog::decision(
+                    'torob',
+                    TorobPriceSetter::STATUS_PRODUCT_UNAVAILABLE,
+                    'موجودی واریانت هدف صفر است؛ قیمت اعمال نشد.',
+                    array_merge($pricingContext, [
+                        'quantity' => $setter->productPrice->quantity,
+                        'target_price' => max(0, $candidate),
+                    ]),
+                ));
+
                 return;
             }
 
@@ -127,13 +184,27 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                     'status' => TorobPriceSetter::STATUS_FLOOR_REACHED,
                 ]);
 
+                FetcherLog::info('Torob: قیمت عوض نشد', FetcherLog::decision(
+                    'torob',
+                    TorobPriceSetter::STATUS_FLOOR_REACHED,
+                    'قیمت هدف محاسبه‌شده از کف قیمت کمتر است؛ برای جلوگیری از ضرر قیمت عوض نشد.',
+                    array_merge($pricingContext, [
+                        'target_price' => max(0, $candidate),
+                        'current_regular_price' => (int) $setter->productPrice->price,
+                        'current_sale_price' => $setter->productPrice->sale_price !== null
+                            ? (int) $setter->productPrice->sale_price
+                            : null,
+                    ]),
+                ));
+
                 return;
             }
 
             $target = min($candidate, $setter->max_price);
             $priceChange = null;
+            $decision = null;
 
-            DB::transaction(function () use ($setter, $offer, $target, &$priceChange): void {
+            DB::transaction(function () use ($setter, $offer, $target, $pricingContext, &$priceChange, &$decision): void {
                 $lockedSetter = TorobPriceSetter::query()->lockForUpdate()->find($setter->getKey());
                 $productPrice = ProductPrice::query()
                     ->with(['product', 'color', 'warranty'])
@@ -141,6 +212,14 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                     ->find($setter->product_price_id);
 
                 if (! $lockedSetter || ! $lockedSetter->is_active || ! $productPrice?->product?->is_active) {
+                    $decision = [
+                        'outcome' => TorobPriceSetter::STATUS_INACTIVE,
+                        'reason' => 'در لحظه اعمال، قانون غیرفعال شد یا محصول در دسترس نبود.',
+                        'context' => array_merge($pricingContext, [
+                            'target_price' => $target,
+                        ]),
+                    ];
+
                     return;
                 }
 
@@ -151,6 +230,13 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
 
                 $status = TorobPriceSetter::STATUS_UNCHANGED;
                 $changedAt = $lockedSetter->last_changed_at;
+                $detailContext = array_merge($pricingContext, [
+                    'target_price' => $target,
+                    'current_regular_price' => $regularPrice,
+                    'current_sale_price' => $salePrice,
+                    'current_effective_price' => $currentPrice,
+                    'capped_by_max' => $target < ($offer['price'] - $setter->step_amount),
+                ]);
 
                 if ($currentPrice !== $target) {
                     if ($hasEffectiveSalePrice && $target < $regularPrice) {
@@ -177,6 +263,20 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                         'competitor_shop' => $offer['shop_name'],
                         'competitor_price' => $offer['price'],
                     ];
+                    $decision = [
+                        'outcome' => $status,
+                        'reason' => 'قیمت فروشگاه بر اساس ارزان‌ترین رقیب واجد به‌روز شد.',
+                        'context' => array_merge($detailContext, [
+                            'old_price' => $currentPrice,
+                            'new_price' => $target,
+                        ]),
+                    ];
+                } else {
+                    $decision = [
+                        'outcome' => $status,
+                        'reason' => 'قیمت فعلی فروشگاه با هدف محاسبه‌شده یکی است؛ تغییری لازم نبود.',
+                        'context' => $detailContext,
+                    ];
                 }
 
                 $lockedSetter->update([
@@ -195,11 +295,18 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                 $this->notifyBalePriceChanged($priceChange);
             }
 
-            Log::info('Torob competitive pricing rule processed.', [
-                'torob_price_setter_id' => $setter->getKey(),
-                'competitor_price' => $offer['price'],
-                'target_price' => $target,
-            ]);
+            if (is_array($decision)) {
+                $message = $decision['outcome'] === TorobPriceSetter::STATUS_UPDATED
+                    ? 'Torob: قیمت به‌روز شد'
+                    : 'Torob: قیمت عوض نشد';
+
+                FetcherLog::info($message, FetcherLog::decision(
+                    'torob',
+                    $decision['outcome'],
+                    $decision['reason'],
+                    $decision['context'],
+                ));
+            }
         } catch (Throwable $exception) {
             $setter->update([
                 'status' => TorobPriceSetter::STATUS_FETCH_FAILED,
@@ -207,8 +314,32 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                 'last_error' => mb_substr($exception->getMessage(), 0, 2000),
             ]);
 
+            FetcherLog::error('Torob: قیمت عوض نشد', FetcherLog::decision(
+                'torob',
+                TorobPriceSetter::STATUS_FETCH_FAILED,
+                'خطا در دریافت یا پردازش قیمت از ترب: '.$exception->getMessage(),
+                array_merge($baseContext, [
+                    'exception' => $exception::class,
+                ]),
+            ));
+
             throw $exception;
         }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function baseContext(TorobPriceSetter $setter): array
+    {
+        return [
+            'torob_price_setter_id' => $setter->getKey(),
+            'price_fetcher_id' => $setter->price_fetcher_id,
+            'product_price_id' => $setter->product_price_id,
+            'product_id' => $setter->priceFetcher?->product_id ?? $setter->productPrice?->product_id,
+            'product_name' => $setter->priceFetcher?->product?->name ?? $setter->productPrice?->product?->name,
+            'url' => $setter->priceFetcher?->url,
+        ];
     }
 
     /**
@@ -259,5 +390,14 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
             'last_checked_at' => now(),
             'last_error' => mb_substr($exception?->getMessage() ?? 'Torob pricing job failed.', 0, 2000),
         ]);
+
+        FetcherLog::error('Torob: قیمت عوض نشد', FetcherLog::decision(
+            'torob',
+            TorobPriceSetter::STATUS_FETCH_FAILED,
+            'جاب قیمت‌گذاری ترب شکست خورد: '.($exception?->getMessage() ?? 'Torob pricing job failed.'),
+            [
+                'torob_price_setter_id' => $this->priceSetter->getKey(),
+            ],
+        ));
     }
 }

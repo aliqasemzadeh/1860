@@ -16,6 +16,7 @@ use App\Support\TorobChallengeGuard;
 use EduLazaro\Larascraper\Support\ScraperResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
@@ -129,6 +130,7 @@ test('torob pricing rule undercuts the cheapest eligible competitor and excludes
 
 test('torob pricing rule keeps the current price when stop loss is reached', function () {
     Queue::fake([SendBaleMessageJob::class]);
+    Log::fake();
 
     ['price' => $price, 'setter' => $setter] = createTorobPricingRule([
         'min_price' => 20_000_000,
@@ -145,6 +147,50 @@ test('torob pricing rule keeps the current price when stop loss is reached', fun
         ->and($setter->fresh()->last_target_price)->toBe(19_890_000);
 
     Queue::assertNotPushed(SendBaleMessageJob::class);
+
+    Log::channel('fetchers')->assertLogged('info', function ($message, array $context): bool {
+        return $message === 'Torob: قیمت عوض نشد'
+            && ($context['outcome'] ?? null) === TorobPriceSetter::STATUS_FLOOR_REACHED
+            && ($context['competitor_price'] ?? null) === 19_900_000
+            && ($context['candidate_price'] ?? null) === 19_890_000
+            && ($context['min_price'] ?? null) === 20_000_000
+            && str_contains((string) ($context['reason'] ?? ''), 'کف قیمت');
+    });
+});
+
+test('torob pricing logs an unchanged decision when current price already matches the target', function () {
+    Log::fake();
+
+    ['price' => $price, 'setter' => $setter] = createTorobPricingRule([], [
+        'price' => 20_990_000,
+    ]);
+
+    fakeTorobOffers([
+        ['availability' => true, 'shop_name' => 'رقیب معتبر', 'price' => 21_000_000],
+    ]);
+
+    TorobPriceSetterJob::dispatchSync($setter);
+
+    expect((int) $price->fresh()->price)->toBe(20_990_000)
+        ->and($setter->fresh()->status)->toBe(TorobPriceSetter::STATUS_UNCHANGED);
+
+    Log::channel('fetchers')->assertLogged('info', function ($message, array $context): bool {
+        return $message === 'Torob: قیمت عوض نشد'
+            && ($context['outcome'] ?? null) === TorobPriceSetter::STATUS_UNCHANGED
+            && ($context['competitor_price'] ?? null) === 21_000_000
+            && ($context['target_price'] ?? null) === 20_990_000
+            && ($context['current_effective_price'] ?? null) === 20_990_000
+            && str_contains((string) ($context['reason'] ?? ''), 'یکی است');
+    });
+});
+
+test('fetchers log channel is configured as a daily file', function () {
+    $channel = config('logging.channels.fetchers');
+
+    expect($channel)->toMatchArray([
+        'driver' => 'daily',
+        'path' => storage_path('logs/fetchers.log'),
+    ]);
 });
 
 test('torob pricing rule caps a high target at the configured maximum', function () {
