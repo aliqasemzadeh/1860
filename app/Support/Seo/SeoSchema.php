@@ -160,54 +160,79 @@ class SeoSchema
             ],
         ];
 
-        if ($product->is_active && $price) {
-            $finalPrice = ($price->sale_price && $price->sale_price < $price->price)
-                ? $price->sale_price
-                : $price->price;
+        if ($product->is_active) {
+            [$tomanPrice, $quantity] = self::resolveOfferPrice($product, $price);
 
-            $schema['offers'] = [
-                '@type' => 'Offer',
-                'url' => $canonicalUrl,
-                'priceCurrency' => config('seo.currency', 'IRR'),
-                // Prices are stored in Toman; Schema.org expects IRR (Rial).
-                'price' => (string) ((float) $finalPrice * (float) config('seo.currency_multiplier', 10)),
-                'priceValidUntil' => now()->addDays(30)->toDateString(),
-                'availability' => ((float) $price->quantity > 0)
-                    ? 'https://schema.org/InStock'
-                    : 'https://schema.org/OutOfStock',
-                'itemCondition' => 'https://schema.org/NewCondition',
-                'hasMerchantReturnPolicy' => $merchantReturnPolicy,
-                'shippingDetails' => $shippingDetails,
-                'seller' => [
-                    '@type' => 'Organization',
-                    'name' => app(GeneralSettings::class)->title ?: config('app.name'),
-                ],
-            ];
-        } elseif ($product->is_active) {
-            $defaultPriceRecord = $product->default_price['record'] ?? null;
-            $rawPrice = $defaultPriceRecord?->sale_price ?? $defaultPriceRecord?->price ?? $product->price ?? 0;
-            $quantity = $defaultPriceRecord?->quantity ?? $product->stock ?? 0;
+            // Google requires Offer.price or priceSpecification.price; never emit offers with "0"/empty.
+            if ($tomanPrice > 0) {
+                $currency = config('seo.currency', 'IRR');
+                $irrPrice = (string) ($tomanPrice * (float) config('seo.currency_multiplier', 10));
 
-            $schema['offers'] = [
-                '@type' => 'Offer',
-                'url' => $canonicalUrl,
-                'priceCurrency' => config('seo.currency', 'IRR'),
-                'price' => (string) ((float) $rawPrice * (float) config('seo.currency_multiplier', 10)),
-                'priceValidUntil' => now()->addDays(30)->toDateString(),
-                'availability' => ((float) $quantity > 0)
-                    ? 'https://schema.org/InStock'
-                    : 'https://schema.org/OutOfStock',
-                'itemCondition' => 'https://schema.org/NewCondition',
-                'hasMerchantReturnPolicy' => $merchantReturnPolicy,
-                'shippingDetails' => $shippingDetails,
-                'seller' => [
-                    '@type' => 'Organization',
-                    'name' => app(GeneralSettings::class)->title ?: config('app.name'),
-                ],
-            ];
+                $schema['offers'] = [
+                    '@type' => 'Offer',
+                    'url' => $canonicalUrl,
+                    'priceCurrency' => $currency,
+                    // Prices are stored in Toman; Schema.org expects IRR (Rial).
+                    'price' => $irrPrice,
+                    'priceSpecification' => [
+                        '@type' => 'UnitPriceSpecification',
+                        'price' => $irrPrice,
+                        'priceCurrency' => $currency,
+                    ],
+                    'priceValidUntil' => now()->addDays(30)->toDateString(),
+                    'availability' => $quantity > 0
+                        ? 'https://schema.org/InStock'
+                        : 'https://schema.org/OutOfStock',
+                    'itemCondition' => 'https://schema.org/NewCondition',
+                    'hasMerchantReturnPolicy' => $merchantReturnPolicy,
+                    'shippingDetails' => $shippingDetails,
+                    'seller' => [
+                        '@type' => 'Organization',
+                        'name' => app(GeneralSettings::class)->title ?: config('app.name'),
+                    ],
+                ];
+            }
         }
 
         return $schema;
+    }
+
+    /**
+     * Resolve a sellable Toman price and stock quantity for Product offers.
+     *
+     * @return array{0: float, 1: float} [tomanPrice, quantity]
+     */
+    protected static function resolveOfferPrice(Product $product, ?ProductPrice $price): array
+    {
+        $record = $price ?? ($product->default_price['record'] ?? null);
+
+        if ($record) {
+            $listPrice = self::numericAmount($record->price);
+            $salePrice = self::numericAmount($record->sale_price);
+            $toman = ($salePrice > 0 && $listPrice > 0 && $salePrice < $listPrice)
+                ? $salePrice
+                : $listPrice;
+
+            if ($toman <= 0) {
+                $toman = self::numericAmount($product->price);
+            }
+
+            return [$toman, self::numericAmount($record->quantity)];
+        }
+
+        return [
+            self::numericAmount($product->price),
+            self::numericAmount($product->stock),
+        ];
+    }
+
+    protected static function numericAmount(mixed $value): float
+    {
+        if ($value === null || $value === '') {
+            return 0.0;
+        }
+
+        return (float) $value;
     }
 
     /**

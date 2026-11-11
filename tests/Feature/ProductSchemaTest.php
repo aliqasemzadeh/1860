@@ -105,6 +105,7 @@ test('product schema component renders valid json-ld with required fields', func
         ->and($html)->toContain('"@type":"Offer"')
         ->and($html)->toContain('"priceCurrency":"IRR"')
         ->and($html)->toContain('"price":"10000000"')
+        ->and($html)->toContain('"@type":"UnitPriceSpecification"')
         ->and($html)->toContain('"priceValidUntil":"'.now()->addDays(30)->toDateString().'"')
         ->and($html)->toContain('https://schema.org/InStock')
         ->and($html)->toContain('"@type":"MerchantReturnPolicy"')
@@ -170,16 +171,55 @@ test('seo schema generator creates product schema with return policy and shippin
         'brand_id' => $brand->id,
     ]);
 
-    $schema = SeoSchema::product($product, null, [], 'iPhone 15 description');
+    $price = ProductPrice::create([
+        'product_id' => $product->id,
+        'price' => 2500000,
+        'quantity' => 0,
+        'is_default' => 1,
+    ]);
+
+    $schema = SeoSchema::product($product, $price, [], 'iPhone 15 description');
 
     expect($schema['@type'])->toBe('Product')
         ->and($schema['brand']['name'])->toBe('Apple')
         ->and($schema['offers'])->toBeArray()
         ->and($schema['offers']['@type'])->toBe('Offer')
         ->and($schema['offers']['priceCurrency'])->toBe('IRR')
+        ->and($schema['offers']['price'])->toBe('25000000')
+        ->and($schema['offers']['priceSpecification']['@type'])->toBe('UnitPriceSpecification')
+        ->and($schema['offers']['priceSpecification']['price'])->toBe('25000000')
         ->and($schema['offers']['availability'])->toBe('https://schema.org/OutOfStock')
         ->and($schema['offers']['hasMerchantReturnPolicy'])->toBeArray()
         ->and($schema['offers']['hasMerchantReturnPolicy']['@type'])->toBe('MerchantReturnPolicy')
         ->and($schema['offers']['shippingDetails'])->toBeArray()
         ->and($schema['offers']['shippingDetails']['@type'])->toBe('OfferShippingDetails');
+});
+
+test('seo schema omits offers when product has no valid price', function () {
+    $product = createTestProduct([
+        'name' => 'Priceless Item',
+    ]);
+
+    $schema = SeoSchema::product($product, null, [], 'No price description');
+
+    expect($schema['@type'])->toBe('Product')
+        ->and($schema)->not->toHaveKey('offers');
+});
+
+test('seo schema omits offers when product price is zero', function () {
+    $product = createTestProduct([
+        'name' => 'Zero Price Item',
+    ]);
+
+    $price = ProductPrice::create([
+        'product_id' => $product->id,
+        'price' => 0,
+        'sale_price' => null,
+        'quantity' => 5,
+        'is_default' => 1,
+    ]);
+
+    $schema = SeoSchema::product($product, $price, [], 'Zero price description');
+
+    expect($schema)->not->toHaveKey('offers');
 });
