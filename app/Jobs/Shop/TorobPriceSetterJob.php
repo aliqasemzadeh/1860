@@ -240,9 +240,9 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
 
                 if ($currentPrice !== $target) {
                     if ($hasEffectiveSalePrice && $target < $regularPrice) {
-                        $productPrice->update(['sale_price' => $target]);
+                        $productPrice = $productPrice->supersede(['sale_price' => $target]);
                     } elseif ($hasEffectiveSalePrice) {
-                        $productPrice->update([
+                        $productPrice = $productPrice->supersede([
                             'price' => $target,
                             'sale_price' => null,
                         ]);
@@ -251,8 +251,10 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                         if ($salePrice !== null && $salePrice > 0 && $salePrice < $target) {
                             $updates['sale_price'] = null;
                         }
-                        $productPrice->update($updates);
+                        $productPrice = $productPrice->supersede($updates);
                     }
+
+                    $lockedSetter->refresh();
 
                     $status = TorobPriceSetter::STATUS_UPDATED;
                     $changedAt = now();
@@ -269,6 +271,7 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                         'context' => array_merge($detailContext, [
                             'old_price' => $currentPrice,
                             'new_price' => $target,
+                            'product_price_id' => $productPrice->id,
                         ]),
                     ];
                 } else {

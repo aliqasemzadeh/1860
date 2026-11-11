@@ -79,6 +79,22 @@ function fakeTorobOffers(array $offers): void
     app()->instance(TorobScraper::class, $scraper);
 }
 
+function useFetchersTestLog(): string
+{
+    $path = storage_path('logs/fetchers-test-'.uniqid('', true).'.log');
+
+    config()->set('logging.channels.fetchers', [
+        'driver' => 'single',
+        'path' => $path,
+        'level' => 'debug',
+        'replace_placeholders' => true,
+    ]);
+
+    Log::forgetChannel('fetchers');
+
+    return $path;
+}
+
 beforeEach(function () {
     Cache::flush();
 });
@@ -115,10 +131,15 @@ test('torob pricing rule undercuts the cheapest eligible competitor and excludes
 
     TorobPriceSetterJob::dispatchSync($setter);
 
-    expect((int) $price->fresh()->price)->toBe(20_990_000)
+    $setter->refresh();
+    $currentPrice = $setter->productPrice;
+
+    expect((int) $currentPrice->price)->toBe(20_990_000)
+        ->and($setter->product_price_id)->not->toBe($price->id)
+        ->and((int) $price->fresh()->price)->toBe(22_000_000)
         ->and($fetcher->fresh()->last_price)->toBe(21_000_000)
-        ->and($setter->fresh()->status)->toBe(TorobPriceSetter::STATUS_UPDATED)
-        ->and($setter->fresh()->last_competitor_shop)->toBe('رقیب معتبر');
+        ->and($setter->status)->toBe(TorobPriceSetter::STATUS_UPDATED)
+        ->and($setter->last_competitor_shop)->toBe('رقیب معتبر');
 
     Queue::assertPushed(SendBaleMessageJob::class, function (SendBaleMessageJob $job) use ($price): bool {
         return str_contains($job->text, 'رقیب معتبر')
@@ -130,7 +151,7 @@ test('torob pricing rule undercuts the cheapest eligible competitor and excludes
 
 test('torob pricing rule keeps the current price when stop loss is reached', function () {
     Queue::fake([SendBaleMessageJob::class]);
-    Log::fake();
+    $logPath = useFetchersTestLog();
 
     ['price' => $price, 'setter' => $setter] = createTorobPricingRule([
         'min_price' => 20_000_000,
@@ -148,18 +169,17 @@ test('torob pricing rule keeps the current price when stop loss is reached', fun
 
     Queue::assertNotPushed(SendBaleMessageJob::class);
 
-    Log::channel('fetchers')->assertLogged('info', function ($message, array $context): bool {
-        return $message === 'Torob: قیمت عوض نشد'
-            && ($context['outcome'] ?? null) === TorobPriceSetter::STATUS_FLOOR_REACHED
-            && ($context['competitor_price'] ?? null) === 19_900_000
-            && ($context['candidate_price'] ?? null) === 19_890_000
-            && ($context['min_price'] ?? null) === 20_000_000
-            && str_contains((string) ($context['reason'] ?? ''), 'کف قیمت');
-    });
+    $log = file_get_contents($logPath);
+    expect($log)->toContain('Torob: قیمت عوض نشد')
+        ->and($log)->toContain('"outcome":"floor_reached"')
+        ->and($log)->toContain('"competitor_price":19900000')
+        ->and($log)->toContain('"candidate_price":19890000')
+        ->and($log)->toContain('"min_price":20000000')
+        ->and($log)->toContain('کف قیمت');
 });
 
 test('torob pricing logs an unchanged decision when current price already matches the target', function () {
-    Log::fake();
+    $logPath = useFetchersTestLog();
 
     ['price' => $price, 'setter' => $setter] = createTorobPricingRule([], [
         'price' => 20_990_000,
@@ -174,14 +194,13 @@ test('torob pricing logs an unchanged decision when current price already matche
     expect((int) $price->fresh()->price)->toBe(20_990_000)
         ->and($setter->fresh()->status)->toBe(TorobPriceSetter::STATUS_UNCHANGED);
 
-    Log::channel('fetchers')->assertLogged('info', function ($message, array $context): bool {
-        return $message === 'Torob: قیمت عوض نشد'
-            && ($context['outcome'] ?? null) === TorobPriceSetter::STATUS_UNCHANGED
-            && ($context['competitor_price'] ?? null) === 21_000_000
-            && ($context['target_price'] ?? null) === 20_990_000
-            && ($context['current_effective_price'] ?? null) === 20_990_000
-            && str_contains((string) ($context['reason'] ?? ''), 'یکی است');
-    });
+    $log = file_get_contents($logPath);
+    expect($log)->toContain('Torob: قیمت عوض نشد')
+        ->and($log)->toContain('"outcome":"unchanged"')
+        ->and($log)->toContain('"competitor_price":21000000')
+        ->and($log)->toContain('"target_price":20990000')
+        ->and($log)->toContain('"current_effective_price":20990000')
+        ->and($log)->toContain('یکی است');
 });
 
 test('fetchers log channel is configured as a daily file', function () {
@@ -202,9 +221,12 @@ test('torob pricing rule caps a high target at the configured maximum', function
 
     TorobPriceSetterJob::dispatchSync($setter);
 
-    expect((int) $price->fresh()->price)->toBe(24_000_000)
-        ->and($setter->fresh()->last_target_price)->toBe(24_000_000)
-        ->and($setter->fresh()->status)->toBe(TorobPriceSetter::STATUS_UPDATED);
+    $setter->refresh();
+
+    expect((int) $setter->productPrice->price)->toBe(24_000_000)
+        ->and($setter->product_price_id)->not->toBe($price->id)
+        ->and($setter->last_target_price)->toBe(24_000_000)
+        ->and($setter->status)->toBe(TorobPriceSetter::STATUS_UPDATED);
 });
 
 test('torob pricing keeps the applied price effective when an old invalid sale price exists', function () {
@@ -218,8 +240,11 @@ test('torob pricing keeps the applied price effective when an old invalid sale p
 
     TorobPriceSetterJob::dispatchSync($setter);
 
-    expect((int) $price->fresh()->price)->toBe(23_500_000)
-        ->and($price->fresh()->sale_price)->toBeNull();
+    $setter->refresh();
+
+    expect((int) $setter->productPrice->price)->toBe(23_500_000)
+        ->and($setter->productPrice->sale_price)->toBeNull()
+        ->and($setter->product_price_id)->not->toBe($price->id);
 });
 
 test('torob pricing rule fails closed when no eligible competitor exists', function () {

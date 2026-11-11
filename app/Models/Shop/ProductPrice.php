@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class ProductPrice extends Model
 {
@@ -61,6 +62,45 @@ class ProductPrice extends Model
     public function setareganPriceSetter(): HasOne
     {
         return $this->hasOne(SetareganPriceSetter::class);
+    }
+
+    /**
+     * Create a new price row (history) and re-point Torob/Setaregan setters to it.
+     * The previous row is kept so price history remains queryable.
+     *
+     * @param  array{
+     *     product_id?: int,
+     *     color_id?: int|null,
+     *     warranty_id?: int|null,
+     *     price?: float|int|string,
+     *     sale_price?: float|int|string|null,
+     *     quantity?: float|int|string,
+     *     is_default?: bool|int
+     * }  $attributes
+     */
+    public function supersede(array $attributes = []): self
+    {
+        return DB::transaction(function () use ($attributes): self {
+            $new = static::query()->create([
+                'product_id' => $attributes['product_id'] ?? $this->product_id,
+                'color_id' => array_key_exists('color_id', $attributes) ? $attributes['color_id'] : $this->color_id,
+                'warranty_id' => array_key_exists('warranty_id', $attributes) ? $attributes['warranty_id'] : $this->warranty_id,
+                'price' => $attributes['price'] ?? $this->price,
+                'sale_price' => array_key_exists('sale_price', $attributes) ? $attributes['sale_price'] : $this->sale_price,
+                'quantity' => $attributes['quantity'] ?? $this->quantity,
+                'is_default' => $attributes['is_default'] ?? $this->is_default,
+            ]);
+
+            TorobPriceSetter::query()
+                ->where('product_price_id', $this->id)
+                ->update(['product_price_id' => $new->id]);
+
+            SetareganPriceSetter::query()
+                ->where('product_price_id', $this->id)
+                ->update(['product_price_id' => $new->id]);
+
+            return $new->loadMissing(['product', 'color', 'warranty']);
+        });
     }
 
     protected static function booted(): void

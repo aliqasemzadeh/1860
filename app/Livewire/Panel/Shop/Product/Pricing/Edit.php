@@ -92,7 +92,7 @@ class Edit extends Component
                 ->update(['is_default' => false]);
         }
 
-        $this->productPrice->update([
+        $this->productPrice = $this->productPrice->supersede([
             'color_id' => $validated['color_id'],
             'warranty_id' => $validated['warranty_id'],
             'price' => str_replace(',', '', $validated['price']),
@@ -100,6 +100,7 @@ class Edit extends Component
             'quantity' => $validated['quantity'],
             'is_default' => $validated['is_default'],
         ]);
+        $this->priceId = $this->productPrice->id;
 
         Flux::toast(variant: 'success', text: __('general.price_updated'));
         Flux::modal('panel.shop.product.pricing.edit.modal')->close();

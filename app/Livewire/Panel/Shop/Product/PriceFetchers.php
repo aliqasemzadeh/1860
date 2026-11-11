@@ -7,13 +7,16 @@ use App\Jobs\Shop\SetareganPriceSetterJob;
 use App\Jobs\Shop\TorobPriceSetterJob;
 use App\Models\Shop\PriceFetcher;
 use App\Models\Shop\Product;
+use App\Models\Shop\ProductPrice;
 use App\Models\Shop\SetareganPriceSetter;
 use App\Models\Shop\TorobPriceSetter;
 use App\Support\DiscardedOutput;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -79,7 +82,7 @@ class PriceFetchers extends Component
         $this->resetValidation();
 
         if (in_array($this->type, ['torob', 'setaregan'], true) && $this->productPriceId === null) {
-            $this->productPriceId = $this->product?->prices
+            $this->productPriceId = $this->latestPrices
                 ->sortByDesc('is_default')
                 ->first()?->id;
         }
@@ -92,10 +95,30 @@ class PriceFetchers extends Component
     public function updatedSetareganAutoPricing(): void
     {
         if ($this->setareganAutoPricing && $this->productPriceId === null) {
-            $this->productPriceId = $this->product?->prices
+            $this->productPriceId = $this->latestPrices
                 ->sortByDesc('is_default')
                 ->first()?->id;
         }
+    }
+
+    /**
+     * Latest active price per color/warranty combo (excludes historical rows).
+     *
+     * @return Collection<int, ProductPrice>
+     */
+    #[Computed]
+    public function latestPrices(): Collection
+    {
+        if (! $this->product) {
+            return collect();
+        }
+
+        return $this->product->prices
+            ->groupBy(fn (ProductPrice $price) => ($price->color_id ?? 'null').'-'.($price->warranty_id ?? 'null'))
+            ->map(fn (Collection $group) => $group->sortByDesc('created_at')->first())
+            ->values()
+            ->sortByDesc('is_default')
+            ->values();
     }
 
     public function addPriceFetcher(): void
@@ -500,6 +523,8 @@ class PriceFetchers extends Component
 
     private function refreshProduct(): void
     {
+        unset($this->latestPrices);
+
         $this->product = Product::with([
             'prices.color',
             'prices.warranty',

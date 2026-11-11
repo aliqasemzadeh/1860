@@ -113,10 +113,7 @@ class BulkChange extends Component
                             ->update(['is_default' => false]);
                     }
 
-                    ProductPrice::create([
-                        'product_id' => $productId,
-                        'color_id' => $sourcePrice->color_id,
-                        'warranty_id' => $sourcePrice->warranty_id,
+                    $sourcePrice->supersede([
                         'price' => $newPrice,
                         'sale_price' => $newSalePrice,
                         'quantity' => $sourcePrice->quantity,

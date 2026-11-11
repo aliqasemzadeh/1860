@@ -13,13 +13,27 @@
                 <flux:heading size="xl" level="1">{{ __('general.pricing') }} - {{ $product->name }}</flux:heading>
                 <flux:subheading size="lg" class="mb-6">{{ __('general.pricing_description') }}</flux:subheading>
             </div>
-            <flux:modal.trigger name="panel.shop.product.pricing.create.modal">
-                <flux:button variant="primary">{{ __('general.create_price') }}</flux:button>
-            </flux:modal.trigger>
+            <div class="flex items-center gap-2">
+                <flux:tooltip content="{{ __('general.price_fetchers') }}">
+                    <flux:button
+                        variant="primary"
+                        color="purple"
+                        icon="arrow-path"
+                        icon:variant="outline"
+                        wire:click="$dispatch('panel.shop.product.price-fetchers.assign-data', { id: '{{ $productId }}' })"
+                    >
+                        {{ __('general.price_fetchers') }}
+                    </flux:button>
+                </flux:tooltip>
+                <flux:modal.trigger name="panel.shop.product.pricing.create.modal">
+                    <flux:button variant="primary">{{ __('general.create_price') }}</flux:button>
+                </flux:modal.trigger>
+            </div>
         </div>
 
         <flux:separator variant="subtle" />
     </div>
+    <livewire:panel.shop.product.price-fetchers />
     <livewire:panel.shop.product.pricing.create :productId="$productId" />
     <livewire:panel.shop.product.pricing.edit />
     <livewire:panel.shop.product.pricing.history :productId="$productId" />

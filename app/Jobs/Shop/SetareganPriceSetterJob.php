@@ -275,7 +275,6 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
                 (float) $productPrice->quantity <= 0
                 && $lockedSetter->status === SetareganPriceSetter::STATUS_OUT_OF_STOCK
             ) {
-                $productPrice->quantity = $lockedSetter->default_quantity;
                 $restored = true;
             }
 
@@ -294,9 +293,17 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
 
             if (! $floorHit && ($regularPrice !== $target || $salePrice !== $target)) {
                 $oldPrice = $currentEffective;
+                $attributes = [
+                    'price' => $target,
+                    'sale_price' => $target,
+                ];
 
-                $productPrice->price = $target;
-                $productPrice->sale_price = $target;
+                if ($restored) {
+                    $attributes['quantity'] = $lockedSetter->default_quantity;
+                }
+
+                $productPrice = $productPrice->supersede($attributes);
+                $lockedSetter->refresh();
                 $changed = true;
 
                 $priceChange = [
@@ -305,10 +312,8 @@ class SetareganPriceSetterJob implements ShouldBeUnique, ShouldQueue
                     'new_price' => $target,
                     'supplier_price' => $offer['price'],
                 ];
-            }
-
-            if ($changed || $restored) {
-                $productPrice->save();
+            } elseif ($restored) {
+                $productPrice->update(['quantity' => $lockedSetter->default_quantity]);
             }
 
             $status = $floorHit

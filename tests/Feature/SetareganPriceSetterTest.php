@@ -131,13 +131,16 @@ test('setaregan pricing rule applies supplier price minus step to both price and
 
     SetareganPriceSetterJob::dispatchSync($setter);
 
-    $price->refresh();
+    $setter->refresh();
+    $currentPrice = $setter->productPrice;
 
-    expect((int) $price->price)->toBe(19_500_000)
-        ->and((int) $price->sale_price)->toBe(19_500_000)
+    expect((int) $currentPrice->price)->toBe(19_500_000)
+        ->and((int) $currentPrice->sale_price)->toBe(19_500_000)
+        ->and($setter->product_price_id)->not->toBe($price->id)
+        ->and((int) $price->fresh()->price)->toBe(22_000_000)
         ->and($fetcher->fresh()->last_price)->toBe(20_000_000)
-        ->and($setter->fresh()->status)->toBe(SetareganPriceSetter::STATUS_UPDATED)
-        ->and($setter->fresh()->last_supplier_available)->toBeTrue();
+        ->and($setter->status)->toBe(SetareganPriceSetter::STATUS_UPDATED)
+        ->and($setter->last_supplier_available)->toBeTrue();
 
     Queue::assertPushed(SendBaleMessageJob::class);
 });
@@ -148,10 +151,13 @@ test('setaregan pricing rule caps a high target at the configured maximum', func
 
     SetareganPriceSetterJob::dispatchSync($setter);
 
-    expect((int) $price->fresh()->price)->toBe(24_000_000)
-        ->and((int) $price->fresh()->sale_price)->toBe(24_000_000)
-        ->and($setter->fresh()->last_target_price)->toBe(24_000_000)
-        ->and($setter->fresh()->status)->toBe(SetareganPriceSetter::STATUS_UPDATED);
+    $setter->refresh();
+
+    expect((int) $setter->productPrice->price)->toBe(24_000_000)
+        ->and((int) $setter->productPrice->sale_price)->toBe(24_000_000)
+        ->and($setter->product_price_id)->not->toBe($price->id)
+        ->and($setter->last_target_price)->toBe(24_000_000)
+        ->and($setter->status)->toBe(SetareganPriceSetter::STATUS_UPDATED);
 });
 
 test('setaregan pricing rule keeps the current price when floor is reached', function () {
@@ -203,11 +209,16 @@ test('setaregan pricing rule restores default quantity when supplier is back in 
 
     SetareganPriceSetterJob::dispatchSync($setter);
 
-    expect((float) $price->fresh()->quantity)->toBe(3.0)
-        ->and((int) $price->fresh()->price)->toBe(19_500_000)
-        ->and((int) $price->fresh()->sale_price)->toBe(19_500_000)
-        ->and($setter->fresh()->last_stock_action)->toBe('restored')
-        ->and($setter->fresh()->status)->toBe(SetareganPriceSetter::STATUS_UPDATED);
+    $setter->refresh();
+    $currentPrice = $setter->productPrice;
+
+    expect((float) $currentPrice->quantity)->toBe(3.0)
+        ->and((int) $currentPrice->price)->toBe(19_500_000)
+        ->and((int) $currentPrice->sale_price)->toBe(19_500_000)
+        ->and($setter->product_price_id)->not->toBe($price->id)
+        ->and((float) $price->fresh()->quantity)->toBe(0.0)
+        ->and($setter->last_stock_action)->toBe('restored')
+        ->and($setter->status)->toBe(SetareganPriceSetter::STATUS_UPDATED);
 });
 
 test('setaregan pricing rule does not restore stock zeroed by a sale', function () {

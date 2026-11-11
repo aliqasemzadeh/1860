@@ -99,7 +99,7 @@
                             <flux:field class="sm:col-span-2">
                                 <flux:label>{{ __('general.torob_target_variant') }}</flux:label>
                                 <flux:select wire:model="productPriceId" placeholder="{{ __('general.torob_select_target_variant') }}">
-                                    @foreach ($product->prices->sortByDesc('is_default') as $price)
+                                    @foreach ($this->latestPrices as $price)
                                         <flux:select.option :value="$price->id">
                                             #{{ $this->formatNumber($price->id) }}
                                             · {{ $price->color?->name ?? __('general.none') }}
@@ -109,7 +109,7 @@
                                     @endforeach
                                 </flux:select>
                                 <flux:error name="productPriceId" />
-                                @if ($product->prices->isEmpty())
+                                @if ($this->latestPrices->isEmpty())
                                     <p class="mt-1 text-xs font-medium text-amber-700 dark:text-amber-400">{{ __('general.torob_no_target_variants') }}</p>
                                 @endif
                             </flux:field>
@@ -172,7 +172,7 @@
                                 <flux:field class="sm:col-span-2">
                                     <flux:label>{{ __('general.setaregan_target_variant') }}</flux:label>
                                     <flux:select wire:model="productPriceId" placeholder="{{ __('general.setaregan_select_target_variant') }}">
-                                        @foreach ($product->prices->sortByDesc('is_default') as $price)
+                                        @foreach ($this->latestPrices as $price)
                                             <flux:select.option :value="$price->id">
                                                 #{{ $this->formatNumber($price->id) }}
                                                 · {{ $price->color?->name ?? __('general.none') }}
@@ -182,7 +182,7 @@
                                         @endforeach
                                     </flux:select>
                                     <flux:error name="productPriceId" />
-                                    @if ($product->prices->isEmpty())
+                                    @if ($this->latestPrices->isEmpty())
                                         <p class="mt-1 text-xs font-medium text-amber-700 dark:text-amber-400">{{ __('general.setaregan_no_target_variants') }}</p>
                                     @endif
                                 </flux:field>
