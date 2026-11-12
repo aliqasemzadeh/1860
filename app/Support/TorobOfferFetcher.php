@@ -49,17 +49,61 @@ class TorobOfferFetcher
             ->sortBy(fn (array $offer): int => $this->numericPrice($offer['price']) ?? PHP_INT_MAX)
             ->values();
 
+        $rankedOffers = $eligible
+            ->map(fn (array $offer, int $index): array => [
+                'rank' => $index + 1,
+                'shop_name' => (string) $offer['shop_name'],
+                'price' => $this->numericPrice($offer['price']) ?? 0,
+            ])
+            ->all();
+
+        $logContext = [
+            'source' => 'torob',
+            'product_key' => $productKey,
+            'product_url' => $productUrl,
+            'eligible_count' => count($rankedOffers),
+            'ranking_summary' => $this->rankingSummary($rankedOffers),
+            'offers' => $rankedOffers,
+        ];
+
         if ($eligible->isEmpty()) {
+            FetcherLog::info('Torob: لیست قیمت رقبا', $logContext);
+
             return null;
         }
 
         $offer = $eligible->first();
-
-        return [
+        $selected = [
             'price' => $this->numericPrice($offer['price']) ?? 0,
             'shop_name' => (string) $offer['shop_name'],
             'offer_key' => isset($offer['prk']) ? (string) $offer['prk'] : null,
         ];
+
+        FetcherLog::info('Torob: لیست قیمت رقبا', array_merge($logContext, [
+            'selected_shop' => $selected['shop_name'],
+            'selected_price' => $selected['price'],
+        ]));
+
+        return $selected;
+    }
+
+    /**
+     * @param  list<array{rank: int, shop_name: string, price: int}>  $rankedOffers
+     */
+    private function rankingSummary(array $rankedOffers): string
+    {
+        if ($rankedOffers === []) {
+            return 'هیچ رقیب واجدی پیدا نشد.';
+        }
+
+        return collect($rankedOffers)
+            ->map(fn (array $offer): string => sprintf(
+                'نفر %d: %s — %s',
+                $offer['rank'],
+                $offer['shop_name'],
+                number_format($offer['price']),
+            ))
+            ->implode(' | ');
     }
 
     public function extractProductKey(string $url): string

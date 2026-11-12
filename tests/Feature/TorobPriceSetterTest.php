@@ -149,6 +149,32 @@ test('torob pricing rule undercuts the cheapest eligible competitor and excludes
     });
 });
 
+test('torob offer fetcher logs ranked competitor prices', function () {
+    $logPath = useFetchersTestLog();
+
+    ['setter' => $setter] = createTorobPricingRule();
+
+    fakeTorobOffers([
+        ['availability' => true, 'shop_name' => 'هجده‌شصت', 'price' => 19_500_000, 'prk' => 'self'],
+        ['availability' => true, 'shop_name' => 'رقیب گران', 'price' => 22_500_000, 'prk' => 'expensive'],
+        ['availability' => true, 'shop_name' => 'رقیب معتبر', 'price' => 21_000_000, 'prk' => 'competitor'],
+        ['availability' => false, 'shop_name' => 'ناموجود', 'price' => 18_000_000, 'prk' => 'unavailable'],
+    ]);
+
+    TorobPriceSetterJob::dispatchSync($setter);
+
+    $log = file_get_contents($logPath);
+
+    expect($log)->toContain('Torob: لیست قیمت رقبا')
+        ->and($log)->toContain('"eligible_count":2')
+        ->and($log)->toContain('"selected_shop":"رقیب معتبر"')
+        ->and($log)->toContain('"selected_price":21000000')
+        ->and($log)->toContain('نفر 1: رقیب معتبر — 21,000,000')
+        ->and($log)->toContain('نفر 2: رقیب گران — 22,500,000')
+        ->and($log)->not->toContain('هجده‌شصت')
+        ->and($log)->not->toContain('ناموجود');
+});
+
 test('torob pricing rule keeps the current price when stop loss is reached', function () {
     Queue::fake([SendBaleMessageJob::class]);
     $logPath = useFetchersTestLog();
