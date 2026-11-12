@@ -15,7 +15,14 @@ class TorobOfferFetcher
 
     /**
      * @param  list<string>  $excludedShopNames
-     * @return array{price: int, shop_name: string, offer_key: ?string}|null
+     * @return array{
+     *     price: int,
+     *     shop_name: string,
+     *     offer_key: ?string,
+     *     selected_rank: int,
+     *     selection_reason: string,
+     *     skipped_below_floor: list<array{rank: int, shop_name: string, price: int, candidate_price: int}>
+     * }|null
      */
     public function cheapestCompetitor(
         string $productUrl,
@@ -62,7 +69,6 @@ class TorobOfferFetcher
             ->all();
 
         $logContext = [
-            'source' => 'torob',
             'product_key' => $productKey,
             'product_url' => $productUrl,
             'eligible_count' => count($rankedOffers),
@@ -73,7 +79,12 @@ class TorobOfferFetcher
         ];
 
         if ($eligible->isEmpty()) {
-            FetcherLog::info('Torob: لیست قیمت رقبا', $logContext);
+            FetcherLog::info('Torob: لیست قیمت رقبا', FetcherLog::decision(
+                'torob',
+                'no_competitor',
+                'هیچ رقیب واجدی بعد از فیلتر فروشگاه خودمان، موجودی و اقساطی پیدا نشد.',
+                $logContext,
+            ));
 
             return null;
         }
@@ -84,17 +95,38 @@ class TorobOfferFetcher
             'price' => $this->numericPrice($offer['price']) ?? 0,
             'shop_name' => (string) $offer['shop_name'],
             'offer_key' => isset($offer['prk']) ? (string) $offer['prk'] : null,
-        ];
-
-        FetcherLog::info('Torob: لیست قیمت رقبا', array_merge($logContext, [
-            'selected_shop' => $selected['shop_name'],
-            'selected_price' => $selected['price'],
             'selected_rank' => $selection['rank'],
             'selection_reason' => $selection['reason'],
             'skipped_below_floor' => $selection['skipped'],
-        ]));
+        ];
+
+        FetcherLog::info('Torob: لیست قیمت رقبا', FetcherLog::decision(
+            'torob',
+            'competitor_selected',
+            $this->selectionReasonMessage($selection['reason'], $selection['rank'], count($selection['skipped'])),
+            array_merge($logContext, [
+                'selected_shop' => $selected['shop_name'],
+                'selected_price' => $selected['price'],
+                'selected_rank' => $selected['selected_rank'],
+                'selection_reason' => $selected['selection_reason'],
+                'skipped_below_floor' => $selected['skipped_below_floor'],
+            ]),
+        ));
 
         return $selected;
+    }
+
+    private function selectionReasonMessage(string $reason, int $rank, int $skippedCount): string
+    {
+        return match (true) {
+            $reason === 'all_below_floor_fallback' => 'همه رقبا زیر حد ضرر بودند؛ ارزان‌ترین رقیب به‌عنوان fallback برگردانده شد.',
+            str_starts_with($reason, 'skipped_') => sprintf(
+                'نفرهای ۱ تا %d زیر حد ضرر بودند؛ نفر %d برای رقابت انتخاب شد.',
+                $skippedCount,
+                $rank,
+            ),
+            default => 'ارزان‌ترین رقیب واجد برای رقابت انتخاب شد.',
+        };
     }
 
     /**

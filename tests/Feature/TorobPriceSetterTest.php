@@ -166,6 +166,7 @@ test('torob offer fetcher logs ranked competitor prices', function () {
     $log = file_get_contents($logPath);
 
     expect($log)->toContain('Torob: لیست قیمت رقبا')
+        ->and($log)->toContain('"outcome":"competitor_selected"')
         ->and($log)->toContain('"eligible_count":2')
         ->and($log)->toContain('"selected_shop":"رقیب معتبر"')
         ->and($log)->toContain('"selected_price":21000000')
@@ -201,8 +202,9 @@ test('torob pricing rule keeps the current price when stop loss is reached', fun
         ->and($log)->toContain('"competitor_price":19900000')
         ->and($log)->toContain('"candidate_price":19890000')
         ->and($log)->toContain('"min_price":20000000')
-        ->and($log)->toContain('کف قیمت')
-        ->and($log)->toContain('"selection_reason":"all_below_floor_fallback"');
+        ->and($log)->toContain('حد ضرر')
+        ->and($log)->toContain('"selection_reason":"all_below_floor_fallback"')
+        ->and($log)->toContain('"outcome":"competitor_selected"');
 });
 
 test('torob pricing skips competitors that would breach the floor and undercuts the next viable rival', function () {
@@ -240,6 +242,9 @@ test('torob pricing skips competitors that would breach the floor and undercuts 
         ->and($log)->toContain('"selected_price":34500000')
         ->and($log)->toContain('"selected_rank":2')
         ->and($log)->toContain('"selection_reason":"skipped_1_below_floor"')
+        ->and($log)->toContain('"outcome":"competitor_selected"')
+        ->and($log)->toContain('"outcome":"updated"')
+        ->and($log)->toContain('نفر 2')
         ->and($log)->toContain('"shop_name":"رایان پرینتر"')
         ->and($log)->toContain('"candidate_price":28240000');
 });

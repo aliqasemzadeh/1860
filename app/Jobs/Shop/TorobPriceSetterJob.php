@@ -153,6 +153,9 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                 'candidate_price' => $candidate,
                 'min_price' => $setter->min_price,
                 'max_price' => $setter->max_price,
+                'selected_rank' => $offer['selected_rank'] ?? null,
+                'selection_reason' => $offer['selection_reason'] ?? null,
+                'skipped_below_floor' => $offer['skipped_below_floor'] ?? [],
             ]);
 
             $common = [
@@ -189,7 +192,7 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                 FetcherLog::info('Torob: قیمت عوض نشد', FetcherLog::decision(
                     'torob',
                     TorobPriceSetter::STATUS_FLOOR_REACHED,
-                    'قیمت هدف محاسبه‌شده از کف قیمت کمتر است؛ برای جلوگیری از ضرر قیمت عوض نشد.',
+                    'همه رقبا زیر حد ضرر بودند؛ برای جلوگیری از ضرر قیمت عوض نشد.',
                     array_merge($pricingContext, [
                         'target_price' => max(0, $candidate),
                         'current_regular_price' => (int) $setter->productPrice->price,
@@ -267,9 +270,16 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
                         'competitor_shop' => $offer['shop_name'],
                         'competitor_price' => $offer['price'],
                     ];
+                    $skippedCount = count($offer['skipped_below_floor'] ?? []);
                     $decision = [
                         'outcome' => $status,
-                        'reason' => 'قیمت فروشگاه بر اساس ارزان‌ترین رقیب واجد به‌روز شد.',
+                        'reason' => $skippedCount > 0
+                            ? sprintf(
+                                'قیمت فروشگاه بر اساس نفر %d به‌روز شد؛ %d رقیب ارزان‌تر به‌خاطر حد ضرر رد شدند.',
+                                $offer['selected_rank'] ?? 0,
+                                $skippedCount,
+                            )
+                            : 'قیمت فروشگاه بر اساس ارزان‌ترین رقیب واجد به‌روز شد.',
                         'context' => array_merge($detailContext, [
                             'old_price' => $currentPrice,
                             'new_price' => $target,
