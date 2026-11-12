@@ -201,7 +201,47 @@ test('torob pricing rule keeps the current price when stop loss is reached', fun
         ->and($log)->toContain('"competitor_price":19900000')
         ->and($log)->toContain('"candidate_price":19890000')
         ->and($log)->toContain('"min_price":20000000')
-        ->and($log)->toContain('کف قیمت');
+        ->and($log)->toContain('کف قیمت')
+        ->and($log)->toContain('"selection_reason":"all_below_floor_fallback"');
+});
+
+test('torob pricing skips competitors that would breach the floor and undercuts the next viable rival', function () {
+    Queue::fake([SendBaleMessageJob::class]);
+    $logPath = useFetchersTestLog();
+
+    ['price' => $price, 'fetcher' => $fetcher, 'setter' => $setter] = createTorobPricingRule([
+        'step_amount' => 100_000,
+        'min_price' => 31_000_000,
+        'max_price' => 40_000_000,
+    ], [
+        'price' => 35_000_000,
+    ]);
+
+    fakeTorobOffers([
+        ['availability' => true, 'shop_name' => 'رایان پرینتر', 'price' => 28_340_000, 'prk' => 'rank1'],
+        ['availability' => true, 'shop_name' => 'مای کامپیوتر خوارزمی', 'price' => 34_500_000, 'prk' => 'rank2'],
+        ['availability' => true, 'shop_name' => 'شاپ 9', 'price' => 35_500_000, 'prk' => 'rank3'],
+    ]);
+
+    TorobPriceSetterJob::dispatchSync($setter);
+
+    $setter->refresh();
+
+    expect((int) $setter->productPrice->price)->toBe(34_400_000)
+        ->and($setter->product_price_id)->not->toBe($price->id)
+        ->and((int) $price->fresh()->price)->toBe(35_000_000)
+        ->and($fetcher->fresh()->last_price)->toBe(34_500_000)
+        ->and($setter->status)->toBe(TorobPriceSetter::STATUS_UPDATED)
+        ->and($setter->last_competitor_shop)->toBe('مای کامپیوتر خوارزمی')
+        ->and($setter->last_competitor_price)->toBe(34_500_000);
+
+    $log = file_get_contents($logPath);
+    expect($log)->toContain('"selected_shop":"مای کامپیوتر خوارزمی"')
+        ->and($log)->toContain('"selected_price":34500000')
+        ->and($log)->toContain('"selected_rank":2')
+        ->and($log)->toContain('"selection_reason":"skipped_1_below_floor"')
+        ->and($log)->toContain('"shop_name":"رایان پرینتر"')
+        ->and($log)->toContain('"candidate_price":28240000');
 });
 
 test('torob pricing logs an unchanged decision when current price already matches the target', function () {

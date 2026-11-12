@@ -107,6 +107,8 @@ class TorobPriceSetterJob implements ShouldBeUnique, ShouldQueue
             $offer = $offerFetcher->cheapestCompetitor(
                 $setter->priceFetcher->url,
                 $setter->own_shop_names ?? [],
+                $setter->min_price,
+                $setter->step_amount,
             );
 
             if ($offer === null) {

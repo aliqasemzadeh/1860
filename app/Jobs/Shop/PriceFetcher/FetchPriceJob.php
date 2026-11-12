@@ -127,6 +127,8 @@ class FetchPriceJob implements ShouldQueue
         $offer = $offerFetcher->cheapestCompetitor(
             $this->priceFetcher->url,
             $setter->own_shop_names ?? [],
+            $setter->min_price,
+            $setter->step_amount,
         );
 
         return $offer['price'] ?? null;

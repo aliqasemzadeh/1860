@@ -17,8 +17,12 @@ class TorobOfferFetcher
      * @param  list<string>  $excludedShopNames
      * @return array{price: int, shop_name: string, offer_key: ?string}|null
      */
-    public function cheapestCompetitor(string $productUrl, array $excludedShopNames): ?array
-    {
+    public function cheapestCompetitor(
+        string $productUrl,
+        array $excludedShopNames,
+        ?int $minPrice = null,
+        int $stepAmount = 0,
+    ): ?array {
         $this->challengeGuard->ensureRequestsAllowed();
 
         $productKey = $this->extractProductKey($productUrl);
@@ -64,6 +68,8 @@ class TorobOfferFetcher
             'eligible_count' => count($rankedOffers),
             'ranking_summary' => $this->rankingSummary($rankedOffers),
             'offers' => $rankedOffers,
+            'min_price' => $minPrice,
+            'step_amount' => $stepAmount,
         ];
 
         if ($eligible->isEmpty()) {
@@ -72,7 +78,8 @@ class TorobOfferFetcher
             return null;
         }
 
-        $offer = $eligible->first();
+        $selection = $this->selectCompetitor($eligible, $minPrice, $stepAmount);
+        $offer = $selection['offer'];
         $selected = [
             'price' => $this->numericPrice($offer['price']) ?? 0,
             'shop_name' => (string) $offer['shop_name'],
@@ -82,9 +89,66 @@ class TorobOfferFetcher
         FetcherLog::info('Torob: لیست قیمت رقبا', array_merge($logContext, [
             'selected_shop' => $selected['shop_name'],
             'selected_price' => $selected['price'],
+            'selected_rank' => $selection['rank'],
+            'selection_reason' => $selection['reason'],
+            'skipped_below_floor' => $selection['skipped'],
         ]));
 
         return $selected;
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, array<string, mixed>>  $eligible
+     * @return array{
+     *     offer: array<string, mixed>,
+     *     rank: int,
+     *     reason: string,
+     *     skipped: list<array{rank: int, shop_name: string, price: int, candidate_price: int}>
+     * }
+     */
+    private function selectCompetitor($eligible, ?int $minPrice, int $stepAmount): array
+    {
+        $skipped = [];
+
+        if ($minPrice === null) {
+            return [
+                'offer' => $eligible->first(),
+                'rank' => 1,
+                'reason' => 'first_eligible',
+                'skipped' => $skipped,
+            ];
+        }
+
+        foreach ($eligible as $index => $offer) {
+            $rank = $index + 1;
+            $price = $this->numericPrice($offer['price']) ?? 0;
+            $candidate = $price - $stepAmount;
+
+            if ($candidate >= $minPrice) {
+                return [
+                    'offer' => $offer,
+                    'rank' => $rank,
+                    'reason' => $skipped === []
+                        ? 'first_eligible'
+                        : 'skipped_'.count($skipped).'_below_floor',
+                    'skipped' => $skipped,
+                ];
+            }
+
+            $skipped[] = [
+                'rank' => $rank,
+                'shop_name' => (string) $offer['shop_name'],
+                'price' => $price,
+                'candidate_price' => $candidate,
+            ];
+        }
+
+        return [
+            'offer' => $eligible->first(),
+            'rank' => 1,
+            'reason' => 'all_below_floor_fallback',
+            'skipped' => $skipped,
+        ];
     }
 
     /**
