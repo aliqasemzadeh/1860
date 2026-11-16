@@ -1,4 +1,23 @@
-@php($general = app(\App\Settings\GeneralSettings::class))
+@php
+    use Illuminate\Support\Facades\Vite;
+
+    $general = app(\App\Settings\GeneralSettings::class);
+    $cssEntry = $cssEntry ?? 'resources/css/store.css';
+
+    $preloadFonts = [];
+    if (app()->isProduction()) {
+        foreach ([
+            'node_modules/vazirmatn/fonts/webfonts/Vazirmatn-Regular.woff2',
+            'node_modules/vazirmatn/fonts/webfonts/Vazirmatn-Black.woff2',
+        ] as $font) {
+            try {
+                $preloadFonts[] = Vite::asset($font);
+            } catch (Throwable) {
+                // Asset missing from the current Vite manifest.
+            }
+        }
+    }
+@endphp
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="csrf-token" content="{{ csrf_token() }}" />
@@ -12,5 +31,9 @@
     <link rel="manifest" href="{{ asset('favicon/site.webmanifest') }}">
 @endif
 
-@vite(['resources/css/app.css', 'resources/js/app.js'])
+@foreach ($preloadFonts as $fontUrl)
+    <link rel="preload" href="{{ $fontUrl }}" as="font" type="font/woff2" crossorigin>
+@endforeach
+
+@vite([$cssEntry, 'resources/js/app.js'])
 @fluxAppearance

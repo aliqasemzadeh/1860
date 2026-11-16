@@ -22,8 +22,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (app()->isProduction() && ! app()->runningUnitTests()) {
+        if (! app()->environment('local', 'testing') && ! app()->runningUnitTests()) {
             URL::forceScheme('https');
+
+            // Force minified Flux/Livewire assets. APP_DEBUG=true outside local
+            // otherwise serves ~1.2MB of unminified JS and tanks LCP.
+            config(['app.debug' => false]);
         }
 
         Blade::directive('jalali', fn ($expression) => "<?php echo jalali({$expression}); ?>");

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" dir="rtl">
 <head>
-    @include('partials.head')
+    @include('partials.head', ['cssEntry' => 'resources/css/panel.css'])
     <x-seo :title="$title ?? null" noindex />
 </head>
 <body class="min-h-screen bg-white dark:bg-zinc-800 antialiased">
